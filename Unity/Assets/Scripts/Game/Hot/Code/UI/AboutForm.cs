@@ -1,10 +1,11 @@
-﻿//------------------------------------------------------------
+//------------------------------------------------------------
 // Game Framework
 // Copyright © 2013-2021 Jiang Yin. All rights reserved.
 // Homepage: https://gameframework.cn/
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using CodeBind;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityGameFramework.Runtime;
@@ -14,9 +15,7 @@ namespace Game.Hot
     [MonoCodeBind('_')]
     public partial class AboutForm : StarForceUIForm
     {
-        [SerializeField]
-        private RectTransform m_Transform = null;
-
+        
         [SerializeField]
         private float m_ScrollSpeed = 1f;
 
@@ -29,7 +28,7 @@ namespace Game.Hot
 #endif
         {
             base.OnInit(userData);
-
+            InitBind(GetComponent<CodeBind.CSCodeBindMono>());
             CanvasScaler canvasScaler = GetComponentInParent<CanvasScaler>();
             if (canvasScaler == null)
             {
@@ -48,10 +47,17 @@ namespace Game.Hot
         {
             base.OnOpen(userData);
 
-            m_Transform.SetLocalPositionY(m_InitPosition);
-
+            ContentRectTransform.SetLocalPositionY(m_InitPosition);
+                
             // 换个音乐
             GameEntry.Sound.PlayMusic(3);
+
+            BackButtonExButton.onClick.AddListener(OnBackButtonClick);
+        }
+
+        private void OnBackButtonClick()
+        {
+            Close();
         }
 
 #if UNITY_2017_3_OR_NEWER
@@ -73,11 +79,13 @@ namespace Game.Hot
 #endif
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
-
-            m_Transform.AddLocalPositionY(m_ScrollSpeed * elapseSeconds);
-            if (m_Transform.localPosition.y > m_Transform.sizeDelta.y - m_InitPosition)
+            if (ContentRectTransform != null)
             {
-                m_Transform.SetLocalPositionY(m_InitPosition);
+                    ContentRectTransform.AddLocalPositionY(m_ScrollSpeed * elapseSeconds);
+                    if (ContentRectTransform.localPosition.y > ContentRectTransform.sizeDelta.y - m_InitPosition)
+                    {
+                            ContentRectTransform.SetLocalPositionY(m_InitPosition);
+                    }
             }
         }
     }

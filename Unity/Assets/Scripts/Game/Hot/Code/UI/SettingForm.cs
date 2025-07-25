@@ -5,6 +5,7 @@
 // Feedback: mailto:ellan@gameframework.cn
 //------------------------------------------------------------
 
+using CodeBind;
 using GameFramework.Localization;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,47 +13,15 @@ using UnityGameFramework.Runtime;
 
 namespace Game.Hot
 {
-    public class SettingForm : StarForceUIForm
+    [MonoCodeBind('_')]
+    public partial class SettingForm : StarForceUIForm
     {
-        [SerializeField]
-        private Toggle m_MusicMuteToggle = null;
-
-        [SerializeField]
-        private Slider m_MusicVolumeSlider = null;
-
-        [SerializeField]
-        private Toggle m_SoundMuteToggle = null;
-
-        [SerializeField]
-        private Slider m_SoundVolumeSlider = null;
-
-        [SerializeField]
-        private Toggle m_UISoundMuteToggle = null;
-
-        [SerializeField]
-        private Slider m_UISoundVolumeSlider = null;
-
-        [SerializeField]
-        private CanvasGroup m_LanguageTipsCanvasGroup = null;
-
-        [SerializeField]
-        private Toggle m_EnglishToggle = null;
-
-        [SerializeField]
-        private Toggle m_ChineseSimplifiedToggle = null;
-
-        [SerializeField]
-        private Toggle m_ChineseTraditionalToggle = null;
-
-        [SerializeField]
-        private Toggle m_KoreanToggle = null;
-
         private Language m_SelectedLanguage = Language.Unspecified;
 
         public void OnMusicMuteChanged(bool isOn)
         {
             GameEntry.Sound.Mute("Music", !isOn);
-            m_MusicVolumeSlider.gameObject.SetActive(isOn);
+            MusicVolumeSlider.gameObject.SetActive(isOn);
         }
 
         public void OnMusicVolumeChanged(float volume)
@@ -63,7 +32,7 @@ namespace Game.Hot
         public void OnSoundMuteChanged(bool isOn)
         {
             GameEntry.Sound.Mute("Sound.Default", !isOn);
-            m_SoundVolumeSlider.gameObject.SetActive(isOn);
+            SoundVolumeSlider.gameObject.SetActive(isOn);
         }
 
         public void OnSoundVolumeChanged(float volume)
@@ -74,7 +43,7 @@ namespace Game.Hot
         public void OnUISoundMuteChanged(bool isOn)
         {
             GameEntry.Sound.Mute("UISound", !isOn);
-            m_UISoundVolumeSlider.gameObject.SetActive(isOn);
+            UISoundVolumeSlider.gameObject.SetActive(isOn);
         }
 
         public void OnUISoundVolumeChanged(float volume)
@@ -149,39 +118,48 @@ namespace Game.Hot
         {
             base.OnOpen(userData);
 
-            m_MusicMuteToggle.isOn = !GameEntry.Sound.IsMuted("Music");
-            m_MusicVolumeSlider.value = GameEntry.Sound.GetVolume("Music");
+            MusicMuteToggle.isOn = !GameEntry.Sound.IsMuted("Music");
+            MusicVolumeSlider.value = GameEntry.Sound.GetVolume("Music");
 
-            m_SoundMuteToggle.isOn = !GameEntry.Sound.IsMuted("Sound.Default");
-            m_SoundVolumeSlider.value = GameEntry.Sound.GetVolume("Sound.Default");
+            SoundMuteToggle.isOn = !GameEntry.Sound.IsMuted("Sound.Default");
+            SoundVolumeSlider.value = GameEntry.Sound.GetVolume("Sound.Default");
 
-            m_UISoundMuteToggle.isOn = !GameEntry.Sound.IsMuted("UISound");
-            m_UISoundVolumeSlider.value = GameEntry.Sound.GetVolume("UISound");
+            UISoundMuteToggle.isOn = !GameEntry.Sound.IsMuted("UISound");
+            UISoundVolumeSlider.value = GameEntry.Sound.GetVolume("UISound");
 
             m_SelectedLanguage = GameEntry.Localization.Language;
             switch (m_SelectedLanguage)
             {
                 case Language.English:
-                    m_EnglishToggle.SetIsOnWithoutNotify(true);
+                    EnglishToggle.SetIsOnWithoutNotify(true);
                     break;
 
                 case Language.ChineseSimplified:
-                    m_ChineseSimplifiedToggle.SetIsOnWithoutNotify(true);
+                    ChineseSimplifiedToggle.SetIsOnWithoutNotify(true);
                     break;
 
                 case Language.ChineseTraditional:
-                    m_ChineseTraditionalToggle.SetIsOnWithoutNotify(true);
+                    ChineseTraditionalToggle.SetIsOnWithoutNotify(true);
                     break;
 
                 case Language.Korean:
-                    m_KoreanToggle.SetIsOnWithoutNotify(true);
+                    KoreanToggle.SetIsOnWithoutNotify(true);
                     break;
 
                 default:
                     break;
             }
         }
+#if UNITY_2017_3_OR_NEWER
+        protected override void OnInit(object userData)
+#else
+        protected internal override void OnInit(object userData)
+#endif
+        {
+            base.OnInit(userData);
+            InitBind(GetComponent<CodeBind.CSCodeBindMono>());
 
+        }
 #if UNITY_2017_3_OR_NEWER
         protected override void OnUpdate(float elapseSeconds, float realElapseSeconds)
 #else
@@ -190,15 +168,15 @@ namespace Game.Hot
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
 
-            if (m_LanguageTipsCanvasGroup.gameObject.activeSelf)
+            if (LanguageTipsCanvasGroup.gameObject.activeSelf)
             {
-                m_LanguageTipsCanvasGroup.alpha = 0.5f + 0.5f * Mathf.Sin(Mathf.PI * Time.time);
+                LanguageTipsCanvasGroup.alpha = 0.5f + 0.5f * Mathf.Sin(Mathf.PI * Time.time);
             }
         }
 
         private void RefreshLanguageTips()
         {
-            m_LanguageTipsCanvasGroup.gameObject.SetActive(m_SelectedLanguage != GameEntry.Localization.Language);
+            LanguageTipsCanvasGroup.gameObject.SetActive(m_SelectedLanguage != GameEntry.Localization.Language);
         }
     }
 }

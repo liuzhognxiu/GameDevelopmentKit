@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEditorInternal;
@@ -132,6 +133,33 @@ namespace UnityMcpBridge.Editor.Tools
                         return RemoveComponentFromTarget(@params, targetToken, searchMethod);
                     case "set_component_property":
                         return SetComponentPropertyOnTarget(@params, targetToken, searchMethod);
+                    case "selected":
+                        // 'selected' action to return currently selected GameObjects
+                        if (Selection.activeGameObject == null)
+                        {
+                            return Response.Error("No GameObject is currently selected.");
+                        }
+                        return Response.Success(
+                            "Currently selected GameObject.",
+                            GetGameObjectData(Selection.activeGameObject)
+                        );
+                    case "gettransforms":
+                        // 'GetTransforms' action to return transforms of selected GameObjects
+                        if (Selection.transforms.Length == 0)
+                        {
+                            return Response.Error("No GameObjects are currently selected.");
+                        }
+                        var selectedTransform = Selection.activeGameObject.transform;
+                        var childInfoList = new List<System.Object>();
+                        foreach (Transform child in selectedTransform.GetComponentsInChildren<Transform>())
+                        {
+                            var info = new { name = child.name, id = child.GetInstanceID() };
+                            childInfoList.Add(info);
+                        }
+                        return Response.Success(
+                            "Transforms of currently selected GameObjects.",
+                            childInfoList
+                        );
 
                     default:
                         return Response.Error($"Unknown action: '{action}'.");
@@ -1229,6 +1257,7 @@ namespace UnityMcpBridge.Editor.Tools
                             .ToList();
                         if (selectedObjects.Count > 0)
                         {
+                            Debug.Log(selectedObjects);
                             results.AddRange(selectedObjects);
                         }
                         else

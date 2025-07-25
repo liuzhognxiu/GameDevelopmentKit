@@ -279,7 +279,7 @@ GameObject:
   - component: {fileID: 22411058}
   - component: {fileID: 11484778}
   m_Layer: 5
-  m_Name: English
+  m_Name: English_Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -377,7 +377,7 @@ GameObject:
   - component: {fileID: 22458644}
   - component: {fileID: 11404440}
   m_Layer: 5
-  m_Name: Mute
+  m_Name: UISoundMute_Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -562,6 +562,7 @@ GameObject:
   - component: {fileID: 22245532}
   - component: {fileID: 22325564}
   - component: {fileID: 11472764}
+  - component: {fileID: 3515717463876378800}
   m_Layer: 5
   m_Name: SettingForm
   m_TagString: Untagged
@@ -578,7 +579,7 @@ RectTransform:
   m_GameObject: {fileID: 107322}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 22424244}
@@ -632,17 +633,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 02bbd1c1f00c17842b1449ae2b66a932, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_MusicMuteToggle: {fileID: 11428602}
-  m_MusicVolumeSlider: {fileID: 11458132}
-  m_SoundMuteToggle: {fileID: 11419480}
-  m_SoundVolumeSlider: {fileID: 11484716}
-  m_UISoundMuteToggle: {fileID: 11404440}
-  m_UISoundVolumeSlider: {fileID: 11423794}
-  m_LanguageTipsCanvasGroup: {fileID: 22524202}
-  m_EnglishToggle: {fileID: 11484778}
-  m_ChineseSimplifiedToggle: {fileID: 11434424}
-  m_ChineseTraditionalToggle: {fileID: 11448172}
-  m_KoreanToggle: {fileID: 11497670}
+--- !u!114 &3515717463876378800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 107322}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5452a0c3619826c4f889a047605eef79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BindComponents:
+  - {fileID: 11469820}
+  - {fileID: 11434424}
+  - {fileID: 11448172}
+  - {fileID: 11482350}
+  - {fileID: 11484778}
+  - {fileID: 11497670}
+  - {fileID: 22524202}
+  - {fileID: 11428602}
+  - {fileID: 11458132}
+  - {fileID: 11419480}
+  - {fileID: 11484716}
+  - {fileID: 11404440}
+  - {fileID: 11423794}
+  m_SeparatorChar: 95
+  m_BindScript: {fileID: 11500000, guid: 02bbd1c1f00c17842b1449ae2b66a932, type: 3}
+  m_BindComponentNames:
+  - CancelCommonButton
+  - ChineseSimplifiedToggle
+  - ChineseTraditionalToggle
+  - ConfirmCommonButton
+  - EnglishToggle
+  - KoreanToggle
+  - LanguageTipsCanvasGroup
+  - MusicMuteToggle
+  - MusicVolumeSlider
+  - SoundMuteToggle
+  - SoundVolumeSlider
+  - UISoundMuteToggle
+  - UISoundVolumeSlider
 --- !u!1 &110356
 GameObject:
   m_ObjectHideFlags: 0
@@ -1149,7 +1181,7 @@ GameObject:
   - component: {fileID: 22224364}
   - component: {fileID: 11469820}
   m_Layer: 5
-  m_Name: Cancel
+  m_Name: Cancel_CommonButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1250,7 +1282,7 @@ GameObject:
   - component: {fileID: 22227080}
   - component: {fileID: 22524202}
   m_Layer: 5
-  m_Name: LanguageTips
+  m_Name: LanguageTips_CanvasGroup
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1467,7 +1499,7 @@ GameObject:
   - component: {fileID: 22469648}
   - component: {fileID: 11419480}
   m_Layer: 5
-  m_Name: Mute
+  m_Name: SoundMute_Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1655,7 +1687,7 @@ GameObject:
   - component: {fileID: 22462464}
   - component: {fileID: 11497670}
   m_Layer: 5
-  m_Name: Korean
+  m_Name: Korean_Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1905,7 +1937,7 @@ GameObject:
   - component: {fileID: 22216270}
   - component: {fileID: 11482350}
   m_Layer: 5
-  m_Name: Confirm
+  m_Name: Confirm_CommonButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2041,7 +2073,7 @@ GameObject:
   - component: {fileID: 22460238}
   - component: {fileID: 11458132}
   m_Layer: 5
-  m_Name: Volume
+  m_Name: MusicVolume_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2219,7 +2251,7 @@ GameObject:
   - component: {fileID: 22476964}
   - component: {fileID: 11434424}
   m_Layer: 5
-  m_Name: ChineseSimplified
+  m_Name: ChineseSimplified_Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2693,7 +2725,7 @@ GameObject:
   - component: {fileID: 22438038}
   - component: {fileID: 11423794}
   m_Layer: 5
-  m_Name: Volume
+  m_Name: UISoundVolume_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4464,7 +4496,7 @@ GameObject:
   - component: {fileID: 22410658}
   - component: {fileID: 11448172}
   m_Layer: 5
-  m_Name: ChineseTraditional
+  m_Name: ChineseTraditional_Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4753,7 +4785,7 @@ GameObject:
   - component: {fileID: 22421522}
   - component: {fileID: 11484716}
   m_Layer: 5
-  m_Name: Volume
+  m_Name: SoundVolume_Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5051,7 +5083,7 @@ GameObject:
   - component: {fileID: 22465122}
   - component: {fileID: 11428602}
   m_Layer: 5
-  m_Name: Mute
+  m_Name: MusicMute_Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

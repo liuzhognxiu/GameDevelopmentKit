@@ -29,6 +29,7 @@ namespace Game
             { "UIAdapter", typeof(UIAdapter) },
             { "IgnoreUIAdapter", typeof(IgnoreUIAdapter) },
             { "UIAdapterScaleScreenRate", typeof(UIAdapterScaleScreenRate) },
+            { "EXButton", typeof(Game.ExButton) },
         };
     }
 }

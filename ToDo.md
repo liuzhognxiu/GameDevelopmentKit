@@ -1,0 +1,2 @@
+- [ ] Test MCP functions
+- [ ] Finish testing

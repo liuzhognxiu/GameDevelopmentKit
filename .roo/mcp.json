@@ -1,0 +1,24 @@
+{
+  "mcpServers": {
+    "unityMCP": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "G:\\GameDevelopmentKitAI\\Tools\\MCP\\UnityMcpServer\\src",
+        "run",
+        "server.py"
+      ],
+      "alwaysAllow": [
+        "manage_script",
+        "manage_scene",
+        "manage_editor",
+        "manage_asset",
+        "manage_shader",
+        "read_console",
+        "execute_menu_item",
+        "write_to_file",
+        "manage_gameobject"
+      ]
+    }
+  }
+}

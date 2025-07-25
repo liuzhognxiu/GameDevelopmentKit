@@ -1,0 +1,78 @@
+# UI 元素命名规则
+
+## 通用规则
+1. 使用 PascalCase 命名方式，每个单词的首字母大写。
+2. 名称应该清晰描述组件的类型和功能。
+
+## 详细命名规则
+1. 基本格式：
+   "元素名"_"脚本类型"_"脚本类型1"...
+   
+   例如：
+   - Button_ExButton
+   - Image_UXImage_UIAdapter
+   - Text_TMPText_UIValueAdapter
+
+2. 全部脚本绑定：
+   如果需要绑定元素的所有脚本，使用星号（*）：
+   "元素名"_*
+   
+   例如：
+   - Panel_*
+   - Button_*
+
+3. CodeBind 特定命名：
+   根据 GameCodeBindNameTypeConfig.cs 文件中定义的 BindNameTypeDict，使用以下命名：
+
+   a. 通用 UI 组件：
+      - UIWidget: 用于 AUIWidget 类型
+
+   b. TextMesh Pro (TMP) 相关组件：
+      - TMPText: 用于 TMPro.TMP_Text 类型
+      - TMPInputField: 用于 TMPro.TMP_InputField 类型
+      - TextMeshProUGUI: 用于 TMPro.TextMeshProUGUI 类型
+      - TextMeshPro: 用于 TMPro.TextMeshPro 类型
+
+   c. UXTool 相关组件：
+      - UXImage: 用于 UnityEngine.UI.UXImage 类型
+      - UXText: 用于 UnityEngine.UI.UXText 类型
+      - UXTextMeshPro: 用于 UnityEngine.UI.UXTextMeshPro 类型
+      - UXToggle: 用于 UnityEngine.UI.UXToggle 类型
+      - UXToggleGroup: 用于 UnityEngine.UI.UXToggleGroup 类型
+      - UXScrollRect: 用于 UnityEngine.UI.UXScrollRect 类型
+      - UXRolling: 用于 UXRolling 类型
+
+   d. 其他自定义组件：
+      - UIValueAdapter: 用于 UIValueAdapter 类型
+      - LXRolling: 用于 LXRolling 类型
+      - UIStateAnimator: 用于 UIStateAnimator 类型
+      - UIAdapter: 用于 UIAdapter 类型
+      - IgnoreUIAdapter: 用于 IgnoreUIAdapter 类型
+      - UIAdapterScaleScreenRate: 用于 UIAdapterScaleScreenRate 类型
+
+## 命名规则要点
+1. 前缀使用：
+   - 使用 "UI" 前缀表示通用 UI 组件
+   - 使用 "UX" 前缀表示 UXTool 相关组件
+   - 使用 "TMP" 或 "TextMeshPro" 前缀表示 TextMesh Pro 相关组件
+
+2. 功能描述：
+   - 名称应直接反映组件的类型或功能，如 Text, Image, Toggle, ScrollRect 等
+   - 对于特殊功能，在名称中包含功能描述，如 StateAnimator, ValueAdapter 等
+
+3. 一致性：
+   - 保持 PascalCase 的一致性
+   - 对于同类型的组件，保持命名风格的一致性
+
+4. 新组件命名：
+   - 添加新的 UI 元素时，参考现有的命名规则
+   - 确保新名称能被 CodeBind 系统正确识别和绑定
+
+5. 多脚本绑定：
+   - 当一个元素需要绑定多个脚本时，按照脚本重要性或使用频率的顺序排列
+   - 使用下划线 "_" 分隔不同的脚本类型
+
+6. 全部脚本绑定：
+   - 当需要绑定元素的所有脚本时，使用星号 "*" 替代具体的脚本类型列表
+
+遵循这些命名规则可以提高代码的可读性，并确保与 CodeBind 系统的兼容性。在创建或修改 UI 元素时，请务必参考这些规则。

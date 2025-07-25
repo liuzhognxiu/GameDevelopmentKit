@@ -1,0 +1,100 @@
+# UI预制体重命名和组件替换自动化流程
+
+## 步骤1: 获取预制体层级结构
+使用manage_scene工具获取当前场景的层级结构，找到目标UI预制体。
+
+<use_mcp_tool>
+<server_name>unityMCP</server_name>
+<tool_name>manage_scene</tool_name>
+<arguments>
+{
+  "action": "get_hierarchy",
+  "name": "",
+  "path": "",
+  "build_index": 0
+}
+</arguments>
+</use_mcp_tool>
+
+## 步骤2: 分析预制体结构
+仔细检查预制体的层级结构，识别需要重命名和替换组件的元素，包括预制体本身。
+
+## 步骤3: 制定重命名和组件替换计划
+为预制体和每个需要重命名和替换组件的元素创建一个计划，遵循命名规则和组件替换要求。
+
+### 新规则：确保组件名称唯一性
+为了支持代码生成工具，我们需要确保每个组件的名称是唯一的。使用以下方法来区分相同类型的组件：
+
+1. 在组件名称前添加其所属按钮组的标识（如Group1_, Group2_, Group3_）。
+2. 在组件名称中包含按钮的功能描述（如Confirm, Cancel, Other）。
+3. 在组件名称最后添加组件类型（如ExButton, Image）。
+
+例如：
+- Group1Confirm_ExButton
+- Group2Cancel_ExButton
+- Group3Other_ExButton
+- Group1ConfirmBorder_Image
+- Group2CancelBorder_Image
+
+## 步骤4: 执行预制体重命名和组件替换
+使用manage_gameobject工具逐个重命名元素并替换组件。对于每个需要修改的元素，使用以下格式：
+
+<use_mcp_tool>
+<server_name>unityMCP</server_name>
+<tool_name>manage_gameobject</tool_name>
+<arguments>
+{
+  "action": "modify",
+  "target": "预制体路径/原始名称",
+  "name": "新名称",
+  "components_to_remove": ["旧组件名称"],
+  "components_to_add": ["新唯一组件名称"]
+}
+</arguments>
+</use_mcp_tool>
+
+## 实际应用示例
+在我们的对话中，我们需要将DialogForm预制体中的所有按钮和其子节点重命名，并确保每个组件名称唯一。以下是修改后的步骤：
+
+1. 使用manage_scene工具获取场景层级结构。
+2. 使用manage_gameobject工具修改每个按钮和其子节点的名称。
+3. 对每个按钮，我们使用以下参数：
+   - action: "modify"
+   - target: 按钮的完整路径
+   - name: 新的唯一名称
+
+例如，对于ButtonGroup1中的Confirm按钮：
+
+<use_mcp_tool>
+<server_name>unityMCP</server_name>
+<tool_name>manage_gameobject</tool_name>
+<arguments>
+{
+  "action": "modify",
+  "target": "DialogForm/Mask/Background/ButtonGroup1/Confirm_ExButton",
+  "name": "Group1Confirm_ExButton"
+}
+</arguments>
+</use_mcp_tool>
+
+然后，修改其Border子节点：
+
+<use_mcp_tool>
+<server_name>unityMCP</server_name>
+<tool_name>manage_gameobject</tool_name>
+<arguments>
+{
+  "action": "modify",
+  "target": "DialogForm/Mask/Background/ButtonGroup1/Group1_Confirm_ExButton/Border",
+  "name": "Group1ConfirmBorder_Image"
+}
+</arguments>
+</use_mcp_tool>
+
+这个过程应用于ButtonGroup1、ButtonGroup2和ButtonGroup3中的所有按钮及其子节点，确保每个元素都有一个唯一的名称。
+
+关键点：
+- 确保正确指定目标路径。
+- 为每个元素创建唯一的名称。
+- 验证每次修改后的结果，确保名称的唯一性。
+- 保持命名的一致性，遵循"GroupX_Function_ComponentType"的格式。

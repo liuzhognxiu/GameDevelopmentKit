@@ -18,6 +18,7 @@ public sealed class DRWeapon :  Luban.EditorBeanBase
 {
     public DRWeapon()
     {
+            BulletType = BulletType.Linear;
     }
 
     public override void LoadJson(SimpleJSON.JSONObject _json)
@@ -70,6 +71,14 @@ public sealed class DRWeapon :  Luban.EditorBeanBase
             }
         }
         
+        { 
+            var _fieldJson = _json["BulletType"];
+            if (_fieldJson != null)
+            {
+                if(_fieldJson.IsString) { BulletType = (BulletType)System.Enum.Parse(typeof(BulletType), _fieldJson); } else if(_fieldJson.IsNumber) { BulletType = (BulletType)(int)_fieldJson; } else { throw new SerializationException(); }  
+            }
+        }
+        
     }
 
     public override void SaveJson(SimpleJSON.JSONObject _json)
@@ -91,6 +100,9 @@ public sealed class DRWeapon :  Luban.EditorBeanBase
         }
         {
             _json["BulletSoundId"] = new JSONNumber(BulletSoundId);
+        }
+        {
+            _json["BulletType"] = new JSONNumber((int)BulletType);
         }
     }
 
@@ -135,6 +147,11 @@ public sealed class DRWeapon :  Luban.EditorBeanBase
     /// 子弹声音编号
     /// </summary>
     public int BulletSoundId;
+
+    /// <summary>
+    /// 子弹类型
+    /// </summary>
+    public BulletType BulletType;
 
 }
 

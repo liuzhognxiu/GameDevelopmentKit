@@ -1,3 +1,6 @@
 [submodule "Tools/Luban/Luban-Extension"]
 	path = Tools/Luban/Luban-Extension
 	url = https://github.com/XuToWei/Luban-Extension.git
+[submodule "Tools/MCP/excel-mcp-server"]
+	path = Tools/MCP/excel-mcp-server
+	url = https://github.com/haris-musa/excel-mcp-server.git

@@ -18,6 +18,13 @@ namespace Game.Hot
         [SerializeField]
         private BulletData m_BulletData = null;
 
+        private IMovementStrategy m_MovementStrategy;
+
+        public void SetMovementStrategy(IMovementStrategy strategy)
+        {
+            m_MovementStrategy = strategy;
+        }
+
         public ImpactData GetImpactData()
         {
             return new ImpactData(m_BulletData.OwnerCamp, 0, m_BulletData.Attack, 0);
@@ -46,6 +53,33 @@ namespace Game.Hot
                 Log.Error("Bullet data is invalid.");
                 return;
             }
+
+            // Strategy Factory logic
+            switch (m_BulletData.BulletType)
+            {
+                case BulletType.Seeking:
+                    SetMovementStrategy(new SeekingMovementStrategy());
+                    break;
+
+                case BulletType.Curve:
+                    SetMovementStrategy(new CurveMovementStrategy(m_BulletData.CurveFrequency, m_BulletData.CurveAmplitude));
+                    break;
+
+                case BulletType.Linear:
+                default:
+                    SetMovementStrategy(new LinearMovementStrategy());
+                    break;
+            }
+        }
+
+#if UNITY_2017_3_OR_NEWER
+        protected override void OnHide(bool isShutdown, object userData)
+#else
+        protected internal override void OnHide(bool isShutdown, object userData)
+#endif
+        {
+            m_MovementStrategy = null; // Clear strategy on hide
+            base.OnHide(isShutdown, userData);
         }
 
 #if UNITY_2017_3_OR_NEWER
@@ -56,7 +90,7 @@ namespace Game.Hot
         {
             base.OnUpdate(elapseSeconds, realElapseSeconds);
 
-            CachedTransform.Translate(Vector3.forward * m_BulletData.Speed * elapseSeconds, Space.World);
+            m_MovementStrategy?.Move(CachedTransform, m_BulletData, elapseSeconds);
         }
     }
 }

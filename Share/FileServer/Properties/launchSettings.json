@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Share.FileServer": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:63878;http://localhost:63879"
+    }
+  }
+}

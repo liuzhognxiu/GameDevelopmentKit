@@ -5,6 +5,25 @@
     "AttackInterval": 0.2,
     "BulletId": 50000,
     "BulletSpeed": 20,
-    "BulletSoundId": 10000
+    "BulletSoundId": 10000,
+    "BulletType": 0
+  },
+  {
+    "Id": 30001,
+    "Attack": 100,
+    "AttackInterval": 0.2,
+    "BulletId": 50000,
+    "BulletSpeed": 20,
+    "BulletSoundId": 10000,
+    "BulletType": 2
+  },
+  {
+    "Id": 30002,
+    "Attack": 150,
+    "AttackInterval": 0.25,
+    "BulletId": 50002,
+    "BulletSpeed": 25,
+    "BulletSoundId": 10002,
+    "BulletType": 1
   }
 ]

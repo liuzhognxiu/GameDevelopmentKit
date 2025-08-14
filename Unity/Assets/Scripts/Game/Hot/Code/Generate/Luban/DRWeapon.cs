@@ -21,6 +21,7 @@ public sealed partial class DRWeapon : Luban.BeanBase
         BulletId = _buf.ReadInt();
         BulletSpeed = _buf.ReadFloat();
         BulletSoundId = _buf.ReadInt();
+        BulletType = (BulletType)_buf.ReadInt();
         PostInit();
     }
 
@@ -53,6 +54,10 @@ public sealed partial class DRWeapon : Luban.BeanBase
     /// 子弹声音编号
     /// </summary>
     public readonly int BulletSoundId;
+    /// <summary>
+    /// 子弹类型
+    /// </summary>
+    public readonly BulletType BulletType;
     public const int __ID__ = 599888970;
     public override int GetTypeId() => __ID__;
 
@@ -70,6 +75,7 @@ public sealed partial class DRWeapon : Luban.BeanBase
         + "BulletId:" + BulletId + ","
         + "BulletSpeed:" + BulletSpeed + ","
         + "BulletSoundId:" + BulletSoundId + ","
+        + "BulletType:" + BulletType + ","
         + "}";
     }
 

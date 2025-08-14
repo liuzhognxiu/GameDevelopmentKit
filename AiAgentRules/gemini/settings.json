@@ -1,4 +1,6 @@
 {
+  "theme": "Ayu Light",
+  "selectedAuthType": "oauth-personal",
   "mcpServers": {
     "excel-stdio": {
       "command": "uvx",
@@ -26,8 +28,7 @@
         "delete_range",
         "validate_excel_range",
         "list_files"
-      ],
-      "disabled": false
+      ]
     },
     "unityMCP": {
       "command": "uv",
@@ -49,5 +50,6 @@
         "manage_gameobject"
       ]
     }
-  }
+  },
+  "hasSeenIdeIntegrationNudge": true
 }

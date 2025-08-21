@@ -29,6 +29,13 @@ namespace Game.Hot
         [SerializeField]
         protected List<Armor> m_Armors = new List<Armor>();
 
+        public AircraftData Data
+        {
+            get { return m_AircraftData; }
+        }
+
+        public List<Weapon> Weapons => m_Weapons;
+
 #if UNITY_2017_3_OR_NEWER
         protected override void OnShow(object userData)
 #else
@@ -133,6 +140,8 @@ namespace Game.Hot
                 Position = CachedTransform.localPosition,
             });
             GameEntry.Sound.PlaySound(m_AircraftData.DeadSoundId);
+
+
         }
 
         public override ImpactData GetImpactData()

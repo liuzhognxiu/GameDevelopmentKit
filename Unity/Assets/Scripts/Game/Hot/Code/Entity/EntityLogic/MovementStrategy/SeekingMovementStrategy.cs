@@ -18,7 +18,7 @@ namespace Game.Hot
             if (targetEntity == null)
             {
                 // Target is gone, continue straight
-                transform.Translate(Vector3.forward * data.Speed * elapseSeconds, Space.World);
+                transform.Translate(Vector3.forward * data.Speed * elapseSeconds, Space.Self);
                 return;
             }
 
@@ -30,7 +30,7 @@ namespace Game.Hot
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, data.TurnSpeed * elapseSeconds);
 
             // Move forward
-            transform.Translate(Vector3.forward * data.Speed * elapseSeconds, Space.World);
+            transform.Translate(Vector3.forward * data.Speed * elapseSeconds, Space.Self);
         }
     }
 }

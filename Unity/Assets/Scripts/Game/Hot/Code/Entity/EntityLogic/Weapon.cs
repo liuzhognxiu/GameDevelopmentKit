@@ -1,4 +1,4 @@
-﻿//------------------------------------------------------------
+//------------------------------------------------------------
 // Game Framework
 // Copyright © 2013-2021 Jiang Yin. All rights reserved.
 // Homepage: https://gameframework.cn/
@@ -8,6 +8,8 @@
 using GameFramework;
 using UnityEngine;
 using UnityGameFramework.Runtime;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Game.Hot
 {
@@ -22,6 +24,7 @@ namespace Game.Hot
         private WeaponData m_WeaponData = null;
 
         private float m_NextAttackTime = 0f;
+        private EntityLogic m_Owner = null;
 
 #if UNITY_2017_3_OR_NEWER
         protected override void OnInit(object userData)
@@ -58,8 +61,16 @@ namespace Game.Hot
         {
             base.OnAttachTo(parentEntity, parentTransform, userData);
 
+            m_Owner = parentEntity;
             Name = Utility.Text.Format("Weapon of {0}", parentEntity.Name);
             CachedTransform.localPosition = Vector3.zero;
+        }
+
+        private BulletType? m_OverriddenBulletType = null;
+
+        public void OverrideBulletType(BulletType? bulletType)
+        {
+            m_OverriddenBulletType = bulletType;
         }
 
         public void TryAttack()
@@ -70,11 +81,68 @@ namespace Game.Hot
             }
 
             m_NextAttackTime = Time.time + m_WeaponData.AttackInterval;
-            GameEntry.Entity.ShowBullet(new BulletData(GameEntry.Entity.GenerateSerialId(), m_WeaponData.BulletId, m_WeaponData.OwnerId, m_WeaponData.OwnerCamp, m_WeaponData.Attack, m_WeaponData.BulletSpeed)
+
+            BulletType bulletType = m_OverriddenBulletType ?? m_WeaponData.BulletType;
+
+            int targetId = 0;
+            float turnSpeed = 0f;
+            if (bulletType == BulletType.Seeking)
             {
-                Position = CachedTransform.position,
-            });
+                targetId = FindNearestEnemy();
+                if (targetId != 0)
+                {
+                    turnSpeed = 5f; // Hardcoded turn speed
+                }
+            }
+
+            BulletData bulletData = new BulletData(GameEntry.Entity.GenerateSerialId(), m_WeaponData.BulletId, m_WeaponData.OwnerId, m_WeaponData.OwnerCamp, m_WeaponData.Attack, m_WeaponData.BulletSpeed, bulletType, 0, 0, targetId, turnSpeed)
+            {
+                Position = CachedTransform.position
+            };
+
+            GameEntry.Entity.ShowBullet(bulletData);
             GameEntry.Sound.PlaySound(m_WeaponData.BulletSoundId);
+        }
+
+        private int FindNearestEnemy()
+        {
+            EntityComponent entityComponent = Game.GameEntry.Entity;
+            if (entityComponent == null)
+            {
+                return 0;
+            }
+
+            var entities = entityComponent.GetAllLoadedEntities();
+            Log.Info("Found {0} entities.", entities.Length);
+            UnityGameFramework.Runtime.Entity nearestEnemy = null;
+            float minDistance = float.MaxValue;
+
+            foreach (var entity in entities)
+            {
+                var asteroid = entity.Logic as Asteroid;
+                if (asteroid != null)
+                {
+                    Log.Info("Checking aircraft {0}. IsDead: {1}", asteroid.name, asteroid.IsDead);
+                }
+
+                if (asteroid != null && !asteroid.IsDead)
+                {
+                    float distance = Vector3.Distance(this.CachedTransform.position, entity.transform.position);
+                    if (distance < minDistance)
+                    {
+                        minDistance = distance;
+                        nearestEnemy = entity;
+                    }
+                }
+            }
+
+            if (nearestEnemy != null)
+            {
+                Log.Info("Nearest enemy is {0}", nearestEnemy.name);
+                return nearestEnemy.Id;
+            }
+
+            return 0;
         }
     }
 }

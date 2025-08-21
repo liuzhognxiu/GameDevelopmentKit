@@ -78,5 +78,15 @@ namespace ET.Client
         /// 小行星死亡特效
         /// </summary>
         public const int AsteroidExplosion = 70002;
+
+        /// <summary>
+        /// 新子弹
+        /// </summary>
+        public const int NewBullet = 50002;
+
+        /// <summary>
+        /// 追踪子弹Buff
+        /// </summary>
+        public const int SeekingBulletBuff = 80000;
     }
 }

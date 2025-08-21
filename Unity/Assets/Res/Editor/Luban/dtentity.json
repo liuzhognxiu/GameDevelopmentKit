@@ -110,5 +110,21 @@
     "AssetName": "AsteroidExplosion",
     "EntityGroupName": "Effect",
     "Priority": 80
+  },
+  {
+    "Id": 50002,
+    "CSName": "NewBullet",
+    "Desc": "新子弹",
+    "AssetName": "NewBullet",
+    "EntityGroupName": "Bullet",
+    "Priority": 80
+  },
+  {
+    "Id": 80000,
+    "CSName": "SeekingBulletBuff",
+    "Desc": "追踪子弹Buff",
+    "AssetName": "Buff",
+    "EntityGroupName": "Buff",
+    "Priority": 50
   }
 ]

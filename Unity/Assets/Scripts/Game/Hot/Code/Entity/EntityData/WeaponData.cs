@@ -28,6 +28,9 @@ namespace Game.Hot
         [SerializeField]
         private int m_BulletSoundId = 0;
 
+        [SerializeField]
+        private BulletType m_BulletType = default(BulletType);
+
         public WeaponData(int entityId, int typeId, int ownerId, CampType ownerCamp)
             : base(entityId, typeId, ownerId, ownerCamp)
         {
@@ -96,6 +99,17 @@ namespace Game.Hot
             get
             {
                 return m_BulletSoundId;
+            }
+        }
+
+        /// <summary>
+        /// 子弹类型。
+        /// </summary>
+        public BulletType BulletType
+        {
+            get
+            {
+                return m_BulletType;
             }
         }
     }

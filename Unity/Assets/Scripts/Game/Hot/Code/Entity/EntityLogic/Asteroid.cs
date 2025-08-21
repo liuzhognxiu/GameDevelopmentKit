@@ -68,6 +68,12 @@ namespace Game.Hot
                 Position = CachedTransform.localPosition,
             });
             GameEntry.Sound.PlaySound(m_AsteroidData.DeadSoundId);
+            
+
+            GameEntry.Entity.ShowBuff(new BuffData(GameEntry.Entity.GenerateSerialId(), 80000) 
+            {
+                Position = CachedTransform.position,
+            });
         }
 
         public override ImpactData GetImpactData()

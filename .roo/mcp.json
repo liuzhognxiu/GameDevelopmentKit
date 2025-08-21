@@ -11,7 +11,6 @@
         "validate_formula_syntax",
         "format_range",
         "read_data_from_excel",
-        "write_data_to_excel",
         "create_workbook",
         "create_worksheet",
         "create_chart",
@@ -25,7 +24,8 @@
         "copy_range",
         "delete_range",
         "validate_excel_range",
-        "list_files"
+        "list_files",
+        "write_data_to_excel"
       ],
       "disabled": false
     },
@@ -46,7 +46,7 @@
         "read_console",
         "execute_menu_item",
         "write_to_file",
-        "manage_gameobject"
+        "get_workbook_metadata"
       ]
     }
   }

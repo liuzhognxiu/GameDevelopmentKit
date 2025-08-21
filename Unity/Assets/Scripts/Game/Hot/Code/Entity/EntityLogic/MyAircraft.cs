@@ -35,6 +35,8 @@ namespace Game.Hot
         {
             base.OnShow(userData);
 
+            gameObject.AddComponent<BuffComponent>();
+
             m_MyAircraftData = userData as MyAircraftData;
             if (m_MyAircraftData == null)
             {

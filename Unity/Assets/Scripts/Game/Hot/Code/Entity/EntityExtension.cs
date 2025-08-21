@@ -73,6 +73,11 @@ namespace Game.Hot
             entityComponent.ShowEntity(typeof(Effect), data);
         }
 
+        public static void ShowBuff(this EntityComponent entityComponent, BuffData data)
+        {
+            entityComponent.ShowEntity(typeof(BuffPickupLogic), data);
+        }
+
         private static void ShowEntity(this EntityComponent entityComponent, Type logicType, EntityData data)
         {
             if (data == null)

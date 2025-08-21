@@ -2,10 +2,10 @@
   "theme": "Ayu Light",
   "selectedAuthType": "oauth-personal",
   "mcpServers": {
-    "excel-stdio": {
+     "excel-stdio": {
       "command": "uvx",
       "args": [
-        "excel-mcp-server",
+        "G:\\excel-mcp-server",
         "stdio"
       ],
       "alwaysAllow": [

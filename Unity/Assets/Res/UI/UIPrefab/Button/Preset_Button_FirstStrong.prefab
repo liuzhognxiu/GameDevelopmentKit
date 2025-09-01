@@ -335,7 +335,7 @@ MonoBehaviour:
   m_BottomRightDistortion: {x: 1, y: 0}
   m_TopLeftDistortion: {x: 0, y: 1}
   m_TopRightDistortion: {x: 1, y: 1}
-  rect2props: {x: 0, y: 0, z: 0, w: 0}
+  rect2props: {x: 0.0000076293945, y: -0.0000076293945, z: 89.25102, w: 89.25102}
   image: {fileID: 0}
   m_OriginFlipMode: 0
   m_FlipMode: 0

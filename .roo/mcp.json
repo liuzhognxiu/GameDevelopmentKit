@@ -1,5 +1,38 @@
 {
   "mcpServers": {
+    "SharpTools": {
+      "type": "stdio",
+      "command": "G:\\GameDevelopmentKitAI\\Tools\\MCP\\SharpToolsMCP\\SharpTools.StdioServer\\bin\\Debug\\net8.0\\SharpTools.StdioServer",
+      "args": [
+        "--log-directory",
+        "/var/log/sharptools/",
+        "--log-level",
+        "Debug"
+      ],
+      "alwaysAllow": [
+        "SharpTool_Undo",
+        "SharpTool_ViewDefinition",
+        "SharpTool_GetMembers",
+        "SharpTool_ReadRawFromRoslynDocument",
+        "SharpTool_OverwriteMember",
+        "SharpTool_LoadProject",
+        "SharpTool_AnalyzeComplexity",
+        "SharpTool_LoadSolution",
+        "SharpTool_OverwriteRoslynDocument",
+        "SharpTool_CreateRoslynDocument",
+        "SharpTool_FindAndReplace",
+        "SharpTool_ListImplementations",
+        "SharpTool_ManageUsings",
+        "SharpTool_SearchDefinitions",
+        "SharpTool_MoveMember",
+        "SharpTool_ManageAttributes",
+        "SharpTool_ReadTypesFromRoslynDocument",
+        "SharpTool_RequestNewTool",
+        "SharpTool_FindReferences",
+        "SharpTool_AddMember",
+        "SharpTool_RenameSymbol"
+      ]
+    },
     "excel-stdio": {
       "command": "uvx",
       "args": [
@@ -46,7 +79,8 @@
         "read_console",
         "execute_menu_item",
         "write_to_file",
-        "get_workbook_metadata"
+        "get_workbook_metadata",
+        "manage_gameobject"
       ]
     }
   }

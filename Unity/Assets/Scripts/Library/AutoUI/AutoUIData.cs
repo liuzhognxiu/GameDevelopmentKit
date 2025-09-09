@@ -73,7 +73,7 @@ namespace AutoUI
     [System.Serializable]
     public class Layer
     {
-        public RectTransform rectTransform;
+        public LayerRectTransform rectTransform;
         public float opacity;
         public string name;
         public bool visible;
@@ -150,7 +150,7 @@ namespace AutoUI
 
     }
     [System.Serializable]
-    public class RectTransform
+    public class LayerRectTransform
     {
         public NormalizedPoint[] anchor = new NormalizedPoint[2];
         public NormalizedPoint pivot;

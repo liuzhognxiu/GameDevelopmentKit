@@ -21,6 +21,10 @@ namespace AutoUI
                 image.type = Image.Type.Sliced;
             }
         }
+        
+        
+        
+        
         public static void 添加图片sprite(ref GameObject gameobject, in Layer layer)
         {
             FindSpriteResult result = AutoUIAssets.GetSprite(layer.name);

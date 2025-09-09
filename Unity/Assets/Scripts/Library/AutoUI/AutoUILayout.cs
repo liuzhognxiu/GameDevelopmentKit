@@ -68,8 +68,8 @@ namespace AutoUI
                 return;
             }
 
-            RectTransform first = childLayers[0].rectTransform;
-            RectTransform second = childLayers[1].rectTransform;
+            LayerRectTransform first = childLayers[0].rectTransform;
+            LayerRectTransform second = childLayers[1].rectTransform;
 
             Vector2 cellSize = first.sizeDelta.ToVector2();
             float spacingX = 0, spacingY = 0;
@@ -195,8 +195,8 @@ namespace AutoUI
             // 按 Y 倒序排列（Unity UI 是 Y 向下）
             children = children.OrderByDescending(c => c.rectTransform.anchoredPosition.y).ToList();
 
-            RectTransform r1 = children[0].rectTransform;
-            RectTransform r2 = children[1].rectTransform;
+            LayerRectTransform r1 = children[0].rectTransform;
+            LayerRectTransform r2 = children[1].rectTransform;
 
             float spacing = (r1.anchoredPosition.y - r1.sizeDelta.y) - r2.anchoredPosition.y;
             if (spacing < 0)
@@ -240,8 +240,8 @@ namespace AutoUI
             }
 
             // 推导 spacing
-            RectTransform r1 = children[0].rectTransform;
-            RectTransform r2 = children[1].rectTransform;
+            LayerRectTransform r1 = children[0].rectTransform;
+            LayerRectTransform r2 = children[1].rectTransform;
 
             float spacing = r2.anchoredPosition.x - (r1.anchoredPosition.x + r1.sizeDelta.x);
             if (spacing < 0)
@@ -250,7 +250,7 @@ namespace AutoUI
             // 推导 padding
             float minLeft = children.Min(c => c.rectTransform.anchoredPosition.x);
             float maxRight = children.Max(c => c.rectTransform.anchoredPosition.x + c.rectTransform.sizeDelta.x);
-            float containerWidth = parent.GetComponent<RectTransform>().sizeDelta.x;
+            float containerWidth = parent.GetComponent<UnityEngine.RectTransform>().sizeDelta.x;
             float paddingLeft = minLeft;
             float paddingRight = containerWidth - maxRight;
 

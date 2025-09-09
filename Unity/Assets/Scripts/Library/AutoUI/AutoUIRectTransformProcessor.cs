@@ -8,7 +8,7 @@ namespace AutoUI
     class AutoUIRectTransformProcessor
     {
 
-        public static void RectTransformProcessor(ref UnityEngine.RectTransform rectTransform, in RectTransform layerRectTransformData)
+        public static void RectTransformProcessor(ref UnityEngine.RectTransform rectTransform, in LayerRectTransform layerRectTransformData)
         {
             rectTransform.anchoredPosition = layerRectTransformData.anchoredPosition.ToVector2();
             rectTransform.sizeDelta = layerRectTransformData.sizeDelta.ToVector2();

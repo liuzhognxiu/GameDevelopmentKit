@@ -17,7 +17,14 @@ namespace AutoUI
         {
             /////// 基本处理
 
-
+            if (AutoUIUtil.IsComponentExist(in layer ,"ExButton"))
+            {
+                var button = newGameObject.AddComponent<Game.ExButton>();
+                if (AutoUIConfig.config.Default.ButtonClickEffect.EnableClickEffect)
+                {// 如果使用点击效果
+                    
+                }
+            }
             /////// 处理组件
             if (AutoUIUtil.IsComponentExist(in layer, "button"))
             {

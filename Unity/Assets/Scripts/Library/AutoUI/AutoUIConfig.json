@@ -147,7 +147,10 @@
     "default": {
         "data":{
             "name":"data.json",
-            "description":"在选择了某文件夹后，会自动寻找对应name的json文件,并解析，为什么是选择文件夹？这是个历史遗留问题，但是不改问题也不大，而且可扩展性变强了"
+            "selectionMode":"folder",
+            "autoSelect":true,
+            "uiJsonPath":"../../Design/UIJson",
+            "description":"JSON文件选择模式：folder=从文件夹选择，root=从Design/UIJson目录选择。autoSelect=true时自动选择唯一文件"
         },
         "localization": {
             "description": "是否在文本内容中使用到本地化支持组件",

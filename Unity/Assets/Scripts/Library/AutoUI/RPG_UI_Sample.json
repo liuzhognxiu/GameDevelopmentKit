@@ -1,0 +1,114 @@
+{
+  "name": "RPG_UI_Sample",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": {
+    "anchor": [{"x": 0, "y": 0}, {"x": 1, "y": 1}],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "anchoredPosition": {"x": 0, "y": 0},
+    "sizeDelta": {"x": 0, "y": 0}
+  },
+  "canvasLayerData": {"renderMode": "overlay", "width": 1920, "height": 1080},
+  "layers": [
+    {
+      "name": "TopBar_Group",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.02, "y": 0.9}, {"x": 0.98, "y": 0.99}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+      "layers": [
+        { "name": "PlayerBadge", "layerKind": "group", "visible": true, "opacity": 1.0,
+          "rectTransform": {"anchor": [{"x": 0.0, "y": 0}, {"x": 0.25, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+          "layers": [
+            {"name": "shield_level_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.0, "y": 0}, {"x": 0.06, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "PlayerName", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.07, "y": 0.5}, {"x": 0.35, "y": 1}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "Ryuen", "fontSize": 24, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "left", "haveShadow": false, "warp": false, "rotation": 0.0}},
+            {"name": "xp_bar_back", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.07, "y": 0}, {"x": 0.35, "y": 0.45}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "xp_bar_fill", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.07, "y": 0.05}, {"x": 0.25, "y": 0.4}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "xp_value", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.25, "y": 0.05}, {"x": 0.35, "y": 0.4}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "183/400", "fontSize": 14, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ]
+        },
+        { "name": "Currencies", "layerKind": "group", "visible": true, "opacity": 1.0,
+          "rectTransform": {"anchor": [{"x": 0.7, "y": 0}, {"x": 1, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+          "layers": [
+            {"name": "coin_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.0, "y": 0.1}, {"x": 0.31, "y": 0.9}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "coin_value", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.1, "y": 0.2}, {"x": 0.3, "y": 0.8}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "10,000,000", "fontSize": 22, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}},
+            {"name": "energy_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.33, "y": 0.1}, {"x": 0.64, "y": 0.9}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "energy_value", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.43, "y": 0.2}, {"x": 0.6, "y": 0.8}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "100/100", "fontSize": 22, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}},
+            {"name": "gem_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.66, "y": 0.1}, {"x": 0.97, "y": 0.9}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "gem_value", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.76, "y": 0.2}, {"x": 0.95, "y": 0.8}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "9,999", "fontSize": 22, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "TitleBanner_Group",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.3, "y": 0.78}, {"x": 0.7, "y": 0.88}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+      "layers": [
+        {"name": "banner_purple", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0, "y": 0}, {"x": 1, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+        {"name": "Title_Text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.1, "y": 0}, {"x": 0.9, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "Text", "fontSize": 36, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+      ]
+    },
+    {
+      "name": "LoadingBar_Group",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.05, "y": 0.7}, {"x": 0.95, "y": 0.74}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+      "layers": [
+        {"name": "loading_back", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0, "y": 0}, {"x": 1, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+        {"name": "loading_fill", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0, "y": 0.1}, {"x": 0.45, "y": 0.9}], "pivot": {"x": 0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+        {"name": "loading_text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0, "y": 0}, {"x": 1, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "Loading... 45%", "fontSize": 22, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+      ]
+    },
+    {
+      "name": "CardsAndColors_Group",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.02, "y": 0.26}, {"x": 0.98, "y": 0.64}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+      "layers": [
+        {"name": "StageCards_Row", "layerKind": "group", "visible": true, "opacity": 1.0,
+          "rectTransform": {"anchor": [{"x": 0.02, "y": 0.46}, {"x": 0.22, "y": 1.0}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+          "layers": [
+            {"name": "Card_1", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.0, "y": 0.5}, {"x": 0.32, "y": 1.0}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "Card_2", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.34, "y": 0.5}, {"x": 0.66, "y": 1.0}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "Card_3", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.68, "y": 0.5}, {"x": 1.0, "y": 1.0}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}}
+          ]
+        },
+        {"name": "ColorSlots_Row", "layerKind": "group", "visible": true, "opacity": 1.0,
+          "rectTransform": {"anchor": [{"x": 0.26, "y": 0.5}, {"x": 0.98, "y": 1.0}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+          "layers": [
+            {"name": "slot_brown", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.0, "y": 0}, {"x": 0.1, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "slot_red",   "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.12, "y": 0}, {"x": 0.22, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "slot_purple","layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.24, "y": 0}, {"x": 0.34, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "slot_blue",  "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.36, "y": 0}, {"x": 0.46, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "slot_green", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.48, "y": 0}, {"x": 0.58, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "slot_check", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.6, "y": 0}, {"x": 0.7, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "BottomActions_Group",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.04, "y": 0.02}, {"x": 0.96, "y": 0.22}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+      "layers": [
+        {"name": "virtual_joystick", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.0, "y": 0}, {"x": 0.18, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+        {"name": "skill_buttons_group", "layerKind": "group", "visible": true, "opacity": 1.0,
+          "rectTransform": {"anchor": [{"x": 0.75, "y": 0}, {"x": 1.0, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+          "layers": [
+            {"name": "attack_btn", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.84, "y": 0.0}, {"x": 0.95, "y": 1.0}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "skill_btn_1", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.72, "y": 0.0}, {"x": 0.83, "y": 1.0}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "skill_btn_2", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.6, "y": 0.0}, {"x": 0.71, "y": 1.0}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}}
+          ]
+        }
+      ]
+    }
+  ]
+}

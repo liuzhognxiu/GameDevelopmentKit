@@ -64,6 +64,15 @@ namespace AutoUI
     {
         [JsonProperty("name")]
         public string Name { get; set; }
+        
+        [JsonProperty("selectionMode")]
+        public string SelectionMode { get; set; } = "folder"; // "folder" 或 "root"
+        
+        [JsonProperty("autoSelect")]
+        public bool AutoSelect { get; set; } = true;
+        
+        [JsonProperty("uiJsonPath")]
+        public string UIJsonPath { get; set; } = "../../Design/UIJson";
     }
     public class Font
     {

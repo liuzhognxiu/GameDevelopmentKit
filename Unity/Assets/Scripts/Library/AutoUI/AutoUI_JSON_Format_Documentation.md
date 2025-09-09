@@ -138,3 +138,48 @@ JSON的顶层就是一个 `Layer` 对象，通常是 `canvas` 类型。
 | `title` | (文本样式) | (空) | `{ "name": "title", "parameters": {} }` |
 | `prefab` | 实例化另一个Prefab | `{"name": "PrefabNameToLoad"}` | `{ "name": "prefab", "parameters": {"name": "CommonItem"} }` |
 
+## 处理流程
+
+### 1. JSON解析阶段
+- 使用`LayerJsonParser.ParseFromJson()`解析JSON
+- 自动转换`layerKind`字符串为`ELayerKind`枚举
+- 递归验证图层结构
+
+### 2. 资源加载阶段
+- 根据图层名称匹配Sprite资源
+- 支持多种资源路径查找策略
+
+### 3. 预制体生成阶段
+- 创建Canvas根对象
+- 递归处理所有图层
+- 应用组件和布局
+
+### 4. 组件处理阶段
+- 根据`components`数组添加Unity组件
+- 自动推导布局参数
+- 应用文本样式和字体
+
+## 配置系统
+通过`AutoUIConfig.json`配置：
+- 字体资源路径
+- 布局参数
+- 按钮点击效果
+- 本地化设置
+
+## 最佳实践
+
+### 命名规范
+- 图层名称应与资源文件名匹配
+- 使用描述性的组件名称
+- 遵循Unity命名约定
+
+### 布局建议
+- 合理使用锚点系统
+- 利用自动布局减少手动调整
+- 考虑不同分辨率适配
+
+### 性能优化
+- 避免过深的嵌套层级
+- 合理使用预制体复用
+- 优化图片资源大小
+

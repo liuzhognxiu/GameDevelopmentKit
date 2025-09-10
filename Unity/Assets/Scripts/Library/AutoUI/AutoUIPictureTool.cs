@@ -15,7 +15,7 @@ namespace AutoUI
             Color color = image.color;
             color.a = layer.opacity;
             image.color = color;
-            if (sprite.border != Vector4.zero)
+            if (sprite != null && sprite.border != Vector4.zero)
             {
                 // 这是九宫格
                 image.type = Image.Type.Sliced;
@@ -23,14 +23,14 @@ namespace AutoUI
         }
         
         
-        
-        
-        public static void 添加图片sprite(ref GameObject gameobject, in Layer layer)
+        public static void AddSpriteFromLayer(ref GameObject gameobject, in Layer layer)
         {
             FindSpriteResult result = AutoUIAssets.GetSprite(layer.name);
             if (result == null)
             {
                 LogUtil.LogError("无法找到对应的sprite:" + layer.name);
+                // 兜底：依然创建 Image，便于后续组件绑定
+                PictureLayerGameObjectAddSprite(gameobject, null, layer);
                 return;
             }
             switch (result.status)
@@ -40,13 +40,16 @@ namespace AutoUI
                     PictureLayerGameObjectAddSprite(gameobject, sprite, layer);
                     break;
                 case EFindAssetStatus.manyResult:
-                    LogUtil.LogWarning("出现了多个同名的sprite:" + layer.name + "需要手动解决");
+                    LogUtil.LogWarning("出现了多个同名的sprite:" + layer.name + "需要手动解决，已使用空Image兜底");
+                    PictureLayerGameObjectAddSprite(gameobject, null, layer);
                     break;
                 case EFindAssetStatus.cantFind:
-                    LogUtil.LogWarning("没有找到对应的sprite:" + layer.name);
+                    LogUtil.LogWarning("没有找到对应的sprite:" + layer.name + "，已使用空Image兜底");
+                    PictureLayerGameObjectAddSprite(gameobject, null, layer);
                     break;
                 default:
                     LogUtil.LogError("出现了无法解析的EFIndAssetStatus:" + result.status);
+                    PictureLayerGameObjectAddSprite(gameobject, null, layer);
                     break;
             }
         }

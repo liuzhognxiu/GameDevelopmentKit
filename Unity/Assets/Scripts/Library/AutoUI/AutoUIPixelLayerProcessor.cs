@@ -6,7 +6,7 @@ namespace AutoUI
     {
         public static void PixelLayerProcessor(in Layer layer, ref GameObject pixelGameObject)
         {
-            AutoUIPictureTool.添加图片sprite(ref pixelGameObject, in layer);
+            AutoUIPictureTool.AddSpriteFromLayer(ref pixelGameObject, in layer);
         }
     }
 

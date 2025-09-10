@@ -137,6 +137,9 @@ JSON的顶层就是一个 `Layer` 对象，通常是 `canvas` 类型。
 | `verticalLayout` | `VerticalLayoutGroup` | 自动推断，无需参数 | `{ "name": "verticalLayout", "parameters": {} }` |
 | `title` | (文本样式) | (空) | `{ "name": "title", "parameters": {} }` |
 | `prefab` | 实例化另一个Prefab | `{"name": "PrefabNameToLoad"}` | `{ "name": "prefab", "parameters": {"name": "CommonItem"} }` |
+| `slider` | `UnityEngine.UI.Slider` | `min`/`max`/`value`/`wholeNumbers`/`direction`/`background`/`fill`/`handle`/`interactable` | `{ "name": "slider", "parameters": { "min":0, "max":100, "value":50, "fill":"Fill" } }` |
+| `progress` | `UnityEngine.UI.Slider`（不可交互） | 同 `slider`，`interactable` 默认为 `false` | `{ "name": "progress", "parameters": { "min":0, "max":100, "value":35, "fill":"Fill" } }` |
+| `toggle` | `UnityEngine.UI.Toggle` | `isOn`/`interactable`/`background`/`checkmark` | `{ "name": "toggle", "parameters": { "isOn": true, "background": "Box", "checkmark": "Tick" } }` |
 
 ## 处理流程
 
@@ -158,6 +161,89 @@ JSON的顶层就是一个 `Layer` 对象，通常是 `canvas` 类型。
 - 根据`components`数组添加Unity组件
 - 自动推导布局参数
 - 应用文本样式和字体
+
+### 5. 进度条（Slider/Progress）组件说明
+
+支持在 `group` 图层上添加 `slider` 或 `progress` 组件：
+
+- `slider`: 生成可交互的 `UnityEngine.UI.Slider`
+- `progress`: 生成不可交互的 `UnityEngine.UI.Slider`（`interactable=false`），用于展示型进度
+
+可用参数（放在 `parameters` 下）：
+
+- `min`/`max`/`value`: 数值范围与初始值（默认 0/1/0）
+- `wholeNumbers`: 是否只允许整数（默认 false）
+- `direction`: 方向（可选值：LeftToRight, RightToLeft, BottomToTop, TopToBottom；默认 LeftToRight）
+- `interactable`: 是否可交互；`progress` 若未显式设置，默认为 false
+- `background`/`fill`/`handle`: 指定子结点名称以绑定 `targetGraphic`/`fillRect`/`handleRect`
+
+若未显式指定节点名，将按名称关键词尝试匹配：背景（background/bg）、填充（fill/bar/progress）、手柄（handle/thumb）。其中 `fill` 最为关键，找不到会给出警告。
+
+示例：
+
+```json
+{
+  "name": "HP_Bar",
+  "layerKind": "group",
+  "rectTransform": { ... },
+  "components": [
+    {
+      "name": "progress",
+      "parameters": {
+        "min": 0,
+        "max": 100,
+        "value": 35,
+        "wholeNumbers": true,
+        "direction": "LeftToRight",
+        "background": "BG",
+        "fill": "Fill",
+        "handle": "Handle",
+        "interactable": false
+      }
+    }
+  ],
+  "layers": [
+    { "name": "BG", "layerKind": "pixel", "rectTransform": { ... }, "pixelLayerData": {"kind": "pixel"} },
+    { "name": "Fill", "layerKind": "pixel", "rectTransform": { ... }, "pixelLayerData": {"kind": "pixel"} },
+    { "name": "Handle", "layerKind": "pixel", "rectTransform": { ... }, "pixelLayerData": {"kind": "pixel"} }
+  ]
+}
+```
+
+### 6. 开关（Toggle）组件说明
+
+支持在 `group` 图层上添加 `toggle` 组件，生成 `UnityEngine.UI.Toggle`。
+
+可用参数：
+
+- `isOn`: 初始是否选中（默认 false）
+- `interactable`: 是否可交互（默认 true）
+- `background`: 背景节点名称，若缺省按关键词（background/bg/box）匹配
+- `checkmark`: 选中图标节点名称，若缺省按关键词（check/checkmark/tick）匹配
+
+示例：
+
+```json
+{
+  "name": "AcceptPolicy",
+  "layerKind": "group",
+  "rectTransform": { ... },
+  "components": [
+    {
+      "name": "toggle",
+      "parameters": {
+        "isOn": true,
+        "background": "Box",
+        "checkmark": "Tick"
+      }
+    }
+  ],
+  "layers": [
+    { "name": "Box",  "layerKind": "pixel", "rectTransform": { ... }, "pixelLayerData": {"kind": "pixel"} },
+    { "name": "Tick", "layerKind": "pixel", "rectTransform": { ... }, "pixelLayerData": {"kind": "pixel"} }
+  ]
+}
+```
 
 ## 配置系统
 通过`AutoUIConfig.json`配置：

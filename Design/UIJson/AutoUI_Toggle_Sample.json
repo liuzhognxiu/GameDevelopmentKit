@@ -1,0 +1,66 @@
+{
+  "name": "AutoUI_Toggle_Sample",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": {
+    "anchor": [{"x": 0, "y": 0}, {"x": 1, "y": 1}],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "anchoredPosition": {"x": 0, "y": 0},
+    "sizeDelta": {"x": 0, "y": 0}
+  },
+  "canvasLayerData": {"renderMode": "overlay", "width": 1920, "height": 1080},
+  "layers": [
+    {
+      "name": "AcceptPolicy",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {
+        "anchor": [{"x": 0.4, "y": 0.48}, {"x": 0.6, "y": 0.52}],
+        "pivot": {"x": 0.5, "y": 0.5},
+        "anchoredPosition": {"x": 0, "y": 0},
+        "sizeDelta": {"x": 0, "y": 0}
+      },
+      "components": [
+        {
+          "name": "toggle",
+          "parameters": {
+            "isOn": true,
+            "background": "Box",
+            "checkmark": "Tick"
+          }
+        }
+      ],
+      "layers": [
+        {
+          "name": "Box",
+          "layerKind": "pixel",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {
+            "anchor": [{"x": 0.0, "y": 0.0}, {"x": 0.15, "y": 1.0}],
+            "pivot": {"x": 0.5, "y": 0.5},
+            "anchoredPosition": {"x": 0, "y": 0},
+            "sizeDelta": {"x": 0, "y": 0}
+          },
+          "pixelLayerData": {"kind": "pixel"}
+        },
+        {
+          "name": "Tick",
+          "layerKind": "pixel",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {
+            "anchor": [{"x": 0.02, "y": 0.15}, {"x": 0.13, "y": 0.85}],
+            "pivot": {"x": 0.5, "y": 0.5},
+            "anchoredPosition": {"x": 0, "y": 0},
+            "sizeDelta": {"x": 0, "y": 0}
+          },
+          "pixelLayerData": {"kind": "pixel"}
+        }
+      ]
+    }
+  ]
+}
+

@@ -88,13 +88,13 @@ namespace AutoUI
             LogUtil.Log("=== 新建一个预制体 ===");
             try
             {
-                prefabGameObject = AutoUIFrameworkProcesser.CreateCanvasWithData(layers);
+                prefabGameObject = AutoUIFrameworkProcessor.CreateCanvasWithData(layers);
                 if (prefabGameObject == null)
                 {
                     LogUtil.LogError("创建canvas失败");
                     return;
                 }
-                AutoUIFrameworkProcesser.递归处理所有图层(in layers.layers, ref prefabGameObject);
+                AutoUIFrameworkProcessor.ProcessAllLayers(in layers.layers, ref prefabGameObject);
                 AutoUIFile.SavePrefabAndCleanup(prefabGameObject);
                 LogUtil.Log("创建预制体成功");
             }

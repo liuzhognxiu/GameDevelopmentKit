@@ -1,0 +1,85 @@
+{
+  "name": "AutoUI_Slider_Sample",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": {
+    "anchor": [{"x": 0, "y": 0}, {"x": 1, "y": 1}],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "anchoredPosition": {"x": 0, "y": 0},
+    "sizeDelta": {"x": 0, "y": 0}
+  },
+  "canvasLayerData": {"renderMode": "overlay", "width": 1920, "height": 1080},
+  "layers": [
+    {
+      "name": "Progress_HP",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {
+        "anchor": [{"x": 0.25, "y": 0.45}, {"x": 0.75, "y": 0.55}],
+        "pivot": {"x": 0.5, "y": 0.5},
+        "anchoredPosition": {"x": 0, "y": 0},
+        "sizeDelta": {"x": 0, "y": 0}
+      },
+      "components": [
+        {
+          "name": "progress",
+          "parameters": {
+            "min": 0,
+            "max": 100,
+            "value": 35,
+            "wholeNumbers": true,
+            "direction": "LeftToRight",
+            "background": "BG",
+            "fill": "Fill",
+            "handle": "Handle",
+            "interactable": false
+          }
+        }
+      ],
+      "layers": [
+        {
+          "name": "BG",
+          "layerKind": "pixel",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {
+            "anchor": [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}],
+            "pivot": {"x": 0.5, "y": 0.5},
+            "anchoredPosition": {"x": 0, "y": 0},
+            "sizeDelta": {"x": 0, "y": 0}
+          },
+          "pixelLayerData": {"kind": "pixel"}
+        },
+        {
+          "name": "Fill",
+          "layerKind": "pixel",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {
+            "anchor": [{"x": 0.0, "y": 0.15}, {"x": 0.5, "y": 0.85}],
+            "pivot": {"x": 0.0, "y": 0.5},
+            "anchoredPosition": {"x": 0, "y": 0},
+            "sizeDelta": {"x": 0, "y": 0}
+          },
+          "pixelLayerData": {"kind": "pixel"}
+        },
+        {
+          "name": "Handle",
+          "layerKind": "pixel",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {
+            "anchor": [{"x": 0.5, "y": 0.0}, {"x": 0.5, "y": 1.0}],
+            "pivot": {"x": 0.5, "y": 0.5},
+            "anchoredPosition": {"x": 0, "y": 0},
+            "sizeDelta": {"x": 20, "y": 0}
+          },
+          "pixelLayerData": {"kind": "pixel"}
+        }
+      ]
+    }
+  ]
+}
+

@@ -27,8 +27,32 @@
           "layers": [
             {"name": "set_icon_equip_shield", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.0, "y": 0}, {"x": 0.08, "y": 1}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
             {"name": "PlayerName_Text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.09, "y": 0.45}, {"x": 0.35, "y": 1}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "Ryuen", "fontSize": 24, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "left", "haveShadow": false, "warp": false, "rotation": 0.0}},
-            {"name": "progressbar-background", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.09, "y": 0.05}, {"x": 0.35, "y": 0.42}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
-            {"name": "progressbar", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.09, "y": 0.1}, {"x": 0.28, "y": 0.37}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {
+              "name": "XP_Bar_Group",
+              "layerKind": "group",
+              "visible": true,
+              "opacity": 1.0,
+              "rectTransform": {"anchor": [{"x": 0.09, "y": 0.05}, {"x": 0.35, "y": 0.42}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+              "layers": [
+                {"name": "progressbar-background", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+                {"name": "progressbar", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.0, "y": 0.1}, {"x": 0.8, "y": 0.9}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}}
+              ],
+              "components": [
+                {
+                  "name": "progress",
+                  "parameters": {
+                    "min": 0,
+                    "max": 400,
+                    "value": 183,
+                    "wholeNumbers": true,
+                    "direction": "LeftToRight",
+                    "background": "progressbar-background",
+                    "fill": "progressbar",
+                    "interactable": false
+                  }
+                }
+              ]
+            },
             {"name": "xp_value_Text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.28, "y": 0.07}, {"x": 0.35, "y": 0.4}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "183/400", "fontSize": 14, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
           ]
         },

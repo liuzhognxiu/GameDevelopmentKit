@@ -24,6 +24,16 @@ JSON的顶层就是一个 `Layer` 对象，通常是 `canvas` 类型。
 }
 ```
 
+注意事项：
+
+- 缺少 Image 时自动补挂：绑定到 `background`/`fill`/`handle` 的目标节点若无 `Image`，会自动添加一个空 `Image` 组件，确保可见与可绑定。
+- Sprite 兜底：当资源库中找不到同名 Sprite 时，会依然为像素/智能对象图层挂载空 `Image` 作为兜底，避免后续绑定失败。
+- 关键词匹配：未显式提供名称时，按关键词匹配节点——背景（background/bg）、填充（fill/bar/progress）、手柄（handle/thumb）。
+- 填充节点必需：`fill` 是进度条的关键节点，若找不到会输出警告并跳过绑定。
+- 方向与大小写：`direction` 字符串大小写不敏感，支持 LeftToRight / RightToLeft / BottomToTop / TopToBottom。
+- 数值范围：初始 `value` 会被钳制到 `[min, max]`。
+- 交互默认：`slider` 默认 `interactable=true`；`progress` 若未显式设置，默认 `interactable=false`。
+
 #### `Layer` 对象 (核心结构)
 
 每个图层，无论类型，都由一个 `Layer` 对象表示。
@@ -164,10 +174,11 @@ JSON的顶层就是一个 `Layer` 对象，通常是 `canvas` 类型。
 
 ### 5. 进度条（Slider/Progress）组件说明
 
-支持在 `group` 图层上添加 `slider` 或 `progress` 组件：
+不支持在 `group` 图层上添加 `slider` 或 `progress` 组件：
 
 - `slider`: 生成可交互的 `UnityEngine.UI.Slider`
 - `progress`: 生成不可交互的 `UnityEngine.UI.Slider`（`interactable=false`），用于展示型进度
+- 如果有进度条，创建一个父物体，将相关组件加到这个父物体上
 
 可用参数（放在 `parameters` 下）：
 

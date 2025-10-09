@@ -188,7 +188,16 @@
         "font": {
             "enableCorrect": true,
             "CorrectValue": 1,
+            "correctValue": 1,
             "description": "Unity 中文字字号是“理论值”，实际显示时会因为字体边界、内边距、贴图放缩、Canvas 缩放等机制，导致视觉效果比 Photoshop 更大、更松。故而需要进行比例修正"
+        },
+        "uiInteract": {
+            "imageRaycastTarget": true,
+            "textRaycastTarget": false
+        },
+        "scaler": {
+            "screenMatchMode": "MatchWidthOrHeight",
+            "matchWidthOrHeight": 0.5
         }
     },
     "fontAssets": {

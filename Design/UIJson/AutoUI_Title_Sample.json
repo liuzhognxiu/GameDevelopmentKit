@@ -1,0 +1,21 @@
+{
+  "name": "AutoUI_Title_Sample",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "anchoredPosition": { "x": 0, "y": 0 }, "sizeDelta": { "x": 0, "y": 0 } },
+  "canvasLayerData": { "renderMode": "overlay", "width": 1080, "height": 1920 },
+  "layers": [
+    {
+      "name": "Title_Main",
+      "layerKind": "text",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.2, "y": 0.8 }, { "x": 0.8, "y": 0.9 }], "pivot": { "x": 0.5, "y": 0.5 }, "anchoredPosition": { "x": 0, "y": 0 }, "sizeDelta": { "x": 0, "y": 0 } },
+      "textLayerData": { "kind": "text", "text": "标题样式", "fontSize": 36, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "center", "haveShadow": false, "warp": true, "rotation": 0.0 },
+      "components": [ { "name": "title", "parameters": {} } ]
+    }
+  ]
+}
+
+

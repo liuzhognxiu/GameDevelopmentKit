@@ -1,0 +1,233 @@
+{
+  "name": "CommonUIDemo",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": {
+    "anchor": [{"x": 0, "y": 0}, {"x": 1, "y": 1}],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "anchoredPosition": {"x": 0, "y": 0},
+    "sizeDelta": {"x": 0, "y": 0}
+  },
+  "canvasLayerData": {"renderMode": "overlay", "width": 1920, "height": 1080},
+  "layers": [
+    {
+      "name": "Title_Text",
+      "layerKind": "text",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.35, "y": 0.90}, {"x": 0.65, "y": 0.98}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+      "textLayerData": {"kind": "text", "text": "COMMON BUTTONS (TEXT)", "fontSize": 28, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}
+    },
+    {
+      "name": "Buttons_Text_Row1",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.05, "y": 0.78}, {"x": 0.95, "y": 0.88}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+      "layers": [
+        {"name": "Btn_Blue",   "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.00, "y": 0}, {"x": 0.18, "y": 1.0}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+          "layers": [
+            {"name": "btn_rect_blue", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_blue", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}}, "textLayerData": {"kind": "text", "text": "Blue", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        },
+        {"name": "Btn_Green",  "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.20, "y": 0}, {"x": 0.38, "y": 1.0}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+          "layers": [
+            {"name": "btn_rect_green", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_green", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}], "pivot": {"x": 0.5, "y": 0.5}}, "textLayerData": {"kind": "text", "text": "Green", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        },
+        {"name": "Btn_Yellow", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.40, "y": 0}, {"x": 0.58, "y": 1.0}], "pivot": {"x": 0.0, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+          "layers": [
+            {"name": "btn_rect_yellow", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_yellow", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "textLayerData": {"kind": "text", "text": "Yellow", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        },
+        {"name": "Btn_BlueGray", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.60, "y": 0}, {"x": 0.78, "y": 1.0}], "pivot": {"x": 0.0, "y": 0.5}},
+          "layers": [
+            {"name": "btn_rect_bluegray", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_bluegray", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "textLayerData": {"kind": "text", "text": "Blue Gray", "fontSize": 26, "color": {"r": 20, "g": 20, "b": 20}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        },
+        {"name": "Btn_Gray",   "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.80, "y": 0}, {"x": 0.98, "y": 1.0}], "pivot": {"x": 0.0, "y": 0.5}},
+          "layers": [
+            {"name": "btn_rect_gray", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_gray", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "textLayerData": {"kind": "text", "text": "Gray", "fontSize": 26, "color": {"r": 20, "g": 20, "b": 20}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        }
+      ]
+    },
+    {
+      "name": "Buttons_Text_Row2",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.05, "y": 0.66}, {"x": 0.95, "y": 0.76}], "pivot": {"x": 0.5, "y": 0.5}},
+      "layers": [
+        {"name": "Btn_Red",    "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.00, "y": 0}, {"x": 0.18, "y": 1.0}], "pivot": {"x": 0.0, "y": 0.5}},
+          "layers": [
+            {"name": "btn_rect_red", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_red", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "textLayerData": {"kind": "text", "text": "Red", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        },
+        {"name": "Btn_Purple", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.20, "y": 0}, {"x": 0.38, "y": 1.0}]},
+          "layers": [
+            {"name": "btn_rect_purple", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_purple", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "textLayerData": {"kind": "text", "text": "Purple", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        },
+        {"name": "Btn_Brown",  "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.40, "y": 0}, {"x": 0.58, "y": 1.0}]},
+          "layers": [
+            {"name": "btn_rect_brown", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_brown", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "textLayerData": {"kind": "text", "text": "Brown", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        },
+        {"name": "Btn_Mint",   "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.60, "y": 0}, {"x": 0.78, "y": 1.0}]},
+          "layers": [
+            {"name": "btn_rect_mint", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_mint", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "textLayerData": {"kind": "text", "text": "Mint", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        },
+        {"name": "Btn_Dark",   "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.80, "y": 0}, {"x": 0.98, "y": 1.0}]},
+          "layers": [
+            {"name": "btn_rect_dark", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "label_dark", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.05, "y": 0.15}, {"x": 0.95, "y": 0.85}]}, "textLayerData": {"kind": "text", "text": "Dark", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        }
+      ]
+    },
+    {
+      "name": "Buttons_Icon_Title",
+      "layerKind": "text",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.36, "y": 0.56}, {"x": 0.64, "y": 0.64}], "pivot": {"x": 0.5, "y": 0.5}},
+      "textLayerData": {"kind": "text", "text": "COMMON BUTTONS (ICON)", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}
+    },
+    {
+      "name": "Buttons_Icon_Row",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.18, "y": 0.45}, {"x": 0.82, "y": 0.53}], "pivot": {"x": 0.5, "y": 0.5}},
+      "layers": [
+        {"name": "IconBtn_Gray",  "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.00, "y": 0}, {"x": 0.16, "y": 1.0}]}, "layers": [
+          {"name": "btn_circle_gray", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.2, "y": 0.0}, {"x": 0.8, "y": 1.0}]}, "pixelLayerData": {"kind": "pixel"}},
+          {"name": "icon_home_white", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.38, "y": 0.28}, {"x": 0.62, "y": 0.72}]}, "pixelLayerData": {"kind": "pixel"}}
+        ], "components": [{"name": "button", "parameters": {}}]},
+        {"name": "IconBtn_Blue",  "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.20, "y": 0}, {"x": 0.36, "y": 1.0}]}, "layers": [
+          {"name": "btn_circle_blue", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.2, "y": 0.0}, {"x": 0.8, "y": 1.0}]}, "pixelLayerData": {"kind": "pixel"}},
+          {"name": "icon_home_white", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.38, "y": 0.28}, {"x": 0.62, "y": 0.72}]}, "pixelLayerData": {"kind": "pixel"}}
+        ], "components": [{"name": "button", "parameters": {}}]},
+        {"name": "IconBtn_Green", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.40, "y": 0}, {"x": 0.56, "y": 1.0}]}, "layers": [
+          {"name": "btn_circle_green", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.2, "y": 0.0}, {"x": 0.8, "y": 1.0}]}, "pixelLayerData": {"kind": "pixel"}},
+          {"name": "icon_home_white", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.38, "y": 0.28}, {"x": 0.62, "y": 0.72}]}, "pixelLayerData": {"kind": "pixel"}}
+        ], "components": [{"name": "button", "parameters": {}}]},
+        {"name": "IconBtn_Purple","layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.60, "y": 0}, {"x": 0.76, "y": 1.0}]}, "layers": [
+          {"name": "btn_circle_purple", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.2, "y": 0.0}, {"x": 0.8, "y": 1.0}]}, "pixelLayerData": {"kind": "pixel"}},
+          {"name": "icon_home_white", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.38, "y": 0.28}, {"x": 0.62, "y": 0.72}]}, "pixelLayerData": {"kind": "pixel"}}
+        ], "components": [{"name": "button", "parameters": {}}]},
+        {"name": "IconBtn_Red",   "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.80, "y": 0}, {"x": 0.96, "y": 1.0}]}, "layers": [
+          {"name": "btn_circle_red", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.2, "y": 0.0}, {"x": 0.8, "y": 1.0}]}, "pixelLayerData": {"kind": "pixel"}},
+          {"name": "icon_home_white", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.38, "y": 0.28}, {"x": 0.62, "y": 0.72}]}, "pixelLayerData": {"kind": "pixel"}}
+        ], "components": [{"name": "button", "parameters": {}}]}
+      ]
+    },
+    {
+      "name": "Common_UI_Title",
+      "layerKind": "text",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.36, "y": 0.36}, {"x": 0.64, "y": 0.44}], "pivot": {"x": 0.5, "y": 0.5}},
+      "textLayerData": {"kind": "text", "text": "COMMON UI ELEMENTS", "fontSize": 26, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}
+    },
+    {
+      "name": "Common_UI_Row",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.10, "y": 0.26}, {"x": 0.90, "y": 0.34}], "pivot": {"x": 0.5, "y": 0.5}},
+      "layers": [
+        {"name": "Switch_Toggle", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.00, "y": 0.0}, {"x": 0.18, "y": 1.0}]},
+          "layers": [
+            {"name": "Switch_BG", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.10, "y": 0.15}, {"x": 0.90, "y": 0.85}]} , "pixelLayerData": {"kind": "pixel"}},
+            {"name": "Switch_Tick", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.55, "y": 0.15}, {"x": 0.88, "y": 0.85}]} , "pixelLayerData": {"kind": "pixel"}}
+          ],
+          "components": [{"name": "toggle", "parameters": {"isOn": true, "background": "Switch_BG", "checkmark": "Switch_Tick"}}]
+        },
+        {"name": "Progress_Bar", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.22, "y": 0.0}, {"x": 0.62, "y": 1.0}]},
+          "layers": [
+            {"name": "Progress_BG",   "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.02, "y": 0.25}, {"x": 0.98, "y": 0.75}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "Progress_Fill", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.02, "y": 0.35}, {"x": 0.50, "y": 0.65}], "pivot": {"x": 0.0, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "Progress_Handle", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.50, "y": 0.20}, {"x": 0.50, "y": 0.80}], "pivot": {"x": 0.5, "y": 0.5}, "sizeDelta": {"x": 20, "y": 0}}, "pixelLayerData": {"kind": "pixel"}}
+          ],
+          "components": [{"name": "progress", "parameters": {"min": 0, "max": 10, "value": 5, "wholeNumbers": true, "direction": "LeftToRight", "background": "Progress_BG", "fill": "Progress_Fill", "handle": "Progress_Handle", "interactable": false}}]
+        },
+        {"name": "Check_Toggle", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.66, "y": 0.0}, {"x": 0.78, "y": 1.0}]},
+          "layers": [
+            {"name": "Check_Box", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.10, "y": 0.15}, {"x": 0.90, "y": 0.85}]} , "pixelLayerData": {"kind": "pixel"}},
+            {"name": "Check_Tick", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.18, "y": 0.22}, {"x": 0.82, "y": 0.78}]} , "pixelLayerData": {"kind": "pixel"}}
+          ],
+          "components": [{"name": "toggle", "parameters": {"isOn": false, "background": "Check_Box", "checkmark": "Check_Tick"}}]
+        },
+        {"name": "Tabs_Group", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.80, "y": 0.0}, {"x": 0.98, "y": 1.0}]},
+          "layers": [
+            {"name": "Tab_Left", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.00, "y": 0.0}, {"x": 0.45, "y": 1.0}]}, "layers": [
+              {"name": "tab_left_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.10, "y": 0.15}, {"x": 0.90, "y": 0.85}]} , "pixelLayerData": {"kind": "pixel"}},
+              {"name": "tab_left_text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.10, "y": 0.15}, {"x": 0.90, "y": 0.85}]} , "textLayerData": {"kind": "text", "text": "Tab", "fontSize": 22, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+            ], "components": [{"name": "button", "parameters": {}}]},
+            {"name": "Tab_Right", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.55, "y": 0.0}, {"x": 1.0, "y": 1.0}]}, "layers": [
+              {"name": "tab_right_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.10, "y": 0.15}, {"x": 0.90, "y": 0.85}]} , "pixelLayerData": {"kind": "pixel"}},
+              {"name": "tab_right_text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.10, "y": 0.15}, {"x": 0.90, "y": 0.85}]} , "textLayerData": {"kind": "text", "text": "Tab", "fontSize": 22, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}}
+            ], "components": [{"name": "button", "parameters": {}}]}
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Text_Input_Title",
+      "layerKind": "text",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.44, "y": 0.18}, {"x": 0.56, "y": 0.24}], "pivot": {"x": 0.5, "y": 0.5}},
+      "textLayerData": {"kind": "text", "text": "TEXT INPUT", "fontSize": 24, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}
+    },
+    {
+      "name": "Text_Input_Row",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.05, "y": 0.06}, {"x": 0.95, "y": 0.14}], "pivot": {"x": 0.5, "y": 0.5}},
+      "layers": [
+        {"name": "Input_Required", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.00, "y": 0.0}, {"x": 0.30, "y": 1.0}]}, "layers": [
+          {"name": "input_req_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.02, "y": 0.1}, {"x": 0.98, "y": 0.9}]} , "pixelLayerData": {"kind": "pixel"}},
+          {"name": "input_req_icon", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.02, "y": 0.2}, {"x": 0.10, "y": 0.8}]} , "pixelLayerData": {"kind": "pixel"}},
+          {"name": "input_req_text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.12, "y": 0.2}, {"x": 0.9, "y": 0.8}]}, "textLayerData": {"kind": "text", "text": "Required", "fontSize": 22, "color": {"r": 220, "g": 220, "b": 220}, "textAlign": "left", "haveShadow": false, "warp": false, "rotation": 0.0}}
+        ]},
+        {"name": "Input_Typing", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.34, "y": 0.0}, {"x": 0.64, "y": 1.0}]}, "layers": [
+          {"name": "input_typing_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.02, "y": 0.1}, {"x": 0.98, "y": 0.9}]} , "pixelLayerData": {"kind": "pixel"}},
+          {"name": "input_typing_icon", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.02, "y": 0.2}, {"x": 0.10, "y": 0.8}]} , "pixelLayerData": {"kind": "pixel"}},
+          {"name": "input_typing_text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.12, "y": 0.2}, {"x": 0.9, "y": 0.8}]}, "textLayerData": {"kind": "text", "text": "Typing", "fontSize": 22, "color": {"r": 220, "g": 220, "b": 220}, "textAlign": "left", "haveShadow": false, "warp": false, "rotation": 0.0}}
+        ]},
+        {"name": "Input_Error", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.68, "y": 0.0}, {"x": 0.98, "y": 1.0}]}, "layers": [
+          {"name": "input_error_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.02, "y": 0.1}, {"x": 0.98, "y": 0.9}]} , "pixelLayerData": {"kind": "pixel"}},
+          {"name": "input_error_icon", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.02, "y": 0.2}, {"x": 0.10, "y": 0.8}]} , "pixelLayerData": {"kind": "pixel"}},
+          {"name": "input_error_text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.12, "y": 0.2}, {"x": 0.9, "y": 0.8}]}, "textLayerData": {"kind": "text", "text": "Error", "fontSize": 22, "color": {"r": 220, "g": 80, "b": 80}, "textAlign": "left", "haveShadow": false, "warp": false, "rotation": 0.0}}
+        ]}
+      ]
+    }
+  ]
+}
+
+

@@ -35,6 +35,7 @@ namespace AutoUI
             AutoUIMainWithMode("select");
         }
 
+
         /// <summary>
         /// 根据模式执行AutoUI主流程
         /// </summary>

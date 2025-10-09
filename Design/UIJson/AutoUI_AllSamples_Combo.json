@@ -1,0 +1,225 @@
+{
+  "name": "AutoUI_AllSamples_Combo",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": {
+    "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }],
+    "pivot": { "x": 0.5, "y": 0.5 },
+    "anchoredPosition": { "x": 0, "y": 0 },
+    "sizeDelta": { "x": 0, "y": 0 },
+    "offsetMin": { "x": 0, "y": 0 },
+    "offsetMax": { "x": 0, "y": 0 }
+  },
+  "canvasLayerData": { "renderMode": "overlay", "width": 1080, "height": 1920 },
+  "layers": [
+    {
+      "name": "Title_Main",
+      "layerKind": "text",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.2, "y": 0.92 }, { "x": 0.8, "y": 0.98 }], "pivot": { "x": 0.5, "y": 0.5 }, "anchoredPosition": { "x": 0, "y": 0 }, "sizeDelta": { "x": 0, "y": 0 } },
+      "textLayerData": { "kind": "text", "text": "AutoUI 全量示例", "fontSize": 36, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "center", "haveShadow": false, "warp": true, "rotation": 0.0 },
+      "components": [ { "name": "title", "parameters": {} } ]
+    },
+    {
+      "name": "Buttons_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.35, "y": 0.82 }, { "x": 0.65, "y": 0.90 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "layers": [
+        {
+          "name": "Button_Primary",
+          "layerKind": "group",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": { "anchor": [{ "x": 0.0, "y": 0.0 }, { "x": 1.0, "y": 1.0 }], "pivot": { "x": 0.5, "y": 0.5 } },
+          "components": [ { "name": "button", "parameters": {} } ],
+          "layers": [
+            { "name": "button-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 } }, "pixelLayerData": { "kind": "pixel" } },
+            { "name": "Label_Button", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.1, "y": 0.1 }, { "x": 0.9, "y": 0.9 }], "pivot": { "x": 0.5, "y": 0.5 } }, "textLayerData": { "kind": "text", "text": "确定", "fontSize": 28, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0 } }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Grid_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.20, "y": 0.70 }, { "x": 0.80, "y": 0.78 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "components": [ { "name": "grid", "parameters": {} } ],
+      "layers": [
+        { "name": "joystick_button_icon_attack", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 0 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 96, "y": 96 } }, "pixelLayerData": { "kind": "pixel" } },
+        { "name": "joystick_button_icon_bomb", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 0 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 96, "y": 96 } }, "pixelLayerData": { "kind": "pixel" } },
+        { "name": "joystick_button_icon_defense", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 0 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 96, "y": 96 } }, "pixelLayerData": { "kind": "pixel" } }
+      ]
+    },
+    {
+      "name": "Horizontal_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.10, "y": 0.62 }, { "x": 0.90, "y": 0.68 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "components": [ { "name": "horizontalLayout", "parameters": {} } ],
+      "layers": [
+        { "name": "circle-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 100, "y": 100 } }, "pixelLayerData": { "kind": "pixel" } },
+        { "name": "Label_A", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 200, "y": 100 } }, "textLayerData": { "kind": "text", "text": "水平项A", "fontSize": 24, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "center", "haveShadow": false, "warp": true, "rotation": 0.0 } },
+        { "name": "round-button-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 100, "y": 100 } }, "pixelLayerData": { "kind": "pixel" } }
+      ]
+    },
+    {
+      "name": "Vertical_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.40, "y": 0.52 }, { "x": 0.60, "y": 0.58 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "components": [ { "name": "verticalLayout", "parameters": {} } ],
+      "layers": [
+        { "name": "TopBar_BG", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 0 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 200, "y": 64 } }, "pixelLayerData": { "kind": "pixel" } },
+        { "name": "Label_Title", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 0 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 200, "y": 48 } }, "textLayerData": { "kind": "text", "text": "竖直布局项", "fontSize": 24, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "center", "haveShadow": false, "warp": true, "rotation": 0.0 } },
+        { "name": "circle-filled-2", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 0 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 96, "y": 96 } }, "pixelLayerData": { "kind": "pixel" } }
+      ]
+    },
+    {
+      "name": "Prefab_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.30, "y": 0.44 }, { "x": 0.70, "y": 0.50 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "layers": [
+        {
+          "name": "Item_Template",
+          "layerKind": "group",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 } },
+          "components": [ { "name": "prefab", "parameters": { "name": "LoopItem" } } ],
+          "layers": [
+            { "name": "button-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }] }, "pixelLayerData": { "kind": "pixel" } },
+            { "name": "Label_Item", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0.5 }, { "x": 0, "y": 0.5 }], "pivot": { "x": 0, "y": 0.5 }, "anchoredPosition": { "x": 24, "y": 0 }, "sizeDelta": { "x": 400, "y": 60 } }, "textLayerData": { "kind": "text", "text": "循环项", "fontSize": 28, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "left", "haveShadow": false, "warp": true, "rotation": 0.0 } }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Progress_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.20, "y": 0.36 }, { "x": 0.80, "y": 0.40 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "layers": [
+        {
+          "name": "Progress_HP",
+          "layerKind": "group",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 } },
+          "components": [ { "name": "progress", "parameters": { "min": 0, "max": 100, "value": 35, "wholeNumbers": true, "direction": "LeftToRight", "background": "progressbar-background", "fill": "progressbar", "handle": "progress-conner", "interactable": false } } ],
+          "layers": [
+            { "name": "progressbar-background", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0.25 }, { "x": 1, "y": 0.75 }] }, "pixelLayerData": { "kind": "pixel" } },
+            { "name": "progressbar", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0.35 }, { "x": 0.35, "y": 0.65 }], "pivot": { "x": 0, "y": 0.5 } }, "pixelLayerData": { "kind": "pixel" } },
+            { "name": "progress-conner", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.35, "y": 0.2 }, { "x": 0.35, "y": 0.8 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 20, "y": 0 } }, "pixelLayerData": { "kind": "pixel" } }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Slider_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.20, "y": 0.30 }, { "x": 0.80, "y": 0.34 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "layers": [
+        {
+          "name": "Slider_Volume",
+          "layerKind": "group",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 } },
+          "components": [ { "name": "slider", "parameters": { "min": 0, "max": 100, "value": 50, "wholeNumbers": true, "direction": "LeftToRight", "background": "progressbar-background", "fill": "slider_edgetype_01_fill", "handle": "slider_handletype_fill", "interactable": true } } ],
+          "layers": [
+            { "name": "progressbar-background", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0.25 }, { "x": 1, "y": 0.75 }] }, "pixelLayerData": { "kind": "pixel" } },
+            { "name": "slider_edgetype_01_fill", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0.35 }, { "x": 0.5, "y": 0.65 }], "pivot": { "x": 0, "y": 0.5 } }, "pixelLayerData": { "kind": "pixel" } },
+            { "name": "slider_handletype_fill", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.5, "y": 0.2 }, { "x": 0.5, "y": 0.8 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 24, "y": 0 } }, "pixelLayerData": { "kind": "pixel" } }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Toggle_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.10, "y": 0.52 }, { "x": 0.22, "y": 0.58 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "layers": [
+        {
+          "name": "Toggle_Check",
+          "layerKind": "group",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 } },
+          "components": [ { "name": "toggle", "parameters": { "isOn": true, "background": "button-filled", "checkmark": "circle-filled" } } ],
+          "layers": [
+            { "name": "button-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }] }, "pixelLayerData": { "kind": "pixel" } },
+            { "name": "circle-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.2, "y": 0.2 }, { "x": 0.8, "y": 0.8 }] }, "pixelLayerData": { "kind": "pixel" } }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Scroll_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.10, "y": 0.18 }, { "x": 0.90, "y": 0.28 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "components": [ { "name": "scroll", "parameters": { "direction": "vertical", "movementType": "Clamped", "inertia": true, "decelerationRate": 0.135, "elasticity": 0.1, "viewport": "Viewport", "content": "Content" } } ],
+      "layers": [
+        { "name": "Viewport", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }] }, "layers": [ { "name": "TopBar_BG", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }] }, "pixelLayerData": { "kind": "pixel" } } ] },
+        { "name": "Content", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 1 }, "anchoredPosition": { "x": 0, "y": 0 }, "sizeDelta": { "x": 0, "y": 0 } },
+          "layers": [
+            { "name": "Item_Template", "layerKind": "group", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 1 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 1 }, "sizeDelta": { "x": 0, "y": 96 } },
+              "components": [ { "name": "prefab", "parameters": { "name": "LoopItem" } } ],
+              "layers": [ { "name": "button-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }] }, "pixelLayerData": { "kind": "pixel" } }, { "name": "Label_Item", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0.5 }, { "x": 0, "y": 0.5 }], "pivot": { "x": 0, "y": 0.5 }, "anchoredPosition": { "x": 24, "y": 0 }, "sizeDelta": { "x": 600, "y": 48 } }, "textLayerData": { "kind": "text", "text": "循环项", "fontSize": 24, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "left", "haveShadow": false, "warp": true, "rotation": 0.0 } } ] }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Text_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.10, "y": 0.12 }, { "x": 0.90, "y": 0.16 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "layers": [
+        { "name": "Label_Left", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.10, "y": 0.12 }, { "x": 0.30, "y": 0.16 }], "pivot": { "x": 0.5, "y": 0.5 } }, "textLayerData": { "kind": "text", "text": "左对齐", "fontSize": 22, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "left", "haveShadow": false, "warp": true, "rotation": 0.0 } },
+        { "name": "Label_Center", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.35, "y": 0.12 }, { "x": 0.65, "y": 0.16 }], "pivot": { "x": 0.5, "y": 0.5 } }, "textLayerData": { "kind": "text", "text": "居中对齐", "fontSize": 22, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "center", "haveShadow": false, "warp": true, "rotation": 0.0 } },
+        { "name": "Label_Right", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.70, "y": 0.12 }, { "x": 0.90, "y": 0.16 }], "pivot": { "x": 0.5, "y": 0.5 } }, "textLayerData": { "kind": "text", "text": "右对齐", "fontSize": 22, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "right", "haveShadow": false, "warp": true, "rotation": 0.0 } }
+      ]
+    },
+    {
+      "name": "Pixel_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.10, "y": 0.06 }, { "x": 0.50, "y": 0.10 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "layers": [
+        { "name": "button-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.10, "y": 0.06 }, { "x": 0.28, "y": 0.10 }], "pivot": { "x": 0.5, "y": 0.5 } }, "pixelLayerData": { "kind": "pixel" } },
+        { "name": "TopBar_BG", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.32, "y": 0.06 }, { "x": 0.50, "y": 0.10 }], "pivot": { "x": 0.5, "y": 0.5 } }, "pixelLayerData": { "kind": "pixel" } }
+      ]
+    },
+    {
+      "name": "SmartObject_Section",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.52, "y": 0.06 }, { "x": 0.72, "y": 0.10 }], "pivot": { "x": 0.5, "y": 0.5 } },
+      "layers": [
+        { "name": "icon_white_bgm", "layerKind": "smartObject", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 } }, "smartObjectLayerData": { "kind": "smartObject" } }
+      ]
+    }
+  ]
+}
+
+

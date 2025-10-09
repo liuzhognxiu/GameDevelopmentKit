@@ -1,0 +1,197 @@
+{
+  "name": "UpdatePrompt",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": {
+    "anchor": [{"x": 0, "y": 0}, {"x": 1, "y": 1}],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "anchoredPosition": {"x": 0, "y": 0},
+    "sizeDelta": {"x": 0, "y": 0}
+  },
+  "canvasLayerData": {"renderMode": "overlay", "width": 1920, "height": 1080},
+  "layers": [
+    {
+      "name": "Overlay_Dim",
+      "layerKind": "pixel",
+      "visible": true,
+      "opacity": 0.75,
+      "rectTransform": {
+        "anchor": [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}],
+        "pivot": {"x": 0.5, "y": 0.5},
+        "anchoredPosition": {"x": 0, "y": 0},
+        "sizeDelta": {"x": 0, "y": 0}
+      },
+      "pixelLayerData": {"kind": "pixel"}
+    },
+    {
+      "name": "Dialog_Group",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {
+        "anchor": [{"x": 0.27, "y": 0.33}, {"x": 0.73, "y": 0.67}],
+        "pivot": {"x": 0.5, "y": 0.5},
+        "anchoredPosition": {"x": 0, "y": 0},
+        "sizeDelta": {"x": 0, "y": 0}
+      },
+      "layers": [
+        {
+          "name": "dialog_frame_bg",
+          "layerKind": "pixel",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {
+            "anchor": [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}],
+            "pivot": {"x": 0.5, "y": 0.5},
+            "anchoredPosition": {"x": 0, "y": 0},
+            "sizeDelta": {"x": 0, "y": 0}
+          },
+          "pixelLayerData": {"kind": "pixel"}
+        },
+        {
+          "name": "Message_Text",
+          "layerKind": "text",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {
+            "anchor": [{"x": 0.1, "y": 0.55}, {"x": 0.9, "y": 0.85}],
+            "pivot": {"x": 0.5, "y": 0.5},
+            "anchoredPosition": {"x": 0, "y": 0},
+            "sizeDelta": {"x": 0, "y": 0}
+          },
+          "textLayerData": {
+            "kind": "text",
+            "text": "New Version of app detected.\nWill you update now?",
+            "fontSize": 30,
+            "color": {"r": 255, "g": 255, "b": 255},
+            "textAlign": "center",
+            "haveShadow": false,
+            "warp": true,
+            "rotation": 0.0
+          }
+        },
+        {
+          "name": "Buttons_Row",
+          "layerKind": "group",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {
+            "anchor": [{"x": 0.12, "y": 0.12}, {"x": 0.88, "y": 0.40}],
+            "pivot": {"x": 0.5, "y": 0.5},
+            "anchoredPosition": {"x": 0, "y": 0},
+            "sizeDelta": {"x": 0, "y": 0}
+          },
+          "layers": [
+            {
+              "name": "Button_Later",
+              "layerKind": "group",
+              "visible": true,
+              "opacity": 1.0,
+              "rectTransform": {
+                "anchor": [{"x": 0.0, "y": 0.0}, {"x": 0.48, "y": 1.0}],
+                "pivot": {"x": 0.5, "y": 0.5},
+                "anchoredPosition": {"x": 0, "y": 0},
+                "sizeDelta": {"x": 0, "y": 0}
+              },
+              "layers": [
+                {
+                  "name": "btn_later_bg",
+                  "layerKind": "pixel",
+                  "visible": true,
+                  "opacity": 1.0,
+                  "rectTransform": {
+                    "anchor": [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}],
+                    "pivot": {"x": 0.5, "y": 0.5},
+                    "anchoredPosition": {"x": 0, "y": 0},
+                    "sizeDelta": {"x": 0, "y": 0}
+                  },
+                  "pixelLayerData": {"kind": "pixel"}
+                },
+                {
+                  "name": "btn_later_label",
+                  "layerKind": "text",
+                  "visible": true,
+                  "opacity": 1.0,
+                  "rectTransform": {
+                    "anchor": [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}],
+                    "pivot": {"x": 0.5, "y": 0.5},
+                    "anchoredPosition": {"x": 0, "y": 0},
+                    "sizeDelta": {"x": 0, "y": 0}
+                  },
+                  "textLayerData": {
+                    "kind": "text",
+                    "text": "Later",
+                    "fontSize": 28,
+                    "color": {"r": 50, "g": 40, "b": 60},
+                    "textAlign": "center",
+                    "haveShadow": false,
+                    "warp": false,
+                    "rotation": 0.0
+                  }
+                }
+              ],
+              "components": [
+                {"name": "button", "parameters": {}}
+              ]
+            },
+            {
+              "name": "Button_Update",
+              "layerKind": "group",
+              "visible": true,
+              "opacity": 1.0,
+              "rectTransform": {
+                "anchor": [{"x": 0.52, "y": 0.0}, {"x": 1.0, "y": 1.0}],
+                "pivot": {"x": 0.5, "y": 0.5},
+                "anchoredPosition": {"x": 0, "y": 0},
+                "sizeDelta": {"x": 0, "y": 0}
+              },
+              "layers": [
+                {
+                  "name": "btn_update_bg",
+                  "layerKind": "pixel",
+                  "visible": true,
+                  "opacity": 1.0,
+                  "rectTransform": {
+                    "anchor": [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}],
+                    "pivot": {"x": 0.5, "y": 0.5},
+                    "anchoredPosition": {"x": 0, "y": 0},
+                    "sizeDelta": {"x": 0, "y": 0}
+                  },
+                  "pixelLayerData": {"kind": "pixel"}
+                },
+                {
+                  "name": "btn_update_label",
+                  "layerKind": "text",
+                  "visible": true,
+                  "opacity": 1.0,
+                  "rectTransform": {
+                    "anchor": [{"x": 0.0, "y": 0.0}, {"x": 1.0, "y": 1.0}],
+                    "pivot": {"x": 0.5, "y": 0.5},
+                    "anchoredPosition": {"x": 0, "y": 0},
+                    "sizeDelta": {"x": 0, "y": 0}
+                  },
+                  "textLayerData": {
+                    "kind": "text",
+                    "text": "Update",
+                    "fontSize": 28,
+                    "color": {"r": 20, "g": 60, "b": 10},
+                    "textAlign": "center",
+                    "haveShadow": false,
+                    "warp": false,
+                    "rotation": 0.0
+                  }
+                }
+              ],
+              "components": [
+                {"name": "button", "parameters": {}}
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+

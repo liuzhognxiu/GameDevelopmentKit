@@ -10,179 +10,203 @@ using UnityEditor.SearchService;
 
 namespace AutoUI
 {
-    public class AutoUIConfig
-    {
-        public const string AutoUIConfigPath = "Assets/Scripts/Library/AutoUI/AutoUIConfig.json";
+	public class AutoUIConfig
+	{
+		public const string AutoUIConfigPath = "Assets/Scripts/Library/AutoUI/AutoUIConfig.json";
 
-        public static AutoUIConfigData config;
-        public static void GetAutoUIConfigData()
-        {
-            if (!File.Exists(AutoUIConfigPath))
-            {
-                LogUtil.LogError("AutoUIConfig.json不存在,请去AutoUIConfig.cs中进行设置");
-            }
-            string json = File.ReadAllText(AutoUIConfigPath);
-            LogUtil.Log("json path:" + AutoUIConfigPath);
-            LogUtil.Log("json:" + json);
-            config = JsonConvert.DeserializeObject<AutoUIConfigData>(json);
-        }
+		public static AutoUIConfigData config;
+		public static void GetAutoUIConfigData()
+		{
+			if (!File.Exists(AutoUIConfigPath))
+			{
+				LogUtil.LogError("AutoUIConfig.json不存在,请去AutoUIConfig.cs中进行设置");
+			}
+			string json = File.ReadAllText(AutoUIConfigPath);
+			LogUtil.Log("json path:" + AutoUIConfigPath);
+			LogUtil.Log("json:" + json);
+			config = JsonConvert.DeserializeObject<AutoUIConfigData>(json);
+		}
 
-    }
-    public class AutoUIConfigData
-    {
-        [JsonProperty("default")]
-        public DefaultConfig Default { get; set; }
+	}
+	public class AutoUIConfigData
+	{
+		[JsonProperty("default")]
+		public DefaultConfig Default { get; set; }
 
-        [JsonProperty("fontAssets")]
-        public FontAssets FontAssets { get; set; }
-    }
-    // ----------------------------- Default -----------------------------
+		[JsonProperty("fontAssets")]
+		public FontAssets FontAssets { get; set; }
+	}
+	// ----------------------------- Default -----------------------------
 
-    public class DefaultConfig
-    {
-        [JsonProperty("data")]
-        public Data Data { get; set; }
-        [JsonProperty("buttonClickEffect")]
-        public ButtonClickEffect ButtonClickEffect { get; set; }
+	public class DefaultConfig
+	{
+		[JsonProperty("data")]
+		public Data Data { get; set; }
+		[JsonProperty("buttonClickEffect")]
+		public ButtonClickEffect ButtonClickEffect { get; set; }
 
-        [JsonProperty("buttonComponent")]
-        public ButtonComponent ButtonComponent { get; set; }
+		[JsonProperty("buttonComponent")]
+		public ButtonComponent ButtonComponent { get; set; }
 
-        [JsonProperty("scene")]
-        public SceneInfo Scene { get; set; }
+		[JsonProperty("scene")]
+		public SceneInfo Scene { get; set; }
 
-        [JsonProperty("prefab")]
-        public PrefabInfo Prefab { get; set; }
-        [JsonProperty("localization")]
-        public Localization Localization { get; set; }
-        [JsonProperty("layout")]
-        public Layout Layout { get; set; }
-        [JsonProperty("font")]
-        public Font Font{ get; set; }
-    }
-    public class Data
-    {
-        [JsonProperty("name")]
-        public string Name { get; set; }
-        
-        [JsonProperty("selectionMode")]
-        public string SelectionMode { get; set; } = "folder"; // "folder" 或 "root"
-        
-        [JsonProperty("autoSelect")]
-        public bool AutoSelect { get; set; } = true;
-        
-        [JsonProperty("uiJsonPath")]
-        public string UIJsonPath { get; set; } = "../../Design/UIJson";
-    }
-    public class Font
-    {
-        [JsonProperty("enableCorrect")]
-        public bool EnableCorrect { get; set; }
-        [JsonProperty("correctValue")]
-        public float CorrectValue { get; set; }
-    }
-    public class Layout
-    {
-        [JsonProperty("padding")]
-        public int Padding { get; set; }
-    }
-    public class Localization
-    {
-        [JsonProperty("description")]
-        public string Description { get; set; }
-        [JsonProperty("isUseLocalization")]
-        public bool IsUseLocalization { get; set; }
-    }
+		[JsonProperty("prefab")]
+		public PrefabInfo Prefab { get; set; }
+		[JsonProperty("localization")]
+		public Localization Localization { get; set; }
+		[JsonProperty("layout")]
+		public Layout Layout { get; set; }
+		[JsonProperty("font")]
+		public Font Font{ get; set; }
+		// 新增：UI 交互策略（统一 raycastTarget）
+		[JsonProperty("uiInteract")]
+		public UIInteract UIInteract { get; set; }
+		// 新增：Scaler 配置扩展
+		[JsonProperty("scaler")]
+		public Scaler Scaler { get; set; }
+	}
+	public class Data
+	{
+		[JsonProperty("name")]
+		public string Name { get; set; }
+		
+		[JsonProperty("selectionMode")]
+		public string SelectionMode { get; set; } = "folder"; // "folder" 或 "root"
+		
+		[JsonProperty("autoSelect")]
+		public bool AutoSelect { get; set; } = true;
+		
+		[JsonProperty("uiJsonPath")]
+		public string UIJsonPath { get; set; } = "../../Design/UIJson";
+	}
+	public class Font
+	{
+		[JsonProperty("enableCorrect")]
+		public bool EnableCorrect { get; set; }
+		[JsonProperty("correctValue")]
+		public float CorrectValue { get; set; }
+	}
+	public class Layout
+	{
+		[JsonProperty("padding")]
+		public int Padding { get; set; }
+	}
+	public class Localization
+	{
+		[JsonProperty("description")]
+		public string Description { get; set; }
+		[JsonProperty("isUseLocalization")]
+		public bool IsUseLocalization { get; set; }
+	}
 
-    public class ButtonClickEffect
-    {
-        [JsonProperty("EnableClickEffect")]
-        public bool EnableClickEffect { get; set; }
+	public class ButtonClickEffect
+	{
+		[JsonProperty("EnableClickEffect")]
+		public bool EnableClickEffect { get; set; }
 
-        [JsonProperty("description")]
-        public string Description { get; set; }
+		[JsonProperty("description")]
+		public string Description { get; set; }
 
-        [JsonProperty("componentName")]
-        public string ComponentName { get; set; }
+		[JsonProperty("componentName")]
+		public string ComponentName { get; set; }
 
-        [JsonProperty("componentPath")]
-        public string ComponentPath { get; set; }
-    }
+		[JsonProperty("componentPath")]
+		public string ComponentPath { get; set; }
+	}
 
-    public class ButtonComponent
-    {
-        [JsonProperty("useComponent")]
-        public bool UseComponent { get; set; }
+	public class ButtonComponent
+	{
+		[JsonProperty("useComponent")]
+		public bool UseComponent { get; set; }
 
-        [JsonProperty("description")]
-        public string Description { get; set; }
+		[JsonProperty("description")]
+		public string Description { get; set; }
 
-        [JsonProperty("prefabPath")]
-        public string PrefabPath { get; set; }
-    }
+		[JsonProperty("prefabPath")]
+		public string PrefabPath { get; set; }
+	}
 
-    public class SceneInfo
-    {
-        [JsonProperty("description")]
-        public string Description { get; set; }
+	public class SceneInfo
+	{
+		[JsonProperty("description")]
+		public string Description { get; set; }
 
-        [JsonProperty("path")]
-        public string Path { get; set; }
-    }
+		[JsonProperty("path")]
+		public string Path { get; set; }
+	}
 
-    public class PrefabInfo
-    {
-        [JsonProperty("description")]
-        public string Description { get; set; }
+	public class PrefabInfo
+	{
+		[JsonProperty("description")]
+		public string Description { get; set; }
 
-        [JsonProperty("path")]
-        public string Path { get; set; }
+		[JsonProperty("path")]
+		public string Path { get; set; }
 
-        [JsonProperty("name")]
-        public string Name { get; set; }
-    }
+		[JsonProperty("name")]
+		public string Name { get; set; }
+	}
 
-    // ----------------------------- Font Assets -----------------------------
+	// 新增：统一交互策略
+	public class UIInteract
+	{
+		[JsonProperty("imageRaycastTarget")]
+		public bool ImageRaycastTarget { get; set; } = true;
+		[JsonProperty("textRaycastTarget")]
+		public bool TextRaycastTarget { get; set; } = true;
+	}
 
-    public class FontAssets
-    {
-        [JsonProperty("default")]
-        public FontAsset Default { get; set; }
+	// 新增：Scaler 配置
+	public class Scaler
+	{
+		[JsonProperty("screenMatchMode")]
+		public string ScreenMatchMode { get; set; } = "MatchWidthOrHeight"; // MatchWidthOrHeight / Expand / Shrink
+		[JsonProperty("matchWidthOrHeight")]
+		public float MatchWidthOrHeight { get; set; } = 0.5f;
+	}
 
-        [JsonProperty("title")]
-        public FontAsset Title { get; set; }
+	// ----------------------------- Font Assets -----------------------------
 
-        [JsonProperty("supercell")]
-        public FontAsset Supercell { get; set; }
-    }
+	public class FontAssets
+	{
+		[JsonProperty("default")]
+		public FontAsset Default { get; set; }
 
-    public class FontAsset
-    {
-        [JsonProperty("description")]
-        public string Description { get; set; }
+		[JsonProperty("title")]
+		public FontAsset Title { get; set; }
 
-        [JsonProperty("path")]
-        public string Path { get; set; }
+		[JsonProperty("supercell")]
+		public FontAsset Supercell { get; set; }
+	}
 
-        [JsonProperty("materialPreset")]
-        public MaterialPresets MaterialPreset { get; set; }
-    }
+	public class FontAsset
+	{
+		[JsonProperty("description")]
+		public string Description { get; set; }
 
-    public class MaterialPresets
-    {
-        [JsonProperty("shadow")]
-        public MaterialPreset Shadow { get; set; }
+		[JsonProperty("path")]
+		public string Path { get; set; }
 
-        [JsonProperty("yellow")]
-        public MaterialPreset Yellow { get; set; }
-    }
+		[JsonProperty("materialPreset")]
+		public MaterialPresets MaterialPreset { get; set; }
+	}
 
-    public class MaterialPreset
-    {
-        [JsonProperty("description")]
-        public string Description { get; set; }
+	public class MaterialPresets
+	{
+		[JsonProperty("shadow")]
+		public MaterialPreset Shadow { get; set; }
 
-        [JsonProperty("path")]
-        public string Path { get; set; }
-    }
+		[JsonProperty("yellow")]
+		public MaterialPreset Yellow { get; set; }
+	}
+
+	public class MaterialPreset
+	{
+		[JsonProperty("description")]
+		public string Description { get; set; }
+
+		[JsonProperty("path")]
+		public string Path { get; set; }
+	}
 }

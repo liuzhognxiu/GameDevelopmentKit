@@ -1,0 +1,25 @@
+{
+  "name": "AutoUI_HorizontalLayout_Sample",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "anchoredPosition": { "x": 0, "y": 0 }, "sizeDelta": { "x": 0, "y": 0 } },
+  "canvasLayerData": { "renderMode": "overlay", "width": 1080, "height": 1920 },
+  "layers": [
+    {
+      "name": "Row_Horizontal",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.1, "y": 0.45 }, { "x": 0.9, "y": 0.55 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 0, "y": 120 } },
+      "components": [ { "name": "horizontalLayout", "parameters": {} } ],
+      "layers": [
+        { "name": "circle-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 120, "y": 120 } }, "pixelLayerData": { "kind": "pixel" } },
+        { "name": "Label_A", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 200, "y": 120 } }, "textLayerData": { "kind": "text", "text": "水平项A", "fontSize": 24, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "center", "haveShadow": false, "warp": true, "rotation": 0.0 } },
+        { "name": "round-button-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 0, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 120, "y": 120 } }, "pixelLayerData": { "kind": "pixel" } }
+      ]
+    }
+  ]
+}
+
+

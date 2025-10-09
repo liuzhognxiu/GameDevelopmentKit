@@ -1,0 +1,15 @@
+{
+  "name": "AutoUI_Text_Sample",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "anchoredPosition": { "x": 0, "y": 0 }, "sizeDelta": { "x": 0, "y": 0 } },
+  "canvasLayerData": { "renderMode": "overlay", "width": 1080, "height": 1920 },
+  "layers": [
+    { "name": "Label_Left", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.1, "y": 0.7 }, { "x": 0.5, "y": 0.75 }], "pivot": { "x": 0.5, "y": 0.5 } }, "textLayerData": { "kind": "text", "text": "左对齐", "fontSize": 24, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "left", "haveShadow": false, "warp": true, "rotation": 0.0 } },
+    { "name": "Label_Center", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.1, "y": 0.6 }, { "x": 0.9, "y": 0.65 }], "pivot": { "x": 0.5, "y": 0.5 } }, "textLayerData": { "kind": "text", "text": "居中对齐", "fontSize": 26, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "center", "haveShadow": false, "warp": true, "rotation": 0.0 } },
+    { "name": "Label_Right", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.5, "y": 0.5 }, { "x": 0.9, "y": 0.55 }], "pivot": { "x": 0.5, "y": 0.5 } }, "textLayerData": { "kind": "text", "text": "右对齐，有阴影", "fontSize": 28, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "right", "haveShadow": true, "warp": true, "rotation": 0.0 } }
+  ]
+}
+
+

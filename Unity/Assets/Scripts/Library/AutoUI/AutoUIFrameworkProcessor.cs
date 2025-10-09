@@ -4,6 +4,7 @@ using TMPro;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace AutoUI
 {
@@ -32,8 +33,32 @@ namespace AutoUI
 					LogUtil.LogError("遇到无法解析的renderMode:" + layers.canvasLayerData.renderMode);
 					break;
 			}
-			canvas.renderMode = RenderMode.WorldSpace;
-			canvasObj.AddComponent<CanvasScaler>();
+			// 当为 ScreenSpaceCamera 时，尝试绑定或创建 UICamera
+			if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
+			{
+				Camera uiCam = Camera.main;
+				if (uiCam == null)
+				{
+					var existed = GameObject.Find("UICamera");
+					if (existed != null) uiCam = existed.GetComponent<Camera>();
+				}
+				if (uiCam == null)
+				{
+					var camGO = new GameObject("UICamera");
+					uiCam = camGO.AddComponent<Camera>();
+					uiCam.orthographic = true;
+					uiCam.clearFlags = CameraClearFlags.Depth;
+					try { uiCam.cullingMask = LayerMask.GetMask("UI"); } catch {}
+					uiCam.depth = 100;
+				}
+				canvas.worldCamera = uiCam;
+			}
+			// CanvasScaler：按设计分辨率缩放
+			var scaler = canvasObj.AddComponent<CanvasScaler>();
+			scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+			scaler.referenceResolution = new Vector2(layers.canvasLayerData.width, layers.canvasLayerData.height);
+			scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+			scaler.matchWidthOrHeight = 0.5f;
 			canvasObj.AddComponent<GraphicRaycaster>();
 			if (layers.eLayerKind != ELayerKind.canvas || layers.canvasLayerData == null)
 			{
@@ -65,6 +90,8 @@ namespace AutoUI
 			{
 				LogUtil.LogError("出现错误,遇到rectTransform为null的情况,图层名为"+layer.name);
 			}
+			// 应用可见性
+			newGameObject.SetActive(layer.visible);
 		}
 		public static void PrefabProcessLayerFramework(in Layer layer, ref GameObject newGameObject)
 		{
@@ -78,12 +105,15 @@ namespace AutoUI
 			{
 				LogUtil.LogError("出现错误,遇到rectTransform为null的情况,图层名为"+layer.name);
 			}
+			// 应用可见性
+			newGameObject.SetActive(layer.visible);
 		}
 		private static GameObject CreateNewGameObject(in Layer layer, ref GameObject parent)
 		{
 			Transform parentTransform = parent.transform;
 			GameObject layerGameObject = new GameObject(layer.name);
 			layerGameObject.transform.SetParent(parentTransform);
+			layerGameObject.SetActive(layer.visible);
 			return layerGameObject;
 		}
 

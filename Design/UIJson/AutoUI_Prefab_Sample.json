@@ -1,0 +1,24 @@
+{
+  "name": "AutoUI_Prefab_Sample",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "anchoredPosition": { "x": 0, "y": 0 }, "sizeDelta": { "x": 0, "y": 0 } },
+  "canvasLayerData": { "renderMode": "overlay", "width": 1080, "height": 1920 },
+  "layers": [
+    {
+      "name": "Item_Template",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": { "anchor": [{ "x": 0.3, "y": 0.45 }, { "x": 0.7, "y": 0.55 }], "pivot": { "x": 0.5, "y": 0.5 }, "sizeDelta": { "x": 0, "y": 120 } },
+      "components": [ { "name": "prefab", "parameters": { "name": "LoopItem" } } ],
+      "layers": [
+        { "name": "button-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }] }, "pixelLayerData": { "kind": "pixel" } },
+        { "name": "Label_Item", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0, "y": 0.5 }, { "x": 0, "y": 0.5 }], "pivot": { "x": 0, "y": 0.5 }, "anchoredPosition": { "x": 24, "y": 0 }, "sizeDelta": { "x": 400, "y": 60 } }, "textLayerData": { "kind": "text", "text": "循环项", "fontSize": 28, "color": { "r": 255, "g": 255, "b": 255 }, "textAlign": "left", "haveShadow": false, "warp": true, "rotation": 0.0 } }
+      ]
+    }
+  ]
+}
+
+

@@ -153,11 +153,11 @@ namespace AutoUI
     public class LayerRectTransform
     {
         public NormalizedPoint[] anchor = new NormalizedPoint[2];
-        public NormalizedPoint pivot;
-        public NormalizedPoint anchoredPosition;
-        public NormalizedPoint sizeDelta;
-        public NormalizedPoint offsetMin;
-        public NormalizedPoint offsetMax;
+        public NormalizedPoint pivot = new NormalizedPoint();
+        public NormalizedPoint anchoredPosition = new NormalizedPoint();
+        public NormalizedPoint sizeDelta = new NormalizedPoint();
+        public NormalizedPoint offsetMin = new NormalizedPoint();
+        public NormalizedPoint offsetMax = new NormalizedPoint();
     }
 
     public interface ILayerData { }

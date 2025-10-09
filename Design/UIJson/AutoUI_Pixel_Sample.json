@@ -1,0 +1,14 @@
+{
+  "name": "AutoUI_Pixel_Sample",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": { "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }], "pivot": { "x": 0.5, "y": 0.5 }, "anchoredPosition": { "x": 0, "y": 0 }, "sizeDelta": { "x": 0, "y": 0 } },
+  "canvasLayerData": { "renderMode": "overlay", "width": 1080, "height": 1920 },
+  "layers": [
+    { "name": "button-filled", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.2, "y": 0.6 }, { "x": 0.5, "y": 0.8 }], "pivot": { "x": 0.5, "y": 0.5 } }, "pixelLayerData": { "kind": "pixel" } },
+    { "name": "TopBar_BG", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": { "anchor": [{ "x": 0.55, "y": 0.6 }, { "x": 0.85, "y": 0.8 }], "pivot": { "x": 0.5, "y": 0.5 } }, "pixelLayerData": { "kind": "pixel" } }
+  ]
+}
+
+

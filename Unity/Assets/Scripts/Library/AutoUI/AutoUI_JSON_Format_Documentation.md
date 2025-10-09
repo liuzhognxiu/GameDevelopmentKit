@@ -1,3 +1,84 @@
+### 快速提示词（用于LLM生成AutoUI JSON，短版）
+
+- 任务：根据PSD层级/命名生成符合 AutoUI 的 JSON。输出为单一根 `Layer`（通常为 `canvas`），内含递归 `layers` 树。
+- 严格输出结构：仅包含所需字段，布尔/数值/字符串类型正确；坐标用 `NormalizedPoint`（`{"x":num,"y":num}`）。
+
+- 根对象（通常 `canvas`）：
+  - 必含：`name`/`layerKind":"canvas"/`visible`/`opacity`/`rectTransform`/`canvasLayerData`（`renderMode":"overlay|camera|worldSpace"，width，height`）/`layers`。
+
+- Layer 通用字段：
+  - `name`（用于资源匹配，务必与 Sprite/Prefab 同名）
+  - `layerKind`: `group|smartObject|pixel|text|canvas`
+  - `visible`（bool），`opacity`（0-1）
+  - `rectTransform`: `anchor`([min,max])、`pivot`、`anchoredPosition`、`sizeDelta`（必要时可含 `offsetMin/offsetMax`）
+
+- 各 layerKind 规则：
+  - `pixel`/`smartObject` ⇒ 生成 `Image`，需要 `pixelLayerData:{"kind":"pixel"}` 或 `smartObjectLayerData`。
+  - `text` ⇒ 生成 `TextMeshProUGUI`，`textLayerData` 包含：`text`、`fontSize`、`color{r,g,b}`、`textAlign":"left|center|right"、`haveShadow`、`warp`、`rotation`。
+  - `group` ⇒ 容器，可携带 `components`；`layers` 为子项。
+  - `canvas` ⇒ 根容器，含 `canvasLayerData`。
+
+- components（放在任意需要的 `Layer.components`，数组，每项 `{name, parameters}`）：
+  - `button` ⇒ `UnityEngine.UI.Button`
+  - `grid` ⇒ `GridLayoutGroup`（自动推断）
+  - `horizontalLayout` ⇒ `HorizontalLayoutGroup`（自动推断）
+  - `verticalLayout` ⇒ `VerticalLayoutGroup`（自动推断）
+  - `title` ⇒ 文本样式标记
+  - `prefab` ⇒ `{parameters:{"name":"PrefabName"}}`
+  - `slider`/`progress`（基于 `UnityEngine.UI.Slider`）：`parameters` 支持
+    - `min`/`max`/`value`（默认 0/1/0），`wholeNumbers`（默认 false）
+    - `direction":"LeftToRight|RightToLeft|BottomToTop|TopToBottom`（大小写不敏感；默认 LeftToRight）
+    - `interactable`（`slider` 默认 true；`progress` 默认 false）
+    - `background`/`fill`/`handle`（用子节点名绑定；若缺省按关键词：background/bg，fill/bar/progress，handle/thumb）
+    - 注：`fill` 绑定是必须项，缺失需给出警告；目标节点缺 `Image` 将自动补挂空 `Image`。
+  - `toggle`（`UnityEngine.UI.Toggle`）：`isOn`（默认 false）、`interactable`（默认 true）、`background`、`checkmark`（同样支持关键词匹配）
+  - `scroll`（`ScrollRect`）：可选 `direction":"vertical|horizontal`（默认 vertical）、`movementType":"Clamped|Elastic|Unrestricted`、`inertia`、`decelerationRate`、`elasticity`、`viewport`、`content`；
+    - 若未提供 `viewport/content`，自动创建并为 `Content` 添加合适的 `LayoutGroup + ContentSizeFitter`（垂直/水平随方向）
+
+- 资源与命名最佳实践：
+  - 图层 `name` 与工程资源名一致；找不到 Sprite 也会为像素类节点补挂空 `Image`，以保证后续绑定不失败。
+  - 初始 `value` 将被钳制到 `[min,max]`。
+
+- 最小模板示例（裁剪至关键字段）：
+```json
+{
+  "name": "UI_Demo",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": {
+    "anchor": [{"x":0, "y":0}, {"x":1, "y":1}],
+    "pivot": {"x":0.5, "y":0.5},
+    "anchoredPosition": {"x":0, "y":0},
+    "sizeDelta": {"x":0, "y":0}
+  },
+  "canvasLayerData": {"renderMode": "overlay", "width": 1080, "height": 1920},
+  "layers": [
+    {
+      "name": "Panel_Main",
+      "layerKind": "group",
+      "rectTransform": {
+        "anchor": [{"x":0.5, "y":0.5}, {"x":0.5, "y":0.5}],
+        "pivot": {"x":0.5, "y":0.5},
+        "anchoredPosition": {"x":0, "y":0},
+        "sizeDelta": {"x":800, "y":600}
+      },
+      "components": [
+        {"name": "verticalLayout", "parameters": {}},
+        {"name": "toggle", "parameters": {"isOn": true, "background": "Box", "checkmark": "Tick"}}
+      ],
+      "layers": [
+        {"name": "Box", "layerKind": "pixel", "rectTransform": {"anchor":[{"x":0, "y":0}, {"x":1, "y":1}], "pivot":{"x":0.5, "y":0.5}, "anchoredPosition": {"x":0, "y":0}, "sizeDelta": {"x":0, "y":0}}, "pixelLayerData": {"kind":"pixel"}},
+        {"name": "Tick", "layerKind": "pixel", "rectTransform": {"anchor":[{"x":0.5, "y":0.5}, {"x":0.5, "y":0.5}], "pivot":{"x":0.5, "y":0.5}, "anchoredPosition": {"x":0, "y":0}, "sizeDelta": {"x":40, "y":40}}, "pixelLayerData": {"kind":"pixel"}},
+        {"name": "Label_Title", "layerKind": "text", "rectTransform": {"anchor":[{"x":0, "y":1}, {"x":1, "y":1}], "pivot":{"x":0.5, "y":1}, "anchoredPosition": {"x":0, "y":0}, "sizeDelta": {"x":0, "y":80}}, "textLayerData": {"kind":"text", "text":"标题", "fontSize":32, "color":{"r":255, "g":255, "b":255}, "textAlign":"center", "haveShadow":false, "warp":true, "rotation":0}}
+      ]
+    }
+  ]
+}
+```
+
+---
+
 ### AutoUI 导出的JSON文件格式详解
 
 JSON文件的根对象是一个代表PSD画布或主图层的 `Layer` 对象。整个结构是递归的，一个 `Layer` 对象内部可以包含一个 `layers` 数组，形成层级树。
@@ -24,15 +105,6 @@ JSON的顶层就是一个 `Layer` 对象，通常是 `canvas` 类型。
 }
 ```
 
-注意事项：
-
-- 缺少 Image 时自动补挂：绑定到 `background`/`fill`/`handle` 的目标节点若无 `Image`，会自动添加一个空 `Image` 组件，确保可见与可绑定。
-- Sprite 兜底：当资源库中找不到同名 Sprite 时，会依然为像素/智能对象图层挂载空 `Image` 作为兜底，避免后续绑定失败。
-- 关键词匹配：未显式提供名称时，按关键词匹配节点——背景（background/bg）、填充（fill/bar/progress）、手柄（handle/thumb）。
-- 填充节点必需：`fill` 是进度条的关键节点，若找不到会输出警告并跳过绑定。
-- 方向与大小写：`direction` 字符串大小写不敏感，支持 LeftToRight / RightToLeft / BottomToTop / TopToBottom。
-- 数值范围：初始 `value` 会被钳制到 `[min, max]`。
-- 交互默认：`slider` 默认 `interactable=true`；`progress` 若未显式设置，默认 `interactable=false`。
 
 #### `Layer` 对象 (核心结构)
 
@@ -255,6 +327,147 @@ JSON的顶层就是一个 `Layer` 对象，通常是 `canvas` 类型。
   ]
 }
 ```
+### 7. 滚动容器与循环列表（ScrollRect + Prefab 模板）
+
+支持在 `group` 图层上添加 `scroll` 组件，自动装配 `ScrollRect → Viewport(Image+Mask) → Content(Layout+Fitter)`，并绑定引用。适用于长列表、循环列表等场景。
+
+- 组件：
+  - `name`: `scroll`
+  - `parameters`（可选）：
+    - `direction`: `vertical` | `horizontal`（默认 `vertical`）
+    - `movementType`: `Clamped` | `Elastic` | `Unrestricted`（默认 `Clamped`）
+    - `inertia`: `true/false`（默认 `true`）
+    - `decelerationRate`: `float`（默认 `0.135`）
+    - `elasticity`: `float`（默认 `0.1`）
+    - `viewport`: 视口节点名（未找到将自动创建 `Viewport`）
+    - `content`: 内容节点名（未找到将自动创建 `Content`）
+
+- 行为：
+  - 当 `direction=vertical` 时，为 `Content` 自动挂 `VerticalLayoutGroup + ContentSizeFitter(vertical=PreferredSize)`；
+  - 当 `direction=horizontal` 时，为 `Content` 自动挂 `HorizontalLayoutGroup + ContentSizeFitter(horizontal=PreferredSize)`；
+  - 若未指定 `viewport/content`，将自动创建并按最佳实践设置锚点与遮罩。
+
+- 循环列表（模板）示例：使用 `prefab` 将条目作为可复用模板（运行期可通过代码复用/填充数据）。
+
+```json
+{
+  "name": "LoopListDemo",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": {
+    "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }],
+    "pivot": { "x": 0.5, "y": 0.5 },
+    "anchoredPosition": { "x": 0, "y": 0 },
+    "sizeDelta": { "x": 0, "y": 0 },
+    "offsetMin": { "x": 0, "y": 0 },
+    "offsetMax": { "x": 0, "y": 0 }
+  },
+  "canvasLayerData": { "renderMode": "overlay", "width": 1080, "height": 1920 },
+  "layers": [
+    {
+      "name": "List_Loop",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {
+        "anchor": [{ "x": 0.5, "y": 0.5 }, { "x": 0.5, "y": 0.5 }],
+        "pivot": { "x": 0.5, "y": 0.5 },
+        "anchoredPosition": { "x": 0, "y": 0 },
+        "sizeDelta": { "x": 800, "y": 1000 },
+        "offsetMin": { "x": 0, "y": 0 },
+        "offsetMax": { "x": 0, "y": 0 }
+      },
+      "components": [
+        {
+          "name": "scroll",
+          "parameters": {
+            "direction": "vertical",
+            "movementType": "Clamped",
+            "inertia": true,
+            "decelerationRate": 0.135,
+            "elasticity": 0.1,
+            "viewport": "Viewport",
+            "content": "Content"
+          }
+        }
+      ],
+      "layers": [
+        {
+          "name": "Item_Template",
+          "layerKind": "group",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {
+            "anchor": [{ "x": 0, "y": 1 }, { "x": 1, "y": 1 }],
+            "pivot": { "x": 0.5, "y": 1 },
+            "anchoredPosition": { "x": 0, "y": 0 },
+            "sizeDelta": { "x": 0, "y": 120 },
+            "offsetMin": { "x": 0, "y": 0 },
+            "offsetMax": { "x": 0, "y": 0 }
+          },
+          "components": [
+            { "name": "prefab", "parameters": { "name": "LoopItem" } }
+          ],
+          "layers": [
+            {
+              "name": "Item_BG",
+              "layerKind": "pixel",
+              "visible": true,
+              "opacity": 1.0,
+              "rectTransform": {
+                "anchor": [{ "x": 0, "y": 0 }, { "x": 1, "y": 1 }],
+                "pivot": { "x": 0.5, "y": 0.5 },
+                "anchoredPosition": { "x": 0, "y": 0 },
+                "sizeDelta": { "x": 0, "y": 0 },
+                "offsetMin": { "x": 0, "y": 0 },
+                "offsetMax": { "x": 0, "y": 0 }
+              },
+              "pixelLayerData": { "kind": "pixel" }
+            },
+            {
+              "name": "Label_Item",
+              "layerKind": "text",
+              "visible": true,
+              "opacity": 1.0,
+              "rectTransform": {
+                "anchor": [{ "x": 0, "y": 0.5 }, { "x": 0, "y": 0.5 }],
+                "pivot": { "x": 0, "y": 0.5 },
+                "anchoredPosition": { "x": 24, "y": 0 },
+                "sizeDelta": { "x": 680, "y": 60 },
+                "offsetMin": { "x": 0, "y": 0 },
+                "offsetMax": { "x": 0, "y": 0 }
+              },
+              "textLayerData": {
+                "kind": "text",
+                "text": "循环项",
+                "fontSize": 28,
+                "color": { "r": 255, "g": 255, "b": 255 },
+                "textAlign": "left",
+                "haveShadow": false,
+                "warp": true,
+                "rotation": 0.0
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+提示：循环列表通常在运行时由脚本驱动（对象池/复用、数据绑定）。上面的 `Item_Template` 使用 `prefab` 标记，会在首次构建时保存为独立的 `LoopItem.prefab`，便于运行期复用与实例化。
+
+注意事项：
+
+- 缺少 Image 时自动补挂：绑定到 `background`/`fill`/`handle` 的目标节点若无 `Image`，会自动添加一个空 `Image` 组件，确保可见与可绑定。
+- Sprite 兜底：当资源库中找不到同名 Sprite 时，会依然为像素/智能对象图层挂载空 `Image` 作为兜底，避免后续绑定失败。
+- 关键词匹配：未显式提供名称时，按关键词匹配节点——背景（background/bg）、填充（fill/bar/progress）、手柄（handle/thumb）。
+- 填充节点必需：`fill` 是进度条的关键节点，若找不到会输出警告并跳过绑定。
+- 方向与大小写：`direction` 字符串大小写不敏感，支持 LeftToRight / RightToLeft / BottomToTop / TopToBottom。
+- 数值范围：初始 `value` 会被钳制到 `[min, max]`。
+- 交互默认：`slider` 默认 `interactable=true`；`progress` 若未显式设置，默认 `interactable=false`。
 
 ## 配置系统
 通过`AutoUIConfig.json`配置：
@@ -279,4 +492,7 @@ JSON的顶层就是一个 `Layer` 对象，通常是 `canvas` 类型。
 - 避免过深的嵌套层级
 - 合理使用预制体复用
 - 优化图片资源大小
+
+
+
 

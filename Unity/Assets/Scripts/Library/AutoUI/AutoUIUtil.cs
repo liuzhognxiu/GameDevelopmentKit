@@ -7,13 +7,11 @@ namespace AutoUI
     public class AutoUIUtil
     {
         public static string scenePath = AutoUIConfig.config.Default.Scene.Path;
-
-
-        // 打开scene，并进入到预制体中
+        
         public static GameObject OpenPrefabByPath(string prefabPath)
         {
-            scenePath = AutoUIConfig.config.Default.Scene.Path;
-            EditorSceneManager.OpenScene(scenePath);
+            // scenePath = AutoUIConfig.config.Default.Scene.Path;
+            // EditorSceneManager.OpenScene(scenePath);
             var prefab = PrefabStageUtility.OpenPrefab(prefabPath);
             if (prefab != null)
             {

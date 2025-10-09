@@ -1,0 +1,74 @@
+{
+  "name": "Roulette",
+  "layerKind": "canvas",
+  "visible": true,
+  "opacity": 1.0,
+  "rectTransform": {
+    "anchor": [{"x": 0, "y": 0}, {"x": 1, "y": 1}],
+    "pivot": {"x": 0.5, "y": 0.5},
+    "anchoredPosition": {"x": 0, "y": 0},
+    "sizeDelta": {"x": 0, "y": 0}
+  },
+  "canvasLayerData": {"renderMode": "overlay", "width": 1920, "height": 1080},
+  "layers": [
+    {
+      "name": "Header_Title",
+      "layerKind": "text",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.42, "y": 0.88}, {"x": 0.58, "y": 0.96}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+      "textLayerData": {"kind": "text", "text": "Roulette", "fontSize": 36, "color": {"r": 255, "g": 255, "b": 255}, "textAlign": "center", "haveShadow": false, "warp": false, "rotation": 0.0}
+    },
+    {
+      "name": "Wheel_Group",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.23, "y": 0.16}, {"x": 0.77, "y": 0.80}], "pivot": {"x": 0.5, "y": 0.5}, "anchoredPosition": {"x": 0, "y": 0}, "sizeDelta": {"x": 0, "y": 0}},
+      "layers": [
+        {"name": "frame_gradient_play_time_bg", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.00, "y": 0.00}, {"x": 1.00, "y": 1.00}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+        {"name": "group_image_roulette1", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.10, "y": 0.06}, {"x": 0.90, "y": 0.96}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+        {"name": "group_image_roulette2", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.12, "y": 0.08}, {"x": 0.88, "y": 0.94}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+        {"name": "group_image_roulette7", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.33, "y": 0.64}, {"x": 0.67, "y": 0.82}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+        {"name": "group_image_roulette5", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.46, "y": 0.78}, {"x": 0.54, "y": 0.92}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+
+        {
+          "name": "Center_Spin_Button",
+          "layerKind": "group",
+          "visible": true,
+          "opacity": 1.0,
+          "rectTransform": {"anchor": [{"x": 0.40, "y": 0.36}, {"x": 0.60, "y": 0.56}], "pivot": {"x": 0.5, "y": 0.5}},
+          "layers": [
+            {"name": "btn_circle_02", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.00, "y": 0.00}, {"x": 1.00, "y": 1.00}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "btn_icon_spin", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.30, "y": 0.30}, {"x": 0.70, "y": 0.70}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+            {"name": "spin_btn_text", "layerKind": "text", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.10, "y": 0.18}, {"x": 0.90, "y": 0.82}], "pivot": {"x": 0.5, "y": 0.5}}, "textLayerData": {"kind": "text", "text": "SPIN\nFREE", "fontSize": 34, "color": {"r": 120, "g": 20, "b": 20}, "textAlign": "center", "haveShadow": false, "warp": true, "rotation": 0.0}}
+          ],
+          "components": [{"name": "button", "parameters": {}}]
+        }
+      ]
+    },
+    {
+      "name": "Close_Button",
+      "layerKind": "group",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.93, "y": 0.90}, {"x": 0.98, "y": 0.98}], "pivot": {"x": 0.5, "y": 0.5}},
+      "layers": [
+        {"name": "btn_circle_01_gray", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.00, "y": 0.00}, {"x": 1.00, "y": 1.00}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}},
+        {"name": "icon_white_close", "layerKind": "pixel", "visible": true, "opacity": 1.0, "rectTransform": {"anchor": [{"x": 0.25, "y": 0.25}, {"x": 0.75, "y": 0.75}], "pivot": {"x": 0.5, "y": 0.5}}, "pixelLayerData": {"kind": "pixel"}}
+      ],
+      "components": [{"name": "button", "parameters": {}}]
+    },
+
+    {
+      "name": "character_bottom_bg_small",
+      "layerKind": "pixel",
+      "visible": true,
+      "opacity": 1.0,
+      "rectTransform": {"anchor": [{"x": 0.00, "y": 0.00}, {"x": 1.00, "y": 0.22}], "pivot": {"x": 0.5, "y": 0.0}},
+      "pixelLayerData": {"kind": "pixel"}
+    }
+  ]
+}
+
+

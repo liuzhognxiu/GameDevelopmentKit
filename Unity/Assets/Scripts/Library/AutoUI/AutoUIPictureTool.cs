@@ -20,6 +20,11 @@ namespace AutoUI
                 // 这是九宫格
                 image.type = Image.Type.Sliced;
             }
+            // 统一 raycastTarget 策略
+            if (AutoUIConfig.config != null && AutoUIConfig.config.Default != null && AutoUIConfig.config.Default.UIInteract != null)
+            {
+                image.raycastTarget = AutoUIConfig.config.Default.UIInteract.ImageRaycastTarget;
+            }
         }
         
         

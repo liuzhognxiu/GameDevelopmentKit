@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "sourceRevision": null,
+  "checks": [
+    {
+      "id": "client-start",
+      "status": "not_run",
+      "performedAt": null,
+      "environment": null,
+      "procedure": "KnowledgeBase/01-总体架构与启动流程.md#验证方法",
+      "evidence": [],
+      "notes": "本轮未执行"
+    },
+    {
+      "id": "server-start",
+      "status": "not_run",
+      "performedAt": null,
+      "environment": null,
+      "procedure": "KnowledgeBase/21-DotNet服务端.md#验证方法",
+      "evidence": [],
+      "notes": "本轮未执行"
+    },
+    {
+      "id": "luban-export",
+      "status": "not_run",
+      "performedAt": null,
+      "environment": null,
+      "procedure": "KnowledgeBase/17-Luban配置表.md#验证方法",
+      "evidence": [],
+      "notes": "本轮未执行"
+    },
+    {
+      "id": "proto-generation",
+      "status": "not_run",
+      "performedAt": null,
+      "environment": null,
+      "procedure": "KnowledgeBase/18-Proto协议生成.md#验证方法",
+      "evidence": [],
+      "notes": "本轮未执行"
+    },
+    {
+      "id": "target-player-build",
+      "status": "not_run",
+      "performedAt": null,
+      "environment": null,
+      "procedure": "KnowledgeBase/20-热更新与一键打包.md#验证方法",
+      "evidence": [],
+      "notes": "本轮未执行"
+    }
+  ]
+}

@@ -1,69 +1,78 @@
-# GameDevelopmentKit 知识库（模块梳理）
+# GameDevelopmentKit AI 知识库
 
-> 基于对仓库 `E:\Project\GameDevelopmentKit` 的 20 轮循环梳理整理，并经多 agent 评审补充。
-> 本知识库按模块组织，覆盖客户端（Unity/GF）、服务端（ET）、工具链与构建，目标是让开发者快速定位"某个功能在哪、怎么用"。
+本目录是面向 AI 辅助开发的仓库内知识层。它不替代源码和 `Book/`，而是把模块边界、入口链路、扩展方法、约束和验证方式整理成可检索、可追溯、可逐轮验收的内容。
 
-## 模块清单（26 篇 + 术语表）
+## AI 使用入口
 
-### 〇、入门必读
-| # | 模块 | 文档 | 说明 |
-| --- | --- | --- | --- |
-| 0 | 术语表 | [00-术语表.md](00-术语表.md) | UGF/ET/宏/配置/服务端等前置概念速查，**建议先读** |
+处理开发任务时按以下顺序读取，避免无目标地加载整个仓库：
 
-### 一、架构与入口
-| # | 模块 | 文档 | 核心位置 |
-| --- | --- | --- | --- |
-| 1 | 总体架构与启动流程 | [01-总体架构与启动流程.md](01-总体架构与启动流程.md) | `Unity/Assets/Scripts/Game/Procedure/`、`Game/Base/` |
-| 2 | 模式选择与代码分层 | [02-模式选择与代码分层.md](02-模式选择与代码分层.md) | `Game/ET/`、`Game/Hot/`、`DefineSymbolTool` |
+1. 读取 [`catalog.json`](catalog.json)，按 `id`、`area` 和 `sources` 定位模块。
+2. 读取命中的模块文档；涉及跨模块调用时，再读取其依赖模块。
+3. 以 `sources` 指向的当前源码为最终事实。知识库与源码冲突时，以源码为准并修正文档。
+4. 自动生成目录、Unity `.meta`、Luban/Proto 生成物只作为结果查阅，不作为手工修改入口。
 
-### 二、业务模块（GameHot）
-| # | 模块 | 文档 | 核心位置 |
-| --- | --- | --- | --- |
-| 3 | GameHot 业务入口与流程 | [03-GameHot业务入口与流程.md](03-GameHot业务入口与流程.md) | `Game/Hot/Loader/Init.cs`、`Hot/Code/Base/HotEntry.cs` |
-| 4 | UI 窗体体系 | [04-UI窗体体系.md](04-UI窗体体系.md) | `Game/UI/Common/` |
-| 5 | UI 容器与组件绑定 | [05-UI容器与组件绑定.md](05-UI容器与组件绑定.md) | `Game/Container/`、CodeBind、ReactiveBinding |
-| 6 | Entity 实体模块 | [06-Entity实体模块.md](06-Entity实体模块.md) | `Game/Entity/` |
-| 7 | AssetSet 资源设置 | [07-AssetSet资源设置.md](07-AssetSet资源设置.md) | `Library/UGF/.../AssetSet/`、`Game/AssetSet/` |
-| 8 | 场景与相机 | [08-场景与相机模块.md](08-场景与相机模块.md) | `Game/Scene/`、`Game/Camera/` |
-| 9 | 音频模块 | [09-音频模块.md](09-音频模块.md) | `Game/Sound/SoundExtension.cs` |
-| 10 | 本地化（多语言） | [10-本地化模块.md](10-本地化模块.md) | `Game/Localization/`、`Game/Builtin/` |
-| 11 | 事件与日志 | [11-事件与日志模块.md](11-事件与日志模块.md) | `Game/Event/`、`Game/Log/` |
-| 12 | 平台与 SDK 适配 | [12-平台与SDK适配.md](12-平台与SDK适配.md) | `Game/Platform/` |
-| 13 | 内置窗体与通用 UI | [13-内置窗体与通用UI.md](13-内置窗体与通用UI.md) | `Game/Builtin/` |
-| 14 | 工具类库 | [14-工具类库.md](14-工具类库.md) | `Game/Utility/`、`Game/Debugger/` |
+## 完成状态
 
-### 三、ET 模式
-| # | 模块 | 文档 | 核心位置 |
-| --- | --- | --- | --- |
-| 15 | ET 模块（Loader 与四程序集） | [15-ET模块.md](15-ET模块.md) | `Game/ET/Loader/`、`Game/ET/Code/`、`Library/ET/Core/` |
-| 16 | ET 动态事件 | [16-ET动态事件.md](16-ET动态事件.md) | `Game/ET/Code/Model/Share/Module/DynamicEvent/` |
+| 状态 | 含义 |
+| --- | --- |
+| `planned` | 已发现模块，但尚未形成可用文档 |
+| `seed` | 已有可检索草稿，尚未按模板逐项核验 |
+| `verified` | 已对照当前源码完成模板内容、权威源指纹和静态门禁；不表示运行验收通过 |
 
-### 四、数据与协议
-| # | 模块 | 文档 | 核心位置 |
-| --- | --- | --- | --- |
-| 17 | Luban 配置表 | [17-Luban配置表.md](17-Luban配置表.md) | `Design/Excel/`、`Share/Tool/ExcelExporter/`、`Game/Tables/` |
-| 18 | Proto 协议生成 | [18-Proto协议生成.md](18-Proto协议生成.md) | `Design/Proto/`、`Share/Tool/Proto2CS/` |
+只有 `catalog.json` 中全部模块均为 `verified`，且静态完整性校验通过，才能声明“静态知识层完成”。只有五类运行验收也通过，才能声明“知识库全流程完成”。当前草稿数量不能代替模块覆盖率。
 
-### 五、编辑器与构建
-| # | 模块 | 文档 | 核心位置 |
-| --- | --- | --- | --- |
-| 19 | 编辑器工具集 | [19-编辑器工具集.md](19-编辑器工具集.md) | `Game/Editor/`（Build、DefineSymbol、Toolbar、CodeCreator） |
-| 20 | HybridCLR 热更新与一键打包 | [20-热更新与一键打包.md](20-热更新与一键打包.md) | `Book/HybridCLR热更.md`、`Game/Editor/Build/` |
+## 当前验收状态
 
-### 六、服务端与运维（评审补充）
-| # | 模块 | 文档 | 核心位置 |
-| --- | --- | --- | --- |
-| 21 | DotNet 服务端架构 | [21-DotNet服务端架构.md](21-DotNet服务端架构.md) | `DotNet/`（App/Loader/Hotfix/Model/Core/ThirdParty） |
-| 22 | GameHot 网络层 | [22-GameHot网络层.md](22-GameHot网络层.md) | `Game/Hot/Loader/Network/` |
-| 23 | 静态分析与代码生成器 | [23-静态分析与代码生成器.md](23-静态分析与代码生成器.md) | `Share/Analyzer/`、`Share/SourceGenerator/` |
-| 24 | UGF 扩展组件与 Library 附属包 | [24-UGF扩展组件与Library附属包.md](24-UGF扩展组件与Library附属包.md) | `Library/UGF/.../Extension/`、FolderTag、ReplaceComponent、SocoTool |
-| 25 | Recast 寻路链路 | [25-Recast寻路链路.md](25-Recast寻路链路.md) | `Tools/RecastNavExportor/`、`Config/Recast/`、`Share/Libs/`、`DotNet/Loader/RecastFileReader.cs` |
-| 26 | 服务端运维组件 | [26-服务端运维组件.md](26-服务端运维组件.md) | `Share/Aspire/`、`Share/FileServer/`、`Config/NLog/`、Admin/Agent |
+- `catalog.json` 共 45 个模块，当前全部为 `verified`。
+- `01` 至 `27` 文档均按统一模板完成源码核验。
+- 普通校验与 `-RequireStaticComplete` 静态完整校验已于 `2026-08-04` 通过，均为 0 warning。
+- [`runtime-acceptance.json`](runtime-acceptance.json) 如实记录五类运行验收；当前均为 `not_run`，因此 `-RequireComplete` 预期失败，不能声明全流程完成。
 
-## 阅读建议
-- 第一次接触：**先读 00-术语表**，再读 #1、#2，了解双模式架构。
-- 纯 GF 开发：重点 #3~#14、#22（网络）。
-- ET 开发：重点 #15、#16 + #2、#21（服务端）。
-- 配表/协议/构建：读 #17~#20。
-- 服务端与运维：读 #21、#23、#25、#26。
-- 官方详细教程见仓库 `Book/` 目录，本知识库与其互为补充。
+## 知识分区
+
+| 分区 | 内容 | 主要文档 |
+| --- | --- | --- |
+| 架构与入口 | 仓库结构、启动链路、模式与程序集边界 | `01`、`02`、`03` |
+| Unity 业务能力 | UI、Entity、资源、场景、音频、本地化、平台等 | `04` 至 `14` |
+| ET 客户端集成 | ET Core、四程序集、UGF 桥接、动态事件 | `15`、`16` |
+| 数据与协议 | Luban、Proto、生成物与运行时装载 | `17`、`18` |
+| 编辑器与构建 | 编辑器工具、HybridCLR、资源与 Player 构建 | `19`、`20` |
+| 服务端与工具链 | DotNet 服务端、Share 工具、文件服务、Aspire | `21`、`22`、`26` |
+| 基础库与依赖 | UGF、辅助库、Unity Package 与 Assets 插件 | `23`、`24`、`27` |
+| ET 网络示例 | Demo 登录进图、消息分派与 LockStep | `25` |
+
+模块与文档不是一一对应关系；一篇文档可以覆盖多个紧密相关的模块，完整覆盖关系以 [`catalog.json`](catalog.json) 为准。
+
+## 常用阅读路径
+
+- 第一次了解工程：`01` -> `02` -> `03` -> `20`。
+- GameHot 功能开发：`03` -> 对应的 `04` 至 `14` -> `17/18`。
+- ET 客户端开发：`01` -> `02` -> `15` -> `16` -> 对应 UI/Entity 文档。
+- ET 服务端开发：`21` -> `15` -> `17/18` -> `22`。
+- 构建与发布：`02` -> `20` -> `22`。
+
+## Loop 维护
+
+每轮知识库建设遵循 [`LOOP.md`](LOOP.md)。新增或更新文档使用 [`_template.md`](_template.md)，完成后运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File KnowledgeBase/Test-KnowledgeBase.ps1
+```
+
+静态知识层验收使用：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File KnowledgeBase/Test-KnowledgeBase.ps1 -RequireStaticComplete
+```
+
+包含客户端启动、服务端启动、Luban、Proto 和目标 Player 构建的最终验收使用：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File KnowledgeBase/Test-KnowledgeBase.ps1 -RequireComplete
+```
+
+源码或配置核验完成后，使用 `-RefreshSourceFingerprints` 刷新 [`source-fingerprints.json`](source-fingerprints.json)；该操作只更新知识库基线，不代替文档审查。运行验收只能在真实执行后更新 `runtime-acceptance.json`，不得为了让门禁变绿而填写 `passed`。
+
+## 已有主题文档
+
+`01` 至 `27` 为当前知识条目，覆盖架构、Unity 业务、ET、数据生成、编辑器、构建、服务端、工具链、基础库、网络、运维与第三方依赖。当前条目均已完成源码核验；后续源码、配置或依赖发生变化时，必须在同一变更中更新对应文档并重新运行门禁。

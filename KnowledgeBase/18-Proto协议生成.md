@@ -12,8 +12,8 @@ Design/Proto/
 └── ET-Admin/        # 管理后台协议
 
 输出：
-├── ET:  Scripts/Game/ET/Code/Model/Generate/{Client|ClientServer}/Message/Message_ET_Client.cs + _Id.cs
-└── UGF: Scripts/Game/Hot/Code/Generate/Message/Message_GameHot.cs + Id.cs + _PacketHandler.cs
+├── ET:  Scripts/Game/ET/Code/Model/Generate/{Client|ClientServer}/Message/Message_ET_Client.cs + Message_ET_Client_Id.cs
+└── UGF: Scripts/Game/Hot/Code/Generate/Message/GameHotMessage.cs + GameHotMessageId.cs + GameHotMessage_PacketHandler.cs
 ```
 
 ## 核心逻辑（Proto2CS.cs）

@@ -49,12 +49,13 @@ public class ItemEntity : AEntity
 
 ## 实体扩展 API（EntityExtension）
 ```csharp
-// 同步显示
-GameEntry.Entity.ShowItem(new ItemEntityData(itemId, position));
+// 同步显示：第一个参数为 entityTypeId（来自生成常量类），data 作为 userData 传入
+GameEntry.Entity.ShowEntity<ItemEntity>(EntityId.Item, itemData); // GameHot：UGF/EntityId.cs；ET：UGFEntityId
 
-// 异步等待（UniTask）
-await GameEntry.Entity.ShowEntityAsync<ItemEntity>(entityData);
+// 异步等待（UniTask）：同样需传 entityTypeId
+await GameEntry.Entity.ShowEntityAsync<ItemEntity>(EntityId.Item, itemData);
 ```
+> 注意：不存在 `ShowItem(...)` 专用方法，统一走泛型 `ShowEntity<T>(int entityTypeId, object userData = null)` / `ShowEntityAsync<T>(int entityTypeId, object userData = null, ...)`；实体资源路径由 `DREntity` 表按 `entityTypeId` 解析。
 
 ## 设计要点
 - **数据/逻辑分离**：EntityData 可池化、可跨场景传递；EntityLogic 只管表现。

@@ -22,7 +22,7 @@ AssetSet 解决"**把资源设置到目标控件**"的完整生命周期问题�
 ## 业务扩展（`Game/AssetSet/`）
 | 类 | 职责 |
 | --- | --- |
-| `SetSpriteExtension` | 便捷扩展方法（同步/异步设置 Image.sprite） |
+| `AssetSetExtension`（`SetSpriteExtension.cs`） | 便捷扩展方法：`SetSprite`/`SetSpriteAsync`（Image/UXImage）、`SetTextureByResource`、`SetTextureByFileSystem`、`SetTextureByWebRequest`（RawImage，各带 Async 版本） |
 | `UXImageSet` | UXImage（UXTool）专用设置项 |
 | `WaitableImageSet` 等 | 可等待版本，配合 UniTask 等待加载完成 |
 
@@ -38,9 +38,11 @@ icon.SetSprite("Assets/Res/UI/UISprite/Icon/world.png");
 // 异步等待：远程头像（WebRequest 下载 + 本地缓存）
 await avatar.SetTextureByWebRequestAsync($"https://cdn.example.com/avatar/{playerId}.png");
 
-// 显式等待一个设置完成
-await GameEntry.AssetSet.SetImageAsync(image, "Assets/Res/UI/xxx.png");
+// 异步等待：从包内资源加载
+await icon.SetSpriteAsync("Assets/Res/UI/UISprite/Icon/world.png");
 ```
+
+> 注意：业务便捷方法为 `Image`/`UXImage`/`RawImage` 的**扩展方法**（`AssetSetExtension`），直接调用 `xxx.SetSprite(...)` 即可，不存在 `GameEntry.AssetSet.SetImageAsync(...)` 之类的组件级 API；组件级能力（`GameEntry.AssetSet`）管理加载合并与回收，业务侧通过扩展方法触发。
 
 ## 使用要点
 - 同一路径+类型重复设置：只发一次底层加载，其余共享，避免重复 IO。

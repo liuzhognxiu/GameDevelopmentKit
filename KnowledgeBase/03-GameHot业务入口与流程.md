@@ -23,7 +23,7 @@ GameHot（纯 GF）模式：客户端以 UnityGameFramework 为底座，业务�
 | `Init` | 原生加载入口，MonoBehaviour | `Game/Hot/Loader/Init.cs` |
 | `HotEntry` | 热更业务入口，管理组件生命周期 | `Game/Hot/Code/Base/HotEntry.cs` |
 | `HotComponentEntry` | HotComponent 注册表（按 Priority 排序链表） | `Game/Hot/Loader/Base/HotComponentEntry.cs` |
-| `HotComponent` | MonoBehaviour 基类，Awake 自注册 | `Game/Hot/Code/` |
+| `HotComponent` | MonoBehaviour 基类，Awake 自注册 | `Game/Hot/Loader/Base/HotComponent.cs` |
 | `ProcedureComponent` | OnInitialize 反射扫描程序集，自动注册全部 `ProcedureBase` 为 FSM 状态 | `Game/Hot/Code/` |
 
 ## 流程链（Procedure）

@@ -11,6 +11,8 @@
 
 它不包含 GameHot/ET 的业务流程、具体 UI/Entity 逻辑或 Luban 数据。项目能力优先放在 `Unity/Assets/Scripts/Game`；只有可跨业务复用且确实依赖 UGF 的能力才进入 Extension，避免直接修改 GF/UGF 核心后增加上游升级成本。
 
+当前核对按 Catalog 拆开真实接入：`LIB-01` 的 GF 核心不是项目代码直接 new 出来的，而是由 `Unity/Assets/Scripts/Library/UGF/GameFramework.prefab` 提供 Base、Resource、Procedure、Entity、UI 等 Component，并作为嵌套 prefab 接入 `Unity/Assets/Res/GameEntry.prefab`；`LIB-02` 的 UGF Runtime 由 `GameFrameworkComponent.Awake` 注册组件、`BaseComponent.Update/OnDestroy` 驱动 GF 更新和关闭；`LIB-03` 的 Extension 由 `GameEntry.prefab` 直接挂载 CodeRunner、NetworkService、Screen、AssetSet，再经 `Game.GameEntry` 静态缓存和 Procedure 消费。目录存在或程序集引用只能证明代码可编译，不能单独证明运行时已接入。
+
 ## 源码边界
 
 | 类型 | 仓库相对路径 | 说明 |
@@ -21,7 +23,7 @@
 | Extension Runtime | `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime` | AssetCollection、AssetSet、Awaitable、Build、CodeRunner、Collection、Loader、NetworkService、Resource、Screen |
 | Extension Editor | `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Editor` | 资源规则/优化/版本分析、AssetCollection 刷新、VFS 合并、构建和默认设置工具 |
 | 项目桥接 | `Unity/Assets/Scripts/Game/Base/GameEntry*.cs` | 缓存 UGF 与 Extension 组件并向业务暴露静态入口 |
-| 场景配置 | `Unity/Assets/Res/GameEntry.prefab` | 组件、Helper、资源模式、池和屏幕参数的序列化入口 |
+| 场景配置 | `Unity/Assets/Res/GameEntry.prefab`、`Unity/Assets/Scripts/Library/UGF/GameFramework.prefab` | 项目 prefab 挂载 Game/Extension 组件并嵌套 UGF 底座；UGF prefab 提供 Base、Resource、Procedure、Entity、UI 等内置组件 |
 | 编辑器配置 | `Unity/Assets/Res/Editor/Config` | `ResourceCollection.xml`、`ResourceEditor.xml`、`ResourceBuilder.xml`、ResourceRule 与 VersionInfo 数据 |
 
 程序集依赖方向固定为 `GameFramework <- UnityGameFramework.Runtime <- UnityGameFramework.Extension <- Game`；两个 Editor 程序集仅在 Editor 平台编译，运行时程序集不能反向引用 Editor。
@@ -39,10 +41,10 @@
 
 ### 注册、更新与关闭
 
-1. 场景实例化 `GameEntry.prefab`；每个 `GameFrameworkComponent.Awake` 调 `UnityGameFramework.Runtime.GameEntry.RegisterComponent(this)`，同一具体类型只能注册一次。
+1. 场景实例化 `GameEntry.prefab`；项目层 GameObject 挂 `Game.GameEntry`，其子节点挂 CodeRunner、NetworkService、Screen、AssetSet、Tables、Builtin 等组件，同时嵌套 `GameFramework.prefab` 承载 UGF 内置组件。每个 `GameFrameworkComponent.Awake` 调 `UnityGameFramework.Runtime.GameEntry.RegisterComponent(this)`，同一具体类型只能注册一次。
 2. 各内置组件在 `Awake` 调 `GameFrameworkEntry.GetModule<I...Manager>()`。GF 由接口命名约定反射出同命名空间的实现类，例如 `IEventManager -> EventManager`，首次获取时创建。
 3. GF 模块按 Priority 降序插入：Event 7、ObjectPool 6、Download 5、FileSystem 4、Resource 3、Scene 2、Fsm 1、普通模块 0、Debugger -1、Procedure -2。
-4. Unity `Start` 阶段创建 Helper、注入管理器依赖并读取序列化参数。项目 `Game.GameEntry.Start` 缓存所有组件后调用 Runtime `GameEntry.Initialize()`。
+4. Unity `Start` 阶段创建 Helper、注入管理器依赖并读取序列化参数。项目 `Game.GameEntry.Start` 先执行 `InitBuiltinComponents`、`InitExtensionComponents`、`InitGameComponents` 缓存 UGF、Extension 与项目组件，最后调用 Runtime `GameEntry.Initialize()`。
 5. 只有 `BaseComponent.Update` 调 `GameFrameworkEntry.Update(Time.deltaTime, Time.unscaledDeltaTime)`；GF 按上述顺序更新。个别 Unity Helper/Extension 另有自己的 MonoBehaviour `Update`。
 6. `GameEntry.Shutdown` 销毁 Base 所在 GameObject；`BaseComponent.OnDestroy` 使 GF 按更新顺序的逆序 Shutdown，再清空模块、ReferencePool、Marshal 缓存和日志 Helper。Restart 随后重载场景 0，Quit 退出 Player/Play Mode。
 
@@ -55,8 +57,8 @@
 ### Extension 入口
 
 - `ProcedureLaunch.OnEnter` 调 `Awaitable.SubscribeEvent()` 后，Resource/UI/Entity/Scene/Download/WebRequest/Localization 的扩展方法才可等待；框架销毁时 `UnsubscribeEvent()` 仅将 Awaitable 置为无效。
-- `CodeRunnerComponent.StartRun(typeName)` 反射 MonoBehaviour 类型并挂到自身 GameObject；ET 与 GameHot Procedure 离开时 `StopRun()` 立即销毁入口组件。
-- `NetworkServiceComponent` 等到首帧末订阅 UGF 网络事件；业务先 `InitServiceNetworkHelper`，再 Connect/Send/SendAsync，退出时先由 Helper 断开并 `DestroyServiceNetworkHelper`。
+- `CodeRunnerComponent.StartRun(typeName)` 反射 MonoBehaviour 类型并挂到自身 GameObject；`ProcedureET` 只在 `UNITY_ET` 下启动 `ET.Init`，`ProcedureGameHot` 只在 `UNITY_GAMEHOT` 下启动 `Game.Hot.Init`，离开 Procedure 时 `StopRun()` 立即销毁入口组件。随后 ET 的 `CodeLoader` 和 GameHot 的 `Init` 再根据热更开关加载 bytes 或现有程序集。
+- `NetworkServiceComponent` 等到首帧末订阅 UGF 网络事件；GameHot 的 `ProcedureGame` 先 `InitServiceNetworkHelper(new NetworkServiceHelper())`，再 `Connect()`，销毁时 `DestroyServiceNetworkHelper()`。`NetworkServiceHelper` 自己创建名为 `WebSocket` 的 UGF Channel、订阅包处理事件，并维护请求响应等待表。
 - `AssetSetComponent.Start` 创建多引用对象池并初始化 Resource、私有 FileSystem、Web 三种来源；`Update` 按间隔释放目标已销毁或已换资源的记录。
 
 ## 核心类型与 API
@@ -98,6 +100,7 @@
 5. 新异步封装要定义成功、失败、取消、框架关闭四种结果，清理事件数据/引用池对象，并确认取消是否真的能停止底层任务。
 6. 新 Editor 工具放 Editor asmdef，通过现有 ConfigPath Attribute 和 `Assets/Res/Editor/Config` 读写，不让 Runtime 引用 `UnityEditor`。
 7. 真实调用至少在 GameHot 或 ET Client 跑通一次，并验证退出 Procedure/Restart 后无重复订阅、悬挂资源和静态状态残留。
+8. 只看到 `Unity/Assets/Scripts/Library/UGF/**` 或 Extension 目录新增文件时，先补 `GameEntry.prefab`/项目 `GameEntry`/Procedure 或其它消费者；否则只能记录为库能力，不能写成项目运行链路。
 
 ## 约束与常见错误
 
@@ -123,10 +126,13 @@
 7. 从 `Game Framework/Resource Tools` 运行资源规则刷新、Editor/Builder/Analyzer，并确认读写 `Unity/Assets/Res/Editor/Config`；WebGL Helper 需在 WebGL Player 单独验证。
 8. 在仓库根目录运行 `powershell -ExecutionPolicy Bypass -File KnowledgeBase/Test-KnowledgeBase.ps1`。
 
+本文只把源码与 prefab YAML 能支撑的内容写为静态结论；未通过 Unity Agent Bridge 打开或运行 Unity Editor，也未执行 Package/Updatable 资源模式、Shader build、ET/GameHot 真实启动或网络连接。
+
 ## 源码证据
 
 - `Unity/Assets/Scripts/Library/UGF/GameFramework/Base/GameFrameworkEntry.cs`：接口命名反射、模块唯一创建、优先级更新与逆序关闭。
 - `Unity/Assets/Scripts/Library/UGF/GameFramework/Base/GameFrameworkModule.cs`：Priority、Update、Shutdown 契约。
+- `Unity/Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/GameFrameworkComponent.cs`：所有 UGF/Extension Component 的 Awake 注册入口。
 - `Unity/Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/GameEntry.cs`：Unity 组件注册、Initialize 与 Restart/Quit。
 - `Unity/Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs`：Helper 初始化、帧驱动、低内存和销毁链。
 - `Unity/Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Resource/ResourceComponent.cs`：Editor/正式资源管理器切换、依赖注入和 Unity UnloadUnusedAssets。
@@ -136,8 +142,10 @@
 - `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/AssetSet/AssetSetComponent.cs`、`AssetSetComponent.AssetSetObject.cs`：多引用池与按来源释放。
 - `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/CodeRunner/CodeRunnerComponent.cs`、`NetworkService/NetworkServiceComponent.cs`、`Loader/GameEntryLoader.cs`：扩展入口和时序。
 - `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Editor/Build/GameFrameworkConfigs.cs`：工程实际编辑器配置路径。
-- `Unity/Assets/Scripts/Game/Base/GameEntry.cs`、`GameEntry.Builtin.cs`、`GameEntry.Extension.cs`：项目真实组件接入。
+- `Unity/Assets/Scripts/Library/UGF/GameFramework.prefab`、`Unity/Assets/Res/GameEntry.prefab`：UGF 内置组件、项目 GameEntry、Extension 组件、Procedure 列表和资源/UI/Entity 组的序列化接入证据。
+- `Unity/Assets/Scripts/Game/Base/GameEntry.cs`、`GameEntry.Builtin.cs`、`GameEntry.Extension.cs`、`GameEntry.Game.cs`：项目真实组件缓存入口。
 - `Unity/Assets/Scripts/Game/Procedure/ProcedureLaunch.cs`、`ProcedureET.cs`、`ProcedureGameHot.cs`、`Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureGame.cs`：Awaitable、CodeRunner 与 NetworkService 的真实调用点。
+- `Unity/Assets/Scripts/Game/ET/Loader/CodeLoader.cs`、`Unity/Assets/Scripts/Game/Hot/Loader/Init.cs`、`Unity/Assets/Scripts/Game/Hot/Loader/Network/NetworkServiceHelper.cs`：ET/GameHot 入口组件之后的程序集/资源加载与网络 Helper 消费。
 
 ## 关联知识
 

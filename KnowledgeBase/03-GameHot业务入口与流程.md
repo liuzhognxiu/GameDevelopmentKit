@@ -2,7 +2,7 @@
 
 > Catalog ID: `UNITY-02`、`UNITY-03`  
 > 状态：`verified`  
-> 最后核验：`2026-08-03`  
+> 最后核验：`2026-08-05`  
 > 适用模式：GameHot Client
 
 ## 模块定位
@@ -22,6 +22,7 @@ GameHot 是基于 UnityGameFramework 的纯客户端业务模式。`Game.Hot.Loa
 | 入口 prefab | `Unity/Assets/Res/Hot/HotEntry.prefab` | 实际挂载的业务组件 |
 | Procedure | `Unity/Assets/Scripts/Game/Hot/Code/Procedure` | GameHot FSM |
 | 玩法 | `Unity/Assets/Scripts/Game/Hot/Code/Game` | GameMode、GameBase、SurvivalGame |
+| 玩法模式枚举 | `Unity/Assets/Scripts/Game/Hot/Code/Game/GameMode.cs` | 当前只声明 Survival |
 | 生成物 | `Unity/Assets/Scripts/Game/Hot/Code/Generate` | Luban、Proto、UGF ID；禁止手改 |
 
 ## 依赖关系
@@ -62,7 +63,8 @@ Procedure 实际链路：
 3. `ProcedureGame` 初始化并连接 `NetworkServiceHelper`，设置菜单 SceneId。
 4. `ProcedureChangeScene` 停声音、隐藏实体、卸载旧场景、加载 DTScene 指定场景。
 5. 菜单场景进入 `ProcedureMenu`；开始游戏后写入主场景 ID 与 `GameMode.Survival`。
-6. 主场景进入 `ProcedureMain`，创建 `SurvivalGame`；GameOver 两秒后返回菜单。
+6. 主场景进入 `ProcedureMain`，从 FSM 的 `GameMode` byte 取出枚举值并索引 `m_Games`；当前 `GameMode.cs` 只定义 `Survival`，`ProcedureMain.OnInit` 只注册 `SurvivalGame`。
+7. `SurvivalGame.GameMode` 返回 `GameMode.Survival`；GameOver 两秒后 `ProcedureMain` 写入菜单场景 ID 并返回菜单。
 
 ## 核心类型与 API
 
@@ -74,6 +76,7 @@ Procedure 实际链路：
 | `HotEntry` | GameHot 业务总入口 | `Start` 初始化，`Update` 驱动，`OnDestroy` 关闭 |
 | `ProcedureComponent` | 扫描并创建业务 FSM | 只注册直接继承 `ProcedureBase` 的非抽象类 |
 | `HotEntry.Tables.LoadAllAsync()` | 加载 GameHot 配置 | 根据生成 `LoadAsync` 签名选择 ByteBuf/JSON |
+| `GameMode` | 玩法模式枚举 | 当前只有 `Survival`；必须与 `ProcedureMain` 注册表同步 |
 | `GameBase` | 玩法生命周期抽象 | Initialize/Update/Shutdown |
 | `SurvivalGame` | 当前生存玩法 | 每秒按表配置生成 Asteroid |
 
@@ -85,6 +88,7 @@ Procedure 实际链路：
 - `HotEntry.Update` 使用 `Time.deltaTime` 与 `Time.unscaledDeltaTime` 驱动所有组件。
 - 关闭时组件按链表逆序执行 `OnShutdown`，随后清空静态注册表，允许下一次重新实例化。
 - Procedure FSM 数据保存 `NextSceneId` 和 `GameMode`；场景加载完成事件以 `UserData == this` 过滤自身请求。
+- `GameMode` 以 `VarByte` 写入 FSM；`ProcedureMain` 直接用该枚举索引 `m_Games`。新增枚举但未注册对应 `GameBase` 会在进入主场景时找不到玩法实例。
 - `ProcedureGame` 的 NetworkService Helper 在 FSM 销毁时释放，因此离开该状态进入场景后网络仍保持连接。
 
 ## 开发扩展步骤
@@ -106,10 +110,11 @@ Procedure 实际链路：
 
 ### 新增 GameMode
 
-1. 扩展 `GameMode` 枚举并实现 `GameBase`。
-2. 在 `ProcedureMain.OnInit` 注册实例。
-3. 从菜单或其他入口写入 `GameMode` FSM 数据。
-4. 保证 `Shutdown` 释放事件、实体和玩法状态。
+1. 在 `Unity/Assets/Scripts/Game/Hot/Code/Game/GameMode.cs` 扩展枚举值；当前源码只有 `Survival`。
+2. 实现新的 `GameBase` 子类，并让 `GameMode` 属性返回新枚举值。
+3. 在 `ProcedureMain.OnInit` 注册实例，否则 `m_Games[gameMode]` 无法解析。
+4. 从菜单或其他入口写入 `GameMode` FSM 数据；示例是 `ProcedureMenu` 写入 `(byte)GameMode.Survival`。
+5. 保证 `Shutdown` 释放事件、实体和玩法状态。
 
 ## 约束与常见错误
 
@@ -119,6 +124,7 @@ Procedure 实际链路：
 - `ProcedureChangeScene` 找不到 DTScene 时只记录 Warning 并停留在当前状态，新增场景必须先完成表配置与资源收集。
 - `ProcedurePreload` 使用 `UniTaskVoid.Forget()`，异常会走 UniTask 异常通道；异步资源失败需要在各加载 API 层可观察。
 - `GameBase.Initialize` 找不到 `ScrollableBackground` 会提前返回，场景 prefab 必须提供该组件和边界引用。
+- `GameMode`、`GameBase` 子类、`ProcedureMain.OnInit` 注册和菜单入口必须成组修改；只增加枚举或只写菜单数据会在主场景入口暴露为未注册玩法。
 - `Generate/` 下代码来自 Luban/Proto/UGF 生成流程，禁止手改。
 
 ## 验证方法
@@ -130,7 +136,7 @@ Procedure 实际链路：
 5. 重复进入/退出 GameHot，确认没有重复 HotComponent、事件订阅或 FSM 残留。
 6. 刻意移除一个测试场景配置或资源时，确认错误定位到 DTScene/资源加载而非静默卡死。
 
-本次已完成 Loader、入口 prefab、HotComponent 管理、Procedure 和 SurvivalGame 的静态源码核验。运行验证需在 Unity 环境执行。
+本次已完成 Loader、入口 prefab、HotComponent 管理、Procedure、GameMode 枚举和 SurvivalGame 的静态源码核验。运行验证需在 Unity 环境执行。
 
 ## 源码证据
 
@@ -143,6 +149,8 @@ Procedure 实际链路：
 - `Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedurePreload.cs`：表、HPBar 与字体预载。
 - `Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureChangeScene.cs`：场景事件与切换规则。
 - `Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureMain.cs`：GameMode 生命周期。
+- `Unity/Assets/Scripts/Game/Hot/Code/Game/GameMode.cs`：当前玩法模式枚举值。
+- `Unity/Assets/Scripts/Game/Hot/Code/Game/GameBase.cs`：玩法初始化、实体事件订阅和失败日志。
 - `Unity/Assets/Scripts/Game/Hot/Code/Game/SurvivalGame.cs`：当前玩法真实调用。
 
 ## 关联知识

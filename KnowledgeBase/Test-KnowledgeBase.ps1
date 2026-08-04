@@ -15,6 +15,7 @@ $acceptancePath = Join-Path $kbRoot 'runtime-acceptance.json'
 $allowedStatuses = @('planned', 'seed', 'verified')
 $requiredRuntimeIds = @('client-start', 'server-start', 'luban-export', 'proto-generation', 'target-player-build')
 $runtimeRoots = @('Unity', 'DotNet', 'Share', 'Tools', 'Design', 'Config', 'Book', 'Kit.sln')
+$fingerprintAlgorithm = 'sha256-path-git-clean-oid-v2'
 $requiredHeadings = @(
     Get-Content -LiteralPath (Join-Path $kbRoot '_template.md') -Encoding UTF8 |
         Where-Object { $_.StartsWith('## ') }
@@ -43,6 +44,51 @@ function Compare-ExactSet($Expected, $Actual) {
     return @(Compare-Object -ReferenceObject @($Expected | Sort-Object) -DifferenceObject @($Actual | Sort-Object))
 }
 
+function Invoke-GitRequired([string[]]$Arguments, [string]$FailureMessage) {
+    $output = @(& git -C $repoRoot @Arguments 2>&1 | ForEach-Object { [string]$_ })
+    if ($LASTEXITCODE -ne 0) {
+        $detail = ($output -join [Environment]::NewLine).Trim()
+        if ([string]::IsNullOrWhiteSpace($detail)) { throw "$FailureMessage Git exited with code $LASTEXITCODE." }
+        throw "$FailureMessage Git exited with code $LASTEXITCODE. $detail"
+    }
+    return $output
+}
+
+function Set-GitCleanObjectCache($RelativePaths, $HashCache) {
+    $missing = @(
+        $RelativePaths |
+            Sort-Object -Unique |
+            Where-Object { -not $HashCache.ContainsKey($_) }
+    )
+    if ($missing.Count -eq 0) { return }
+
+    # Batched path-aware hashing; each result matches `git hash-object --path=<relative>`.
+    $previousOutputEncoding = $OutputEncoding
+    try {
+        $OutputEncoding = [Text.UTF8Encoding]::new($false)
+        $output = @($missing | & git -C $repoRoot hash-object --stdin-paths 2>&1 | ForEach-Object { [string]$_ })
+    }
+    finally {
+        $OutputEncoding = $previousOutputEncoding
+    }
+    if ($LASTEXITCODE -ne 0) {
+        $detail = ($output -join [Environment]::NewLine).Trim()
+        if ([string]::IsNullOrWhiteSpace($detail)) { throw "Unable to fingerprint tracked sources through git clean filters. Git exited with code $LASTEXITCODE." }
+        throw "Unable to fingerprint tracked sources through git clean filters. Git exited with code $LASTEXITCODE. $detail"
+    }
+    if ($output.Count -ne $missing.Count) {
+        throw "git hash-object returned $($output.Count) object id(s) for $($missing.Count) source path(s)."
+    }
+
+    for ($i = 0; $i -lt $missing.Count; $i++) {
+        $objectId = $output[$i].Trim()
+        if ([string]::IsNullOrWhiteSpace($objectId) -or $objectId -notmatch '^[0-9a-fA-F]{40,64}$') {
+            throw "git hash-object returned an invalid object id for $($missing[$i])"
+        }
+        $HashCache[$missing[$i]] = $objectId.ToLowerInvariant()
+    }
+}
+
 function Get-Fingerprint($Module, $Tracked, $TrackedSet, $HashCache) {
     $files = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
     foreach ($sourceValue in @($Module.sources)) {
@@ -60,6 +106,16 @@ function Get-Fingerprint($Module, $Tracked, $TrackedSet, $HashCache) {
             }
         }
     }
+
+    $regularFiles = [System.Collections.Generic.List[string]]::new()
+    foreach ($relative in @($files | Sort-Object)) {
+        $absolute = Join-Path $repoRoot ($relative -replace '/', [IO.Path]::DirectorySeparatorChar)
+        if ((Test-Path -LiteralPath $absolute -PathType Leaf) -and
+            -not (Test-Path -LiteralPath $absolute -PathType Container)) {
+            [void]$regularFiles.Add($relative)
+        }
+    }
+    Set-GitCleanObjectCache -RelativePaths $regularFiles -HashCache $HashCache
 
     $lines = [System.Collections.Generic.List[string]]::new()
     foreach ($relative in @($files | Sort-Object)) {
@@ -79,9 +135,9 @@ function Get-Fingerprint($Module, $Tracked, $TrackedSet, $HashCache) {
             continue
         }
         if (-not $HashCache.ContainsKey($relative)) {
-            $HashCache[$relative] = (Get-FileHash -LiteralPath $absolute -Algorithm SHA256).Hash.ToLowerInvariant()
+            throw "[$($Module.id)] Missing git clean object id for tracked source: $relative"
         }
-        $lines.Add($relative + [char]0 + $HashCache[$relative])
+        $lines.Add($relative + [char]0 + 'git-clean-oid:' + $HashCache[$relative])
     }
 
     $algorithm = [Security.Cryptography.SHA256]::Create()
@@ -236,8 +292,10 @@ if (-not $readmeCountMatch.Success -or [int]$readmeCountMatch.Groups['count'].Va
     $errors.Add('README module count does not match catalog.')
 }
 
-$tracked = @(& git -C $repoRoot ls-files --cached --others --exclude-standard | ForEach-Object { Normalize-Path $_ })
-if ($LASTEXITCODE -ne 0) { $errors.Add('Unable to enumerate tracked files with git.') }
+$tracked = @(Invoke-GitRequired `
+    -Arguments @('ls-files', '--cached', '--others', '--exclude-standard') `
+    -FailureMessage 'Unable to enumerate tracked files with git.' |
+    ForEach-Object { Normalize-Path $_ })
 $trackedSet = [System.Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
 foreach ($item in $tracked) { [void]$trackedSet.Add($item) }
 $sources = @($modules | ForEach-Object sources | ForEach-Object { Normalize-Path $_ } | Sort-Object -Unique)
@@ -269,7 +327,7 @@ if ($RefreshSourceFingerprints) {
     if ($errors.Count -eq 0) {
         $data = [pscustomobject][ordered]@{
             schemaVersion = 1
-            algorithm = 'sha256-path-content-v1'
+            algorithm = $fingerprintAlgorithm
             modules = $currentFingerprints
         }
         $json = $data | ConvertTo-Json -Depth 5
@@ -284,23 +342,25 @@ elseif (-not (Test-Path -LiteralPath $fingerprintPath -PathType Leaf)) {
 else {
     try {
         $savedData = Get-Content -LiteralPath $fingerprintPath -Raw -Encoding UTF8 | ConvertFrom-Json
-        if ($savedData.schemaVersion -ne 1 -or $savedData.algorithm -ne 'sha256-path-content-v1') {
-            $errors.Add('Unsupported fingerprint schema or algorithm.')
+        if ($savedData.schemaVersion -ne 1 -or $savedData.algorithm -ne $fingerprintAlgorithm) {
+            $errors.Add("Unsupported fingerprint schema or algorithm: schemaVersion=$($savedData.schemaVersion), algorithm='$($savedData.algorithm)'. Expected schemaVersion=1, algorithm='$fingerprintAlgorithm'.")
         }
-        $saved = @{}
-        foreach ($entry in @($savedData.modules)) {
-            if ($saved.ContainsKey([string]$entry.id)) { $errors.Add("Duplicate fingerprint id: $($entry.id)") }
-            else { $saved[[string]$entry.id] = $entry }
-        }
-        foreach ($current in $currentFingerprints) {
-            if (-not $saved.ContainsKey($current.id)) { $errors.Add("[$($current.id)] Missing source fingerprint."); continue }
-            if ([int]$saved[$current.id].fileCount -ne $current.fileCount -or
-                [string]$saved[$current.id].fingerprint -ne $current.fingerprint) {
-                $errors.Add("[$($current.id)] Sources changed; re-review and refresh fingerprints.")
+        else {
+            $saved = @{}
+            foreach ($entry in @($savedData.modules)) {
+                if ($saved.ContainsKey([string]$entry.id)) { $errors.Add("Duplicate fingerprint id: $($entry.id)") }
+                else { $saved[[string]$entry.id] = $entry }
             }
-        }
-        foreach ($savedId in $saved.Keys) {
-            if ($savedId -notin @($modules.id)) { $errors.Add("Unknown fingerprint module id: $savedId") }
+            foreach ($current in $currentFingerprints) {
+                if (-not $saved.ContainsKey($current.id)) { $errors.Add("[$($current.id)] Missing source fingerprint."); continue }
+                if ([int]$saved[$current.id].fileCount -ne $current.fileCount -or
+                    [string]$saved[$current.id].fingerprint -ne $current.fingerprint) {
+                    $errors.Add("[$($current.id)] Sources changed; re-review and refresh fingerprints.")
+                }
+            }
+            foreach ($savedId in $saved.Keys) {
+                if ($savedId -notin @($modules.id)) { $errors.Add("Unknown fingerprint module id: $savedId") }
+            }
         }
     }
     catch { $errors.Add("Invalid source-fingerprints.json: $($_.Exception.Message)") }

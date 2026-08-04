@@ -26,6 +26,24 @@
       "keywords": ["UNITY_ET", "UNITY_GAMEHOT", "UNITY_HOTFIX", "程序集", "热更"]
     },
     {
+      "id": "AI-01",
+      "name": "AI 指令与知识库 Loop",
+      "area": "ai-workflow",
+      "status": "verified",
+      "document": "KnowledgeBase/28-AI开发工作流与CCGS协作.md",
+      "sources": ["AGENTS.md", "KnowledgeBase/LOOP.md", "KnowledgeBase/Test-KnowledgeBase.ps1", ".codedb-mcp/codedb-mcp.toml"],
+      "keywords": ["Codex", "AI", "LOOP", "codedb", "知识库"]
+    },
+    {
+      "id": "AI-02",
+      "name": "CCGS Codex 协作适配",
+      "area": "ai-workflow",
+      "status": "verified",
+      "document": "KnowledgeBase/28-AI开发工作流与CCGS协作.md",
+      "sources": [".agents/plugins/marketplace.json", "plugins/ccgs-codex/.codex-plugin/plugin.json", "plugins/ccgs-codex/skills/ccgs/SKILL.md", "plugins/ccgs-codex/skills/ccgs/references/compatibility.md", "plugins/ccgs-codex/skills/ccgs/references/workflow-index.md", "plugins/ccgs-codex/skills/ccgs/references/role-index.md", "production/review-mode.txt"],
+      "keywords": ["CCGS", "skill", "workflow", "role", "multi-agent"]
+    },
+    {
       "id": "UNITY-01",
       "name": "Unity 启动与 GameEntry",
       "area": "unity-core",
@@ -170,6 +188,24 @@
       "keywords": ["Editor", "Toolbar", "CodeCreator", "DefineSymbol"]
     },
     {
+      "id": "UNITY-17",
+      "name": "Unity 公共启动与模式分派",
+      "area": "unity-runtime",
+      "status": "verified",
+      "document": "KnowledgeBase/29-Unity运行链路.md",
+      "sources": ["Unity/Assets/Scripts/Game/Procedure/ProcedureLaunch.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureSplash.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureInitResources.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedurePreload.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedurePreset.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureGameHot.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureET.cs", "Unity/Assets/Scripts/Game/Hot/Loader/Init.cs", "Unity/Assets/Scripts/Game/ET/Loader/Init.cs", "Unity/Assets/Scripts/Game/ET/Loader/CodeLoader.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Entry.cs"],
+      "keywords": ["ProcedureLaunch", "ProcedurePreset", "GameHot", "ET", "startup"]
+    },
+    {
+      "id": "UNITY-18",
+      "name": "Unity 资源闸门与业务运行链",
+      "area": "unity-runtime",
+      "status": "verified",
+      "document": "KnowledgeBase/29-Unity运行链路.md",
+      "sources": ["Unity/Assets/Scripts/Game/Procedure/ProcedureCheckVersion.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureUpdateVersion.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureVerifyResources.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureCheckResources.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureUpdateResources.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureCompleteResources.cs", "Unity/Assets/Scripts/Game/Hot/Code/Base/HotEntry.cs", "Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.Load.cs", "Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureLaunch.cs", "Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureComponent.cs", "Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedurePreload.cs", "Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureGame.cs", "Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureChangeScene.cs", "Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureMenu.cs", "Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureMain.cs", "Unity/Assets/Scripts/Game/Hot/Code/Game/GameBase.cs", "Unity/Assets/Scripts/Game/Hot/Code/Game/SurvivalGame.cs"],
+      "keywords": ["CheckVersion", "UpdateResources", "HotEntry", "ChangeScene", "SurvivalGame"]
+    },
+    {
       "id": "BUILD-01",
       "name": "HybridCLR 与一键构建",
       "area": "build",
@@ -269,6 +305,24 @@
       "keywords": ["Aspire", "Process", "Scene", "StartConfig", "部署"]
     },
     {
+      "id": "SERVER-04",
+      "name": "ET 服务端启动与 Fiber 装配",
+      "area": "server-runtime",
+      "status": "verified",
+      "document": "KnowledgeBase/30-ET服务端运行链路.md",
+      "sources": ["DotNet/App/Program.cs", "DotNet/Loader/Init.cs", "DotNet/Loader/CodeLoader.cs", "DotNet/Loader/ConfigReader.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Entry.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Share/FiberInit_Main.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Share/Demo/EntryEvent1_InitShare.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/DynamicEvent/EntryEvent1_InitDynamicEvent.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/EntryEvent2_InitServer.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Singleton.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Log/Log.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Log/Logger.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Fiber/FiberManager.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Module/NetInner/FiberInit_NetInner.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/Realm/FiberInit_Realm.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/Gate/FiberInit_Gate.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Module/ActorLocation/FiberInit_Location.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/LockStep/Room/FiberInit_RoomRoot.cs", "DotNet/Hotfix/Server/Admin/FiberInit_Admin.cs", "DotNet/Hotfix/Server/Agent/FiberInit_Agent.cs"],
+      "keywords": ["Program", "CodeLoader", "Entry", "Fiber", "EntryEvent"]
+    },
+    {
+      "id": "SERVER-05",
+      "name": "ET 服务端消息分派与登录路由",
+      "area": "server-runtime",
+      "status": "verified",
+      "document": "KnowledgeBase/30-ET服务端运行链路.md",
+      "sources": ["DotNet/Loader/CodeLoader.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Share/Module/Message/NetComponentSystem.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/Message/MessageSessionDispatcher.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/Gate/NetComponentOnReadInvoker_Gate.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/Realm/NetComponentOnReadInvoker_Realm.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Module/Message/MessageSenderSystem.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Module/Message/A2NetInner_MessageHandler.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Module/Message/A2NetInner_RequestHandler.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Module/Message/ProcessOuterSenderSystem.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Module/ActorLocation/MessageLocationSenderComponentSystem.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/Realm/C2R_LoginHandler.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/Gate/GateSessionKeyComponentSystem.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/Gate/C2G_LoginGateHandler.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/Gate/C2G_EnterMapHandler.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Share/Module/Console/ReloadDllConsoleHandler.cs", "DotNet/Hotfix/Server/Admin/Admin2S_ReloadHandler.cs", "Design/Proto/ET-Client/OuterMessage.proto", "Design/Proto/ET-ClientServer/InnerMessage.proto"],
+      "keywords": ["NetComponent", "MessageSessionDispatcher", "Actor", "Location", "Login"]
+    },
+    {
       "id": "DATA-01",
       "name": "Luban 配置生产链",
       "area": "data",
@@ -321,6 +375,33 @@
       "document": "KnowledgeBase/22-共享工具链.md",
       "sources": ["Tools/Shell", "Tools/Luban", "Tools/RecastNavExportor", "Tools/Config", "Tools/cwRsync", "Share/Libs"],
       "keywords": ["Shell", "Luban", "Recast", "NavMesh", "工具"]
+    },
+    {
+      "id": "CODE-01",
+      "name": "Unity 与 GameHot 脚本规范",
+      "area": "code-standard",
+      "status": "verified",
+      "document": "KnowledgeBase/31-脚本编写规范.md",
+      "sources": ["Unity/Assets/Scripts/Game/Hot/Code/Game.Hot.Code.asmdef", "Unity/Assets/Scripts/Game/Hot/Loader/Game.Hot.Loader.asmdef", "Share/Analyzer/Custom/Config/CustomDiagnosticRules.cs", "Share/Analyzer/Custom/Config/CustomAnalyzeAssembly.cs", "Share/Analyzer/Analyzer/ETTaskAnalyzer.cs", "Share/Analyzer/Analyzer/ETCancellationTokenAnalyzer.cs", "Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureMenu.cs", "Unity/Assets/Scripts/Game/Hot/Code/Game/GameBase.cs", "Unity/Assets/Scripts/Game/Hot/Code/UI/StarForceUIForm.cs", "Unity/Assets/Scripts/Game/Hot/Code/UI/MenuForm.cs", "Unity/Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/Entity.cs"],
+      "keywords": ["C#", "GameHot", "UniTask", "lifecycle", "asmdef"]
+    },
+    {
+      "id": "CODE-02",
+      "name": "ET 脚本、Analyzer 与代码生成规范",
+      "area": "code-standard",
+      "status": "verified",
+      "document": "KnowledgeBase/31-脚本编写规范.md",
+      "sources": ["Share/Analyzer/Config/DiagnosticRules.cs", "Share/Analyzer/Config/AnalyzeAssembly.cs", "Share/Analyzer/AnalyzerGlobalSetting.cs", "Share/Analyzer/Analyzer/AsyncMethodReturnTypeAnalyzer.cs", "Share/Analyzer/Analyzer/EntitySystemAnalyzer.cs", "Share/Analyzer/Analyzer/EntityMemberDeclarationAnalyzer.cs", "Share/Analyzer/Custom/Config/CustomAnalyzeAssembly.cs", "Share/SourceGenerator/Config/DiagnosticRules.cs", "Share/SourceGenerator/Generator/ETSystemGenerator/ETSystemGenerator.cs", "Share/SourceGenerator/Generator/ETGetComponentGenerator.cs", "Unity/Directory.Build.props", "Unity/Assets/Plugins/Share.Analyzer.dll.meta", "Unity/Assets/Plugins/Share.SourceGenerator.dll.meta", "DotNet/App/DotNet.App.csproj", "DotNet/Core/DotNet.Core.csproj", "DotNet/Loader/DotNet.Loader.csproj", "DotNet/Model/DotNet.Model.csproj", "DotNet/Hotfix/DotNet.Hotfix.csproj", "DotNet/ThirdParty/DotNet.ThirdParty.csproj", "Unity/Assets/Scripts/Game/ET/Code/Model/Game.ET.Code.Model.asmdef", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Game.ET.Code.Hotfix.asmdef", "Unity/Assets/Scripts/Game/ET/Code/ModelView/Game.ET.Code.ModelView.asmdef", "Unity/Assets/Scripts/Game/ET/Code/HotfixView/Game.ET.Code.HotfixView.asmdef"],
+      "keywords": ["ET", "Analyzer", "SourceGenerator", "EntitySystem", "MessageHandler"]
+    },
+    {
+      "id": "CODE-03",
+      "name": "构建、生成与自动化脚本规范",
+      "area": "code-standard",
+      "status": "verified",
+      "document": "KnowledgeBase/31-脚本编写规范.md",
+      "sources": ["DotNet/Directory.Build.props", "Unity/Directory.Build.props", "Share/Analyzer/Share.Analyzer.csproj", "Share/SourceGenerator/Share.SourceGenerator.csproj", "plugins/ccgs-codex/scripts/sync-ccgs.ps1", "KnowledgeBase/Test-KnowledgeBase.ps1", "Publish-linux-x64.ps1", "Tools/Shell/build kit sln.bat", "Tools/Shell/start et server.bat", "Design/Excel/check all.bat", "Design/Proto/proto2cs.bat"],
+      "keywords": ["PowerShell", "batch", "build", "Luban", "Proto"]
     },
     {
       "id": "LIB-01",

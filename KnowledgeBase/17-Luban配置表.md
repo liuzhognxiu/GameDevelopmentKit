@@ -14,6 +14,7 @@
 | 类型 | 仓库相对路径 | 说明 |
 | --- | --- | --- |
 | 数据源 | `Design/Excel/ET`、`Design/Excel/GameHot` | schema、业务 Excel、luban.conf |
+| 工具入口 | `Share/Tool/Loader/Init.cs`、`Share/Tool/Loader/Define.cs` | `AppType.ExcelExporter` 分派与 `../Bin` 工作目录 |
 | 导出器 | `Share/Tool/ExcelExporter/ExcelExporter.Luban.cs` | 发现、命令展开、并行执行、复制 |
 | 二次生成 | `Share/Tool/ExcelExporter/Generate` | UGF UI/Entity/Scene/Sound ID |
 | Luban | `Tools/Luban` | DLL、自定义模板和官方模板 |
@@ -26,6 +27,7 @@
 ## 依赖关系
 
 - 导出工具属于 Share.Tool，要求先构建 `Kit.sln`，并从 `Bin` 工作目录运行。
+- `Share/Tool/Loader/Init.Main` 解析命令行后按 `Options.Instance.AppType` 分派；`AppType.ExcelExporter` 会设置 `Console=1` 并调用 `ExcelExporter.ExportAll()`。`Share/Tool/Loader/Define.WorkDir` 固定为 `Path.GetFullPath("../Bin")`，`%UNITY_ASSETS%` 与 `%ROOT%` 都从该工作目录推导。
 - 工具依赖 .NET 8、Luban DLL、ExcelDataReader、两个 `luban.conf` 和 `Localization.xlsx`。
 - `UNITY_ET` / `UNITY_GAMEHOT` 模式工具会切换对应 conf 的 active；当前仓库状态是 ET=true、GameHot=false。
 - 公共 Tables 依赖 UGF Resource Awaitable、Luban ByteBuf/SimpleJSON 和 `TablesMemory`。
@@ -33,7 +35,7 @@
 
 ## 入口与调用链
 
-导出：`Tool.exe --AppType=ExcelExporter` -> 扫描 `Design/Excel` 直接子目录 -> 读取 active conf -> 展开路径/格式选项 -> `Parallel.ForEachAsync` 调 `dotnet Luban.dll` -> 复制逗号分隔的次级输出 -> 生成 UGF ID -> `ExcelExporter.ExportAll` 继续导出 Localization。
+导出：在 `Bin` 工作目录运行 `Tool.exe --AppType=ExcelExporter` -> `Init.Main` 校验 `Define.WorkDir` 不含空格并进入 `AppType.ExcelExporter` -> `ExcelExporter.ExportAll` -> 扫描 `Design/Excel` 直接子目录 -> 读取 active conf -> 展开路径/格式选项 -> `Parallel.ForEachAsync` 调 `dotnet Luban.dll` -> 复制逗号分隔的次级输出 -> 生成 UGF ID -> `ExcelExporter.ExportAll` 继续导出 Localization。
 
 公共运行时：`ProcedurePreload` -> `GameEntry.Tables.LoadAllAsync` -> 反射查找生成 partial 的 `LoadAsync` -> 根据 Loader 返回值选择 ByteBuf 或 JSON -> 并行加载各表并解析引用。若不存在 `LoadAsync`，只设置 `LoadType=Code`。
 
@@ -55,6 +57,9 @@ GameHot：`HotEntry` 的 TablesComponent -> 热更 `LoadAllAsync` -> 反射生�
 
 - ET conf 生成公共 GF、ET Client、ClientServer、Editor 五个目标；ClientServer 数据从 Unity 输出复制到 `Config/Luban`。
 - GameHot conf 生成公共 GF、热更 Client 和 Editor 四个目标。
+- 公共 GF 目标在两套 conf 中都写入 `Unity/Assets/Scripts/Game/Generate/Luban` 与 `Unity/Assets/Res/Luban`；`AssetUtility.GetLubanAsset(file, fromJson)` 和公共 `TablesComponent.LoadAllAsync` 只从 `Assets/Res/Luban/{file}.bytes/json` 取数。
+- GameHot 私有目标只由 GameHot conf 的 `client` 生成，代码在 `Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban`，数据在 `Unity/Assets/Res/Hot/Luban`；热更 Tables 通过 `AssetUtility.GetGameHotAsset("Luban/...")` 读取并在解析后卸载 TextAsset。
+- ET 私有目标由 ET conf 的 `client` / `clientserver` 生成到 `Unity/Assets/Scripts/Game/ET/Code/Model/Generate/*/Luban` 与 `Unity/Assets/Res/ET/*/Luban`，其中 `clientserver` 的数据副本复制到 `Config/Luban` 供服务端读取。
 - `Json` 将 `cs-bin/bin` 替换成 `cs-simple-json/json`；`Check` 移除输出参数并附加 `-f`，且跳过 Localization。
 - 多目标目录以第一个为源，导出后清空并复制到其余目录；目标目录不能放人工文件。
 - 公共 Tables 的 Byte/JSON Loader 当前没有调用 `GameEntry.Resource.UnloadAsset(textAsset)`；资源由 Resource 系统继续持有。GameHot Loader 解析后会卸载 TextAsset。
@@ -88,9 +93,11 @@ GameHot：`HotEntry` 的 TablesComponent -> 热更 `LoadAllAsync` -> 反射生�
 
 ## 源码证据
 
+- `Share/Tool/Loader/Init.cs`、`Share/Tool/Loader/Define.cs`：`AppType.ExcelExporter` 入口、`../Bin` 工作目录和空格路径失败边界。
 - `Share/Tool/ExcelExporter/ExcelExporter.Luban.cs`：发现、选项替换、并行、复制和二次生成。
 - `Design/Excel/ET/luban.conf`：当前 active 状态与五类真实输出。
 - `Design/Excel/GameHot/luban.conf`：GameHot 输出及当前 inactive 状态。
+- `Unity/Assets/Scripts/Game/Utility/AssetUtility.cs`：公共 `Assets/Res/Luban`、ET `Assets/Res/ET` 和 GameHot `Assets/Res/Hot` 资源路径拼接。
 - `Unity/Assets/Scripts/Game/Tables/TablesComponent.Load.cs`：公共类型判断、Code 回退和内存清理。
 - `Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.Load.cs`：热更路径与 TextAsset 卸载。
 - `Unity/Assets/Scripts/Game/Generate/Luban/TablesComponent.cs`：生成 Loader 的并行加载和引用解析。

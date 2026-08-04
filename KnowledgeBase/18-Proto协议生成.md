@@ -14,9 +14,11 @@ Proto2CS 是项目自带的行解析代码生成器，不调用 protoc。它从�
 | 类型 | 仓库相对路径 | 说明 |
 | --- | --- | --- |
 | 输入 | `Design/Proto` | 四组 proto.conf 与协议源 |
+| 工具入口 | `Share/Tool/Loader/Init.cs`、`Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Options/Options.cs` | `AppType.Proto2CS` 定义与分派 |
 | 协调器 | `Share/Tool/Proto2CS/Proto2CS.cs` | 配置发现、分派、路径和清理 |
 | ET 生成器 | `Share/Tool/Proto2CS/Proto2CS.ET.cs` | MemoryPack Message 与 Opcode |
 | UGF 生成器 | `Share/Tool/Proto2CS/Proto2CS.UGF.cs` | Protobuf Packet、ID 和 Handler |
+| Opcode 范围 | `Unity/Assets/Scripts/Library/ET/Core/Runtime/Network/OpcodeRangeDefine.cs` | `MaxOpcode = 60000` 常量 |
 | GameHot 输出 | `Unity/Assets/Scripts/Game/Hot/Code/Generate/Message` | 禁止手改 |
 | ET 输出 | `Unity/Assets/Scripts/Game/ET/Code/Model/Generate/*/Message` | 禁止手改 |
 | Admin 输出 | `DotNet/Model/Generate/Message` | 禁止手改 |
@@ -24,7 +26,8 @@ Proto2CS 是项目自带的行解析代码生成器，不调用 protoc。它从�
 
 ## 依赖关系
 
-- 入口属于 Share.Tool 的 `AppType.Proto2CS`，要求先构建 `Kit.sln`。
+- 入口属于 Share.Tool 的 `AppType.Proto2CS`，要求先构建 `Kit.sln`。`Options.AppType` 默认是 Server，但枚举中包含 `Proto2CS`；`Share/Tool/Loader/Init.Main` 的 `case AppType.Proto2CS` 设置 `Console=1` 后直接调用 `Proto2CS.Export()`。
+- 生成器有两层工作目录约束：`Design/Proto/proto2cs.bat` 先 `cd /d ../../Bin` 再运行 `Tool.exe --AppType=Proto2CS --Console=1`；`Proto2CS.cs` 自身又把 `WorkDir` 定为 `Path.GetFullPath("../Bin")`，并从 `../Design/Proto` 发现配置。
 - ET 输出依赖 ET MessageObject、MemoryPack、对象池和消息特性。
 - UGF 输出依赖 Protobuf Unity、GameHot `CSPacketBase/SCPacketBase` 和 PacketHandler。
 - `proto.conf` 独立分配 startOpcode，工具不做跨配置区间冲突检测。
@@ -32,7 +35,7 @@ Proto2CS 是项目自带的行解析代码生成器，不调用 protoc。它从�
 
 ## 入口与调用链
 
-`Tool.exe --AppType=Proto2CS` -> 扫描 `Design/Proto` 直接子目录的 active conf -> 展开输出路径 -> 按 codeType 选择 ET/UGF -> 递归获取 `.proto` 并按完整路径排序 -> 按文件和消息出现顺序从 `startOpcode+1` 递增 -> 写各输出目录 -> 清理没有对应文件的空目录和 `.meta`。
+`Design/Proto/proto2cs.bat` -> `cd /d ../../Bin` -> `Tool.exe --AppType=Proto2CS --Console=1` -> `Init.Main` 解析 `Options` 并进入 `AppType.Proto2CS` -> `Proto2CS.Export` 扫描 `../Design/Proto` 直接子目录的 active conf -> 展开输出路径 -> 按 codeType 选择 ET/UGF -> 递归获取 `.proto` 并按完整路径排序 -> 按文件和消息出现顺序从 `startOpcode+1` 递增 -> 写各输出目录 -> 清理没有对应文件的空目录和 `.meta`。
 
 当前配置：ET-Client 10000，输出到 Client 与 ClientServer；ET-ClientServer 20000；GameHot UGF 30000；ET-Admin 也从 30000 开始并输出 DotNet Model。
 
@@ -47,6 +50,7 @@ Proto2CS 是项目自带的行解析代码生成器，不调用 protoc。它从�
 | `<codeName>_Id.cs` | ET Opcode 容器 | 生成物 |
 | `<codeName>Id.cs` | UGF Packet ID | 生成物 |
 | `<codeName>_PacketHandler.cs` | SC Handler partial 壳 | 业务实现放在非生成 partial 文件 |
+| `OpcodeRangeDefine.MaxOpcode` | ET 核心网络层声明的最大 Opcode 常量 `60000` | ET/UGF 生成器都引用该常量做边界检查 |
 
 ## 数据与生命周期
 
@@ -67,7 +71,7 @@ Proto2CS 是项目自带的行解析代码生成器，不调用 protoc。它从�
 ## 约束与常见错误
 
 - 解析器不支持完整 Proto 语法；不要直接使用 package、import、oneof、optional 或复杂 option。
-- startOpcode 不是第一条最终值，第一条是 `startOpcode + 1`；硬上限为 60000。
+- startOpcode 不是第一条最终值，第一条是 `startOpcode + 1`；`OpcodeRangeDefine.MaxOpcode` 声明的范围上限是 60000。当前 ET/UGF 生成器在分配前使用 `s_StartOpcode - 1 >= OpcodeRangeDefine.MaxOpcode` 检查，然后执行 `++s_StartOpcode`，因此静态复核不能只看异常分支，仍需检查最终生成常量不超过 60000。
 - 工具不检测不同 proto.conf 的 Opcode 重叠。GameHot 与 ET-Admin 当前都从 30000 开始，因运行栈不同暂可并存，但任何合并注册表的改动都必须先消除冲突。
 - ET-Client 多输出是直接分别写相同内容；不要在任一生成副本手改。
 - 修改文件路径或在前面插入消息会重排 Opcode，即使消息文本本身没变。
@@ -76,7 +80,7 @@ Proto2CS 是项目自带的行解析代码生成器，不调用 protoc。它从�
 ## 验证方法
 
 1. 构建 Kit.sln 后从 Bin 运行 `Tool.exe --AppType=Proto2CS --Console=1`。
-2. 执行 `git diff`，确认已有上线 Opcode 未变化、共享 ET 输出一致且只有预期生成物变化。
+2. 执行 `git diff`，确认已有上线 Opcode 未变化、共享 ET 输出一致且只有预期生成物变化；同时核对生成的 `_Id.cs`/`Id.cs` 没有超过 `OpcodeRangeDefine.MaxOpcode` 的常量。
 3. 先用项目指定 Unity 版本打开工程、等待导入并生成/刷新被忽略的 `Unity/Unity.sln`，再编译 `Unity/Unity.sln` 与 `DotNet/DotNet.sln`，覆盖 GameHot、ET ClientServer 和 Admin 输出；干净检出不存在 Unity solution 时不能直接执行该步骤。
 4. 对一对请求/响应做编码、发送、Handler 分派和解码的端到端测试。
 5. 当前环境尚未执行生成与编译；需要 .NET 8/Unity 依赖后做最终运行验证。
@@ -86,6 +90,9 @@ Proto2CS 是项目自带的行解析代码生成器，不调用 protoc。它从�
 - `Share/Tool/Proto2CS/Proto2CS.cs`：发现、排序、分派、路径和清理规则。
 - `Share/Tool/Proto2CS/Proto2CS.ET.cs`：ET 注释语义、MemoryPack 与对象池生成。
 - `Share/Tool/Proto2CS/Proto2CS.UGF.cs`：CS/SC 识别、Protobuf 与 Handler 生成。
+- `Share/Tool/Loader/Init.cs`、`Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Options/Options.cs`：`AppType.Proto2CS` 命令入口与枚举定义。
+- `Design/Proto/proto2cs.bat`、`Share/Tool/Proto2CS/Proto2CS.cs`：`../../Bin` / `../Bin` 工作目录边界。
+- `Unity/Assets/Scripts/Library/ET/Core/Runtime/Network/OpcodeRangeDefine.cs`：`MaxOpcode = 60000` 的唯一常量来源。
 - `Design/Proto/ET-Client/proto.conf`：10000 段与双输出。
 - `Design/Proto/GameHot/proto.conf`、`Design/Proto/ET-Admin/proto.conf`：当前 30000 起始值重叠。
 - `Unity/Assets/Scripts/Game/Hot/Code/Generate/Message/GameHotMessage_PacketHandler.cs`：UGF 实际 Handler 生成物。

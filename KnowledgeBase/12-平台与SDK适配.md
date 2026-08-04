@@ -71,6 +71,7 @@ GameEntry.Platform.TrackEvent(eventName, key, value)
 
 - 旧草稿中的 `GameEntry.Platform.Init()`、`ShowRewardAd()`、`GetDeviceId()` 等调用当前均不存在于 PlatformComponent，不能编译。
 - 当前 `TrackEvent(eventName,key,value)` 会丢弃属性，且未初始化实现；不要用于生产埋点。
+- `PlatformComponent` 在编译期只实例化当前平台分支；Editor 编译只覆盖 `PlatformEditor`，不能证明 Android/iOS 分支的外部符号、类型引用或 Java 方法闭包。
 - `PlatformIOS.CanAppRate` 调用不存在的 `GameEntry.Platform.GetPkgId()`，并引用仓库中不存在的 `GameEntry.DataTable`、`DRAuthenticationSwitch`；iOS 条件编译当前不能通过源码闭包验证。
 - 仓库未发现 `ThinkingAnalytics` 或对应原生函数实现；iOS 构建前必须补依赖或移除代码。
 - Android 代码假设 currentActivity 直接实现 PascalCase 方法，普通 Unity Activity 不提供这些方法。

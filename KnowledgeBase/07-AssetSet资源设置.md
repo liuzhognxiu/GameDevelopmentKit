@@ -60,6 +60,7 @@ Web 路径优先复用对象池；`NeedSave` 为真且私有文件系统已有�
 - UGF Resource 来源保存 `ResourceComponent`，最终释放走 `UnloadAsset`；文件和 Web 创建的 Unity 对象没有 ResourceComponent，最终走 `UnityEngine.Object.Destroy`。
 - `LoadedAssetSet` 持有设置项和实际资源。`IsCanRelease` 为真后回收 Spawn，并把设置项和记录释放到引用池。
 - GameEntry prefab 当前配置：检查间隔 30 秒、对象池自动释放间隔 60 秒、容量 16、过期时间 60 秒、初始读缓冲 65536 字节。
+- WebRequest 来源在 `InitializeWeb` 中订阅全局 WebRequest 成功/失败事件；当前源码没有对应 `OnDestroy`/`OnDisable` 退订实现，依赖 GameEntry 常驻组件生命周期。
 - 私有文件系统使用持久化目录中的 `AssetSetFileSystem_1.dat` / `_2.dat`；文件数达到上限时迁移到另一个文件并扩容。
 
 ## 开发扩展步骤
@@ -82,6 +83,7 @@ await avatar.SetTextureByWebRequestAsync(avatarUrl);
 - 同一 Target 的新“等待请求”会取消旧等待项；已经加载完成的旧记录要等目标换图或销毁后由定时检查回收。
 - Web 请求按路径合并，而 Resource 按路径+类型合并。不要让同一 URL 同时代表不兼容的资源类型。
 - `RemoveLoadingAssetSet` 不能取消已经发出的共享底层请求。
+- 如果将 `AssetSetComponent` 改成可动态卸载或替换的组件，必须补上 WebRequest 事件退订，否则旧实例仍可能收到全局事件。
 - 所有 Unity 对象赋值、反序列化和销毁均发生在 Unity 主线程语境，不要从工作线程直接调用。
 
 ## 验证方法
@@ -95,7 +97,7 @@ await avatar.SetTextureByWebRequestAsync(avatarUrl);
 ## 源码证据
 
 - `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/AssetSet/AssetSetComponent.Resource.cs`：Resource 请求合并、成功分发与失败清理。
-- `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/AssetSet/AssetSetComponent.WebRequest.cs`：Web、本地缓存和保存链路。
+- `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/AssetSet/AssetSetComponent.WebRequest.cs`：Web、本地缓存、保存链路及全局事件订阅。
 - `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/AssetSet/AssetSetComponent.FileSystem.cs`：双文件系统、同步读取和迁移扩容。
 - `Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/AssetSet/AssetSetComponent.AssetSetObject.cs`：`UnloadAsset` 与 `Destroy` 的所有权边界。
 - `Unity/Assets/Scripts/Game/AssetSet/SetSpriteExtension.cs`：项目公开调用 API。

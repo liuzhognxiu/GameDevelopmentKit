@@ -2,7 +2,7 @@
 
 > Catalog ID: `SERVER-01`、`SERVER-02`、`SERVER-03`  
 > 状态：`verified`  
-> 最后核验：`2026-08-04`  
+> 最后核验：`2026-08-05`  
 > 适用模式：ET Server
 
 ## 模块定位
@@ -74,6 +74,8 @@ dotnet Bin/App.dll [Options]
   -> 永久循环: Sleep(1) -> Init.Update() -> Init.LateUpdate()
 ```
 
+`Init.StartAsync()` 在注册 `UnhandledException` 后先解析命令行，再创建 `NLogger` 并注册 `Logger`。因此 `Options` 解析失败、未知参数、`Options.Instance` 缺失或 Logger 注册前的异常，都会进入 catch/UnhandledException 中的 `Log.Error`，但 `Log.GetLog()` 在没有 Fiber 时直接访问 `Logger.Instance.Log`；`Singleton<T>.Instance` 默认是 null，没有控制台或 NLog fallback。文档中“启动异常可记录”只适用于 `World.Instance.AddSingleton<Logger, ILog>(...)` 成功之后。
+
 `ET.Entry.Start()` 不等待其私有 `StartAsync()`：`CodeLoader.StartAsync()` 和 `Init.StartAsync()` 返回时，配置与 Main Fiber 不一定已就绪。宿主进入 Update 循环不能作为 readiness 信号；应以启动事件、健康检查或目标 Scene 可查询状态验收。
 
 `EntryEvent1_InitShare` 给 Main Scene 添加 Timer、CoroutineLock、ObjectWait、Mailbox 和 ProcessInnerSender。`EntryEvent2_InitServer` 对 `Server/Admin/Agent` 根据 `DTStartProcessConfig` 创建 NetInner Fiber，并按 `DTStartSceneConfig.GetByProcess` 创建业务 Fiber；`--Console=1` 才添加控制台组件。
@@ -87,10 +89,12 @@ Tools/Shell/start aspire.bat
   -> 加载 Config/Luban/*.bytes
   -> 过滤 DTStartProcessConfig.StartConfig
   -> 每个进程 AddExecutable("dotnet", Bin, "App.dll")
+     -> WithArgs: --Process / --ReplicaIndex / --SceneName / --StartConfig / --SingleThread
+     -> 未传 --AppType
   -> Aspire dashboard: http://localhost:15088
 ```
 
-普通本地入口为 `Tools/Shell/start et server.bat`，从 `Bin` 执行 `dotnet App.dll --Process=1 --StartConfig=Localhost --Console=1`。Admin 和 Agent 分别有独立脚本，使用进程 `100002`、`100001`。
+普通本地入口为 `Tools/Shell/start et server.bat`，从 `Bin` 执行 `dotnet App.dll --Process=1 --StartConfig=Localhost --Console=1`，依赖 `Options.AppType` 的默认 `Server`。Admin 和 Agent 分别有独立脚本，使用进程 `100002`、`100001`，并显式传入 `--AppType=Admin`、`--AppType=Agent`。
 
 ## 核心类型与 API
 
@@ -99,7 +103,7 @@ Tools/Shell/start aspire.bat
 | `ET.Program.Main()` | 服务端唯一进程入口；启动 fire-and-forget 异步流程 |
 | `ET.Init.StartAsync()` | 构建宿主 Singleton 并启动 CodeLoader |
 | `ET.Init.Update()/LateUpdate()` | 驱动 `TimeInfo` 和 `FiberManager` |
-| `ET.Options` | 支持 `AppType`、`StartConfig`、`Process`、`Develop`、`LogLevel`、`Console`、`Customs` |
+| `ET.Options` | 支持 `AppType`、`StartConfig`、`Process`、`Develop`、`LogLevel`、`Console`、`Customs`；`AppType` 默认 `Server` |
 | `ET.CodeLoader.StartAsync()` | 定位 Model，加载 Hotfix，创建 CodeTypes，反射业务入口 |
 | `ET.CodeLoader.ReloadAsync()` | 卸载并重新加载 Hotfix，只重建 CodeTypes 和 Code Singleton |
 | `ET.ConfigReader` | 从工作目录相对路径 `../Config/Luban` 同步读取 bytes/json |
@@ -119,7 +123,7 @@ Pop-Location
 
 ## 数据与生命周期
 
-1. `Options`、Logger、TimeInfo、FiberManager、ConfigComponent 和 CodeLoaderComponent 进入全局 `World`。
+1. `Options`、Logger、TimeInfo、FiberManager、ConfigComponent 和 CodeLoaderComponent 进入全局 `World`；其中 `Options` 解析成功后才注册 Logger，Logger 前失败没有可靠日志落点。
 2. Model 程序集使用默认加载上下文，进程期间不卸载；Hotfix 位于 collectible `AssemblyLoadContext`。
 3. `ET.Entry` 的私有 `StartAsync` 内部在 Main Fiber 前完成配置加载，业务 Fiber 的数量、SceneType、Zone 和名称由 Luban 启动表决定；但公开 `Entry.Start()` 使用 `Forget()`，调用方不会等待该顺序执行完成。
 4. 主线程永久调用 FiberManager 的 Update/LateUpdate；业务 Scene 通常由 ThreadPool Scheduler 创建。
@@ -131,19 +135,22 @@ Pop-Location
 1. 先判断代码边界：跨端且稳定的基础设施放 Core；服务端稳定宿主适配放 Loader；数据/组件/消息放 Model；可重载 System 放 Hotfix。
 2. 新增服务端 Scene 时，在 Luban 启动配置源中增加 Process/Scene 记录并重新导出到 `Config/Luban`，不要直接编辑 `.bytes`。
 3. 为新 SceneType 创建对应 `[Invoke((long)SceneType.X)]` 的 FiberInit handler，在其中组装组件和网络监听。
-4. 新增命令行参数时先扩展 `Options`，再同步所有 bat、Aspire `.WithArgs` 和运维脚本。
+4. 新增命令行参数时先扩展 `Options`，再同步所有 bat、Aspire `.WithArgs` 和运维脚本；非 Server 进程必须显式传 `--AppType`，不能依赖默认值。
 5. 新增热重载代码时避免持有旧 Hotfix Type、委托或静态对象引用，否则 collectible AssemblyLoadContext 不能真正回收。
 6. 从仓库根构建 `Kit.sln` 或 `DotNet/DotNet.sln`，确认 `Bin/App.dll`、`Model.dll`、`Hotfix.dll`、`Hotfix.pdb` 和配置目录关系完整。
 
 ## 约束与常见错误
 
-- `Init.StartAsync` 捕获所有异常并只记录日志；即使参数、DLL 或配置加载失败，调用方仍会进入永久 Update 循环，随后可能因缺少 Singleton 持续报错。
+- `Init.StartAsync` 的 catch 不能保证记录所有启动异常：命令行解析和 Logger 注册发生在同一个 try 内，Logger 注册前的参数错误或 Singleton 缺失会让 catch 中的 `Log.Error` 再次依赖空 `Logger.Instance`。Logger 注册成功后的 DLL、配置或 Hotfix 异常才预期进入 NLog。
+- `AppDomain.CurrentDomain.UnhandledException` handler 也在 Logger 注册前安装，并同样调用 `Log.Error`；它不是 Logger 前失败的可靠兜底。
+- 即使 `StartAsync` 吞掉异常后返回，`Program.RunAsync` 仍进入永久 Update 循环；若 TimeInfo/FiberManager 等 Singleton 未注册，循环中的 `init.Update()` 还会继续抛错。
 - `CodeLoader` 硬编码从当前工作目录读取 `./Hotfix.dll` 和 `./Hotfix.pdb`；从仓库根直接运行 `dotnet Bin/App.dll` 会使相对路径错误，脚本因此先 `cd Bin`。
 - `ConfigReader` 的异步 API 内部执行同步 `File.ReadAllBytes/ReadAllText`，不能假定其具备异步文件 IO。
 - `CodeLoader.StartAsync` 未显式检查 Model 是否找到；程序集名必须保持 `Model`，否则反射入口失败。
 - 热重载不是完整重启：它不会重新加载配置、创建 Main Fiber或重新发布 EntryEvent；结构性初始化修改需要重启进程。
 - `Program.Main` 用 `RunAsync().Forget()` 启动；启动阶段异常由内部日志处理，不会以非零退出码自然暴露给进程编排器。
-- **当前 Aspire 参数不匹配**：它传入 `--ReplicaIndex`、`--SceneName`、`--SingleThread`，但 `Options` 没有这些属性。CommandLineParser 会把未知参数送入 `WithNotParsed` 并抛出“命令行格式错误”，因此 Aspire 启动链在当前源码下不可视为可用。
+- **当前 Aspire 参数不匹配**：它传入 `--Process`、`--ReplicaIndex`、`--SceneName`、`--StartConfig`、`--SingleThread`，但 `Options` 只声明 `AppType/StartConfig/Process/Develop/LogLevel/Console/Customs`。CommandLineParser 会把未知参数送入 `WithNotParsed` 并抛出“命令行格式错误”，且该异常发生在 Logger 注册前，因此 Aspire 启动链在当前源码下不可视为可用。
+- Aspire 子进程没有传 `--AppType`；如果先移除或接收未知参数但仍不补 `--AppType`，`App.dll` 会按 `Options.AppType` 默认值作为 `Server` 启动。Admin/Agent bat 则显式传入 `Admin`/`Agent`，这是与 Aspire 路径的实际差异。
 - Aspire 设置 `InnerIP/InnerPort/OuterIP/OuterPort/ASPIRE_MANAGED` 环境变量，但服务端源码没有读取这些变量；实际地址仍来自 Luban 配置。它还把副本数固定为 `1`。
 - `start aspire.bat` 将 `NUGET_PACKAGES` 硬编码为 `D:\AppData\.nuget\packages`，换机后可能不存在。
 - Model 和 Hotfix 项目同时链接 Client/Server/Share 目录；必须依赖程序集和条件编译约束隔离平台 API，不能凭目录名假设服务端不会编译 Client 文件。
@@ -157,6 +164,11 @@ rg -n "AssemblyName|ProjectReference|Compile Include" DotNet -g "*.csproj"
 rg -n "Option\(|WithArgs|GetEnvironmentVariable" `
   Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Options `
   Share/Aspire DotNet
+rg -n "GetLog|Logger.Instance|class Logger|class Singleton|ParseArguments|AddSingleton<Logger|Log.Error" `
+  Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Log `
+  Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Singleton.cs `
+  DotNet/Loader Share/Tool/Loader
+rg -n "AppType|ReplicaIndex|SceneName|SingleThread" Share/Aspire Tools/Shell -g "*.cs" -g "*.bat"
 rg -n "LoadHotfix|ReloadAsync|CreateCode|EntryEvent[123]" `
   DotNet Unity/Assets/Scripts/Game/ET/Code
 ```
@@ -178,9 +190,9 @@ Pop-Location
 
 ## 源码证据
 
-- `DotNet/App/Program.cs`
+- `DotNet/App/Program.cs`：`Main()` 以 `RunAsync().Forget()` 启动，`StartAsync()` 返回后无条件进入永久 Update/LateUpdate 循环，循环异常继续走 `Log.Error`。
 - `DotNet/App/DotNet.App.csproj`
-- `DotNet/Loader/Init.cs`
+- `DotNet/Loader/Init.cs`：先注册 `UnhandledException`，再解析 `Options`，随后才创建 `NLogger` 并注册 `Logger`；catch 中仍调用 `Log.Error`。
 - `DotNet/Loader/CodeLoader.cs`
 - `DotNet/Loader/ConfigReader.cs`
 - `DotNet/ThirdParty/DotNet.ThirdParty.csproj`：服务端对 Unity Mathematics PackageCache 的构建期依赖。
@@ -193,14 +205,17 @@ Pop-Location
 - `Unity/Assets/Scripts/Game/ET/Code/Hotfix/Share/FiberInit_Main.cs`
 - `Unity/Assets/Scripts/Game/ET/Code/Hotfix/Share/Demo/EntryEvent1_InitShare.cs`
 - `Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/EntryEvent2_InitServer.cs`
-- `Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Options/Options.cs`
+- `Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Log/Log.cs`：`GetLog()` 在无 Fiber 时直接返回 `Logger.Instance.Log`，没有 Logger 前 fallback。
+- `Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Log/Logger.cs`：`Logger` 只有 `Awake(ILog)` 后才持有可用 `ILog`。
+- `Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Singleton.cs`：`Singleton<T>.Instance` 默认静态字段为 null，只有 `Register()` 后才赋值。
+- `Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Options/Options.cs`：`AppType` 默认 `Server`；未声明 `ReplicaIndex`、`SceneName`、`SingleThread`。
 - `Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Code/CodeTypes.cs`
-- `Share/Aspire/Program.cs`
+- `Share/Aspire/Program.cs`：`AddExecutable(..., "dotnet", binDir, "App.dll")` 只传 `Process/ReplicaIndex/SceneName/StartConfig/SingleThread`，未传 `AppType`；环境变量地址也不是服务端 Options。
 - `Share/Aspire/Properties/launchSettings.json`
-- `Tools/Shell/start et server.bat`
+- `Tools/Shell/start et server.bat`：不传 `AppType`，依赖 `Options` 的 Server 默认值。
 - `Tools/Shell/start aspire.bat`
-- `Tools/Shell/start admin.bat`
-- `Tools/Shell/start agent.bat`
+- `Tools/Shell/start admin.bat`：显式传 `--AppType=Admin --Process=100002`。
+- `Tools/Shell/start agent.bat`：显式传 `--AppType=Agent --Process=100001`。
 
 ## 关联知识
 

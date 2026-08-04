@@ -71,3 +71,8 @@ nul
 # codebase-mcp generated indexes; keep the project scan configuration.
 /.codedb-mcp/*
 !/.codedb-mcp/codedb-mcp.toml
+
+# Claude Code Game Studios local runtime state.
+/.claude/settings.local.json
+/CLAUDE.local.md
+/production/session-logs/

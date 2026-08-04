@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Game Studio Workflow
+
+@.claude/CLAUDE-STUDIOS.md
+
 ## Project Overview
 
 GameDevelopmentKit is a dual-end (client/server) game development framework for Unity. It combines:

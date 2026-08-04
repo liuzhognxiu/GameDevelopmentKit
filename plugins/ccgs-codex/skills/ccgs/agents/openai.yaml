@@ -1,0 +1,8 @@
+interface:
+  display_name: "CCGS Game Studio"
+  short_description: "Game production workflows and specialist reviews"
+  brand_color: "#2F6B4F"
+  default_prompt: "Use $ccgs to choose and run the right game-development workflow for this project."
+policy:
+  allow_implicit_invocation: true
+

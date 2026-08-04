@@ -1,0 +1,27 @@
+{
+  "name": "ccgs-codex",
+  "version": "0.1.0",
+  "description": "Codex-native adapter for Claude Code Game Studios workflows and specialist roles.",
+  "author": {
+    "name": "GameDevelopmentKit contributors",
+    "url": "https://github.com/Donchitos/Claude-Code-Game-Studios"
+  },
+  "homepage": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+  "repository": "https://github.com/Donchitos/Claude-Code-Game-Studios",
+  "license": "MIT",
+  "keywords": ["game-development", "unity", "workflow", "multi-agent", "ccgs"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "CCGS for Codex",
+    "shortDescription": "Run game-studio workflows with Codex.",
+    "longDescription": "Adapts CCGS production workflows and specialist roles to Codex while respecting repository instructions, approval policy, and available multi-agent tools.",
+    "developerName": "GameDevelopmentKit contributors",
+    "category": "Developer Tools",
+    "capabilities": ["Interactive", "Write", "Multi-agent"],
+    "defaultPrompt": [
+      "Use $ccgs to determine the next production step.",
+      "Use $ccgs to review this Unity feature with specialists.",
+      "Use $ccgs to run the UI development workflow."
+    ]
+  }
+}

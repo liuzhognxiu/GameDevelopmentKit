@@ -1,0 +1,20 @@
+{
+  "name": "gamedevelopmentkit",
+  "interface": {
+    "displayName": "Gamedevelopmentkit"
+  },
+  "plugins": [
+    {
+      "name": "ccgs-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/ccgs-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Developer Tools"
+    }
+  ]
+}

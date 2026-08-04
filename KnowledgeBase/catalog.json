@@ -67,8 +67,8 @@
       "area": "unity-feature",
       "status": "verified",
       "document": "KnowledgeBase/05-UI容器与组件绑定.md",
-      "sources": ["Unity/Assets/Scripts/Game/Container", "Unity/Assets/Scripts/Game/Editor/CodeBind"],
-      "keywords": ["CodeBind", "Container", "ReactiveBinding", "组件绑定"]
+      "sources": ["Unity/Assets/Scripts/Game/Container", "Unity/Assets/Scripts/Game/UI/ComponentLibrary", "Unity/Assets/Scripts/Game/Editor/CodeBind", "Unity/Assets/Scripts/Game/Editor/UIComponentLibrary", "Unity/Assets/Res/UI/UIPrefab/ComponentLibrary"],
+      "keywords": ["CodeBind", "Container", "ReactiveBinding", "ComponentLibrary", "组件绑定", "通用组件"]
     },
     {
       "id": "UNITY-06",

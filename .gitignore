@@ -67,3 +67,7 @@ Unity/ProjectSettings/EditorBuildSettings.asset
 
 /Unity/Assets/StreamingAssets/*
 nul
+
+# codebase-mcp generated indexes; keep the project scan configuration.
+/.codedb-mcp/*
+!/.codedb-mcp/codedb-mcp.toml

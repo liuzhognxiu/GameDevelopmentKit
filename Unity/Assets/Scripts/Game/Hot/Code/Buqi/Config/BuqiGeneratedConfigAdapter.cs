@@ -199,14 +199,14 @@ namespace Game.Hot.Buqi.Config
 
         private static bool TryGetMember(object source, string name, out object value)
         {
-            const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
-            PropertyInfo property = source.GetType().GetProperty(name, flags);
+            const BindingFlags Flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+            PropertyInfo property = source.GetType().GetProperty(name, Flags);
             if (property != null)
             {
                 value = property.GetValue(source, null);
                 return true;
             }
-            FieldInfo field = source.GetType().GetField(name, flags);
+            FieldInfo field = source.GetType().GetField(name, Flags);
             if (field != null)
             {
                 value = field.GetValue(source);

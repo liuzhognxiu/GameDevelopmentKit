@@ -134,5 +134,9 @@ Charge 0.4.1 门禁已经完成，下一节点进入 Step 3 Luban Schema。Step 
 - 已在 `Design/Excel/GameHot/Datas/Buqi/` 新增 `BuqiGlobal.xlsx`、`BuqiItem.xlsx`、`BuqiRefinement.xlsx`、`BuqiEcho.xlsx`，仅录入最小配置链路范围：9 个验证法门、3 个淬炼、6 份道影。
 - 已在 GameHot 的 `__enums__.xlsx`、`__beans__.xlsx`、`__tables__.xlsx` 注册尺寸、品质、构筑方向、效果、触发、目标、条件、效果配置、格位实例与构筑快照；补齐 `__beans__.xlsx` 中 Luban 当前运行时需要的 `alias` 与 `variants` 字段子列。
 - 已新增 `Game.Hot.Buqi.Config` 适配层：`BuqiDefinitionProvider` 深拷贝配置为战斗定义，`BuqiConfigValidator` 校验 Step 3 计数、ID、尺寸/价格、触发/效果/目标组合、引用和道影棋盘；`TablesComponent` 在生成表存在时通过反射读取并校验，不让战斗核心直接依赖 Luban 生成类。
-- 命令行 `ExcelExporter` 已实际导出 GameHot Luban 代码与 bin/json 数据；未启动第二个 Unity Editor，未操作主工作区 Agent Bridge。
-- 当前 worktree 可验证项：Luban Check 成功、Luban Export 成功、无头战斗 `verify` 成功、配置适配静态编译成功、生成 JSON 数量检查成功。Unity Editor 编译/EditMode 与菜单门禁仍需协调器在主工作区 Unity 实例中复验。
+- 命令行 `ExcelExporter` 已实际导出 GameHot Luban 代码与 bin/json 数据；协调器整合后又通过主 Unity 执行 `Game/Tool/ExcelExporter`，生成结果与提交一致，没有产生额外 diff。
+- Step 3 主工作区验收完成：Unity 重编译 `generation=29`、`errorCount=0`、`warningCount=1`（既有 `TutorialForm.m_SkipButton` 未使用警告）；EditMode `Game.Hot.Buqi.Tests` 为 `total=14`、`passed=14`、`failed=0`、`success=true`（runId `test-run-a28a8b146218445bbbc47b511a884138`）；`Game/Buqi/Battle Sandbox` 菜单返回 `executed=true`。Luban Check/Export、无头战斗 `verify`、配置适配静态编译和生成 JSON 数量检查也均通过。
+
+## 下一步
+
+Step 3 已完成。下一门禁是利用现有 Battle Sandbox 执行 P-1 认知走查，验证“预测 -> 归因 -> 针对性重构”是否成立；P-1 通过前不进入正式玩家 UI、完整经济内容或 18 法门批量录入。

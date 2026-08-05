@@ -22,6 +22,7 @@
 | 公共生成物 | `Unity/Assets/Scripts/Game/Generate/Luban`、`Unity/Assets/Res/Luban` | 禁止手改 |
 | GameHot 运行时 | `Unity/Assets/Scripts/Game/Hot/Code/Tables` | 热更表加载扩展 |
 | GameHot 生成物 | `Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban`、`Unity/Assets/Res/Hot/Luban` | 禁止手改 |
+| Buqi Step 3 | `Design/Excel/GameHot/Datas/Buqi`、`Unity/Assets/Scripts/Game/Hot/Code/Buqi/Config` | 9 法门、3 淬炼、6 道影的最小配置链路；详见 `BUQI-01` |
 | 服务端数据 | `Config/Luban` | ET clientserver 数据副本，禁止人工混放文件 |
 
 ## 依赖关系
@@ -59,6 +60,7 @@ GameHot：`HotEntry` 的 TablesComponent -> 热更 `LoadAllAsync` -> 反射生�
 - GameHot conf 生成公共 GF、热更 Client 和 Editor 四个目标。当前 GameHot conf 为 active，是本基线的默认导出目标。
 - 公共 GF 目标在两套 conf 中都写入 `Unity/Assets/Scripts/Game/Generate/Luban` 与 `Unity/Assets/Res/Luban`；`AssetUtility.GetLubanAsset(file, fromJson)` 和公共 `TablesComponent.LoadAllAsync` 只从 `Assets/Res/Luban/{file}.bytes/json` 取数。
 - GameHot 私有目标只由 GameHot conf 的 `client` 生成，代码在 `Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban`，数据在 `Unity/Assets/Res/Hot/Luban`；热更 Tables 通过 `AssetUtility.GetGameHotAsset("Luban/...")` 读取并在解析后卸载 TextAsset。
+- Buqi Step 3 已在 GameHot `__tables__.xlsx` 注册 `DTBuqiGlobal`、`DTBuqiItem`、`DTBuqiRefinement`、`DTBuqiEcho`，在 `__beans__.xlsx`/`__enums__.xlsx` 注册效果、快照、尺寸、品质、构筑方向、触发、目标和条件 schema。源 Excel 当前为 9 个法门、3 个淬炼、6 个道影和 1 条全局配置，导出结果落到 Hot generated C#、Hot bytes 与 Editor JSON；热更 `TablesComponent.BuqiConfig.cs` 在生成表存在时反射读取、校验并暴露 `BuqiConfig`/`BuqiItemDefinitions`。
 - ET 私有目标由 ET conf 的 `client` / `clientserver` 生成到 `Unity/Assets/Scripts/Game/ET/Code/Model/Generate/*/Luban` 与 `Unity/Assets/Res/ET/*/Luban`，其中 `clientserver` 的数据副本复制到 `Config/Luban` 供服务端读取。
 - `Json` 将 `cs-bin/bin` 替换成 `cs-simple-json/json`；`Check` 移除输出参数并附加 `-f`，且跳过 Localization。
 - 多目标目录以第一个为源，导出后清空并复制到其余目录；目标目录不能放人工文件。
@@ -91,6 +93,8 @@ GameHot：`HotEntry` 的 TablesComponent -> 热更 `LoadAllAsync` -> 反射生�
 4. Unity 启动到 ProcedurePreload，确认 `LoadType` 与生成格式一致且关键表可 `GetOrDefault`。
 5. ET 服务端从 Bin 启动，确认 `Config/Luban` 可读；运行时验证需要 .NET 8 和 Unity 环境。
 
+Buqi 局部配置链路还应执行 `Game.Hot.Buqi.Tests` 中的配置适配测试，确认 9/3/6 计数、ID 范围、触发/效果/目标组合、引用和道影棋盘合法；这只证明 `BUQI-01` 的局部门禁，不替代本知识库五项通用运行验收。
+
 ## 源码证据
 
 - `Share/Tool/Loader/Init.cs`、`Share/Tool/Loader/Define.cs`：`AppType.ExcelExporter` 入口、`../Bin` 工作目录和空格路径失败边界。
@@ -101,8 +105,11 @@ GameHot：`HotEntry` 的 TablesComponent -> 热更 `LoadAllAsync` -> 反射生�
 - `Unity/Assets/Scripts/Game/Tables/TablesComponent.Load.cs`：公共类型判断、Code 回退和内存清理。
 - `Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.Load.cs`：热更路径与 TextAsset 卸载。
 - `Unity/Assets/Scripts/Game/Generate/Luban/TablesComponent.cs`：生成 Loader 的并行加载和引用解析。
+- `Design/Excel/GameHot/Datas/Buqi/*.xlsx`、`Design/Excel/GameHot/Datas/__tables__.xlsx`、`__beans__.xlsx`、`__enums__.xlsx`：Buqi Step 3 源表和 schema 注册。
+- `Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.BuqiConfig.cs`、`Unity/Assets/Scripts/Game/Hot/Code/Buqi/Config/*.cs`：生成表到战斗定义的适配、校验和 provider。
+- `Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqi*.cs`、`Unity/Assets/Res/Hot/Luban/dtbuqi*.bytes`、`Unity/Assets/Res/Editor/Hot/Luban/dtbuqi*.json`：Buqi 四表的生成代码与导出数据。
 
 ## 关联知识
 
 - 上游：`ARCH-02`、`TOOLS-01`、`LIB-05`
-- 下游：`UNITY-04`、`UNITY-06`、`UNITY-08`、`UNITY-09`、`UNITY-10`、`SERVER-02`
+- 下游：`UNITY-04`、`UNITY-06`、`UNITY-08`、`UNITY-09`、`UNITY-10`、`SERVER-02`、`BUQI-01`

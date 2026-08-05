@@ -57,7 +57,7 @@ Git 短 hash 来自 `packages-lock.json` 的 40 位 `hash` 字段，文中缩写
 
 `DotNet/ThirdParty/DotNet.ThirdParty.csproj` 为服务端单独引用 CommandLineParser 2.8.0、MemoryPack 1.10.0、MongoDB.Driver 2.17.1、NLog 4.7.15、SharpZipLib 1.3.3、UniTask 2.5.10、ZString 2.6.0、LiteDB 5.0.21、MudBlazor 7.15.0 等；它还从 Unity PackageCache 编译 `com.unity.mathematics*`（排除 `Forwarders.cs`）和 `me.xw.reactivebinding@*` Runtime（排除 Plugins/Samples）。`DotNet/Hotfix/DotNet.Hotfix.csproj` 经 Loader/Model 间接使用这些依赖，额外引用 `Microsoft.AspNetCore.App`，并通过 `Compile Include` 链接 Unity 目录下的 ET Hotfix Client/Server/Share 源码。
 
-`Share/Buqi.Simulation.Headless/Buqi.Simulation.Headless.csproj` 是新增的 .NET 8 headless 验证入口，使用 `BUQI_HEADLESS`、C# 9、warnings-as-errors，并以 `Compile Include` 链接 `Unity/Assets/Scripts/Game/Hot/Code/Buqi/Battle/**/*.cs`。它刻意不引用 Unity/UGF/ET/资源/网络依赖，用于让 Buqi 纯 C# 战斗内核在非 Unity 环境下暴露编译和契约问题。现有 catalog 尚未为 Buqi 玩法创建独立知识模块；本页只记录依赖边界和覆盖缺口。
+`Share/Buqi.Simulation.Headless/Buqi.Simulation.Headless.csproj` 是 .NET 8 headless 验证入口，使用 `BUQI_HEADLESS`、C# 9、warnings-as-errors，并以 `Compile Include` 链接 `Unity/Assets/Scripts/Game/Hot/Code/Buqi/Battle/**/*.cs`。它刻意不引用 Unity/UGF/ET/资源/网络依赖，用于让 Buqi 纯 C# 战斗内核在非 Unity 环境下暴露编译和契约问题。Buqi 玩法链路已由 `BUQI-01` 独立维护，本页只记录跨依赖边界。
 
 这套 NuGet 图与 Unity UPM/`Assets/Plugins` 图互不锁定。共享源码能同时编译不代表二进制版本相同：例如 Unity 中 CommandLine DLL 为 2.8.0，与 NuGet 对齐；Unity SharpZipLib DLL 的文件版本是 0.86.0.518，而 .NET 使用 1.3.3；Unity MongoDB Driver DLL 标记为本地 `0.0.0-local`，而 .NET 使用 2.17.1；MemoryPack Unity 来自扩展 Git 包，.NET 则是 1.10.0。
 
@@ -87,7 +87,7 @@ Git 短 hash 来自 `packages-lock.json` 的 40 位 `hash` 字段，文中缩写
 
 - `manifest.json` 是意图，`packages-lock.json` 是当前解析快照；升级后两者的 diff 都是评审对象。不要手改 `Library/PackageCache` 代替升级。
 - `Unity/Library/PackageCache` 是 Unity Package Manager 在本机工作区生成/复用的安装态缓存，不受 Git 跟踪。`DotNet.ThirdParty.csproj` 对 `com.unity.mathematics*` 与 `me.xw.reactivebinding@*` 的源码引用是构建前置条件说明，不是知识库 `sources` 应收录的权威仓库文件；缺失时应先让 Unity/UPM 完成解析，再构建 .NET 方案。
-- Buqi headless 项目链接 Unity/GameHot 纯 C# 源码以形成跨端编译防线；它不是独立包来源。后续若 Buqi 内核稳定，应新增玩法/仿真知识模块、验收命令和指纹边界，而不是继续只靠 `PACKAGE-01` 的宽泛 `Share` 覆盖。
+- Buqi headless 项目链接 Unity/GameHot 纯 C# 源码以形成跨端编译防线；它不是独立包来源。玩法/仿真知识、验收命令和指纹边界由 `BUQI-01` 承担，`PACKAGE-01` 只说明它与 Unity/.NET 依赖图的关系。
 - `Assets/Plugins` 及其 `.meta` 受版本控制。DLL 文件版本只能作为线索，不等于供应商发行版本或许可证版本；Sirenix 多数 DLL 报告 `1.0.0.0`，不能据此判断 Odin 实际版本。
 - MongoDB 目录同时包含 managed DLL 与 Windows native `mongocrypt`、zstd、snappy；MongoDB.Driver importer 排除了 Android/iOS。NPOI 2.2.1 的 importer 为 Editor-only。目标平台兼容性由整套 importer 元数据共同决定。
 - `Share.Analyzer.dll` 与 `Share.SourceGenerator.dll` 是仓库工具项目的预编译产物；它们的 ProductVersion 带源码 commit，但升级应由对应项目重新构建，而不是替换单个 DLL。

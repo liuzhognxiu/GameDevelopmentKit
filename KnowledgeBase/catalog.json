@@ -22,7 +22,7 @@
       "area": "architecture",
       "status": "verified",
       "document": "KnowledgeBase/02-模式选择与代码分层.md",
-      "sources": ["Unity/Assets/Scripts/Game/Procedure/ProcedurePreset.cs", "Unity/Assets/Scripts/Game/Editor/DefineSymbol", "Unity/Assets/Scripts/Game/ET", "Unity/Assets/Scripts/Game/Hot"],
+      "sources": ["Unity/Assets/Scripts/Game/Procedure/ProcedurePreset.cs", "Unity/Assets/Scripts/Game/Editor/DefineSymbol/DefineSymbolTool.cs", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/CodeRunner/CodeRunnerComponent.cs", "Unity/Assets/Scripts/Game/Hot/Loader/Init.cs", "Unity/Assets/Scripts/Game/Hot/Loader/Define.cs", "Unity/Assets/Scripts/Game/Hot/Loader/Game.Hot.Loader.asmdef", "Unity/Assets/Scripts/Game/Hot/Code/Game.Hot.Code.asmdef", "Unity/Assets/Scripts/Game/Hot/Code/Editor/Game.Hot.Code.Editor.asmdef", "Unity/Assets/Scripts/Game/Hot/Code/Base/HotEntry.cs", "Unity/Assets/Scripts/Game/ET/Loader/Init.cs", "Unity/Assets/Scripts/Game/ET/Loader/CodeLoader.cs", "Unity/Assets/Scripts/Game/ET/Loader/Define.cs", "Unity/Assets/Scripts/Game/ET/Loader/Game.ET.Loader.asmdef", "Unity/Assets/Scripts/Game/ET/Code/Editor/Game.ET.Code.Editor.asmdef", "Unity/Assets/Scripts/Game/ET/Code/Model/Game.ET.Code.Model.asmdef", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Game.ET.Code.Hotfix.asmdef", "Unity/Assets/Scripts/Game/ET/Code/ModelView/Game.ET.Code.ModelView.asmdef", "Unity/Assets/Scripts/Game/ET/Code/HotfixView/Game.ET.Code.HotfixView.asmdef"],
       "keywords": ["UNITY_ET", "UNITY_GAMEHOT", "UNITY_HOTFIX", "程序集", "热更"]
     },
     {
@@ -69,6 +69,15 @@
       "document": "KnowledgeBase/03-GameHot业务入口与流程.md",
       "sources": ["Unity/Assets/Scripts/Game/Hot/Code/Procedure", "Unity/Assets/Scripts/Game/Hot/Code/Game", "Unity/Assets/Scripts/Game/Hot/Code/Definition"],
       "keywords": ["Procedure", "GameMode", "SurvivalGame", "HotComponent"]
+    },
+    {
+      "id": "BUQI-01",
+      "name": "不器战斗与配置链路",
+      "area": "gameplay",
+      "status": "verified",
+      "document": "KnowledgeBase/32-不器战斗与配置链路.md",
+      "sources": ["Unity/Assets/Scripts/Game/Hot/Code/Buqi/Battle/Model", "Unity/Assets/Scripts/Game/Hot/Code/Buqi/Battle/Rules", "Unity/Assets/Scripts/Game/Hot/Code/Buqi/Battle/Simulation/BuqiBattleSimulator.cs", "Unity/Assets/Scripts/Game/Hot/Code/Buqi/Battle/Definition/BuqiContractChecks.cs", "Unity/Assets/Scripts/Game/Hot/Code/Buqi/Battle/Definition/BuqiTestSuite.cs", "Unity/Assets/Scripts/Game/Hot/Code/Buqi/Debug/BuqiBattleSandbox.cs", "Unity/Assets/Scripts/Game/Hot/Code/Editor/Buqi/BuqiBattleSandboxWindow.cs", "Share/Buqi.Simulation.Headless/Buqi.Simulation.Headless.csproj", "Share/Buqi.Simulation.Headless/Program.cs", "Unity/Assets/Tests/GameHot/Buqi/EditMode/Game.Hot.Buqi.Tests.asmdef", "Unity/Assets/Tests/GameHot/Buqi/EditMode/BuqiBattleTests.cs", "Unity/Assets/Tests/GameHot/Buqi/EditMode/BuqiBattleSandboxTests.cs", "Unity/Assets/Tests/GameHot/Buqi/EditMode/BuqiConfigTests.cs", "Unity/Assets/Tests/GameHot/Buqi/EditMode/Vectors/approved-buqi-hashes.json", "Design/Excel/GameHot/Datas/Buqi/BuqiItem.xlsx", "Design/Excel/GameHot/Datas/Buqi/BuqiRefinement.xlsx", "Design/Excel/GameHot/Datas/Buqi/BuqiEcho.xlsx", "Design/Excel/GameHot/Datas/Buqi/BuqiGlobal.xlsx", "Design/Excel/GameHot/Datas/__tables__.xlsx", "Design/Excel/GameHot/Datas/__beans__.xlsx", "Design/Excel/GameHot/Datas/__enums__.xlsx", "Unity/Assets/Scripts/Game/Hot/Code/Buqi/Config/BuqiConfigModels.cs", "Unity/Assets/Scripts/Game/Hot/Code/Buqi/Config/BuqiDefinitionProvider.cs", "Unity/Assets/Scripts/Game/Hot/Code/Buqi/Config/BuqiConfigValidator.cs", "Unity/Assets/Scripts/Game/Hot/Code/Buqi/Config/BuqiGeneratedConfigAdapter.cs", "Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.BuqiConfig.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/TablesComponent.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiItem.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiRefinement.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiEcho.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiGlobal.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DRBuqiItem.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DRBuqiRefinement.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DRBuqiEcho.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DRBuqiGlobal.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiBuild.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiBuildSnapshotConfig.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiEffectConfig.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiItemInstanceConfig.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiConditionKind.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiEffect.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiQuality.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiSize.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiTarget.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiTrigger.cs", "Unity/Assets/Res/Hot/Luban/dtbuqiitem.bytes", "Unity/Assets/Res/Hot/Luban/dtbuqirefinement.bytes", "Unity/Assets/Res/Hot/Luban/dtbuqiecho.bytes", "Unity/Assets/Res/Hot/Luban/dtbuqiglobal.bytes", "Unity/Assets/Res/Editor/Hot/Luban/dtbuqiitem.json", "Unity/Assets/Res/Editor/Hot/Luban/dtbuqirefinement.json", "Unity/Assets/Res/Editor/Hot/Luban/dtbuqiecho.json", "Unity/Assets/Res/Editor/Hot/Luban/dtbuqiglobal.json", "production/session-state/active.md"],
+      "keywords": ["Buqi", "不器", "Battle", "Charge", "Luban", "approved hash", "P-1"]
     },
     {
       "id": "UNITY-04",
@@ -175,7 +184,7 @@
       "area": "data",
       "status": "verified",
       "document": "KnowledgeBase/17-Luban配置表.md",
-      "sources": ["Unity/Assets/Scripts/Game/Tables", "Unity/Assets/Scripts/Game/Generate/Luban", "Unity/Assets/Scripts/Game/Hot/Code/Tables", "Unity/Assets/Res/Luban", "Unity/Assets/Res/Hot/Luban"],
+      "sources": ["Unity/Assets/Scripts/Game/Tables/TablesComponent.Load.cs", "Unity/Assets/Scripts/Game/Generate/Luban/TablesComponent.cs", "Unity/Assets/Res/Luban/dtuiform.bytes", "Unity/Assets/Res/Luban/dtentity.bytes", "Unity/Assets/Res/Luban/dtscene.bytes", "Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.Load.cs", "Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.BuqiConfig.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/TablesComponent.cs", "Unity/Assets/Res/Hot/Luban/dtoneconfig.bytes", "Unity/Assets/Res/Hot/Luban/dtaircraft.bytes", "Unity/Assets/Res/Hot/Luban/dtweapon.bytes"],
       "keywords": ["Tables", "Luban", "DT", "配置表"]
     },
     {
@@ -328,7 +337,7 @@
       "area": "data",
       "status": "verified",
       "document": "KnowledgeBase/17-Luban配置表.md",
-      "sources": ["Design/Excel", "Tools/Luban", "Share/Tool/Loader", "Share/Tool/ExcelExporter", "Config/Luban"],
+      "sources": ["Design/Excel/gen all bin.bat", "Design/Excel/gen all json.bat", "Design/Excel/ET/luban.conf", "Design/Excel/GameHot/luban.conf", "Design/Excel/ET/Datas/__tables__.xlsx", "Design/Excel/GameHot/Datas/__tables__.xlsx", "Design/Excel/GameHot/Datas/__beans__.xlsx", "Design/Excel/GameHot/Datas/__enums__.xlsx", "Design/Excel/GameHot/Datas/Game/UI.xlsx", "Design/Excel/GameHot/Datas/Game/Entity.xlsx", "Share/Tool/Loader/Init.cs", "Share/Tool/Loader/Define.cs", "Share/Tool/ExcelExporter/ExcelExporter.cs", "Share/Tool/ExcelExporter/ExcelExporter.Luban.cs", "Share/Tool/ExcelExporter/Generate/GenerateUGFUIFormId.cs", "Share/Tool/ExcelExporter/Generate/GenerateUGFEntityId.cs", "Tools/Luban/Tools/Luban/Luban.dll", "Tools/Luban/CustomTemplates/Default/cs-bin/table.sbn", "Tools/Luban/CustomTemplates/Default/cs-simple-json/table.sbn", "Config/Luban/dtstartprocessconfig.bytes", "Config/Luban/dtoneconfig.bytes"],
       "keywords": ["Luban", "Excel", "Export", "bytes", "配置"]
     },
     {
@@ -445,7 +454,7 @@
       "area": "library",
       "status": "verified",
       "document": "KnowledgeBase/24-仓库内辅助库.md",
-      "sources": ["Unity/Assets/Scripts/Library/LubanLib/Runtime", "Unity/Assets/Scripts/Library/LubanLib/Editor", "Unity/Assets/Scripts/Game/Tables", "Unity/Assets/Scripts/Game/Generate/Luban", "Unity/Assets/Scripts/Game/Hot/Code/Tables", "Unity/Assets/Scripts/Game/ET/Code/Model/Generate/Client/Luban", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/Config"],
+      "sources": ["Unity/Assets/Scripts/Library/LubanLib/Runtime/LubanLib.asmdef", "Unity/Assets/Scripts/Library/LubanLib/Runtime/ByteBuf.cs", "Unity/Assets/Scripts/Library/LubanLib/Runtime/BeanBase.cs", "Unity/Assets/Scripts/Library/LubanLib/Runtime/IDataTable.cs", "Unity/Assets/Scripts/Library/LubanLib/Runtime/TablesMemory.cs", "Unity/Assets/Scripts/Library/LubanLib/Runtime/SimpleJSON/SimpleJSON.cs", "Unity/Assets/Scripts/Library/LubanLib/Editor/LubanLib.Editor.asmdef", "Unity/Assets/Scripts/Library/LubanLib/Editor/EditorBeanBase.cs", "Unity/Assets/Scripts/Library/LubanLib/Editor/EditorEnumItemInfo.cs", "Unity/Assets/Scripts/Game/Tables/TablesComponent.Load.cs", "Unity/Assets/Scripts/Game/Generate/Luban/TablesComponent.cs", "Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.Load.cs", "Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.BuqiConfig.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/TablesComponent.cs", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiItem.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Generate/Client/Luban/Tables.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Generate/ClientServer/Luban/Tables.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/Config/ConfigLoader.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/Config/Tables.cs"],
       "keywords": ["LubanLib", "ByteBuf", "Editor", "配置加载"]
     },
     {

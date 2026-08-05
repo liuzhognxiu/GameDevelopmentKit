@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updated": "2026-08-04",
+  "updated": "2026-08-05",
   "statusDefinitions": {
     "planned": "Module discovered; usable documentation is not yet available.",
     "seed": "Searchable draft exists but has not passed source-by-source verification.",

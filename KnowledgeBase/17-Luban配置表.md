@@ -2,7 +2,7 @@
 
 > Catalog ID: `UNITY-15`、`DATA-01`  
 > 状态：`verified`  
-> 最后核验：`2026-08-04`  
+> 最后核验：`2026-08-05`  
 > 适用模式：GameHot / ET Client / ET Server / Editor / Tooling
 
 ## 模块定位
@@ -29,7 +29,7 @@
 - 导出工具属于 Share.Tool，要求先构建 `Kit.sln`，并从 `Bin` 工作目录运行。
 - `Share/Tool/Loader/Init.Main` 解析命令行后按 `Options.Instance.AppType` 分派；`AppType.ExcelExporter` 会设置 `Console=1` 并调用 `ExcelExporter.ExportAll()`。`Share/Tool/Loader/Define.WorkDir` 固定为 `Path.GetFullPath("../Bin")`，`%UNITY_ASSETS%` 与 `%ROOT%` 都从该工作目录推导。
 - 工具依赖 .NET 8、Luban DLL、ExcelDataReader、两个 `luban.conf` 和 `Localization.xlsx`。
-- `UNITY_ET` / `UNITY_GAMEHOT` 模式工具会切换对应 conf 的 active；当前仓库状态是 ET=true、GameHot=false。
+- `UNITY_ET` / `UNITY_GAMEHOT` 模式工具会切换对应 conf 的 active；当前仓库状态是 ET=false、GameHot=true。
 - 公共 Tables 依赖 UGF Resource Awaitable、Luban ByteBuf/SimpleJSON 和 `TablesMemory`。
 - ET 独立服务端从 `Config/Luban` 加载，客户端公共表和 ET/GameHot 私有表是不同生成目标。
 
@@ -55,8 +55,8 @@ GameHot：`HotEntry` 的 TablesComponent -> 热更 `LoadAllAsync` -> 反射生�
 
 ## 数据与生命周期
 
-- ET conf 生成公共 GF、ET Client、ClientServer、Editor 五个目标；ClientServer 数据从 Unity 输出复制到 `Config/Luban`。
-- GameHot conf 生成公共 GF、热更 Client 和 Editor 四个目标。
+- ET conf 生成公共 GF、ET Client、ClientServer、Editor 五个目标；ClientServer 数据从 Unity 输出复制到 `Config/Luban`。当前 ET conf 为 inactive，普通导出不会刷新服务端 `Config/Luban`。
+- GameHot conf 生成公共 GF、热更 Client 和 Editor 四个目标。当前 GameHot conf 为 active，是本基线的默认导出目标。
 - 公共 GF 目标在两套 conf 中都写入 `Unity/Assets/Scripts/Game/Generate/Luban` 与 `Unity/Assets/Res/Luban`；`AssetUtility.GetLubanAsset(file, fromJson)` 和公共 `TablesComponent.LoadAllAsync` 只从 `Assets/Res/Luban/{file}.bytes/json` 取数。
 - GameHot 私有目标只由 GameHot conf 的 `client` 生成，代码在 `Unity/Assets/Scripts/Game/Hot/Code/Generate/Luban`，数据在 `Unity/Assets/Res/Hot/Luban`；热更 Tables 通过 `AssetUtility.GetGameHotAsset("Luban/...")` 读取并在解析后卸载 TextAsset。
 - ET 私有目标由 ET conf 的 `client` / `clientserver` 生成到 `Unity/Assets/Scripts/Game/ET/Code/Model/Generate/*/Luban` 与 `Unity/Assets/Res/ET/*/Luban`，其中 `clientserver` 的数据副本复制到 `Config/Luban` 供服务端读取。
@@ -95,8 +95,8 @@ GameHot：`HotEntry` 的 TablesComponent -> 热更 `LoadAllAsync` -> 反射生�
 
 - `Share/Tool/Loader/Init.cs`、`Share/Tool/Loader/Define.cs`：`AppType.ExcelExporter` 入口、`../Bin` 工作目录和空格路径失败边界。
 - `Share/Tool/ExcelExporter/ExcelExporter.Luban.cs`：发现、选项替换、并行、复制和二次生成。
-- `Design/Excel/ET/luban.conf`：当前 active 状态与五类真实输出。
-- `Design/Excel/GameHot/luban.conf`：GameHot 输出及当前 inactive 状态。
+- `Design/Excel/ET/luban.conf`：当前 inactive 状态与五类真实输出。
+- `Design/Excel/GameHot/luban.conf`：GameHot 输出及当前 active 状态。
 - `Unity/Assets/Scripts/Game/Utility/AssetUtility.cs`：公共 `Assets/Res/Luban`、ET `Assets/Res/ET` 和 GameHot `Assets/Res/Hot` 资源路径拼接。
 - `Unity/Assets/Scripts/Game/Tables/TablesComponent.Load.cs`：公共类型判断、Code 回退和内存清理。
 - `Unity/Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.Load.cs`：热更路径与 TextAsset 卸载。

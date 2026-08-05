@@ -20,7 +20,7 @@
 | `DotNet/Core` | 链接 `Library/ET/Core/Runtime` | 客户端/服务端共享且不热更的 ET 基础设施 |
 | `DotNet/Model` | 链接 ET `Model/Server`、`Client`、`Share` 和 ClientServer 生成代码 | 输出 `Model.dll`；定义实体、组件、消息和 `ET.Entry` |
 | `DotNet/Hotfix` | 链接 ET `Hotfix/Client`、`Server`、`Share` | 输出 `Hotfix.dll`；包含业务 System，也承载 Admin Razor/ASP.NET Core 内容 |
-| `DotNet/ThirdParty` | 链接 ET ThirdParty、LubanLib、UniTask 扩展和 Unity.Mathematics | 隔离 NuGet 与跨端第三方依赖 |
+| `DotNet/ThirdParty` | 链接 ET ThirdParty、LubanLib、UniTask 扩展、Unity.Mathematics 与 ReactiveBinding 运行时代码 | 隔离 NuGet 与跨端第三方依赖 |
 | `Share/Aspire` | Aspire AppHost | 读取 `Config/Luban`，生成多个 `dotnet App.dll` 资源 |
 | `Config/Luban` | 服务端运行配置产物 | Loader 以 `../Config/Luban/*.bytes` 读取；不要手改生成物 |
 | Linux 发布脚本 | `Publish-linux-x64.ps1` | 从仓库根清理并重建 `Publish/linux-x64`，发布 App 并复制配置；属于破坏性发布入口 |
@@ -173,7 +173,7 @@ rg -n "LoadHotfix|ReloadAsync|CreateCode|EntryEvent[123]" `
   DotNet Unity/Assets/Scripts/Game/ET/Code
 ```
 
-具备 .NET 8 SDK 后，先用项目要求的 Unity 版本打开一次 `Unity` 工程并完成 Package 解析，确认 `Unity/Library/PackageCache/com.unity.mathematics*` 恰有一个可用目录；`DotNet.ThirdParty.csproj` 直接编译其中源码，干净检出不能只靠 NuGet 构建。随后运行：
+具备 .NET 8 SDK 后，先用项目要求的 Unity 版本打开一次 `Unity` 工程并完成 Package 解析，确认 `Unity/Library/PackageCache/com.unity.mathematics*` 与 `me.xw.reactivebinding@*` 各有可用目录；`DotNet.ThirdParty.csproj` 直接编译其中源码，并排除 Mathematics `Forwarders.cs` 以及 ReactiveBinding 的 `Runtime/Plugins`、`Samples~`，干净检出不能只靠 NuGet 构建。随后运行：
 
 ```powershell
 dotnet build .\DotNet\DotNet.sln
@@ -186,7 +186,7 @@ Pop-Location
 
 再执行 `Tools/Shell/start aspire.bat`，当前预期应首先验证未知参数问题；修正参数契约后，检查 dashboard 是否按配置展示全部进程、进程日志是否完成三阶段 EntryEvent、热重载后已有 Fiber 是否保持运行。
 
-本轮完成源码、项目文件、脚本和配置调用链静态核验；当前环境没有可用的 `dotnet` 命令，未执行编译及进程级验证。
+本轮完成源码、项目文件、脚本和配置调用链静态核验；未执行 `dotnet` 编译及进程级验证。
 
 ## 源码证据
 
@@ -195,7 +195,7 @@ Pop-Location
 - `DotNet/Loader/Init.cs`：先注册 `UnhandledException`，再解析 `Options`，随后才创建 `NLogger` 并注册 `Logger`；catch 中仍调用 `Log.Error`。
 - `DotNet/Loader/CodeLoader.cs`
 - `DotNet/Loader/ConfigReader.cs`
-- `DotNet/ThirdParty/DotNet.ThirdParty.csproj`：服务端对 Unity Mathematics PackageCache 的构建期依赖。
+- `DotNet/ThirdParty/DotNet.ThirdParty.csproj`：服务端对 Unity Mathematics 与 ReactiveBinding PackageCache 的构建期依赖，以及 Forwarders/Plugins/Samples 排除边界。
 - `Publish-linux-x64.ps1`：Linux x64 发布目录清理、App 发布和配置复制入口。
 - `DotNet/Core/DotNet.Core.csproj`
 - `DotNet/Model/DotNet.Model.csproj`

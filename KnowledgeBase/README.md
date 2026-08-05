@@ -24,7 +24,7 @@
 ## 当前验收状态
 
 - `catalog.json` 共 55 个模块，当前全部标记为 `verified`。
-- `01` 至 `32` 文档均按统一模板组织；2026-08-05 已完成历史模块复审，并新增 `BUQI-01` 不器战斗与配置链路。普通校验和 `-RequireStaticComplete` 必须在本轮刷新源码指纹后通过：55 个 verified 模块、32 篇编号文档、0 warning。
+- `01` 至 `32` 文档均按统一模板组织；2026-08-05 已完成历史模块复审，并将 `BUQI-01` 同步到 `2253f0a2` 的不器 effects/builds 扩展基线。普通校验和 `-RequireStaticComplete` 必须在本轮刷新源码指纹后通过：55 个 verified 模块、32 篇编号文档、0 warning。
 - 普通校验与 `-RequireStaticComplete` 静态完整校验必须在干净源码基线中同时通过，不能用刷新指纹掩盖当前工作区的源码改动。
 - [`runtime-acceptance.json`](runtime-acceptance.json) 如实记录五类运行验收；当前均为 `not_run`，因此 `-RequireComplete` 预期失败，不能声明全流程完成。
 
@@ -36,7 +36,7 @@
 | 架构与入口 | 仓库结构、启动链路、模式与程序集边界 | `01`、`02`、`03` |
 | Unity 运行链 | 公共 Procedure、资源闸门、GameHot 与 ET 模式分派 | `29` |
 | Unity 业务能力 | UI、Entity、资源、场景、音频、本地化、平台等 | `04` 至 `14` |
-| 不器玩法链路 | Buqi Battle、Charge、Step 3 配置、局部门禁与 P-1 停止线 | `32` |
+| 不器玩法链路 | Buqi Battle、Charge、历史 Step 3、当前 8/24/6/16 配置基线、局部门禁与 P-1 停止线 | `32` |
 | ET 客户端集成 | ET Core、四程序集、UGF 桥接、动态事件 | `15`、`16` |
 | 数据与协议 | Luban、Proto、生成物与运行时装载 | `17`、`18` |
 | 编辑器与构建 | 编辑器工具、HybridCLR、资源与 Player 构建 | `19`、`20` |

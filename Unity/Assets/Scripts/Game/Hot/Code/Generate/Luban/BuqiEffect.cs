@@ -12,16 +12,16 @@
 namespace Game.Hot
 { 
     /// <summary>
-    /// damage
+    /// battle effect
     /// </summary>
     public enum BuqiEffect
     {
         /// <summary>
-        /// damage
+        /// attack
         /// </summary>
         Damage = 0,
         /// <summary>
-        /// buffer
+        /// shield
         /// </summary>
         Buffer = 1,
         /// <summary>
@@ -29,7 +29,7 @@ namespace Game.Hot
         /// </summary>
         Haste = 2,
         /// <summary>
-        /// delay
+        /// slow
         /// </summary>
         Delay = 3,
         /// <summary>
@@ -37,9 +37,29 @@ namespace Game.Hot
         /// </summary>
         Charge = 4,
         /// <summary>
-        /// noise
+        /// overload
         /// </summary>
         Noise = 5,
+        /// <summary>
+        /// heal
+        /// </summary>
+        Heal = 6,
+        /// <summary>
+        /// life regen
+        /// </summary>
+        Regen = 7,
+        /// <summary>
+        /// poison
+        /// </summary>
+        Poison = 8,
+        /// <summary>
+        /// burn
+        /// </summary>
+        Burn = 9,
+        /// <summary>
+        /// freeze
+        /// </summary>
+        Freeze = 10,
     }
 
 } 

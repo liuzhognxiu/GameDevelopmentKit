@@ -12,12 +12,12 @@
 namespace Game.Hot
 { 
     /// <summary>
-    /// enemy execution
+    /// target selector
     /// </summary>
     public enum BuqiTarget
     {
         /// <summary>
-        /// enemy execution
+        /// enemy life
         /// </summary>
         EnemyExecution = 0,
         /// <summary>

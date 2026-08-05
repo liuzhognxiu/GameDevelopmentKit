@@ -24,6 +24,19 @@ namespace Game.Hot.Buqi.Battle
     /// <summary>
     /// 单张法门的运行时状态。战斗结束后丢弃，不回写战前快照。
     /// </summary>
+    public sealed class TimedStatus
+    {
+        public BuqiEffect Effect;
+        public int Amount;
+        public int RemainingTicks;
+        public int TickIntervalTicks = 10;
+        public int TickProgressTicks;
+        public int SourceAnchorSlot;
+        public string SourceInstanceId = string.Empty;
+        public string ChainId = string.Empty;
+        public string EffectId = string.Empty;
+    }
+
     public sealed class ItemState
     {
         /// <summary>实例唯一 ID。</summary>
@@ -49,6 +62,8 @@ namespace Game.Hot.Buqi.Battle
 
         /// <summary>剩余冷却进度，单位为 1/10000 tick。</summary>
         public int CooldownProgress;
+
+        public int FrozenTicks;
 
         /// <summary>本 tick 是否在 PreTick 后到期，只允许声明一次主动使用。</summary>
         public bool ReadyThisTick;
@@ -83,6 +98,8 @@ namespace Game.Hot.Buqi.Battle
         /// <summary>执行值，降至 0 或以下即在 PostTick 判定失败。</summary>
         public int Execution;
 
+        public int MaxExecution;
+
         /// <summary>护体池，上限为 60；同 tick 新护体先于普通伤害加入。</summary>
         public int Buffer;
 
@@ -97,5 +114,7 @@ namespace Game.Hot.Buqi.Battle
 
         /// <summary>作用于本方冷却推进的阵营级限时修正。</summary>
         public List<TimedModifier> SideModifiers = new List<TimedModifier>();
+
+        public List<TimedStatus> Statuses = new List<TimedStatus>();
     }
 }

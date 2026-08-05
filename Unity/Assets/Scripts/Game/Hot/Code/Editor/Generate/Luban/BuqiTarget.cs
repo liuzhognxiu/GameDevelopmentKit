@@ -11,12 +11,12 @@
 namespace Game.Hot.Editor
 {
     /// <summary>
-    /// enemy execution
+    /// target selector
     /// </summary>
     public enum BuqiTarget
     {
         /// <summary>
-        /// enemy execution
+        /// enemy life
         /// </summary>
         EnemyExecution = 0,
         /// <summary>
@@ -55,7 +55,7 @@ namespace Game.Hot.Editor
 
     public static class BuqiTarget_Metadata
     {
-        public static readonly Luban.EditorEnumItemInfo EnemyExecution = new Luban.EditorEnumItemInfo("EnemyExecution", "", 0, "enemy execution");
+        public static readonly Luban.EditorEnumItemInfo EnemyExecution = new Luban.EditorEnumItemInfo("EnemyExecution", "", 0, "enemy life");
         public static readonly Luban.EditorEnumItemInfo Self = new Luban.EditorEnumItemInfo("Self", "", 1, "self");
         public static readonly Luban.EditorEnumItemInfo LeftAdjacentItem = new Luban.EditorEnumItemInfo("LeftAdjacentItem", "", 2, "left adjacent");
         public static readonly Luban.EditorEnumItemInfo RightAdjacentItem = new Luban.EditorEnumItemInfo("RightAdjacentItem", "", 3, "right adjacent");

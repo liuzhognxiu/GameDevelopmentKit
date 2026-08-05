@@ -11,35 +11,65 @@
 namespace Game.Hot.Editor
 {
     /// <summary>
-    /// fast execution
+    /// battle build archetype
     /// </summary>
     public enum BuqiBuild
     {
         /// <summary>
-        /// fast execution
+        /// attack tempo
         /// </summary>
         fast = 1,
         /// <summary>
-        /// buffer counter
+        /// shield counter
         /// </summary>
         buffer = 2,
         /// <summary>
-        /// chain engine
+        /// charge chain
         /// </summary>
         chain = 3,
+        /// <summary>
+        /// healing sustain
+        /// </summary>
+        heal = 4,
+        /// <summary>
+        /// poison attrition
+        /// </summary>
+        poison = 5,
+        /// <summary>
+        /// burn pressure
+        /// </summary>
+        burn = 6,
+        /// <summary>
+        /// freeze control
+        /// </summary>
+        freeze = 7,
+        /// <summary>
+        /// overload engine
+        /// </summary>
+        overload = 8,
     }
 
     public static class BuqiBuild_Metadata
     {
-        public static readonly Luban.EditorEnumItemInfo fast = new Luban.EditorEnumItemInfo("fast", "Fast", 1, "fast execution");
-        public static readonly Luban.EditorEnumItemInfo buffer = new Luban.EditorEnumItemInfo("buffer", "BufferCounter", 2, "buffer counter");
-        public static readonly Luban.EditorEnumItemInfo chain = new Luban.EditorEnumItemInfo("chain", "Chain", 3, "chain engine");
+        public static readonly Luban.EditorEnumItemInfo fast = new Luban.EditorEnumItemInfo("fast", "Fast", 1, "attack tempo");
+        public static readonly Luban.EditorEnumItemInfo buffer = new Luban.EditorEnumItemInfo("buffer", "BufferCounter", 2, "shield counter");
+        public static readonly Luban.EditorEnumItemInfo chain = new Luban.EditorEnumItemInfo("chain", "Chain", 3, "charge chain");
+        public static readonly Luban.EditorEnumItemInfo heal = new Luban.EditorEnumItemInfo("heal", "Heal", 4, "healing sustain");
+        public static readonly Luban.EditorEnumItemInfo poison = new Luban.EditorEnumItemInfo("poison", "Poison", 5, "poison attrition");
+        public static readonly Luban.EditorEnumItemInfo burn = new Luban.EditorEnumItemInfo("burn", "Burn", 6, "burn pressure");
+        public static readonly Luban.EditorEnumItemInfo freeze = new Luban.EditorEnumItemInfo("freeze", "Freeze", 7, "freeze control");
+        public static readonly Luban.EditorEnumItemInfo overload = new Luban.EditorEnumItemInfo("overload", "Overload", 8, "overload engine");
 
         private static readonly System.Collections.Generic.List<Luban.EditorEnumItemInfo> __items = new System.Collections.Generic.List<Luban.EditorEnumItemInfo>
         {
             fast,
             buffer,
             chain,
+            heal,
+            poison,
+            burn,
+            freeze,
+            overload,
         };
 
         public static System.Collections.Generic.List<Luban.EditorEnumItemInfo> GetItems() => __items;

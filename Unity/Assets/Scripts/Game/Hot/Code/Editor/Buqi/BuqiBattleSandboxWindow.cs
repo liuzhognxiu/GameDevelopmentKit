@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Game.Hot.Editor.Buqi
 {
     /// <summary>
-    /// Step 2 九法门战斗沙盒窗口。它只负责输入和展示，所有战斗结果仍由纯 C# 模拟器生成。
+    /// 九法门战斗沙盒窗口。它只负责 P-1 记录、调试输入和展示，所有战斗结果仍由纯 C# 模拟器生成。
     /// </summary>
     internal sealed class BuqiBattleSandboxWindow : EditorWindow
     {
@@ -17,6 +17,7 @@ namespace Game.Hot.Editor.Buqi
         private List<BuqiSandboxScenario> m_Scenarios = new List<BuqiSandboxScenario>();
         private BuqiSandboxRunResult m_RunResult;
         private BuqiSandboxRepeatResult m_RepeatResult;
+        private BuqiSandboxWalkthroughRecord m_WalkthroughRecord;
         private Vector2 m_MainScroll;
         private Vector2 m_LogScroll;
         private int m_SelectedScenarioIndex;
@@ -24,6 +25,11 @@ namespace Game.Hot.Editor.Buqi
         private string m_ChainFilter = string.Empty;
         private string m_SourceFilter = string.Empty;
         private string m_ReasonFilter = string.Empty;
+        private string m_ParticipantId = string.Empty;
+        private string m_Prediction = string.Empty;
+        private string m_PrimaryCause = string.Empty;
+        private string m_ChangeIntent = string.Empty;
+        private BuqiSandboxChangeKind m_ChangeKind;
 
         [MenuItem("Game/Buqi/Battle Sandbox", false, 200)]
         private static void Open()
@@ -51,6 +57,7 @@ namespace Game.Hot.Editor.Buqi
             m_MainScroll = EditorGUILayout.BeginScrollView(m_MainScroll);
             DrawHeader();
             DrawScenarioSelector();
+            DrawWalkthrough();
             DrawActions();
             DrawResult();
             DrawDefinitions();
@@ -61,7 +68,7 @@ namespace Game.Hot.Editor.Buqi
         {
             EditorGUILayout.LabelField("《不器》九法门战斗沙盒", EditorStyles.boldLabel);
             EditorGUILayout.HelpBox(
-                "仅用于 Step 2 规则和日志验证，不进入正式玩家流程。内容定义将在 Step 3 由 Luban 替换。",
+                "仅用于规则、日志和 P-1 认知走查，不进入正式玩家流程；战斗结果始终由纯 C# 模拟器生成。",
                 MessageType.Info);
         }
 
@@ -77,11 +84,62 @@ namespace Game.Hot.Editor.Buqi
                 m_SelectedScenarioIndex = selected;
                 m_RunResult = null;
                 m_RepeatResult = null;
+                m_WalkthroughRecord = null;
             }
 
             BuqiSandboxScenario scenario = m_Scenarios[m_SelectedScenarioIndex];
             EditorGUILayout.LabelField("目标", scenario.VerificationGoal, EditorStyles.wordWrappedLabel);
             EditorGUILayout.LabelField("固定 seed", scenario.Request.BattleSeed.ToString());
+        }
+
+        private void DrawWalkthrough()
+        {
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("P-1 认知走查记录", EditorStyles.boldLabel);
+            m_ParticipantId = EditorGUILayout.TextField("参与者", m_ParticipantId);
+            EditorGUILayout.LabelField("战前预测", EditorStyles.miniBoldLabel);
+            m_Prediction = EditorGUILayout.TextArea(m_Prediction, GUILayout.MinHeight(42f));
+            if (GUILayout.Button("记录战前预测", GUILayout.Height(24f)))
+            {
+                try
+                {
+                    m_WalkthroughRecord = BuqiBattleSandbox.BeginWalkthrough(
+                        m_Scenarios[m_SelectedScenarioIndex], m_ParticipantId, m_Prediction);
+                }
+                catch (System.Exception exception)
+                {
+                    ShowNotification(new GUIContent(exception.Message));
+                }
+            }
+
+            if (m_WalkthroughRecord == null)
+                return;
+
+            EditorGUILayout.LabelField(
+                "记录状态",
+                m_WalkthroughRecord.HasBattleResult
+                    ? (m_WalkthroughRecord.IsComplete ? "完整" : "已绑定结果，待归因")
+                    : "已记录预测，待运行战斗");
+            EditorGUILayout.LabelField("战后主因", EditorStyles.miniBoldLabel);
+            m_PrimaryCause = EditorGUILayout.TextArea(m_PrimaryCause, GUILayout.MinHeight(42f));
+            m_ChangeKind = (BuqiSandboxChangeKind)EditorGUILayout.EnumPopup("改动类型", m_ChangeKind);
+            EditorGUILayout.LabelField("下一轮改动及预期影响", EditorStyles.miniBoldLabel);
+            m_ChangeIntent = EditorGUILayout.TextArea(m_ChangeIntent, GUILayout.MinHeight(42f));
+            if (GUILayout.Button("完成归因与下一轮改动", GUILayout.Height(24f)))
+            {
+                try
+                {
+                    BuqiBattleSandbox.CompleteWalkthrough(
+                        m_WalkthroughRecord,
+                        m_PrimaryCause,
+                        m_ChangeKind,
+                        m_ChangeIntent);
+                }
+                catch (System.Exception exception)
+                {
+                    ShowNotification(new GUIContent(exception.Message));
+                }
+            }
         }
 
         private void DrawActions()
@@ -91,19 +149,36 @@ namespace Game.Hot.Editor.Buqi
             {
                 m_RunResult = BuqiBattleSandbox.Run(m_Scenarios[m_SelectedScenarioIndex]);
                 m_RepeatResult = null;
+                BindWalkthroughResult();
             }
             if (GUILayout.Button("重复 100 次", GUILayout.Height(28f)))
             {
                 BuqiSandboxScenario scenario = m_Scenarios[m_SelectedScenarioIndex];
                 m_RunResult = BuqiBattleSandbox.Run(scenario);
                 m_RepeatResult = BuqiBattleSandbox.Repeat(scenario, 100);
+                BindWalkthroughResult();
             }
             if (GUILayout.Button("清空结果", GUILayout.Height(28f)))
             {
                 m_RunResult = null;
                 m_RepeatResult = null;
+                m_WalkthroughRecord = null;
             }
             EditorGUILayout.EndHorizontal();
+        }
+
+        private void BindWalkthroughResult()
+        {
+            if (m_WalkthroughRecord == null || m_RunResult == null)
+                return;
+            try
+            {
+                BuqiBattleSandbox.BindWalkthroughResult(m_WalkthroughRecord, m_RunResult);
+            }
+            catch (System.Exception exception)
+            {
+                ShowNotification(new GUIContent(exception.Message));
+            }
         }
 
         private void DrawResult()

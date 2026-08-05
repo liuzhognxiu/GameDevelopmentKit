@@ -12,22 +12,42 @@
 namespace Game.Hot
 { 
     /// <summary>
-    /// fast execution
+    /// battle build archetype
     /// </summary>
     public enum BuqiBuild
     {
         /// <summary>
-        /// fast execution
+        /// attack tempo
         /// </summary>
         fast = 1,
         /// <summary>
-        /// buffer counter
+        /// shield counter
         /// </summary>
         buffer = 2,
         /// <summary>
-        /// chain engine
+        /// charge chain
         /// </summary>
         chain = 3,
+        /// <summary>
+        /// healing sustain
+        /// </summary>
+        heal = 4,
+        /// <summary>
+        /// poison attrition
+        /// </summary>
+        poison = 5,
+        /// <summary>
+        /// burn pressure
+        /// </summary>
+        burn = 6,
+        /// <summary>
+        /// freeze control
+        /// </summary>
+        freeze = 7,
+        /// <summary>
+        /// overload engine
+        /// </summary>
+        overload = 8,
     }
 
 } 

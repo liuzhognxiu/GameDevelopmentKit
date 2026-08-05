@@ -41,6 +41,16 @@ namespace Game.Hot.Buqi.Battle
         public List<ItemState> TargetItems = new List<ItemState>();
     }
 
+    internal sealed class PendingFreeze
+    {
+        public int DurationTicks;
+        public int SourceAnchorSlot;
+        public string SourceInstanceId = string.Empty;
+        public string ChainId = string.Empty;
+        public string EffectId = string.Empty;
+        public List<ItemState> TargetItems = new List<ItemState>();
+    }
+
     /// <summary>
     /// 单阵营单 tick 的结算桶。Resolve 只向桶内声明，Aggregate 再按固定顺序修改状态。
     /// </summary>
@@ -48,8 +58,13 @@ namespace Game.Hot.Buqi.Battle
     {
         public List<PendingAmount> Buffer = new List<PendingAmount>();
         public List<PendingAmount> NormalDamage = new List<PendingAmount>();
+        public List<PendingAmount> BurnDamage = new List<PendingAmount>();
+        public List<PendingAmount> Heal = new List<PendingAmount>();
+        public List<PendingAmount> PoisonDamage = new List<PendingAmount>();
         public List<PendingAmount> Noise = new List<PendingAmount>();
         public List<PendingAmount> OvertimeDamage = new List<PendingAmount>();
+        public List<TimedStatus> NewStatuses = new List<TimedStatus>();
+        public List<PendingFreeze> Freezes = new List<PendingFreeze>();
         public List<PendingModifier> Modifiers = new List<PendingModifier>();
     }
 
@@ -67,6 +82,8 @@ namespace Game.Hot.Buqi.Battle
         public const int NoiseThreshold = 10;
         public const int NoiseAccidentDamage = 8;
         public const int ChargeCap = 9;
+        public const int DefaultMaxExecution = 100;
+        public const int StatusTickIntervalTicks = 10;
 
         /// <summary>防止全场触发链异常膨胀的单 tick 上限。</summary>
         public const int MaxEventsPerTick = 64;
@@ -137,6 +154,8 @@ namespace Game.Hot.Buqi.Battle
                 AdvanceCooldowns(right);
                 ExpireModifiers(left);
                 ExpireModifiers(right);
+                EnqueueStatusTicks(left, accumulators[left]);
+                EnqueueStatusTicks(right, accumulators[right]);
                 EnqueueOvertimeDamage(tick, accumulators[left]);
                 EnqueueOvertimeDamage(tick, accumulators[right]);
                 EnqueuePendingConditions(left, provider, queue, tick);
@@ -265,6 +284,7 @@ namespace Game.Hot.Buqi.Battle
             var side = new SideState
             {
                 Execution = snapshot.InitialExecution,
+                MaxExecution = Math.Max(DefaultMaxExecution, snapshot.InitialExecution),
                 Buffer = snapshot.InitialBuffer,
                 Noise = snapshot.InitialNoiseDebt,
             };
@@ -317,6 +337,13 @@ namespace Game.Hot.Buqi.Battle
         {
             foreach (ItemState item in side.Items)
             {
+                if (item.FrozenTicks > 0)
+                {
+                    item.FrozenTicks--;
+                    item.ReadyThisTick = false;
+                    continue;
+                }
+
                 int hasteBps = 0;
                 int delayBps = 0;
                 AccumulateModifiers(side.SideModifiers, item, ref hasteBps, ref delayBps);
@@ -645,6 +672,19 @@ namespace Game.Hot.Buqi.Battle
                 case BuqiEffect.Buffer:
                     AddPending(accumulators[targets.Side], amount, actor, declaration, spec, accumulators[targets.Side].Buffer);
                     break;
+                case BuqiEffect.Heal:
+                    AddPending(accumulators[targets.Side], amount, actor, declaration, spec, accumulators[targets.Side].Heal, "Heal");
+                    break;
+                case BuqiEffect.Regen:
+                case BuqiEffect.Poison:
+                case BuqiEffect.Burn:
+                    AddPendingStatus(accumulators[targets.Side], amount, actor, declaration, spec);
+                    break;
+                case BuqiEffect.Freeze:
+                    QueueFreeze(
+                        spec, actor, targets, amount, declaration,
+                        accumulators[targets.Side]);
+                    break;
                 case BuqiEffect.Noise:
                     amount = Math.Max(0, amount - (actor.AnnotationId == "A-05" ? 1 : 0));
                     AddPending(accumulators[targets.Side], amount, actor, declaration, spec, accumulators[targets.Side].Noise);
@@ -789,6 +829,55 @@ namespace Game.Hot.Buqi.Battle
         /// 按契约固定顺序聚合一个阵营：新增护体、普通伤害吸收、失衡事故、劫火直接伤害，最后写入修正。
         /// 修正从当前 tick 的 Aggregate 之后生效，避免凭空少一 tick；PostTick 由调用方统一检查胜负。
         /// </summary>
+        private static void AddPendingStatus(
+            TickAccumulator accumulator,
+            int amount,
+            ItemState actor,
+            DeclaredEffect declaration,
+            BuqiEffectSpec spec)
+        {
+            if (amount <= 0)
+                return;
+
+            accumulator.NewStatuses.Add(new TimedStatus
+            {
+                Effect = spec.Effect,
+                Amount = amount,
+                RemainingTicks = Math.Max(1, spec.DurationTicks),
+                TickIntervalTicks = StatusTickIntervalTicks,
+                SourceAnchorSlot = actor.AnchorSlot,
+                SourceInstanceId = actor.InstanceId,
+                ChainId = declaration.ChainId,
+                EffectId = spec.GetEffectId(),
+            });
+        }
+
+        private static void QueueFreeze(
+            BuqiEffectSpec spec,
+            ItemState actor,
+            ResolvedTargets targets,
+            int amount,
+            DeclaredEffect declaration,
+            TickAccumulator accumulator)
+        {
+            if (amount <= 0)
+                return;
+
+            var targetItems = new List<ItemState>(targets.Items.Count > 0 ? targets.Items : targets.Side.Items);
+            if (targetItems.Count == 0)
+                return;
+
+            accumulator.Freezes.Add(new PendingFreeze
+            {
+                DurationTicks = amount,
+                SourceAnchorSlot = actor.AnchorSlot,
+                SourceInstanceId = actor.InstanceId,
+                ChainId = declaration.ChainId,
+                EffectId = spec.GetEffectId(),
+                TargetItems = targetItems,
+            });
+        }
+
         private static void ApplyAggregate(
             SideState side,
             TickAccumulator accumulator,
@@ -798,6 +887,9 @@ namespace Game.Hot.Buqi.Battle
         {
             SortPending(accumulator.Buffer);
             SortPending(accumulator.NormalDamage);
+            SortPending(accumulator.BurnDamage);
+            SortPending(accumulator.Heal);
+            SortPending(accumulator.PoisonDamage);
             SortPending(accumulator.Noise);
             SortPending(accumulator.OvertimeDamage);
 
@@ -813,22 +905,27 @@ namespace Game.Hot.Buqi.Battle
 
             bool hadBuffer = side.Buffer > 0;
             foreach (PendingAmount pending in accumulator.NormalDamage)
-            {
-                int absorbed = Math.Min(side.Buffer, pending.Amount);
-                if (absorbed > 0)
-                {
-                    side.Buffer -= absorbed;
-                    AppendPendingEvent(ref nextSequence, log, tick, pending, absorbed, "BufferAbsorb");
-                }
-                int actualDamage = pending.Amount - absorbed;
-                if (actualDamage > 0)
-                {
-                    side.Execution -= actualDamage;
-                    AppendPendingEvent(ref nextSequence, log, tick, pending, actualDamage, "Damage");
-                }
-            }
+                ApplyShieldedDamage(side, pending, ref nextSequence, log, tick, "BufferAbsorb", "Damage");
+            foreach (PendingAmount pending in accumulator.BurnDamage)
+                ApplyShieldedDamage(side, pending, ref nextSequence, log, tick, "BurnShieldAbsorb", "BurnDamage");
             if (hadBuffer && side.Buffer == 0)
                 side.BufferLostPending = true;
+
+            foreach (PendingAmount pending in accumulator.Heal)
+            {
+                int before = side.Execution;
+                side.Execution = Math.Min(side.MaxExecution, side.Execution + pending.Amount);
+                int actual = side.Execution - before;
+                AppendPendingEvent(ref nextSequence, log, tick, pending, actual, pending.ReasonCode);
+                if (actual < pending.Amount)
+                    AppendPendingEvent(ref nextSequence, log, tick, pending, pending.Amount - actual, "HealOverflow");
+            }
+
+            foreach (PendingAmount pending in accumulator.PoisonDamage)
+            {
+                side.Execution -= pending.Amount;
+                AppendPendingEvent(ref nextSequence, log, tick, pending, pending.Amount, "PoisonDamage");
+            }
 
             foreach (PendingAmount pending in accumulator.Noise)
             {
@@ -853,6 +950,71 @@ namespace Game.Hot.Buqi.Battle
 
             foreach (PendingModifier modifier in accumulator.Modifiers)
                 ApplyModifier(side, modifier);
+
+            foreach (TimedStatus status in accumulator.NewStatuses)
+                ApplyStatus(side, status, ref nextSequence, log, tick);
+
+            foreach (PendingFreeze pending in accumulator.Freezes)
+                ApplyFreeze(pending, ref nextSequence, log, tick);
+        }
+
+        private static void ApplyShieldedDamage(
+            SideState side,
+            PendingAmount pending,
+            ref int nextSequence,
+            List<BattleEvent> log,
+            int tick,
+            string shieldReason,
+            string damageReason)
+        {
+            int absorbed = Math.Min(side.Buffer, pending.Amount);
+            if (absorbed > 0)
+            {
+                side.Buffer -= absorbed;
+                AppendPendingEvent(ref nextSequence, log, tick, pending, absorbed, shieldReason);
+            }
+            int actualDamage = pending.Amount - absorbed;
+            if (actualDamage > 0)
+            {
+                side.Execution -= actualDamage;
+                AppendPendingEvent(ref nextSequence, log, tick, pending, actualDamage, damageReason);
+            }
+        }
+
+        private static void ApplyStatus(
+            SideState side,
+            TimedStatus pending,
+            ref int nextSequence,
+            List<BattleEvent> log,
+            int tick)
+        {
+            AddOrRefreshStatus(side.Statuses, pending);
+            AppendStatusEvent(ref nextSequence, log, tick, pending, pending.Amount, "StatusApplied");
+        }
+
+        private static void ApplyFreeze(
+            PendingFreeze pending,
+            ref int nextSequence,
+            List<BattleEvent> log,
+            int tick)
+        {
+            pending.TargetItems.Sort((left, right) =>
+            {
+                int anchorComparison = left.AnchorSlot.CompareTo(right.AnchorSlot);
+                if (anchorComparison != 0) return anchorComparison;
+                return string.CompareOrdinal(left.InstanceId, right.InstanceId);
+            });
+
+            foreach (ItemState target in pending.TargetItems)
+            {
+                int before = target.FrozenTicks;
+                target.FrozenTicks = Math.Max(target.FrozenTicks, pending.DurationTicks);
+                AppendEvent(
+                    ref nextSequence, log, tick, BuqiEventPhase.Aggregate, 0,
+                    pending.ChainId, pending.SourceInstanceId, pending.SourceInstanceId,
+                    target.InstanceId, BuqiEventType.Effect,
+                    target.FrozenTicks - before, pending.EffectId, "FreezeApplied");
+            }
         }
 
         private static void ApplyModifier(SideState side, PendingModifier pending)
@@ -889,6 +1051,39 @@ namespace Game.Hot.Buqi.Battle
                 RemainingTicks = pending.DurationTicks,
                 SourceInstanceId = pending.SourceInstanceId,
                 FromEnemy = pending.FromEnemy,
+            });
+        }
+
+        private static void AddOrRefreshStatus(List<TimedStatus> statuses, TimedStatus pending)
+        {
+            foreach (TimedStatus status in statuses)
+            {
+                if (status.Effect != pending.Effect ||
+                    status.SourceInstanceId != pending.SourceInstanceId)
+                {
+                    continue;
+                }
+
+                status.Amount = Math.Max(status.Amount, pending.Amount);
+                status.RemainingTicks = Math.Max(status.RemainingTicks, pending.RemainingTicks);
+                status.TickIntervalTicks = Math.Max(1, pending.TickIntervalTicks);
+                status.SourceAnchorSlot = pending.SourceAnchorSlot;
+                status.ChainId = pending.ChainId;
+                status.EffectId = pending.EffectId;
+                return;
+            }
+
+            statuses.Add(new TimedStatus
+            {
+                Effect = pending.Effect,
+                Amount = pending.Amount,
+                RemainingTicks = pending.RemainingTicks,
+                TickIntervalTicks = Math.Max(1, pending.TickIntervalTicks),
+                TickProgressTicks = pending.TickProgressTicks,
+                SourceAnchorSlot = pending.SourceAnchorSlot,
+                SourceInstanceId = pending.SourceInstanceId,
+                ChainId = pending.ChainId,
+                EffectId = pending.EffectId,
             });
         }
 
@@ -958,6 +1153,50 @@ namespace Game.Hot.Buqi.Battle
         /// 劫火每秒向双方增加一次直接伤害；先写入 accumulator，待 Aggregate 与其它效果同时结算。
         /// 这样 tick 450 的劫火不会绕过护体顺序，也不会因左右处理顺序产生偏差。
         /// </summary>
+        private static void EnqueueStatusTicks(SideState side, TickAccumulator accumulator)
+        {
+            for (int index = side.Statuses.Count - 1; index >= 0; index--)
+            {
+                TimedStatus status = side.Statuses[index];
+                status.RemainingTicks--;
+                status.TickProgressTicks++;
+
+                if (status.TickProgressTicks >= Math.Max(1, status.TickIntervalTicks))
+                {
+                    status.TickProgressTicks = 0;
+                    PendingAmount pending = CreateStatusPending(status);
+                    if (pending.Amount > 0)
+                    {
+                        if (status.Effect == BuqiEffect.Regen)
+                            accumulator.Heal.Add(pending);
+                        else if (status.Effect == BuqiEffect.Poison)
+                            accumulator.PoisonDamage.Add(pending);
+                        else if (status.Effect == BuqiEffect.Burn)
+                            accumulator.BurnDamage.Add(pending);
+                    }
+                }
+
+                if (status.RemainingTicks <= 0)
+                    side.Statuses.RemoveAt(index);
+            }
+        }
+
+        private static PendingAmount CreateStatusPending(TimedStatus status)
+        {
+            string reason = status.Effect == BuqiEffect.Regen
+                ? "Regen"
+                : status.Effect == BuqiEffect.Poison ? "PoisonDamage" : "BurnDamage";
+            return new PendingAmount
+            {
+                Amount = status.Amount,
+                SourceAnchorSlot = status.SourceAnchorSlot,
+                SourceInstanceId = status.SourceInstanceId,
+                ChainId = status.ChainId,
+                EffectId = status.EffectId,
+                ReasonCode = reason,
+            };
+        }
+
         private static void EnqueueOvertimeDamage(int tick, TickAccumulator accumulator)
         {
             if (tick < NormalTickCount || (tick - NormalTickCount) % 10 != 0)
@@ -999,8 +1238,13 @@ namespace Game.Hot.Buqi.Battle
         {
             accumulator.Buffer.Clear();
             accumulator.NormalDamage.Clear();
+            accumulator.BurnDamage.Clear();
+            accumulator.Heal.Clear();
+            accumulator.PoisonDamage.Clear();
             accumulator.Noise.Clear();
             accumulator.OvertimeDamage.Clear();
+            accumulator.NewStatuses.Clear();
+            accumulator.Freezes.Clear();
             accumulator.Modifiers.Clear();
         }
 
@@ -1122,6 +1366,20 @@ namespace Game.Hot.Buqi.Battle
                 ref nextSequence, log, tick, BuqiEventPhase.Aggregate, 0,
                 pending.ChainId, pending.SourceInstanceId, pending.SourceInstanceId,
                 string.Empty, BuqiEventType.Effect, amount, pending.EffectId, reason);
+        }
+
+        private static void AppendStatusEvent(
+            ref int nextSequence,
+            List<BattleEvent> log,
+            int tick,
+            TimedStatus status,
+            int amount,
+            string reason)
+        {
+            AppendEvent(
+                ref nextSequence, log, tick, BuqiEventPhase.Aggregate, 0,
+                status.ChainId, status.SourceInstanceId, status.SourceInstanceId,
+                string.Empty, BuqiEventType.Effect, amount, status.EffectId, reason);
         }
 
         private static void AppendEvent(

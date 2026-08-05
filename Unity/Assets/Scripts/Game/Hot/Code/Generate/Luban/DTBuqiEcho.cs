@@ -12,7 +12,7 @@ using Luban;
 namespace Game.Hot
 {
 /// <summary>
-/// Buqi Step 3 six echoes
+/// Buqi expanded build echoes
 /// </summary>
 public partial class DTBuqiEcho : IDataTable
 {

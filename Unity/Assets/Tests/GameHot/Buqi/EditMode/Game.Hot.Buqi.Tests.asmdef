@@ -3,6 +3,8 @@
   "rootNamespace": "Game.Hot.Buqi.Tests",
   "references": [
     "Game.Hot.Code",
+    "LubanLib",
+    "UniTask",
     "UnityEngine.TestRunner",
     "UnityEditor.TestRunner"
   ],

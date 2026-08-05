@@ -11,7 +11,7 @@
 namespace Game.Hot.Editor
 {
     /// <summary>
-    /// none
+    /// condition kind
     /// </summary>
     public enum BuqiConditionKind
     {
@@ -20,7 +20,7 @@ namespace Game.Hot.Editor
         /// </summary>
         None = 0,
         /// <summary>
-        /// buffer lost
+        /// shield lost
         /// </summary>
         BufferLost = 1,
         /// <summary>
@@ -32,7 +32,7 @@ namespace Game.Hot.Editor
     public static class BuqiConditionKind_Metadata
     {
         public static readonly Luban.EditorEnumItemInfo None = new Luban.EditorEnumItemInfo("None", "", 0, "none");
-        public static readonly Luban.EditorEnumItemInfo BufferLost = new Luban.EditorEnumItemInfo("BufferLost", "", 1, "buffer lost");
+        public static readonly Luban.EditorEnumItemInfo BufferLost = new Luban.EditorEnumItemInfo("BufferLost", "", 1, "shield lost");
         public static readonly Luban.EditorEnumItemInfo ChargeAtLeast = new Luban.EditorEnumItemInfo("ChargeAtLeast", "", 2, "charge at least");
 
         private static readonly System.Collections.Generic.List<Luban.EditorEnumItemInfo> __items = new System.Collections.Generic.List<Luban.EditorEnumItemInfo>

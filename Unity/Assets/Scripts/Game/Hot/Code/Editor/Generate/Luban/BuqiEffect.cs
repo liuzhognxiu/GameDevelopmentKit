@@ -11,16 +11,16 @@
 namespace Game.Hot.Editor
 {
     /// <summary>
-    /// damage
+    /// battle effect
     /// </summary>
     public enum BuqiEffect
     {
         /// <summary>
-        /// damage
+        /// attack
         /// </summary>
         Damage = 0,
         /// <summary>
-        /// buffer
+        /// shield
         /// </summary>
         Buffer = 1,
         /// <summary>
@@ -28,7 +28,7 @@ namespace Game.Hot.Editor
         /// </summary>
         Haste = 2,
         /// <summary>
-        /// delay
+        /// slow
         /// </summary>
         Delay = 3,
         /// <summary>
@@ -36,19 +36,44 @@ namespace Game.Hot.Editor
         /// </summary>
         Charge = 4,
         /// <summary>
-        /// noise
+        /// overload
         /// </summary>
         Noise = 5,
+        /// <summary>
+        /// heal
+        /// </summary>
+        Heal = 6,
+        /// <summary>
+        /// life regen
+        /// </summary>
+        Regen = 7,
+        /// <summary>
+        /// poison
+        /// </summary>
+        Poison = 8,
+        /// <summary>
+        /// burn
+        /// </summary>
+        Burn = 9,
+        /// <summary>
+        /// freeze
+        /// </summary>
+        Freeze = 10,
     }
 
     public static class BuqiEffect_Metadata
     {
-        public static readonly Luban.EditorEnumItemInfo Damage = new Luban.EditorEnumItemInfo("Damage", "", 0, "damage");
-        public static readonly Luban.EditorEnumItemInfo Buffer = new Luban.EditorEnumItemInfo("Buffer", "", 1, "buffer");
+        public static readonly Luban.EditorEnumItemInfo Damage = new Luban.EditorEnumItemInfo("Damage", "", 0, "attack");
+        public static readonly Luban.EditorEnumItemInfo Buffer = new Luban.EditorEnumItemInfo("Buffer", "", 1, "shield");
         public static readonly Luban.EditorEnumItemInfo Haste = new Luban.EditorEnumItemInfo("Haste", "", 2, "haste");
-        public static readonly Luban.EditorEnumItemInfo Delay = new Luban.EditorEnumItemInfo("Delay", "", 3, "delay");
+        public static readonly Luban.EditorEnumItemInfo Delay = new Luban.EditorEnumItemInfo("Delay", "", 3, "slow");
         public static readonly Luban.EditorEnumItemInfo Charge = new Luban.EditorEnumItemInfo("Charge", "", 4, "charge");
-        public static readonly Luban.EditorEnumItemInfo Noise = new Luban.EditorEnumItemInfo("Noise", "", 5, "noise");
+        public static readonly Luban.EditorEnumItemInfo Noise = new Luban.EditorEnumItemInfo("Noise", "", 5, "overload");
+        public static readonly Luban.EditorEnumItemInfo Heal = new Luban.EditorEnumItemInfo("Heal", "", 6, "heal");
+        public static readonly Luban.EditorEnumItemInfo Regen = new Luban.EditorEnumItemInfo("Regen", "", 7, "life regen");
+        public static readonly Luban.EditorEnumItemInfo Poison = new Luban.EditorEnumItemInfo("Poison", "", 8, "poison");
+        public static readonly Luban.EditorEnumItemInfo Burn = new Luban.EditorEnumItemInfo("Burn", "", 9, "burn");
+        public static readonly Luban.EditorEnumItemInfo Freeze = new Luban.EditorEnumItemInfo("Freeze", "", 10, "freeze");
 
         private static readonly System.Collections.Generic.List<Luban.EditorEnumItemInfo> __items = new System.Collections.Generic.List<Luban.EditorEnumItemInfo>
         {
@@ -58,6 +83,11 @@ namespace Game.Hot.Editor
             Delay,
             Charge,
             Noise,
+            Heal,
+            Regen,
+            Poison,
+            Burn,
+            Freeze,
         };
 
         public static System.Collections.Generic.List<Luban.EditorEnumItemInfo> GetItems() => __items;

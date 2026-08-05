@@ -47,8 +47,12 @@ namespace Game.Hot.Buqi.Battle
                 errors.Add("initialExecution must be > 0");
             if (snapshot.InitialBuffer < 0)
                 errors.Add("initialBuffer must be >= 0");
+            else if (snapshot.InitialBuffer > BuqiBattleSimulator.BufferCap)
+                errors.Add("initialBuffer exceeds buffer cap");
             if (snapshot.InitialNoiseDebt < 0)
                 errors.Add("initialNoiseDebt must be >= 0");
+            else if (snapshot.InitialNoiseDebt >= BuqiBattleSimulator.NoiseThreshold)
+                errors.Add("initialNoiseDebt must be below noise threshold");
             if (snapshot.Items == null || snapshot.Items.Count == 0)
             {
                 errors.Add("at least one item required");

@@ -16,6 +16,22 @@ namespace Game.Hot.Buqi.Config
             "W8-003", "W8-005", "W8-006",
             "W8-007", "W8-008", "W8-012",
             "W8-013", "W8-014", "W8-015",
+            "W8-016", "W8-017", "W8-018",
+            "W8-019", "W8-020", "W8-021",
+            "W8-022", "W8-023", "W8-024",
+            "W8-025", "W8-026", "W8-027",
+            "W8-028", "W8-029", "W8-030",
+        };
+
+        private static readonly string[] s_EnabledBuildIds =
+        {
+            "fast", "buffer", "chain", "heal",
+            "poison", "burn", "freeze", "overload",
+        };
+
+        private static readonly string[] s_EnabledRefinementIds =
+        {
+            "A-01", "A-02", "A-03", "A-04", "A-05", "A-06",
         };
 
         public static List<string> Validate(BuqiConfigCatalog catalog)
@@ -76,7 +92,10 @@ namespace Game.Hot.Buqi.Config
             }
 
             if (rows.Count != s_EnabledItemIds.Length)
-                errors.Add(BuqiText.Format("expected 9 enabled items, got {0}", rows.Count));
+                errors.Add(BuqiText.Format(
+                    "expected {0} enabled items, got {1}",
+                    s_EnabledItemIds.Length,
+                    rows.Count));
 
             foreach (BuqiItemConfigRow row in rows)
             {
@@ -93,7 +112,7 @@ namespace Game.Hot.Buqi.Config
                     continue;
                 }
                 if (!IsExpectedItemId(row.DefinitionId))
-                    errors.Add(BuqiText.Format("enabled item {0} is outside Step 3 scope", row.DefinitionId));
+                    errors.Add(BuqiText.Format("enabled item {0} is outside expanded scope", row.DefinitionId));
                 if (items.ContainsKey(row.DefinitionId))
                     errors.Add(BuqiText.Format("duplicate item id {0}", row.DefinitionId));
                 else
@@ -109,6 +128,8 @@ namespace Game.Hot.Buqi.Config
                     errors.Add(BuqiText.Format("{0}: cooldown must be > 0", where));
                 if (string.IsNullOrEmpty(row.ArchetypeId))
                     errors.Add(BuqiText.Format("{0}: archetype id is empty", where));
+                else if (!IsExpectedBuildId(row.ArchetypeId))
+                    errors.Add(BuqiText.Format("{0}: unknown build {1}", where, row.ArchetypeId));
                 if (row.Effects == null || row.Effects.Count == 0)
                 {
                     errors.Add(BuqiText.Format("{0}: at least one effect required", where));
@@ -174,6 +195,33 @@ namespace Game.Hot.Buqi.Config
                     if (effect.Amount <= 0)
                         errors.Add(BuqiText.Format("{0}: Buffer amount must be > 0", where));
                     break;
+                case BattleEffect.Heal:
+                    if (effect.Target != BattleTarget.Self)
+                        errors.Add(BuqiText.Format("{0}: Heal requires Self target", where));
+                    if (effect.Amount <= 0)
+                        errors.Add(BuqiText.Format("{0}: Heal amount must be > 0", where));
+                    break;
+                case BattleEffect.Regen:
+                    if (effect.Target != BattleTarget.Self)
+                        errors.Add(BuqiText.Format("{0}: Regen requires Self target", where));
+                    ValidateStatusAmount(effect, where, errors);
+                    break;
+                case BattleEffect.Poison:
+                    if (effect.Target != BattleTarget.EnemyExecution)
+                        errors.Add(BuqiText.Format("{0}: Poison requires EnemyExecution target", where));
+                    ValidateStatusAmount(effect, where, errors);
+                    break;
+                case BattleEffect.Burn:
+                    if (effect.Target != BattleTarget.EnemyExecution)
+                        errors.Add(BuqiText.Format("{0}: Burn requires EnemyExecution target", where));
+                    ValidateStatusAmount(effect, where, errors);
+                    break;
+                case BattleEffect.Freeze:
+                    if (!IsEnemyItemTarget(effect.Target))
+                        errors.Add(BuqiText.Format("{0}: Freeze requires an enemy item target", where));
+                    if (effect.Amount <= 0)
+                        errors.Add(BuqiText.Format("{0}: Freeze amount must be > 0", where));
+                    break;
                 case BattleEffect.Charge:
                     if (!IsItemTarget(effect.Target))
                         errors.Add(BuqiText.Format("{0}: Charge requires an item target", where));
@@ -209,8 +257,11 @@ namespace Game.Hot.Buqi.Config
                 errors.Add("refinement table is null");
                 return refinements;
             }
-            if (rows.Count != 3)
-                errors.Add(BuqiText.Format("expected 3 refinements, got {0}", rows.Count));
+            if (rows.Count != s_EnabledRefinementIds.Length)
+                errors.Add(BuqiText.Format(
+                    "expected {0} refinements, got {1}",
+                    s_EnabledRefinementIds.Length,
+                    rows.Count));
 
             foreach (BuqiRefinementConfigRow row in rows)
             {
@@ -226,8 +277,8 @@ namespace Game.Hot.Buqi.Config
                 }
                 if (!refinements.Add(row.RefinementId))
                     errors.Add(BuqiText.Format("duplicate refinement id {0}", row.RefinementId));
-                if (row.RefinementId != "A-01" && row.RefinementId != "A-03" && row.RefinementId != "A-04")
-                    errors.Add(BuqiText.Format("refinement {0} is outside Step 3 scope", row.RefinementId));
+                if (!IsExpectedRefinementId(row.RefinementId))
+                    errors.Add(BuqiText.Format("refinement {0} is outside expanded scope", row.RefinementId));
                 if (string.IsNullOrEmpty(row.DisplayName))
                     errors.Add(BuqiText.Format("refinement {0}: display name is empty", row.RefinementId));
             }
@@ -246,8 +297,8 @@ namespace Game.Hot.Buqi.Config
                 errors.Add("echo table is null");
                 return;
             }
-            if (catalog.Echoes.Count != 6)
-                errors.Add(BuqiText.Format("expected 6 echoes, got {0}", catalog.Echoes.Count));
+            if (catalog.Echoes.Count != 16)
+                errors.Add(BuqiText.Format("expected 16 echoes, got {0}", catalog.Echoes.Count));
 
             var echoIds = new HashSet<string>(StringComparer.Ordinal);
             IItemDefinitionProvider provider = new BuqiDefinitionProvider(catalog);
@@ -263,6 +314,8 @@ namespace Game.Hot.Buqi.Config
                     errors.Add("echo id is empty");
                 else if (!echoIds.Add(echo.EchoId))
                     errors.Add(BuqiText.Format("duplicate echo id {0}", echo.EchoId));
+                if (!string.IsNullOrEmpty(echo.Build) && !IsExpectedBuildId(echo.Build))
+                    errors.Add(BuqiText.Format("{0}: unknown build {1}", where, echo.Build));
                 if (echo.Snapshot == null)
                 {
                     errors.Add(BuqiText.Format("{0}: snapshot is null", where));
@@ -350,11 +403,42 @@ namespace Game.Hot.Buqi.Config
                 errors.Add(BuqiText.Format("{0}: modifier duration must be > 0", where));
         }
 
+        private static void ValidateStatusAmount(
+            BuqiEffectConfigRow effect,
+            string where,
+            List<string> errors)
+        {
+            if (effect.Amount <= 0)
+                errors.Add(BuqiText.Format("{0}: status amount must be > 0", where));
+            if (effect.DurationTicks <= 0)
+                errors.Add(BuqiText.Format("{0}: status duration must be > 0", where));
+        }
+
         private static bool IsExpectedItemId(string itemId)
         {
             foreach (string expectedId in s_EnabledItemIds)
             {
                 if (itemId == expectedId)
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool IsExpectedBuildId(string buildId)
+        {
+            foreach (string expectedId in s_EnabledBuildIds)
+            {
+                if (buildId == expectedId)
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool IsExpectedRefinementId(string refinementId)
+        {
+            foreach (string expectedId in s_EnabledRefinementIds)
+            {
+                if (refinementId == expectedId)
                     return true;
             }
             return false;

@@ -1,13 +1,13 @@
 [
   {
     "DefinitionId": "W8-003",
-    "DisplayName": "加急通知",
+    "DisplayName": "急攻令",
     "Size": 1,
     "BasePrice": 2,
     "BaseCooldownTicks": 60,
     "ArchetypeId": 1,
     "Tags": [
-      "fast",
+      "attack",
       "haste"
     ],
     "Effects": [
@@ -17,7 +17,7 @@
         "Target": 0,
         "Amount": 4,
         "DurationTicks": 30,
-        "ReasonCode": "W8-003-damage",
+        "ReasonCode": "W8-003-attack",
         "ConditionKind": 0,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -45,13 +45,13 @@
   },
   {
     "DefinitionId": "W8-005",
-    "DisplayName": "冲刺看板",
+    "DisplayName": "冲锋看板",
     "Size": 2,
     "BasePrice": 4,
     "BaseCooldownTicks": 70,
     "ArchetypeId": 1,
     "Tags": [
-      "fast",
+      "attack",
       "charge"
     ],
     "Effects": [
@@ -76,7 +76,7 @@
         "Target": 0,
         "Amount": 6,
         "DurationTicks": 30,
-        "ReasonCode": "W8-005-damage",
+        "ReasonCode": "W8-005-attack",
         "ConditionKind": 0,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -89,15 +89,15 @@
   },
   {
     "DefinitionId": "W8-006",
-    "DisplayName": "截止日",
+    "DisplayName": "终局重锤",
     "Size": 3,
     "BasePrice": 6,
     "BaseCooldownTicks": 100,
     "ArchetypeId": 1,
     "Tags": [
-      "fast",
+      "attack",
       "core",
-      "noise"
+      "overload"
     ],
     "Effects": [
       {
@@ -121,7 +121,7 @@
         "Target": 0,
         "Amount": 16,
         "DurationTicks": 30,
-        "ReasonCode": "W8-006-damage",
+        "ReasonCode": "W8-006-attack",
         "ConditionKind": 0,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -136,7 +136,7 @@
         "Target": 1,
         "Amount": 2,
         "DurationTicks": 30,
-        "ReasonCode": "W8-006-noise",
+        "ReasonCode": "W8-006-overload",
         "ConditionKind": 0,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -149,13 +149,13 @@
   },
   {
     "DefinitionId": "W8-007",
-    "DisplayName": "临时缓冲",
+    "DisplayName": "小护盾",
     "Size": 1,
     "BasePrice": 2,
     "BaseCooldownTicks": 42,
     "ArchetypeId": 2,
     "Tags": [
-      "buffer"
+      "shield"
     ],
     "Effects": [
       {
@@ -164,7 +164,7 @@
         "Target": 1,
         "Amount": 7,
         "DurationTicks": 30,
-        "ReasonCode": "W8-007-buffer",
+        "ReasonCode": "W8-007-shield",
         "ConditionKind": 0,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -177,13 +177,13 @@
   },
   {
     "DefinitionId": "W8-008",
-    "DisplayName": "风险清单",
+    "DisplayName": "破盾清单",
     "Size": 1,
     "BasePrice": 2,
     "BaseCooldownTicks": 55,
     "ArchetypeId": 2,
     "Tags": [
-      "buffer",
+      "shield",
       "charge"
     ],
     "Effects": [
@@ -208,7 +208,7 @@
         "Target": 0,
         "Amount": 8,
         "DurationTicks": 30,
-        "ReasonCode": "W8-008-buffer-counter",
+        "ReasonCode": "W8-008-shield-break",
         "ConditionKind": 1,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -221,13 +221,13 @@
   },
   {
     "DefinitionId": "W8-012",
-    "DisplayName": "灾备中心",
+    "DisplayName": "堡垒核心",
     "Size": 3,
     "BasePrice": 6,
     "BaseCooldownTicks": 90,
     "ArchetypeId": 2,
     "Tags": [
-      "buffer",
+      "shield",
       "core"
     ],
     "Effects": [
@@ -237,7 +237,7 @@
         "Target": 1,
         "Amount": 12,
         "DurationTicks": 30,
-        "ReasonCode": "W8-012-buffer",
+        "ReasonCode": "W8-012-shield",
         "ConditionKind": 0,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -252,7 +252,7 @@
         "Target": 0,
         "Amount": 14,
         "DurationTicks": 30,
-        "ReasonCode": "W8-012-buffer-counter",
+        "ReasonCode": "W8-012-shield-break",
         "ConditionKind": 1,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -265,7 +265,7 @@
   },
   {
     "DefinitionId": "W8-013",
-    "DisplayName": "交接单",
+    "DisplayName": "传能接线",
     "Size": 1,
     "BasePrice": 2,
     "BaseCooldownTicks": 50,
@@ -281,7 +281,7 @@
         "Target": 0,
         "Amount": 4,
         "DurationTicks": 30,
-        "ReasonCode": "W8-013-damage",
+        "ReasonCode": "W8-013-attack",
         "ConditionKind": 0,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -324,7 +324,7 @@
   },
   {
     "DefinitionId": "W8-014",
-    "DisplayName": "联签流程",
+    "DisplayName": "连击印",
     "Size": 1,
     "BasePrice": 2,
     "BaseCooldownTicks": 60,
@@ -355,7 +355,7 @@
         "Target": 0,
         "Amount": 3,
         "DurationTicks": 30,
-        "ReasonCode": "W8-014-damage",
+        "ReasonCode": "W8-014-attack",
         "ConditionKind": 0,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,
@@ -368,7 +368,7 @@
   },
   {
     "DefinitionId": "W8-015",
-    "DisplayName": "流程节点",
+    "DisplayName": "节奏节点",
     "Size": 2,
     "BasePrice": 4,
     "BaseCooldownTicks": 65,
@@ -399,7 +399,641 @@
         "Target": 0,
         "Amount": 7,
         "DurationTicks": 30,
-        "ReasonCode": "W8-015-damage",
+        "ReasonCode": "W8-015-attack",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-016",
+    "DisplayName": "急救包",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 45,
+    "ArchetypeId": 4,
+    "Tags": [
+      "heal"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 6,
+        "Target": 1,
+        "Amount": 8,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-016-heal",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-017",
+    "DisplayName": "回春泉",
+    "Size": 2,
+    "BasePrice": 4,
+    "BaseCooldownTicks": 70,
+    "ArchetypeId": 4,
+    "Tags": [
+      "heal",
+      "regen",
+      "shield"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 7,
+        "Target": 1,
+        "Amount": 4,
+        "DurationTicks": 50,
+        "ReasonCode": "W8-017-regen",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 5,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-017-shield",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-018",
+    "DisplayName": "救援旗",
+    "Size": 3,
+    "BasePrice": 6,
+    "BaseCooldownTicks": 95,
+    "ArchetypeId": 4,
+    "Tags": [
+      "heal",
+      "regen",
+      "core",
+      "haste"
+    ],
+    "Effects": [
+      {
+        "Trigger": 1,
+        "Effect": 7,
+        "Target": 1,
+        "Amount": 3,
+        "DurationTicks": 60,
+        "ReasonCode": "W8-018-opening-regen",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 6,
+        "Target": 1,
+        "Amount": 15,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-018-heal",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 2,
+        "Target": 4,
+        "Amount": 1200,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-018-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-019",
+    "DisplayName": "毒针",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 40,
+    "ArchetypeId": 5,
+    "Tags": [
+      "poison"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 8,
+        "Target": 0,
+        "Amount": 3,
+        "DurationTicks": 40,
+        "ReasonCode": "W8-019-poison",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-020",
+    "DisplayName": "腐蚀瓶",
+    "Size": 2,
+    "BasePrice": 4,
+    "BaseCooldownTicks": 65,
+    "ArchetypeId": 5,
+    "Tags": [
+      "poison",
+      "slow"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 8,
+        "Target": 0,
+        "Amount": 5,
+        "DurationTicks": 50,
+        "ReasonCode": "W8-020-poison",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 3,
+        "Target": 5,
+        "Amount": 1000,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-020-slow",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-021",
+    "DisplayName": "毒雾炉",
+    "Size": 3,
+    "BasePrice": 6,
+    "BaseCooldownTicks": 90,
+    "ArchetypeId": 5,
+    "Tags": [
+      "poison",
+      "core",
+      "overload"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 8,
+        "Target": 0,
+        "Amount": 7,
+        "DurationTicks": 60,
+        "ReasonCode": "W8-021-poison",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 5,
+        "Target": 1,
+        "Amount": 1,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-021-overload",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-022",
+    "DisplayName": "火花符",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 38,
+    "ArchetypeId": 6,
+    "Tags": [
+      "burn"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 9,
+        "Target": 0,
+        "Amount": 3,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-022-burn",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-023",
+    "DisplayName": "炽焰炉",
+    "Size": 2,
+    "BasePrice": 4,
+    "BaseCooldownTicks": 60,
+    "ArchetypeId": 6,
+    "Tags": [
+      "burn",
+      "attack"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 9,
+        "Target": 0,
+        "Amount": 5,
+        "DurationTicks": 50,
+        "ReasonCode": "W8-023-burn",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-023-attack",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-024",
+    "DisplayName": "爆燃阵",
+    "Size": 3,
+    "BasePrice": 6,
+    "BaseCooldownTicks": 95,
+    "ArchetypeId": 6,
+    "Tags": [
+      "burn",
+      "core",
+      "haste"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 9,
+        "Target": 0,
+        "Amount": 8,
+        "DurationTicks": 60,
+        "ReasonCode": "W8-024-burn",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 2,
+        "Target": 4,
+        "Amount": 1000,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-024-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-025",
+    "DisplayName": "寒镜",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 50,
+    "ArchetypeId": 7,
+    "Tags": [
+      "freeze"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 10,
+        "Target": 5,
+        "Amount": 8,
+        "DurationTicks": 8,
+        "ReasonCode": "W8-025-freeze",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-026",
+    "DisplayName": "霜锁",
+    "Size": 2,
+    "BasePrice": 4,
+    "BaseCooldownTicks": 75,
+    "ArchetypeId": 7,
+    "Tags": [
+      "freeze",
+      "attack"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 10,
+        "Target": 6,
+        "Amount": 12,
+        "DurationTicks": 12,
+        "ReasonCode": "W8-026-freeze",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-026-attack",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-027",
+    "DisplayName": "冰封塔",
+    "Size": 3,
+    "BasePrice": 6,
+    "BaseCooldownTicks": 110,
+    "ArchetypeId": 7,
+    "Tags": [
+      "freeze",
+      "core",
+      "slow"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 10,
+        "Target": 5,
+        "Amount": 16,
+        "DurationTicks": 16,
+        "ReasonCode": "W8-027-freeze",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 3,
+        "Target": 5,
+        "Amount": 1000,
+        "DurationTicks": 40,
+        "ReasonCode": "W8-027-slow",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-028",
+    "DisplayName": "过载电池",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 36,
+    "ArchetypeId": 8,
+    "Tags": [
+      "overload",
+      "charge"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 4,
+        "Target": 1,
+        "Amount": 2,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-028-charge",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 5,
+        "Target": 1,
+        "Amount": 2,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-028-overload",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-029",
+    "DisplayName": "泄压阀",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 55,
+    "ArchetypeId": 8,
+    "Tags": [
+      "overload",
+      "shield"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 5,
+        "Target": 1,
+        "Amount": -4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-029-vent",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-029-shield",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-030",
+    "DisplayName": "稳压核心",
+    "Size": 2,
+    "BasePrice": 4,
+    "BaseCooldownTicks": 80,
+    "ArchetypeId": 8,
+    "Tags": [
+      "overload",
+      "core",
+      "charge",
+      "shield"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 9,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-030-shield",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 4,
+        "Target": 3,
+        "Amount": 2,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-030-pass-charge",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 5,
+        "Target": 1,
+        "Amount": -3,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-030-vent",
         "ConditionKind": 0,
         "ConditionThreshold": 0,
         "UseCountThreshold": 0,

@@ -12,7 +12,7 @@ using Luban;
 namespace Game.Hot
 {
 /// <summary>
-/// Buqi Step 3 three refinements
+/// Buqi six refinements
 /// </summary>
 public partial class DTBuqiRefinement : IDataTable
 {

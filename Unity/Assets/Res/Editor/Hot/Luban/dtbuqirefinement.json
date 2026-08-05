@@ -2,7 +2,12 @@
   {
     "RefinementId": "A-01",
     "DisplayName": "加急",
-    "Summary": "cooldown -15%; each active use creates 1 noise."
+    "Summary": "cooldown -15%; each active use creates 1 overload."
+  },
+  {
+    "RefinementId": "A-02",
+    "DisplayName": "激化",
+    "Summary": "cooldown +20%; non-opening effects +30%."
   },
   {
     "RefinementId": "A-03",
@@ -12,6 +17,16 @@
   {
     "RefinementId": "A-04",
     "DisplayName": "可靠",
-    "Summary": "immune to enemy delay and ignores friendly haste."
+    "Summary": "immune to enemy slow and ignores friendly haste."
+  },
+  {
+    "RefinementId": "A-05",
+    "DisplayName": "稳流",
+    "Summary": "attack/shield -15%; overload gained by this item -1."
+  },
+  {
+    "RefinementId": "A-06",
+    "DisplayName": "超载",
+    "Summary": "battle start gains 3 overload; attack/shield +35%."
   }
 ]

@@ -26,6 +26,10 @@ namespace Game.Hot.Buqi.Battle
             CheckReadyUseIsolation(provider, failures);
             CheckSameTickBuffer(provider, vectors, failures);
             CheckNoise(provider, vectors, failures);
+            CheckHealAndRegen(provider, failures);
+            CheckPoisonBypassesShield(provider, failures);
+            CheckBurnUsesShield(provider, failures);
+            CheckFreezeStopsCooldown(provider, failures);
             CheckChargeCap(provider, vectors, failures);
             CheckChargeDeclarationConsumption(provider, failures);
             CheckChargeSameSourceDeclareSequence(provider, failures);
@@ -95,6 +99,23 @@ namespace Game.Hot.Buqi.Battle
             AssertOutcome(
                 duplicateAcrossSides, provider, BattleOutcome.InvalidBuild,
                 "cross-side duplicate instance id", failures);
+
+            BattleRequest excessiveInitialBuffer = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot(
+                    "L", 100, BuqiBattleSimulator.BufferCap + 1,
+                    BuqiTestSuite.Item("buffer-over-cap", "damage", 0)),
+                BuqiTestSuite.Snapshot("R", 100, 0, BuqiTestSuite.Item("buffer-target", "damage", 0)));
+            AssertOutcome(
+                excessiveInitialBuffer, provider, BattleOutcome.InvalidBuild,
+                "initial buffer exceeds cap", failures);
+
+            BattleRequest excessiveInitialNoise = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0, BuqiTestSuite.Item("noise-over-cap", "damage", 0)),
+                BuqiTestSuite.Snapshot("R", 100, 0, BuqiTestSuite.Item("noise-target", "damage", 0)));
+            excessiveInitialNoise.Left.InitialNoiseDebt = BuqiBattleSimulator.NoiseThreshold;
+            AssertOutcome(
+                excessiveInitialNoise, provider, BattleOutcome.InvalidBuild,
+                "initial noise reaches threshold", failures);
         }
 
         private static void CheckAdjacency(
@@ -162,6 +183,71 @@ namespace Game.Hot.Buqi.Battle
             int accidentCount = CountReasonAtTick(log, "NoiseAccident", firstNoiseTick);
             if (accidentCount != 2)
                 failures.Add("noise: 21 noise did not produce exactly two accidents");
+        }
+
+        private static void CheckHealAndRegen(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest request = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 30, 0,
+                    BuqiTestSuite.Item("heal", "heal", 0),
+                    BuqiTestSuite.Item("regen", "regen", 1)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out SideState left, out _);
+
+            if (left.Execution <= 30)
+                failures.Add("heal/regen: execution did not increase above the wounded starting value");
+            if (CountReason(log, "Heal") == 0)
+                failures.Add("heal: direct heal was not logged");
+            if (CountReason(log, "Regen") == 0)
+                failures.Add("regen: periodic heal was not logged");
+        }
+
+        private static void CheckPoisonBypassesShield(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest request = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("poison", "poison", 0)),
+                BuqiTestSuite.Snapshot("R", 100, 60, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out SideState right);
+
+            if (right.Execution >= 100)
+                failures.Add("poison: poison did not reduce execution");
+            if (right.Buffer != 60)
+                failures.Add("poison: poison consumed shield even though it should bypass shield");
+            if (CountReason(log, "PoisonDamage") == 0)
+                failures.Add("poison: poison damage was not logged");
+        }
+
+        private static void CheckBurnUsesShield(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest request = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("burn", "burn", 0)),
+                BuqiTestSuite.Snapshot("R", 100, 60, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out SideState right);
+
+            if (right.Buffer >= 60)
+                failures.Add("burn: burn did not consume shield first");
+            if (CountReason(log, "BurnDamage") == 0 && CountReason(log, "BurnShieldAbsorb") == 0)
+                failures.Add("burn: burn damage or shield absorption was not logged");
+        }
+
+        private static void CheckFreezeStopsCooldown(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest controlRequest = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("left", "passive", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("attacker", "damage", 0)));
+            BuqiBattleSimulator.Simulate(controlRequest, provider, out List<BattleEvent> controlLog, out _, out _);
+
+            BattleRequest freezeRequest = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("freeze", "freeze", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("attacker", "damage", 0)));
+            BuqiBattleSimulator.Simulate(freezeRequest, provider, out List<BattleEvent> freezeLog, out _, out _);
+
+            int controlUses = CountActorDeclarations(controlLog, "attacker", "strike");
+            int frozenUses = CountActorDeclarations(freezeLog, "attacker", "strike");
+            if (frozenUses >= controlUses)
+                failures.Add("freeze: frozen enemy item did not lose cooldown progress");
+            if (CountReason(freezeLog, "FreezeApplied") == 0)
+                failures.Add("freeze: freeze application was not logged");
         }
 
         private static void CheckChargeCap(
@@ -641,6 +727,21 @@ namespace Game.Hot.Buqi.Battle
             {
                 if (battleEvent.Tick == tick && battleEvent.ActorInstanceId == actorId &&
                     battleEvent.ReasonCode == reason && battleEvent.Type == BuqiEventType.Declare)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        private static int CountActorDeclarations(List<BattleEvent> log, string actorId, string reason)
+        {
+            int count = 0;
+            foreach (BattleEvent battleEvent in log)
+            {
+                if (battleEvent.ActorInstanceId == actorId &&
+                    battleEvent.ReasonCode == reason &&
+                    battleEvent.Type == BuqiEventType.Declare)
                 {
                     count++;
                 }

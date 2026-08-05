@@ -12,7 +12,7 @@ namespace Game.Hot.Buqi.Battle
         Chain = 2,
     }
 
-    /// <summary>九法门沙盒的临时显示元数据；Step 3 将由 Luban 内容替换。</summary>
+    /// <summary>九法门沙盒的显示元数据；Step 3 配置链路已建立。</summary>
     public sealed class BuqiSandboxItemInfo
     {
         public string DefinitionId = string.Empty;
@@ -40,6 +40,39 @@ namespace Game.Hot.Buqi.Battle
         public string ReasonCode = string.Empty;
     }
 
+    /// <summary>P-1 走查中允许记录的针对性改动类型。</summary>
+    public enum BuqiSandboxChangeKind
+    {
+        Purchase = 0,
+        Refinement = 1,
+        Position = 2,
+    }
+
+    /// <summary>
+    /// P-1 单轮认知记录。预测先于战斗固化，主因和改动只能在绑定战斗结果后填写。
+    /// 该记录仅用于体验走查，不参与战斗输入或结果计算。
+    /// </summary>
+    public sealed class BuqiSandboxWalkthroughRecord
+    {
+        public string ParticipantId = string.Empty;
+        public string ScenarioId = string.Empty;
+        public string Prediction = string.Empty;
+        public string BattleLogHash = string.Empty;
+        public BattleOutcome Outcome;
+        public string PrimaryCause = string.Empty;
+        public BuqiSandboxChangeKind ChangeKind;
+        public string ChangeIntent = string.Empty;
+
+        /// <summary>是否已经绑定由模拟器产生的战斗结果。</summary>
+        public bool HasBattleResult => !string.IsNullOrEmpty(BattleLogHash);
+
+        /// <summary>是否形成完整的“预测—结果—主因—针对性重构”记录。</summary>
+        public bool IsComplete =>
+            HasBattleResult &&
+            !string.IsNullOrWhiteSpace(PrimaryCause) &&
+            !string.IsNullOrWhiteSpace(ChangeIntent);
+    }
+
     /// <summary>单次沙盒运行结果，包含终态、完整日志和可读棋盘布局。</summary>
     public sealed class BuqiSandboxRunResult
     {
@@ -63,8 +96,8 @@ namespace Game.Hot.Buqi.Battle
     }
 
     /// <summary>
-    /// 《不器》Step 2 九法门战斗沙盒的纯逻辑入口。
-    /// 本文件只在 Unity Editor 编译，不进入正式 Player；Step 3 将删除代码内内容并改用 Luban。
+    /// 《不器》Editor 战斗沙盒的纯逻辑入口。
+    /// 本文件只在 Unity Editor 编译，不进入正式 Player；正式配置由 Step 3 Luban 链路提供。
     /// </summary>
     public static class BuqiBattleSandbox
     {
@@ -169,6 +202,66 @@ namespace Game.Hot.Buqi.Battle
                     return scenario;
             }
             return null;
+        }
+
+        /// <summary>创建一条战前认知记录；参与者、场景和预测均必须明确。</summary>
+        public static BuqiSandboxWalkthroughRecord BeginWalkthrough(
+            BuqiSandboxScenario scenario,
+            string participantId,
+            string prediction)
+        {
+            if (scenario == null)
+                throw new ArgumentNullException(nameof(scenario));
+            if (string.IsNullOrWhiteSpace(participantId))
+                throw new ArgumentException("P-1 参与者标识不能为空。", nameof(participantId));
+            if (string.IsNullOrWhiteSpace(prediction))
+                throw new ArgumentException("P-1 战前预测不能为空。", nameof(prediction));
+
+            return new BuqiSandboxWalkthroughRecord
+            {
+                ParticipantId = participantId.Trim(),
+                ScenarioId = scenario.Id,
+                Prediction = prediction.Trim(),
+            };
+        }
+
+        /// <summary>将模拟器结果绑定到战前记录；场景必须与记录一致，且只允许绑定一次。</summary>
+        public static void BindWalkthroughResult(
+            BuqiSandboxWalkthroughRecord record,
+            BuqiSandboxRunResult runResult)
+        {
+            if (record == null)
+                throw new ArgumentNullException(nameof(record));
+            if (runResult == null)
+                throw new ArgumentNullException(nameof(runResult));
+            if (record.HasBattleResult)
+                throw new InvalidOperationException("P-1 记录已经绑定战斗结果。请开始新一轮走查。");
+            if (!string.Equals(record.ScenarioId, runResult.Scenario.Id, StringComparison.Ordinal))
+                throw new InvalidOperationException("P-1 记录与战斗场景不一致。请重新记录战前预测。");
+
+            record.BattleLogHash = runResult.Result.BattleLogHash;
+            record.Outcome = runResult.Result.Outcome;
+        }
+
+        /// <summary>完成战后归因与下一轮改动；必须先绑定战斗结果。</summary>
+        public static void CompleteWalkthrough(
+            BuqiSandboxWalkthroughRecord record,
+            string primaryCause,
+            BuqiSandboxChangeKind changeKind,
+            string changeIntent)
+        {
+            if (record == null)
+                throw new ArgumentNullException(nameof(record));
+            if (!record.HasBattleResult)
+                throw new InvalidOperationException("P-1 记录尚未绑定战斗结果。");
+            if (string.IsNullOrWhiteSpace(primaryCause))
+                throw new ArgumentException("P-1 战后主因不能为空。", nameof(primaryCause));
+            if (string.IsNullOrWhiteSpace(changeIntent))
+                throw new ArgumentException("P-1 下一轮改动及预期影响不能为空。", nameof(changeIntent));
+
+            record.PrimaryCause = primaryCause.Trim();
+            record.ChangeKind = changeKind;
+            record.ChangeIntent = changeIntent.Trim();
         }
 
         /// <summary>运行指定场景并生成终态、完整日志与双方 8 格文本布局。</summary>

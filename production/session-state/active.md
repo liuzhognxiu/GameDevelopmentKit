@@ -140,3 +140,18 @@ Charge 0.4.1 门禁已经完成，下一节点进入 Step 3 Luban Schema。Step 
 ## 下一步
 
 Step 3 已完成。下一门禁是利用现有 Battle Sandbox 执行 P-1 认知走查，验证“预测 -> 归因 -> 针对性重构”是否成立；P-1 通过前不进入正式玩家 UI、完整经济内容或 18 法门批量录入。
+
+## P-1 认知走查准备（2026-08-05）
+
+- 已在 Editor-only `BuqiBattleSandbox` 增加 `BuqiSandboxWalkthroughRecord`：战前必须记录参与者、场景和具体预测；战斗结果绑定真实 `BattleLogHash` 与 `Outcome`；战后才允许填写主因和下一轮改动意图。
+- 已增加 `Purchase`、`Refinement`、`Position` 三类改动记录；记录模型不参与战斗输入、随机状态或结果计算。
+- `BuqiBattleSandboxWindow` 已提供 P-1 记录入口，并在场景切换/清空结果时清理走查状态；菜单真实执行成功。
+- Unity 真实编译：`generation=32`、`errorCount=0`、`warningCount=1`；唯一 warning 为既有 `TutorialForm.m_SkipButton` 未使用警告。
+- Unity EditMode 真实终态：`Game.Hot.Buqi.Tests`，`total=17`、`passed=17`、`failed=0`、`skipped=0`、`success=true`。
+- 独立 Review 会话仍被服务端 `403 This API can only be used with the WorkBuddy client` 拒绝，未伪装为 Review 通过；本轮改动因此暂不提交。
+- P-1 体验结论尚未形成：仍需至少 3 类目标玩家、每人连续完成 3 轮“预测—结果—归因—针对性重构”，再依据真实记录判断是否进入 Step 4。自动测试不能替代玩家样本。
+- 另有未提交的 effects/builds 扩展流修改共享 `BuqiTestSuite.cs`、`BuqiContractChecks.cs`，新增 Heal/Regen/Poison/Burn/Freeze 红测，但对应战斗枚举和模拟器语义尚未落地；该流与 P-1 共用战斗测试边界，暂不纳入 P-1 提交，也不能视为已通过。
+
+## 下一步
+
+先完成 P-1 独立 Review 门禁并根据 Review 修复；随后安排真实参与者走查并记录结果。只有 Review、代码回归和体验门禁均通过后，才提交 P-1 节点并进入 Step 4 战斗回放界面。

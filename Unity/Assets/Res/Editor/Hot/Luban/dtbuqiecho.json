@@ -1,7 +1,7 @@
 [
   {
     "EchoId": "echo-fast-lesson",
-    "DisplayName": "急令试影",
+    "DisplayName": "攻击试影",
     "Tier": "lesson",
     "Build": 1,
     "Snapshot": {
@@ -37,7 +37,7 @@
   },
   {
     "EchoId": "echo-fast-early",
-    "DisplayName": "冲刺试影",
+    "DisplayName": "冲锋试影",
     "Tier": "early",
     "Build": 1,
     "Snapshot": {
@@ -62,7 +62,7 @@
           "RefinementId": "None"
         },
         {
-          "InstanceId": "efe-buffer",
+          "InstanceId": "efe-shield",
           "DefinitionId": "W8-007",
           "Quality": 1,
           "AnchorSlot": 3,
@@ -73,7 +73,7 @@
   },
   {
     "EchoId": "echo-buffer-lesson",
-    "DisplayName": "护体试影",
+    "DisplayName": "护盾试影",
     "Tier": "lesson",
     "Build": 2,
     "Snapshot": {
@@ -84,21 +84,21 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ebl-buffer",
+          "InstanceId": "ebl-shield",
           "DefinitionId": "W8-007",
           "Quality": 1,
           "AnchorSlot": 0,
           "RefinementId": "None"
         },
         {
-          "InstanceId": "ebl-risk",
+          "InstanceId": "ebl-list",
           "DefinitionId": "W8-008",
           "Quality": 1,
           "AnchorSlot": 1,
           "RefinementId": "A-04"
         },
         {
-          "InstanceId": "ebl-center",
+          "InstanceId": "ebl-core",
           "DefinitionId": "W8-012",
           "Quality": 1,
           "AnchorSlot": 2,
@@ -109,7 +109,7 @@
   },
   {
     "EchoId": "echo-buffer-early",
-    "DisplayName": "灾备试影",
+    "DisplayName": "堡垒试影",
     "Tier": "early",
     "Build": 2,
     "Snapshot": {
@@ -120,14 +120,14 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ebe-center",
+          "InstanceId": "ebe-core",
           "DefinitionId": "W8-012",
           "Quality": 1,
           "AnchorSlot": 0,
           "RefinementId": "None"
         },
         {
-          "InstanceId": "ebe-buffer",
+          "InstanceId": "ebe-shield",
           "DefinitionId": "W8-007",
           "Quality": 2,
           "AnchorSlot": 3,
@@ -138,7 +138,7 @@
   },
   {
     "EchoId": "echo-chain-lesson",
-    "DisplayName": "交接试影",
+    "DisplayName": "连锁试影",
     "Tier": "lesson",
     "Build": 3,
     "Snapshot": {
@@ -149,14 +149,14 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ecl-hand",
+          "InstanceId": "ecl-wire",
           "DefinitionId": "W8-013",
           "Quality": 1,
           "AnchorSlot": 0,
           "RefinementId": "None"
         },
         {
-          "InstanceId": "ecl-sign",
+          "InstanceId": "ecl-mark",
           "DefinitionId": "W8-014",
           "Quality": 1,
           "AnchorSlot": 1,
@@ -174,7 +174,7 @@
   },
   {
     "EchoId": "echo-chain-early",
-    "DisplayName": "联签试影",
+    "DisplayName": "充能试影",
     "Tier": "early",
     "Build": 3,
     "Snapshot": {
@@ -185,14 +185,14 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ece-hand",
+          "InstanceId": "ece-wire",
           "DefinitionId": "W8-013",
           "Quality": 2,
           "AnchorSlot": 0,
           "RefinementId": "None"
         },
         {
-          "InstanceId": "ece-sign",
+          "InstanceId": "ece-mark",
           "DefinitionId": "W8-014",
           "Quality": 1,
           "AnchorSlot": 1,
@@ -201,6 +201,373 @@
         {
           "InstanceId": "ece-node",
           "DefinitionId": "W8-015",
+          "Quality": 1,
+          "AnchorSlot": 2,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-heal-lesson",
+    "DisplayName": "治疗试影",
+    "Tier": "lesson",
+    "Build": 4,
+    "Snapshot": {
+      "SnapshotId": "echo-heal-lesson",
+      "ArchetypeId": 4,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "ehl-pack",
+          "DefinitionId": "W8-016",
+          "Quality": 1,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehl-spring",
+          "DefinitionId": "W8-017",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehl-flag",
+          "DefinitionId": "W8-018",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-heal-early",
+    "DisplayName": "回春试影",
+    "Tier": "early",
+    "Build": 4,
+    "Snapshot": {
+      "SnapshotId": "echo-heal-early",
+      "ArchetypeId": 4,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "ehe-pack",
+          "DefinitionId": "W8-016",
+          "Quality": 2,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehe-spring",
+          "DefinitionId": "W8-017",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehe-shield",
+          "DefinitionId": "W8-007",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-poison-lesson",
+    "DisplayName": "中毒试影",
+    "Tier": "lesson",
+    "Build": 5,
+    "Snapshot": {
+      "SnapshotId": "echo-poison-lesson",
+      "ArchetypeId": 5,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "epl-needle",
+          "DefinitionId": "W8-019",
+          "Quality": 1,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "epl-bottle",
+          "DefinitionId": "W8-020",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "epl-fog",
+          "DefinitionId": "W8-021",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-poison-early",
+    "DisplayName": "腐蚀试影",
+    "Tier": "early",
+    "Build": 5,
+    "Snapshot": {
+      "SnapshotId": "echo-poison-early",
+      "ArchetypeId": 5,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "epe-needle",
+          "DefinitionId": "W8-019",
+          "Quality": 2,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "epe-bottle",
+          "DefinitionId": "W8-020",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "epe-mirror",
+          "DefinitionId": "W8-025",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-burn-lesson",
+    "DisplayName": "灼烧试影",
+    "Tier": "lesson",
+    "Build": 6,
+    "Snapshot": {
+      "SnapshotId": "echo-burn-lesson",
+      "ArchetypeId": 6,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "eburn-spark",
+          "DefinitionId": "W8-022",
+          "Quality": 1,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "eburn-furnace",
+          "DefinitionId": "W8-023",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "eburn-array",
+          "DefinitionId": "W8-024",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-burn-early",
+    "DisplayName": "烈焰试影",
+    "Tier": "early",
+    "Build": 6,
+    "Snapshot": {
+      "SnapshotId": "echo-burn-early",
+      "ArchetypeId": 6,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "ebe-spark",
+          "DefinitionId": "W8-022",
+          "Quality": 2,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ebe-furnace",
+          "DefinitionId": "W8-023",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ebe-urgent",
+          "DefinitionId": "W8-003",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-freeze-lesson",
+    "DisplayName": "冰冻试影",
+    "Tier": "lesson",
+    "Build": 7,
+    "Snapshot": {
+      "SnapshotId": "echo-freeze-lesson",
+      "ArchetypeId": 7,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "efz-mirror",
+          "DefinitionId": "W8-025",
+          "Quality": 1,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "efz-lock",
+          "DefinitionId": "W8-026",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "efz-tower",
+          "DefinitionId": "W8-027",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-freeze-early",
+    "DisplayName": "霜锁试影",
+    "Tier": "early",
+    "Build": 7,
+    "Snapshot": {
+      "SnapshotId": "echo-freeze-early",
+      "ArchetypeId": 7,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "efe-mirror",
+          "DefinitionId": "W8-025",
+          "Quality": 2,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "efe-lock",
+          "DefinitionId": "W8-026",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "efe-shield",
+          "DefinitionId": "W8-007",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-overload-lesson",
+    "DisplayName": "过载试影",
+    "Tier": "lesson",
+    "Build": 8,
+    "Snapshot": {
+      "SnapshotId": "echo-overload-lesson",
+      "ArchetypeId": 8,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "eol-battery",
+          "DefinitionId": "W8-028",
+          "Quality": 1,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "eol-core",
+          "DefinitionId": "W8-030",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "eol-vent",
+          "DefinitionId": "W8-029",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "eol-board",
+          "DefinitionId": "W8-005",
+          "Quality": 1,
+          "AnchorSlot": 4,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-overload-early",
+    "DisplayName": "泄压试影",
+    "Tier": "early",
+    "Build": 8,
+    "Snapshot": {
+      "SnapshotId": "echo-overload-early",
+      "ArchetypeId": 8,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "eoe-battery",
+          "DefinitionId": "W8-028",
+          "Quality": 2,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "eoe-vent",
+          "DefinitionId": "W8-029",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "eoe-core",
+          "DefinitionId": "W8-030",
           "Quality": 1,
           "AnchorSlot": 2,
           "RefinementId": "None"

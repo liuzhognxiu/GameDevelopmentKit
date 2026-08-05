@@ -76,7 +76,7 @@ namespace Game.Hot.Buqi.Battle
     /// </summary>
     public sealed class BattleRequest
     {
-        /// <summary>战斗规则版本；当前必须为 0.4.0。</summary>
+        /// <summary>战斗规则版本；当前必须为 0.4.1。</summary>
         public string RuleVersion = string.Empty;
 
         /// <summary>预留战斗种子；v0.4 不允许消费随机数，但仍写入日志元数据。</summary>

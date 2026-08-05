@@ -113,6 +113,84 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void WalkthroughRecord_RequiresPredictionThenResultThenCauseAndChange()
+        {
+            BuqiSandboxScenario scenario = BuqiBattleSandbox.FindScenario("fast-space-choice");
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                scenario,
+                "tester-01",
+                "截止日会先触发并在护体建立前造成主要伤害。");
+
+            Assert.That(record.HasBattleResult, Is.False);
+            Assert.That(record.IsComplete, Is.False);
+
+            BuqiSandboxRunResult run = BuqiBattleSandbox.Run(scenario);
+            BuqiBattleSandbox.BindWalkthroughResult(record, run);
+            Assert.That(record.HasBattleResult, Is.True);
+            Assert.That(record.BattleLogHash, Is.EqualTo(run.Result.BattleLogHash));
+            Assert.That(record.Outcome, Is.EqualTo(run.Result.Outcome));
+            Assert.That(record.IsComplete, Is.False);
+
+            BuqiBattleSandbox.CompleteWalkthrough(
+                record,
+                "护体建立前的截止日伤害先形成血量差。",
+                BuqiSandboxChangeKind.Position,
+                "把加急通知移到截止日前一格，预期让加速和输出窗口更早形成。");
+
+            Assert.That(record.IsComplete, Is.True);
+            Assert.That(record.ParticipantId, Is.EqualTo("tester-01"));
+            Assert.That(record.ScenarioId, Is.EqualTo(scenario.Id));
+            Assert.That(record.ChangeKind, Is.EqualTo(BuqiSandboxChangeKind.Position));
+        }
+
+        [Test]
+        public void WalkthroughRecord_RejectsResultBeforePredictionAndMismatchedScenario()
+        {
+            BuqiSandboxScenario fast = BuqiBattleSandbox.FindScenario("fast-space-choice");
+            BuqiSandboxScenario chain = BuqiBattleSandbox.FindScenario("adjacency-chain");
+            BuqiSandboxRunResult fastRun = BuqiBattleSandbox.Run(fast);
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                fast,
+                "tester-02",
+                "联签流程会先把蓄力传给右邻。");
+
+            Assert.Throws<System.InvalidOperationException>(() =>
+                BuqiBattleSandbox.BindWalkthroughResult(record, BuqiBattleSandbox.Run(chain)));
+            Assert.Throws<System.InvalidOperationException>(() =>
+                BuqiBattleSandbox.CompleteWalkthrough(
+                    record,
+                    "尚未运行",
+                    BuqiSandboxChangeKind.Purchase,
+                    "先补一张小型辅助法门。"));
+
+            BuqiBattleSandbox.BindWalkthroughResult(record, fastRun);
+            Assert.Throws<System.InvalidOperationException>(() =>
+                BuqiBattleSandbox.BindWalkthroughResult(record, fastRun));
+        }
+
+        [Test]
+        public void WalkthroughRecord_RejectsEmptyParticipantPredictionCauseAndChange()
+        {
+            BuqiSandboxScenario scenario = BuqiBattleSandbox.FindScenario("buffer-loss-counter");
+            Assert.Throws<System.ArgumentException>(() =>
+                BuqiBattleSandbox.BeginWalkthrough(scenario, "", "预测"));
+            Assert.Throws<System.ArgumentException>(() =>
+                BuqiBattleSandbox.BeginWalkthrough(scenario, "tester-03", ""));
+
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                scenario,
+                "tester-03",
+                "护体清空后会触发风险清单反击。");
+            BuqiBattleSandbox.BindWalkthroughResult(record, BuqiBattleSandbox.Run(scenario));
+            Assert.Throws<System.ArgumentException>(() =>
+                BuqiBattleSandbox.CompleteWalkthrough(
+                    record, "", BuqiSandboxChangeKind.Refinement, "改淬炼"));
+            Assert.Throws<System.ArgumentException>(() =>
+                BuqiBattleSandbox.CompleteWalkthrough(
+                    record, "护体被打穿", BuqiSandboxChangeKind.Refinement, ""));
+        }
+
+        [Test]
         public void SandboxRun_CloseAndReopenModel_DoesNotReuseMutableState()
         {
             BuqiSandboxScenario scenario = BuqiBattleSandbox.FindScenario("buffer-loss-counter");

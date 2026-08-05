@@ -74,6 +74,16 @@ namespace Game.Hot.Buqi.Battle
                         "a-same-actor-buffer")),
                 ["noise"] = CreateDefinition("noise", 1, 30,
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Noise, BuqiTarget.EnemyExecution, 21, "noise")),
+                ["heal"] = CreateDefinition("heal", 1, 40,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Heal, BuqiTarget.Self, 12, "heal")),
+                ["regen"] = CreateDefinition("regen", 1, 40,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Regen, BuqiTarget.Self, 3, "regen", 30)),
+                ["poison"] = CreateDefinition("poison", 1, 40,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Poison, BuqiTarget.EnemyExecution, 4, "poison", 30)),
+                ["burn"] = CreateDefinition("burn", 1, 40,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Burn, BuqiTarget.EnemyExecution, 5, "burn", 30)),
+                ["freeze"] = CreateDefinition("freeze", 1, 40,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Freeze, BuqiTarget.ShortestCooldownEnemyItem, 10, "freeze", 10)),
                 ["adjacent-source"] = CreateDefinition("adjacent-source", 1, 30,
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 8, "adjacent-source")),
                 ["adjacent-response"] = CreateDefinition("adjacent-response", 1, 300,
@@ -219,12 +229,14 @@ namespace Game.Hot.Buqi.Battle
             string[] definitionIds =
             {
                 "damage", "buffer", "large", "medium", "haste", "delay", "charge",
-                "noise", "adjacent-source", "adjacent-response", "use-count", "battle-start-buffer",
+                "noise", "heal", "regen", "poison", "burn", "freeze",
+                "adjacent-source", "adjacent-response", "use-count", "battle-start-buffer",
             };
             var definitionSizes = new Dictionary<string, int>(StringComparer.Ordinal)
             {
                 ["damage"] = 1, ["buffer"] = 1, ["large"] = 3, ["medium"] = 2,
                 ["haste"] = 1, ["delay"] = 1, ["charge"] = 1, ["noise"] = 1,
+                ["heal"] = 1, ["regen"] = 1, ["poison"] = 1, ["burn"] = 1, ["freeze"] = 1,
                 ["adjacent-source"] = 1, ["adjacent-response"] = 1,
                 ["use-count"] = 1, ["battle-start-buffer"] = 1,
             };

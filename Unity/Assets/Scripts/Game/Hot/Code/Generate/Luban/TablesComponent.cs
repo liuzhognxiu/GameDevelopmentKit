@@ -24,15 +24,15 @@ public partial class TablesComponent
     /// </summary>
     public DTBuqiGlobal DTBuqiGlobal { private set; get; }
     /// <summary>
-    /// Buqi Step 3 nine items
+    /// Buqi expanded effect items
     /// </summary>
     public DTBuqiItem DTBuqiItem { private set; get; }
     /// <summary>
-    /// Buqi Step 3 three refinements
+    /// Buqi six refinements
     /// </summary>
     public DTBuqiRefinement DTBuqiRefinement { private set; get; }
     /// <summary>
-    /// Buqi Step 3 six echoes
+    /// Buqi expanded build echoes
     /// </summary>
     public DTBuqiEcho DTBuqiEcho { private set; get; }
     private System.Collections.Generic.Dictionary<string, IDataTable> _tables;

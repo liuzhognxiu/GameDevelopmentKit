@@ -12,7 +12,7 @@ using Luban;
 namespace Game.Hot
 {
 /// <summary>
-/// Buqi Step 3 nine items
+/// Buqi expanded effect items
 /// </summary>
 public partial class DTBuqiItem : IDataTable
 {

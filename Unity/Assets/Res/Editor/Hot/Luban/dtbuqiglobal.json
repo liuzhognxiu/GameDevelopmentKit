@@ -1,6 +1,6 @@
 [
   {
-    "ContentVersion": "buqi-step3-cv1",
+    "ContentVersion": "buqi-effects-cv1",
     "InitialExecution": 100,
     "BufferCap": 60,
     "NoiseThreshold": 10,

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
+using System.IO;
+using Cysharp.Threading.Tasks;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
+using Luban;
 using NUnit.Framework;
 using BattleConditionKind = Game.Hot.Buqi.Battle.BuqiConditionKind;
 using BattleEffect = Game.Hot.Buqi.Battle.BuqiEffect;
@@ -21,7 +24,7 @@ namespace Game.Hot.Buqi.Tests
 
             var provider = new BuqiDefinitionProvider(catalog);
 
-            Assert.That(provider.ContentVersion, Is.EqualTo("buqi-step3-cv1"));
+            Assert.That(provider.ContentVersion, Is.EqualTo("buqi-effects-cv1"));
             Assert.That(provider.TryGet("W8-003", out BuqiItemDefinition urgent), Is.True);
             Assert.That(urgent.DefinitionId, Is.EqualTo("W8-003"));
             Assert.That(urgent.Size, Is.EqualTo((int)BattleSize.S));
@@ -37,13 +40,43 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void ConfigValidator_AcceptsStep3MinimumCatalog()
+        public void ConfigValidator_AcceptsExpandedCatalog()
         {
             BuqiConfigCatalog catalog = BuqiConfigTestData.CreateValidCatalog();
 
             List<string> errors = BuqiConfigValidator.Validate(catalog);
 
             Assert.That(errors, Is.Empty, string.Join("\n", errors));
+        }
+
+        [Test]
+        public void GeneratedExpandedBytes_AdaptValidateAndMatchFixtureEffects()
+        {
+            GeneratedBuqiTables tables = GeneratedBuqiTables.LoadFromProject();
+
+            bool adapted = BuqiGeneratedConfigAdapter.TryReadFromTables(
+                tables, out BuqiConfigCatalog generated, out List<string> adapterErrors);
+
+            Assert.That(adapted, Is.True, string.Join("\n", adapterErrors));
+            List<string> validationErrors = BuqiConfigValidator.Validate(generated);
+            Assert.That(validationErrors, Is.Empty, string.Join("\n", validationErrors));
+            Assert.That(generated.Items.Count, Is.EqualTo(24));
+            Assert.That(generated.Refinements.Count, Is.EqualTo(6));
+            Assert.That(generated.Echoes.Count, Is.EqualTo(16));
+
+            BuqiConfigCatalog fixture = BuqiConfigTestData.CreateValidCatalog();
+            foreach (BuqiItemConfigRow expected in fixture.Items)
+            {
+                BuqiItemConfigRow actual = FindItem(generated.Items, expected.DefinitionId);
+                Assert.That(actual, Is.Not.Null, "generated item missing: " + expected.DefinitionId);
+                Assert.That(actual.Effects.Count, Is.EqualTo(expected.Effects.Count),
+                    expected.DefinitionId + " effect count differs from generated config");
+                for (int index = 0; index < expected.Effects.Count; index++)
+                {
+                    Assert.That(actual.Effects[index].ReasonCode, Is.EqualTo(expected.Effects[index].ReasonCode),
+                        expected.DefinitionId + " effect order differs at index " + index);
+                }
+            }
         }
 
         [Test]
@@ -57,7 +90,7 @@ namespace Game.Hot.Buqi.Tests
             List<string> errors = BuqiConfigValidator.Validate(catalog);
 
             Assert.That(Contains(errors, "enabled item W8-001"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "missing enabled item W8-015"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "missing enabled item W8-030"), Is.True, string.Join("\n", errors));
         }
 
         [Test]
@@ -104,6 +137,48 @@ namespace Game.Hot.Buqi.Tests
             return false;
         }
 
+        private static BuqiItemConfigRow FindItem(List<BuqiItemConfigRow> items, string definitionId)
+        {
+            foreach (BuqiItemConfigRow item in items)
+            {
+                if (item.DefinitionId == definitionId)
+                    return item;
+            }
+            return null;
+        }
+
+        private sealed class GeneratedBuqiTables
+        {
+            public DTBuqiGlobal DTBuqiGlobal { get; private set; }
+            public DTBuqiItem DTBuqiItem { get; private set; }
+            public DTBuqiRefinement DTBuqiRefinement { get; private set; }
+            public DTBuqiEcho DTBuqiEcho { get; private set; }
+
+            public static GeneratedBuqiTables LoadFromProject()
+            {
+                var tables = new GeneratedBuqiTables
+                {
+                    DTBuqiGlobal = new DTBuqiGlobal(() => LoadBytes("dtbuqiglobal")),
+                    DTBuqiItem = new DTBuqiItem(() => LoadBytes("dtbuqiitem")),
+                    DTBuqiRefinement = new DTBuqiRefinement(() => LoadBytes("dtbuqirefinement")),
+                    DTBuqiEcho = new DTBuqiEcho(() => LoadBytes("dtbuqiecho")),
+                };
+                tables.DTBuqiGlobal.LoadAsync().GetAwaiter().GetResult();
+                tables.DTBuqiItem.LoadAsync().GetAwaiter().GetResult();
+                tables.DTBuqiRefinement.LoadAsync().GetAwaiter().GetResult();
+                tables.DTBuqiEcho.LoadAsync().GetAwaiter().GetResult();
+                return tables;
+            }
+
+            private static UniTask<ByteBuf> LoadBytes(string tableName)
+            {
+                string path = Path.Combine(
+                    Directory.GetCurrentDirectory(), "Assets", "Res", "Hot", "Luban", tableName + ".bytes");
+                Assert.That(File.Exists(path), Is.True, "generated table bytes missing: " + path);
+                return UniTask.FromResult(new ByteBuf(File.ReadAllBytes(path)));
+            }
+        }
+
         private static class BuqiConfigTestData
         {
             public static BuqiConfigCatalog CreateValidCatalog()
@@ -112,7 +187,7 @@ namespace Game.Hot.Buqi.Tests
                 {
                     Global = new BuqiGlobalConfigRow
                     {
-                        ContentVersion = "buqi-step3-cv1",
+                        ContentVersion = "buqi-effects-cv1",
                         InitialExecution = 100,
                         BufferCap = 60,
                         NoiseThreshold = 10,
@@ -127,36 +202,83 @@ namespace Game.Hot.Buqi.Tests
                 };
 
                 catalog.Items.Add(Item("W8-003", BattleSize.S, 2, 60, "fast",
-                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 4, "W8-003-damage"),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 4, "W8-003-attack"),
                     Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.LeftAdjacentItem, 2000, "W8-003-haste", 30)));
                 catalog.Items.Add(Item("W8-005", BattleSize.M, 4, 70, "fast",
                     Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Charge, BattleTarget.Self, 1, "W8-005-adjacent-charge"),
-                    ChargedEffect(6, 2, 3, true, "W8-005-damage")));
+                    ChargedEffect(6, 2, 3, true, "W8-005-attack")));
                 catalog.Items.Add(Item("W8-006", BattleSize.L, 6, 100, "fast",
                     Effect(BattleTrigger.OnBattleStart, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 1500, "W8-006-opening-haste", 50),
-                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 16, "W8-006-damage"),
-                    Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, 2, "W8-006-noise")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 16, "W8-006-attack"),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, 2, "W8-006-overload")));
                 catalog.Items.Add(Item("W8-007", BattleSize.S, 2, 42, "buffer",
-                    Effect(BattleTrigger.OnUse, BattleEffect.Buffer, BattleTarget.Self, 7, "W8-007-buffer")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Buffer, BattleTarget.Self, 7, "W8-007-shield")));
                 catalog.Items.Add(Item("W8-008", BattleSize.S, 2, 55, "buffer",
                     Effect(BattleTrigger.OnUse, BattleEffect.Charge, BattleTarget.Self, 1, "W8-008-charge"),
-                    ConditionEffect(BattleConditionKind.BufferLost, 0, BattleEffect.Damage, BattleTarget.EnemyExecution, 8, "W8-008-buffer-counter")));
+                    ConditionEffect(BattleConditionKind.BufferLost, 0, BattleEffect.Damage, BattleTarget.EnemyExecution, 8, "W8-008-shield-break")));
                 catalog.Items.Add(Item("W8-012", BattleSize.L, 6, 90, "buffer",
-                    Effect(BattleTrigger.OnUse, BattleEffect.Buffer, BattleTarget.Self, 12, "W8-012-buffer"),
-                    ConditionEffect(BattleConditionKind.BufferLost, 0, BattleEffect.Damage, BattleTarget.EnemyExecution, 14, "W8-012-buffer-counter")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Buffer, BattleTarget.Self, 12, "W8-012-shield"),
+                    ConditionEffect(BattleConditionKind.BufferLost, 0, BattleEffect.Damage, BattleTarget.EnemyExecution, 14, "W8-012-shield-break")));
                 catalog.Items.Add(Item("W8-013", BattleSize.S, 2, 50, "chain",
-                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 4, "W8-013-damage"),
-                    Effect(BattleTrigger.OnUse, BattleEffect.Charge, BattleTarget.RightAdjacentItem, 1, "W8-013-pass-charge")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 4, "W8-013-attack"),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Charge, BattleTarget.RightAdjacentItem, 1, "W8-013-pass-charge"),
+                    Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Charge, BattleTarget.RightAdjacentItem, 1, "W8-013-adjacent-pass")));
                 catalog.Items.Add(Item("W8-014", BattleSize.S, 2, 60, "chain",
                     Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Charge, BattleTarget.Self, 1, "W8-014-adjacent-charge"),
-                    ChargedEffect(3, 3, 2, true, "W8-014-damage")));
+                    ChargedEffect(3, 3, 2, true, "W8-014-attack")));
                 catalog.Items.Add(Item("W8-015", BattleSize.M, 4, 65, "chain",
                     Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Haste, BattleTarget.Self, 2000, "W8-015-adjacent-haste", 30),
-                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 7, "W8-015-damage")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 7, "W8-015-attack")));
+                catalog.Items.Add(Item("W8-016", BattleSize.S, 2, 45, "heal",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Heal, BattleTarget.Self, 8, "W8-016-heal")));
+                catalog.Items.Add(Item("W8-017", BattleSize.M, 4, 70, "heal",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Regen, BattleTarget.Self, 4, "W8-017-regen", 50),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Buffer, BattleTarget.Self, 5, "W8-017-shield")));
+                catalog.Items.Add(Item("W8-018", BattleSize.L, 6, 95, "heal",
+                    Effect(BattleTrigger.OnBattleStart, BattleEffect.Regen, BattleTarget.Self, 3, "W8-018-opening-regen", 60),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Heal, BattleTarget.Self, 15, "W8-018-heal"),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 1200, "W8-018-haste")));
+                catalog.Items.Add(Item("W8-019", BattleSize.S, 2, 40, "poison",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Poison, BattleTarget.EnemyExecution, 3, "W8-019-poison", 40)));
+                catalog.Items.Add(Item("W8-020", BattleSize.M, 4, 65, "poison",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Poison, BattleTarget.EnemyExecution, 5, "W8-020-poison", 50),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Delay, BattleTarget.ShortestCooldownEnemyItem, 1000, "W8-020-slow")));
+                catalog.Items.Add(Item("W8-021", BattleSize.L, 6, 90, "poison",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Poison, BattleTarget.EnemyExecution, 7, "W8-021-poison", 60),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, 1, "W8-021-overload")));
+                catalog.Items.Add(Item("W8-022", BattleSize.S, 2, 38, "burn",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Burn, BattleTarget.EnemyExecution, 3, "W8-022-burn")));
+                catalog.Items.Add(Item("W8-023", BattleSize.M, 4, 60, "burn",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Burn, BattleTarget.EnemyExecution, 5, "W8-023-burn", 50),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 4, "W8-023-attack")));
+                catalog.Items.Add(Item("W8-024", BattleSize.L, 6, 95, "burn",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Burn, BattleTarget.EnemyExecution, 8, "W8-024-burn", 60),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 1000, "W8-024-haste")));
+                catalog.Items.Add(Item("W8-025", BattleSize.S, 2, 50, "freeze",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Freeze, BattleTarget.ShortestCooldownEnemyItem, 8, "W8-025-freeze", 8)));
+                catalog.Items.Add(Item("W8-026", BattleSize.M, 4, 75, "freeze",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Freeze, BattleTarget.LongestCooldownEnemyItem, 12, "W8-026-freeze", 12),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 4, "W8-026-attack")));
+                catalog.Items.Add(Item("W8-027", BattleSize.L, 6, 110, "freeze",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Freeze, BattleTarget.ShortestCooldownEnemyItem, 16, "W8-027-freeze", 16),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Delay, BattleTarget.ShortestCooldownEnemyItem, 1000, "W8-027-slow", 40)));
+                catalog.Items.Add(Item("W8-028", BattleSize.S, 2, 36, "overload",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Charge, BattleTarget.Self, 2, "W8-028-charge"),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, 2, "W8-028-overload")));
+                catalog.Items.Add(Item("W8-029", BattleSize.S, 2, 55, "overload",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, -4, "W8-029-vent"),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Buffer, BattleTarget.Self, 4, "W8-029-shield")));
+                catalog.Items.Add(Item("W8-030", BattleSize.M, 4, 80, "overload",
+                    Effect(BattleTrigger.OnUse, BattleEffect.Buffer, BattleTarget.Self, 9, "W8-030-shield"),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Charge, BattleTarget.RightAdjacentItem, 2, "W8-030-pass-charge"),
+                    Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, -3, "W8-030-vent")));
 
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-01", DisplayName = "加急", Summary = "基础冷却 -15%，主动使用产生 1 失衡。" });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-03", DisplayName = "复写", Summary = "每场首次主动使用后以 50% 效果追加一次。" });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-04", DisplayName = "可靠", Summary = "不受敌方延迟，也不能获得友方加速。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-01", DisplayName = "加急", Summary = "cooldown -15%; each active use creates 1 overload." });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-02", DisplayName = "激化", Summary = "cooldown +20%; non-opening effects +30%." });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-03", DisplayName = "复写", Summary = "first active use repeats at 50% effect once per battle." });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-04", DisplayName = "可靠", Summary = "immune to enemy slow and ignores friendly haste." });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-05", DisplayName = "稳流", Summary = "attack/shield -15%; overload gained by this item -1." });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-06", DisplayName = "超载", Summary = "battle start gains 3 overload; attack/shield +35%." });
 
                 catalog.Echoes.Add(Echo("echo-fast-lesson", "fast", Instance("e1-deadline", "W8-006", BattleQuality.Normal, 0), Instance("e1-board", "W8-005", BattleQuality.Normal, 3), Instance("e1-urgent", "W8-003", BattleQuality.Normal, 5, "A-01")));
                 catalog.Echoes.Add(Echo("echo-fast-early", "fast", Instance("e2-board", "W8-005", BattleQuality.Improved, 0), Instance("e2-urgent", "W8-003", BattleQuality.Normal, 2), Instance("e2-buffer", "W8-007", BattleQuality.Normal, 3)));
@@ -164,6 +286,16 @@ namespace Game.Hot.Buqi.Tests
                 catalog.Echoes.Add(Echo("echo-buffer-early", "buffer", Instance("e4-center", "W8-012", BattleQuality.Normal, 0), Instance("e4-buffer", "W8-007", BattleQuality.Improved, 3)));
                 catalog.Echoes.Add(Echo("echo-chain-lesson", "chain", Instance("e5-hand", "W8-013", BattleQuality.Normal, 0), Instance("e5-sign", "W8-014", BattleQuality.Normal, 1, "A-03"), Instance("e5-node", "W8-015", BattleQuality.Normal, 2)));
                 catalog.Echoes.Add(Echo("echo-chain-early", "chain", Instance("e6-hand", "W8-013", BattleQuality.Improved, 0), Instance("e6-sign", "W8-014", BattleQuality.Normal, 1), Instance("e6-node", "W8-015", BattleQuality.Normal, 2)));
+                catalog.Echoes.Add(Echo("echo-heal-lesson", "heal", Instance("e7-pack", "W8-016", BattleQuality.Normal, 0), Instance("e7-spring", "W8-017", BattleQuality.Normal, 1), Instance("e7-flag", "W8-018", BattleQuality.Normal, 3)));
+                catalog.Echoes.Add(Echo("echo-heal-early", "heal", Instance("e8-pack", "W8-016", BattleQuality.Improved, 0), Instance("e8-spring", "W8-017", BattleQuality.Normal, 1), Instance("e8-shield", "W8-007", BattleQuality.Normal, 3)));
+                catalog.Echoes.Add(Echo("echo-poison-lesson", "poison", Instance("e9-needle", "W8-019", BattleQuality.Normal, 0), Instance("e9-bottle", "W8-020", BattleQuality.Normal, 1), Instance("e9-fog", "W8-021", BattleQuality.Normal, 3)));
+                catalog.Echoes.Add(Echo("echo-poison-early", "poison", Instance("e10-needle", "W8-019", BattleQuality.Improved, 0), Instance("e10-bottle", "W8-020", BattleQuality.Normal, 1), Instance("e10-mirror", "W8-025", BattleQuality.Normal, 3)));
+                catalog.Echoes.Add(Echo("echo-burn-lesson", "burn", Instance("e11-spark", "W8-022", BattleQuality.Normal, 0), Instance("e11-furnace", "W8-023", BattleQuality.Normal, 1), Instance("e11-array", "W8-024", BattleQuality.Normal, 3)));
+                catalog.Echoes.Add(Echo("echo-burn-early", "burn", Instance("e12-spark", "W8-022", BattleQuality.Improved, 0), Instance("e12-furnace", "W8-023", BattleQuality.Normal, 1), Instance("e12-urgent", "W8-003", BattleQuality.Normal, 3)));
+                catalog.Echoes.Add(Echo("echo-freeze-lesson", "freeze", Instance("e13-mirror", "W8-025", BattleQuality.Normal, 0), Instance("e13-lock", "W8-026", BattleQuality.Normal, 1), Instance("e13-tower", "W8-027", BattleQuality.Normal, 3)));
+                catalog.Echoes.Add(Echo("echo-freeze-early", "freeze", Instance("e14-mirror", "W8-025", BattleQuality.Improved, 0), Instance("e14-lock", "W8-026", BattleQuality.Normal, 1), Instance("e14-shield", "W8-007", BattleQuality.Normal, 3)));
+                catalog.Echoes.Add(Echo("echo-overload-lesson", "overload", Instance("e15-battery", "W8-028", BattleQuality.Normal, 0), Instance("e15-core", "W8-030", BattleQuality.Normal, 1), Instance("e15-vent", "W8-029", BattleQuality.Normal, 3), Instance("e15-board", "W8-005", BattleQuality.Normal, 4)));
+                catalog.Echoes.Add(Echo("echo-overload-early", "overload", Instance("e16-battery", "W8-028", BattleQuality.Improved, 0), Instance("e16-vent", "W8-029", BattleQuality.Normal, 1), Instance("e16-core", "W8-030", BattleQuality.Normal, 2)));
                 return catalog;
             }
 

@@ -12,7 +12,7 @@
 namespace Game.Hot
 { 
     /// <summary>
-    /// none
+    /// condition kind
     /// </summary>
     public enum BuqiConditionKind
     {
@@ -21,7 +21,7 @@ namespace Game.Hot
         /// </summary>
         None = 0,
         /// <summary>
-        /// buffer lost
+        /// shield lost
         /// </summary>
         BufferLost = 1,
         /// <summary>

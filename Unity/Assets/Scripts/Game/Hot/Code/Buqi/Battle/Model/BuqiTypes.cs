@@ -37,6 +37,11 @@ namespace Game.Hot.Buqi.Battle
         Delay = 3,
         Charge = 4,
         Noise = 5,
+        Heal = 6,
+        Regen = 7,
+        Poison = 8,
+        Burn = 9,
+        Freeze = 10,
     }
 
     /// <summary>确定性目标选择器；v0.4 不允许随机目标。</summary>

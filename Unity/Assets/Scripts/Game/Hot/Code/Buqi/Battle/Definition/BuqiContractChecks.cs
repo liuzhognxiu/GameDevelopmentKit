@@ -28,6 +28,8 @@ namespace Game.Hot.Buqi.Battle
             CheckNoise(provider, vectors, failures);
             CheckChargeCap(provider, vectors, failures);
             CheckChargeDeclarationConsumption(provider, failures);
+            CheckChargeSameSourceDeclareSequence(provider, failures);
+            CheckChargeSameTickAndLogSemantics(provider, failures);
             CheckRewrite(provider, vectors, failures);
             CheckReliable(provider, vectors, failures);
             CheckUseCount(provider, vectors, failures);
@@ -242,6 +244,57 @@ namespace Game.Hot.Buqi.Battle
                 CountReasonAtTick(noTargetLog, "ChargeConsumed", 0) != 0)
             {
                 failures.Add("charge: declaration without a valid target consumed or read charge");
+            }
+        }
+
+        private static void CheckChargeSameSourceDeclareSequence(
+            IItemDefinitionProvider provider,
+            List<string> failures)
+        {
+            BattleRequest sameActor = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0,
+                    BuqiTestSuite.Item("sequenced", "same-actor-charge-sequence", 0)),
+                BuqiTestSuite.Snapshot("R", 100, 0,
+                    BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(
+                sameActor, provider, out List<BattleEvent> log, out SideState left, out _);
+
+            if (left.Items[0].Charge != 0 ||
+                left.Buffer != 7 ||
+                SumActorDeclaredAtTick(log, "sequenced", "a-same-actor-buffer", 0) != 7 ||
+                SumActorReasonAtTick(log, "sequenced", "ChargeConsumed", 0) != -3)
+            {
+                failures.Add("charge: same-source Declare sequence did not let prior charge feed a later consuming declaration");
+            }
+        }
+
+        private static void CheckChargeSameTickAndLogSemantics(
+            IItemDefinitionProvider provider,
+            List<string> failures)
+        {
+            BattleRequest sameTick = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 8, 0,
+                    BuqiTestSuite.Item("left-source", "opening-charge-source", 0),
+                    BuqiTestSuite.Item("left-consumer", "charge-consumer", 1)),
+                BuqiTestSuite.Snapshot("R", 8, 0,
+                    BuqiTestSuite.Item("right-source", "opening-charge-source", 0),
+                    BuqiTestSuite.Item("right-consumer", "charge-consumer", 1)));
+            BattleResult result = BuqiBattleSimulator.Simulate(
+                sameTick, provider, out List<BattleEvent> log, out SideState left, out SideState right);
+
+            if (result.Outcome != BattleOutcome.Draw ||
+                result.DurationTicks != 1 ||
+                left.Execution != 0 ||
+                right.Execution != 0)
+            {
+                failures.Add("charge: same-tick bilateral consuming declarations did not resolve simultaneously");
+            }
+
+            if (CountReasonAtTick(log, "ChargeConsumed", 0) != 2 ||
+                SumReasonAtTick(log, "ChargeConsumed", 0) != -6 ||
+                !AllReasonEventsAtTickMatch(log, "ChargeConsumed", 0, BuqiEventPhase.Declare, BuqiEventType.Effect))
+            {
+                failures.Add("charge: consumption log events were not negative Declare-phase resource changes");
             }
         }
 
@@ -629,6 +682,24 @@ namespace Game.Hot.Buqi.Battle
                 }
             }
             return total;
+        }
+
+        private static bool AllReasonEventsAtTickMatch(
+            List<BattleEvent> log,
+            string reason,
+            int tick,
+            BuqiEventPhase phase,
+            BuqiEventType type)
+        {
+            foreach (BattleEvent battleEvent in log)
+            {
+                if (battleEvent.Tick == tick && battleEvent.ReasonCode == reason &&
+                    (battleEvent.Phase != phase || battleEvent.Type != type))
+                {
+                    return false;
+                }
+            }
+            return true;
         }
     }
 }

@@ -11,6 +11,8 @@ namespace Game.Hot.Buqi.Battle
         public int ChainDepth;
         public string ChainId = string.Empty;
         public bool IsRewrite;
+        /// <summary>本批 Declare 队列中的插入顺序；同来源声明按契约以 sequence 决定先后。</summary>
+        public int DeclarationOrder;
         /// <summary>声明时已经确定并预占的蓄力读取量，Resolve 不得再次读取运行时状态。</summary>
         public int DeclaredCharge;
         /// <summary>A-03 复写引用的原始声明，用于复用蓄力快照而不重复消费。</summary>
@@ -1017,6 +1019,9 @@ namespace Game.Hot.Buqi.Battle
 
         private static void SortQueue(List<DeclaredEffect> queue)
         {
+            for (int index = 0; index < queue.Count; index++)
+                queue[index].DeclarationOrder = index;
+
             queue.Sort((left, right) =>
             {
                 int depthComparison = left.ChainDepth.CompareTo(right.ChainDepth);
@@ -1025,13 +1030,7 @@ namespace Game.Hot.Buqi.Battle
                 if (anchorComparison != 0) return anchorComparison;
                 int idComparison = string.CompareOrdinal(left.Actor.InstanceId, right.Actor.InstanceId);
                 if (idComparison != 0) return idComparison;
-                int triggerComparison = left.Spec.Trigger.CompareTo(right.Spec.Trigger);
-                if (triggerComparison != 0) return triggerComparison;
-                int effectComparison = string.CompareOrdinal(left.Spec.GetEffectId(), right.Spec.GetEffectId());
-                if (effectComparison != 0) return effectComparison;
-                int reasonComparison = string.CompareOrdinal(left.Spec.ReasonCode, right.Spec.ReasonCode);
-                if (reasonComparison != 0) return reasonComparison;
-                return left.IsRewrite.CompareTo(right.IsRewrite);
+                return left.DeclarationOrder.CompareTo(right.DeclarationOrder);
             });
         }
 

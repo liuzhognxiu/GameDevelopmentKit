@@ -119,12 +119,12 @@
 ## Charge 0.4.1 门禁状态（2026-08-05）
 
 - 已将蓄力读取/消费定型为通用配置字段 `ChargeReadLimit`、`AmountPerCharge`、`ChargeConsume`，不增加第七类基础效果，也不按法门 ID 写特例。
-- 已实现稳定 `Declare` 顺序即时获得、读取与消费；消费日志为负值；无合法目标不消费；只读可重复读取；A-03 复写复用原声明快照且不二次消费。
-- 本地行为契约真实通过；无头 Release 构建 `0 warning / 0 error`；`stress 10000` 真实通过：`distinct=10000`、`invalid=0`、`hung=0`。
-- Unity 编译 `0 error`，仅保留既有 `TutorialForm.m_SkipButton` 警告；Unity EditMode 9 个用例中 8 个通过，唯一失败为 approved hash 仍是 0.4 旧基线，业务行为和 7 个沙盒用例全部通过。
-- approved hash 尚未更新；独立 Review 会话多次被服务端 `403` 或空响应阻塞，因此节点尚未批准、尚未提交。
-- 无头项目已修正 `stress` 与批准基线解耦，并用 `obj*/**` 排除任意隔离构建目录，避免生成程序集特性重复。
+- 独立审计发现并修复同来源同触发声明的排序缺陷：同一 source/anchor 下现在按本批 `Declare` 插入序列作为最终 tie-breaker，确保先声明的蓄力可被同 tick 后续声明读取。
+- 行为断言已覆盖：稳定 `Declare` 顺序即时获得、读取与消费；消费日志为负值且处于 `Declare` 阶段；无合法目标不消费；只读可重复读取；A-03 复写复用原声明快照且不二次消费；双方同 tick 消费后仍在 Aggregate/PostTick 同时判定。
+- 在行为契约通过后，已显式运行无头 Release `update-hashes` 更新 approved hash；随后只读 `verify` 通过：15 个向量全部匹配。
+- 无头 Release `all 10000` 真实通过：`builds=10000`、`distinct=10000`、`invalid=0`、`hung=0`、`elapsedMs=5844`。
+- 本次独立门禁未启动第二个 Unity Editor，未操作主工作区 Unity Agent Bridge；Unity 编译/EditMode 仍由协调器整合后运行，本节不宣称 Unity 9/9。
 
 ## 下一步
 
-先恢复独立 Review 门禁；评审通过后显式执行 `update-hashes`，再运行只读 `verify`、`all 10000`、Unity EditMode 9/9 和沙盒菜单验收，完成 Charge 节点提交。随后进入 Step 3 Luban Schema；仍不得直接录入完整 18 个法门或创建正式玩家 UI。
+协调器整合本次 Charge 提交后，继续运行 Unity 编译/EditMode 与沙盒菜单验收；通过后进入 Step 3 Luban Schema。仍不得直接录入完整 18 个法门或创建正式玩家 UI。

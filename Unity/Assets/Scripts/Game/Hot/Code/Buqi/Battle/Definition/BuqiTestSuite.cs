@@ -61,6 +61,17 @@ namespace Game.Hot.Buqi.Battle
                         3,
                         true,
                         "charge-no-target")),
+                ["same-actor-charge-sequence"] = CreateDefinition("same-actor-charge-sequence", 1, 300,
+                    Effect(BuqiTrigger.OnBattleStart, BuqiEffect.Charge, BuqiTarget.Self, 3, "z-same-actor-charge"),
+                    ChargedEffect(
+                        BuqiTrigger.OnBattleStart,
+                        BuqiEffect.Buffer,
+                        BuqiTarget.Self,
+                        1,
+                        2,
+                        3,
+                        true,
+                        "a-same-actor-buffer")),
                 ["noise"] = CreateDefinition("noise", 1, 30,
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Noise, BuqiTarget.EnemyExecution, 21, "noise")),
                 ["adjacent-source"] = CreateDefinition("adjacent-source", 1, 30,
@@ -302,6 +313,28 @@ namespace Game.Hot.Buqi.Battle
             BuqiEffectSpec spec = Effect(
                 trigger,
                 BuqiEffect.Damage,
+                target,
+                baseAmount,
+                reason);
+            spec.AmountPerCharge = amountPerCharge;
+            spec.ChargeReadLimit = chargeReadLimit;
+            spec.ChargeConsume = consume;
+            return spec;
+        }
+
+        private static BuqiEffectSpec ChargedEffect(
+            BuqiTrigger trigger,
+            BuqiEffect effect,
+            BuqiTarget target,
+            int baseAmount,
+            int amountPerCharge,
+            int chargeReadLimit,
+            bool consume,
+            string reason)
+        {
+            BuqiEffectSpec spec = Effect(
+                trigger,
+                effect,
                 target,
                 baseAmount,
                 reason);

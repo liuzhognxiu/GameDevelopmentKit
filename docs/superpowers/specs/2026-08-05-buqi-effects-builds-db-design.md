@@ -4,6 +4,8 @@ Date: 2026-08-05
 Status: Approved and implemented in `2253f0a2`
 Scope: approach B, expand effect vocabulary and build coverage while keeping the current Buqi automatic battle shape.
 
+Canonical persisted build ids are `fast`, `buffer`, `chain`, `heal`, `poison`, `burn`, `freeze`, and `overload`. Terms such as attack/shield are player-facing effect words, not aliases for persisted build ids or snapshot hashes.
+
 ## Context
 
 The current Buqi content chain has a small Step 3 slice: 9 enabled items, 3 refinements, 3 build enum values (`fast`, `buffer`, `chain`), and 6 echo snapshots. The battle core supports 6 effects: `Damage`, `Buffer`, `Haste`, `Delay`, `Charge`, and `Noise`.
@@ -89,8 +91,8 @@ This order makes each state readable: shield answers attack and burn, healing an
 
 | Build id | Public name | Primary effects | Core promise | Weakness |
 |---|---|---|---|---|
-| attack | 攻击快攻 | Attack, Haste | Kill before the opponent engine stabilizes. | Shield and freeze blunt tempo. |
-| shield | 护盾反击 | Shield, Attack, ShieldBreak | Convert defense into counter pressure. | Poison bypasses shield. |
+| fast | 攻击快攻 | Attack, Haste | Kill before the opponent engine stabilizes. | Shield and freeze blunt tempo. |
+| buffer | 护盾反击 | Shield, Attack, ShieldBreak | Convert defense into counter pressure. | Poison bypasses shield. |
 | heal | 治疗续航 | Heal, Regen, Shield | Outlast burst and win long fights. | Freeze can stop heal engines; poison pressures cap. |
 | poison | 中毒消耗 | Poison, Slow | Ignore shield and force healing checks. | Fast attack can end fight before stacks mature. |
 | burn | 灼烧压迫 | Burn, Attack, Haste | Stack shield-taxing DOT while attacking. | Big shield and heal can stabilize. |
@@ -106,8 +108,8 @@ Each deck is a legal 8-slot board target, not a balance promise.
 
 | Build | Deck name | Cards by role | Slot budget | Play pattern |
 |---|---|---|---:|---|
-| attack | 三连快攻 | S opener, S haste helper, M attack engine, M finisher, S overload spark | 7 | Many small hits plus one medium payoff. |
-| shield | 玄盾返照 | S shield, S shield-break trigger, M counterattack, L shield core, S slow answer | 8 | Build shield, punish first break, survive burn. |
+| fast | 三连快攻 | S opener, S haste helper, M attack engine, M finisher, S overload spark | 7 | Many small hits plus one medium payoff. |
+| buffer | 玄盾返照 | S shield, S shield-break trigger, M counterattack, L shield core, S slow answer | 8 | Build shield, punish first break, survive burn. |
 | heal | 回春长线 | S instant heal, S regen seed, M heal amplifier, L life furnace, S shield patch | 8 | Stabilize low life and win after overtime starts. |
 | poison | 蚀脉拖局 | S poison opener, S slow, M poison jar, L plague core, S shield-bypass finisher | 8 | Stack direct loss while slowing the enemy answer. |
 | burn | 燎原压迫 | S ember, M oil lamp, M burn attacker, L wildfire core | 8 | Force shield spending, then convert to attack pressure. |
@@ -139,7 +141,7 @@ Add or expand build rows with:
 
 | Field | Purpose |
 |---|---|
-| BuildId | `attack`, `shield`, `heal`, `poison`, `burn`, `freeze`, `chain`, `overload`. |
+| BuildId | `fast`, `buffer`, `chain`, `heal`, `poison`, `burn`, `freeze`, `overload`. |
 | DisplayName | Chinese build name. |
 | PrimaryEffects | 2-4 effect ids used for filtering and UI summary. |
 | CounteredBy | 1-2 build ids that expose a weakness. |

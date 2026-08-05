@@ -30,6 +30,8 @@
 | `[CONTRACT]` | 已进入 v0.4.1 实现或确定性契约 | 修改必须更新规则版本、测试向量与 hash |
 | `[SCOPE]` | 已批准的首阶段制作边界 | 不用 tuning 擅自扩容 |
 | `[PLACEHOLDER]` | 未经目标玩家 Playtest 的体验数值 | 必须附假设、验证指标和可重画范围 |
+| `[DERIVED]` | 由其他已标记变量推导出的结果 | 不独立调参；上游变量变化时重新计算 |
+| `[QUALITY]` | 工程质量或异常率门槛 | 用自动化验证，不拿来替代体验结论 |
 | `[TO VALIDATE]` | 方向合理但尚无样本支持 | 不进入对外承诺或完成验收 |
 
 ## 4. 系统文档目录
@@ -44,6 +46,7 @@
 | [06-ux-onboarding-crossplatform.md](06-ux-onboarding-crossplatform.md) | 首玩教学、PC/移动交互与信息层级 | UI、UX、QA |
 | [07-content-narrative-mastery.md](07-content-narrative-mastery.md) | 内容架构、叙事映射、长期精通 | Design、Narrative、Config |
 | [08-validation-telemetry-tuning.md](08-validation-telemetry-tuning.md) | P-1、埋点、平衡、经济模拟和停止线 | Design、QA、Data |
+| [09-tuning-register.md](09-tuning-register.md) | 可调变量、rationale、试验带、主指标和停止线 | Design、Config、QA、Data |
 
 ## 5. 共享状态模型
 

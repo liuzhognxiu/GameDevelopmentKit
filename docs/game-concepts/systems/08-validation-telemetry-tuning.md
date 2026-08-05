@@ -189,7 +189,7 @@ NetFlow(round) = Sources(round) - Sinks(round)
 | 方向代表样本胜率 | 40%–60% | `[PLACEHOLDER]` 首轮目标 |
 | 单法门获胜构筑采用率 | >75% 复查 | `[PLACEHOLDER]` |
 | 淬炼贡献提升且代价未发生 | >50% 复查 | `[PLACEHOLDER]` |
-| 平衡样本 LoopCapReached | 0 | `[CONTRACT/QUALITY]` |
+| 平衡样本 LoopCapReached | 0 | `[QUALITY]`；任何合法样本触发都先按规则/内容异常处理 |
 | 压力样本 LoopCapReached | <0.01% | `[PLACEHOLDER]` |
 
 这些数值是报警阈值，不是自动 nerf 指令。先查样本、投入和账单是否真实发生。

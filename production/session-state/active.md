@@ -159,6 +159,14 @@ Step 3 已完成。下一门禁是利用现有 Battle Sandbox 执行 P-1 认知�
 - P-1 体验结论尚未形成：当前完成 1 位自动构筑玩家的 3/3 轮；仍需自走棋玩家和新手玩家各 3 轮，再依据真实记录判断是否进入 Step 4。自动测试不能替代玩家样本。
 - effects/builds 扩展已在 `2253f0a2` 落地：当前内部验证库为 8 构筑方向、24 法门、6 淬炼、16 道影，Heal/Regen/Poison/Burn/Freeze 语义与生成 bytes 均有测试覆盖。该扩展不等于 P-1 通过，也不授权正式玩家 UI 或完整经济。
 
+## 系统设计包状态（2026-08-05）
+
+- 已完成 `docs/game-concepts/systems/` 首阶段系统设计包 v0.1：总纲、单局、构筑/淬炼、战斗/复盘、经济/商店/事件、道影、公平性、跨端 UX、长期精通、P-1/埋点/调参与集中 Tuning Register。
+- 文档已按当前工程事实校准：Step 1/2/3 与 24 法门、6 淬炼、16 道影内部效果验证库均已完成；P-1 仍只有自动构筑玩家 3/3 轮，未误标为体验通过。
+- 全部体验数值继续标 `[PLACEHOLDER]`；集中登记表包含 rationale、初始试验带、主指标与停止线。`[CONTRACT]`、`[SCOPE]`、`[DERIVED]`、`[QUALITY]` 已分离，避免用工程覆盖替代体验证据。
+- 设计包是实现级展开稿，不修改 `buqi-battle-contract.md` v0.4.1，也不授权 Step 4、正式经济或内部验证库整体玩家启用。
+- `docs/superpowers/specs/2026-08-05-buqi-ui-interaction-design.md` 已形成待用户审阅的 UI 蓝图：当前只允许 P-1 单根走查壳，正式 GameHot Run Shell、UIForm 与领域 Widget 仍受 P-1 阻断，未创建代码或 prefab。
+
 ## 下一步
 
 安排自走棋玩家与新手玩家各完成 3 轮认知走查。只有 9 轮体验证据达到版本化门槛后，才进入 Step 4 正式战斗回放界面；自动测试与内部内容数量不能替代该 Gate。

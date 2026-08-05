@@ -1,0 +1,17 @@
+[
+  {
+    "RefinementId": "A-01",
+    "DisplayName": "加急",
+    "Summary": "cooldown -15%; each active use creates 1 noise."
+  },
+  {
+    "RefinementId": "A-03",
+    "DisplayName": "复写",
+    "Summary": "first active use repeats at 50% effect once per battle."
+  },
+  {
+    "RefinementId": "A-04",
+    "DisplayName": "可靠",
+    "Summary": "immune to enemy delay and ignores friendly haste."
+  }
+]

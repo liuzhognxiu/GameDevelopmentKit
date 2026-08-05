@@ -1,0 +1,211 @@
+[
+  {
+    "EchoId": "echo-fast-lesson",
+    "DisplayName": "急令试影",
+    "Tier": "lesson",
+    "Build": 1,
+    "Snapshot": {
+      "SnapshotId": "echo-fast-lesson",
+      "ArchetypeId": 1,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "efl-deadline",
+          "DefinitionId": "W8-006",
+          "Quality": 1,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "efl-board",
+          "DefinitionId": "W8-005",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "efl-urgent",
+          "DefinitionId": "W8-003",
+          "Quality": 1,
+          "AnchorSlot": 5,
+          "RefinementId": "A-01"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-fast-early",
+    "DisplayName": "冲刺试影",
+    "Tier": "early",
+    "Build": 1,
+    "Snapshot": {
+      "SnapshotId": "echo-fast-early",
+      "ArchetypeId": 1,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "efe-board",
+          "DefinitionId": "W8-005",
+          "Quality": 2,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "efe-urgent",
+          "DefinitionId": "W8-003",
+          "Quality": 1,
+          "AnchorSlot": 2,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "efe-buffer",
+          "DefinitionId": "W8-007",
+          "Quality": 1,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-buffer-lesson",
+    "DisplayName": "护体试影",
+    "Tier": "lesson",
+    "Build": 2,
+    "Snapshot": {
+      "SnapshotId": "echo-buffer-lesson",
+      "ArchetypeId": 2,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "ebl-buffer",
+          "DefinitionId": "W8-007",
+          "Quality": 1,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ebl-risk",
+          "DefinitionId": "W8-008",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "A-04"
+        },
+        {
+          "InstanceId": "ebl-center",
+          "DefinitionId": "W8-012",
+          "Quality": 1,
+          "AnchorSlot": 2,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-buffer-early",
+    "DisplayName": "灾备试影",
+    "Tier": "early",
+    "Build": 2,
+    "Snapshot": {
+      "SnapshotId": "echo-buffer-early",
+      "ArchetypeId": 2,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "ebe-center",
+          "DefinitionId": "W8-012",
+          "Quality": 1,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ebe-buffer",
+          "DefinitionId": "W8-007",
+          "Quality": 2,
+          "AnchorSlot": 3,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-chain-lesson",
+    "DisplayName": "交接试影",
+    "Tier": "lesson",
+    "Build": 3,
+    "Snapshot": {
+      "SnapshotId": "echo-chain-lesson",
+      "ArchetypeId": 3,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "ecl-hand",
+          "DefinitionId": "W8-013",
+          "Quality": 1,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ecl-sign",
+          "DefinitionId": "W8-014",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "A-03"
+        },
+        {
+          "InstanceId": "ecl-node",
+          "DefinitionId": "W8-015",
+          "Quality": 1,
+          "AnchorSlot": 2,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  },
+  {
+    "EchoId": "echo-chain-early",
+    "DisplayName": "联签试影",
+    "Tier": "early",
+    "Build": 3,
+    "Snapshot": {
+      "SnapshotId": "echo-chain-early",
+      "ArchetypeId": 3,
+      "InitialExecution": 100,
+      "InitialBuffer": 0,
+      "InitialNoiseDebt": 0,
+      "Items": [
+        {
+          "InstanceId": "ece-hand",
+          "DefinitionId": "W8-013",
+          "Quality": 2,
+          "AnchorSlot": 0,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ece-sign",
+          "DefinitionId": "W8-014",
+          "Quality": 1,
+          "AnchorSlot": 1,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ece-node",
+          "DefinitionId": "W8-015",
+          "Quality": 1,
+          "AnchorSlot": 2,
+          "RefinementId": "None"
+        }
+      ]
+    }
+  }
+]

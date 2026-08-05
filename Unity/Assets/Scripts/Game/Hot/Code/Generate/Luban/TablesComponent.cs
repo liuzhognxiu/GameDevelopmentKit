@@ -19,6 +19,22 @@ public partial class TablesComponent
     public DTAsteroid DTAsteroid { private set; get; }
     public DTThruster DTThruster { private set; get; }
     public DTWeapon DTWeapon { private set; get; }
+    /// <summary>
+    /// Buqi global battle rules
+    /// </summary>
+    public DTBuqiGlobal DTBuqiGlobal { private set; get; }
+    /// <summary>
+    /// Buqi Step 3 nine items
+    /// </summary>
+    public DTBuqiItem DTBuqiItem { private set; get; }
+    /// <summary>
+    /// Buqi Step 3 three refinements
+    /// </summary>
+    public DTBuqiRefinement DTBuqiRefinement { private set; get; }
+    /// <summary>
+    /// Buqi Step 3 six echoes
+    /// </summary>
+    public DTBuqiEcho DTBuqiEcho { private set; get; }
     private System.Collections.Generic.Dictionary<string, IDataTable> _tables;
     public System.Collections.Generic.IEnumerable<IDataTable> DataTables => _tables.Values;
     public IDataTable GetDataTable(string tableName) => _tables.TryGetValue(tableName, out var v) ? v : null;
@@ -48,6 +64,18 @@ public partial class TablesComponent
         DTWeapon = new DTWeapon(() => loader("dtweapon"));
         loadTasks.Add(DTWeapon.LoadAsync());
         _tables.Add("DTWeapon", DTWeapon);
+        DTBuqiGlobal = new DTBuqiGlobal(() => loader("dtbuqiglobal"));
+        loadTasks.Add(DTBuqiGlobal.LoadAsync());
+        _tables.Add("DTBuqiGlobal", DTBuqiGlobal);
+        DTBuqiItem = new DTBuqiItem(() => loader("dtbuqiitem"));
+        loadTasks.Add(DTBuqiItem.LoadAsync());
+        _tables.Add("DTBuqiItem", DTBuqiItem);
+        DTBuqiRefinement = new DTBuqiRefinement(() => loader("dtbuqirefinement"));
+        loadTasks.Add(DTBuqiRefinement.LoadAsync());
+        _tables.Add("DTBuqiRefinement", DTBuqiRefinement);
+        DTBuqiEcho = new DTBuqiEcho(() => loader("dtbuqiecho"));
+        loadTasks.Add(DTBuqiEcho.LoadAsync());
+        _tables.Add("DTBuqiEcho", DTBuqiEcho);
 
         await Cysharp.Threading.Tasks.UniTask.WhenAll(loadTasks);
 
@@ -64,6 +92,10 @@ public partial class TablesComponent
         DTAsteroid.ResolveRef(this);
         DTThruster.ResolveRef(this);
         DTWeapon.ResolveRef(this);
+        DTBuqiGlobal.ResolveRef(this);
+        DTBuqiItem.ResolveRef(this);
+        DTBuqiRefinement.ResolveRef(this);
+        DTBuqiEcho.ResolveRef(this);
         PostResolveRef();
     }
 

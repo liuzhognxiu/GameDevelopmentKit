@@ -1,0 +1,15 @@
+[
+  {
+    "ContentVersion": "buqi-step3-cv1",
+    "InitialExecution": 100,
+    "BufferCap": 60,
+    "NoiseThreshold": 10,
+    "NoiseIncidentDamage": 8,
+    "BoardSlotCount": 8,
+    "NormalDurationTicks": 450,
+    "HardCapTicks": 600,
+    "OvertimeStartTicks": 450,
+    "MaxTickEvents": 64,
+    "MaxItemEventsPerTick": 4
+  }
+]

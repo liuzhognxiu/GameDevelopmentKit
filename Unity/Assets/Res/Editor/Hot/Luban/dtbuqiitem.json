@@ -1,0 +1,413 @@
+[
+  {
+    "DefinitionId": "W8-003",
+    "DisplayName": "加急通知",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 60,
+    "ArchetypeId": 1,
+    "Tags": [
+      "fast",
+      "haste"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-003-damage",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 2,
+        "Target": 2,
+        "Amount": 2000,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-003-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-005",
+    "DisplayName": "冲刺看板",
+    "Size": 2,
+    "BasePrice": 4,
+    "BaseCooldownTicks": 70,
+    "ArchetypeId": 1,
+    "Tags": [
+      "fast",
+      "charge"
+    ],
+    "Effects": [
+      {
+        "Trigger": 2,
+        "Effect": 4,
+        "Target": 1,
+        "Amount": 1,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-005-adjacent-charge",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 6,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-005-damage",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 3,
+        "AmountPerCharge": 2,
+        "ChargeConsume": true,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-006",
+    "DisplayName": "截止日",
+    "Size": 3,
+    "BasePrice": 6,
+    "BaseCooldownTicks": 100,
+    "ArchetypeId": 1,
+    "Tags": [
+      "fast",
+      "core",
+      "noise"
+    ],
+    "Effects": [
+      {
+        "Trigger": 1,
+        "Effect": 2,
+        "Target": 4,
+        "Amount": 1500,
+        "DurationTicks": 50,
+        "ReasonCode": "W8-006-opening-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 16,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-006-damage",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 5,
+        "Target": 1,
+        "Amount": 2,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-006-noise",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-007",
+    "DisplayName": "临时缓冲",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 42,
+    "ArchetypeId": 2,
+    "Tags": [
+      "buffer"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 7,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-007-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-008",
+    "DisplayName": "风险清单",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 55,
+    "ArchetypeId": 2,
+    "Tags": [
+      "buffer",
+      "charge"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 4,
+        "Target": 1,
+        "Amount": 1,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-008-charge",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 3,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 8,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-008-buffer-counter",
+        "ConditionKind": 1,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-012",
+    "DisplayName": "灾备中心",
+    "Size": 3,
+    "BasePrice": 6,
+    "BaseCooldownTicks": 90,
+    "ArchetypeId": 2,
+    "Tags": [
+      "buffer",
+      "core"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 12,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-012-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 3,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 14,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-012-buffer-counter",
+        "ConditionKind": 1,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-013",
+    "DisplayName": "交接单",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 50,
+    "ArchetypeId": 3,
+    "Tags": [
+      "chain",
+      "charge"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-013-damage",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 4,
+        "Target": 3,
+        "Amount": 1,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-013-pass-charge",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 2,
+        "Effect": 4,
+        "Target": 3,
+        "Amount": 1,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-013-adjacent-pass",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-014",
+    "DisplayName": "联签流程",
+    "Size": 1,
+    "BasePrice": 2,
+    "BaseCooldownTicks": 60,
+    "ArchetypeId": 3,
+    "Tags": [
+      "chain",
+      "adjacent"
+    ],
+    "Effects": [
+      {
+        "Trigger": 2,
+        "Effect": 4,
+        "Target": 1,
+        "Amount": 1,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-014-adjacent-charge",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 3,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-014-damage",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 2,
+        "AmountPerCharge": 3,
+        "ChargeConsume": true,
+        "ResetCountOnReached": true
+      }
+    ]
+  },
+  {
+    "DefinitionId": "W8-015",
+    "DisplayName": "流程节点",
+    "Size": 2,
+    "BasePrice": 4,
+    "BaseCooldownTicks": 65,
+    "ArchetypeId": 3,
+    "Tags": [
+      "chain",
+      "haste"
+    ],
+    "Effects": [
+      {
+        "Trigger": 2,
+        "Effect": 2,
+        "Target": 1,
+        "Amount": 2000,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-015-adjacent-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 7,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-015-damage",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ]
+  }
+]

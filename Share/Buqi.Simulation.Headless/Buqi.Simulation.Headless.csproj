@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    此项目是 Unity/GameHot 战斗代码的跨端编译防线：直接链接同一份纯 C# 源码，
+    不复制实现，也不允许引入 Unity、UGF、ET、场景、资源或网络依赖。
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>Buqi.Simulation.Headless</AssemblyName>
+    <RootNamespace>Buqi.Simulation.Headless</RootNamespace>
+    <LangVersion>9</LangVersion>
+    <DefineConstants>$(DefineConstants);BUQI_HEADLESS</DefineConstants>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <!-- 避免任意 obj 前缀的本地隔离构建目录被 SDK 默认 Compile glob 当作源码，造成生成程序集特性重复。 -->
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj*/**</DefaultItemExcludes>
+    <!-- 严禁引用 Unity / UGF / ET / 资源系统；一旦 Battle 源码引入这些依赖，dotnet build 必须失败。 -->
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- 链接同一份模拟源码，不复制实现（Program.cs 由 SDK 默认包含） -->
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Battle\**\*.cs" />
+  </ItemGroup>
+</Project>

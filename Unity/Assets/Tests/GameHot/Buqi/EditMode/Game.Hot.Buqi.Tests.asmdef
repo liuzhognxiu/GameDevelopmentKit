@@ -1,0 +1,24 @@
+{
+  "name": "Game.Hot.Buqi.Tests",
+  "rootNamespace": "Game.Hot.Buqi.Tests",
+  "references": [
+    "Game.Hot.Code",
+    "UnityEngine.TestRunner",
+    "UnityEditor.TestRunner"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_GAMEHOT"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": true
+}

@@ -65,17 +65,25 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(generated.Echoes.Count, Is.EqualTo(16));
 
             BuqiConfigCatalog fixture = BuqiConfigTestData.CreateValidCatalog();
+            AssertGlobalEquivalent(generated.Global, fixture.Global);
             foreach (BuqiItemConfigRow expected in fixture.Items)
             {
                 BuqiItemConfigRow actual = FindItem(generated.Items, expected.DefinitionId);
                 Assert.That(actual, Is.Not.Null, "generated item missing: " + expected.DefinitionId);
-                Assert.That(actual.Effects.Count, Is.EqualTo(expected.Effects.Count),
-                    expected.DefinitionId + " effect count differs from generated config");
-                for (int index = 0; index < expected.Effects.Count; index++)
-                {
-                    Assert.That(actual.Effects[index].ReasonCode, Is.EqualTo(expected.Effects[index].ReasonCode),
-                        expected.DefinitionId + " effect order differs at index " + index);
-                }
+                AssertItemEquivalent(actual, expected);
+            }
+            foreach (BuqiRefinementConfigRow expected in fixture.Refinements)
+            {
+                BuqiRefinementConfigRow actual = FindRefinement(generated.Refinements, expected.RefinementId);
+                Assert.That(actual, Is.Not.Null, "generated refinement missing: " + expected.RefinementId);
+                Assert.That(actual.DisplayName, Is.EqualTo(expected.DisplayName), expected.RefinementId);
+                Assert.That(actual.Summary, Is.EqualTo(expected.Summary), expected.RefinementId);
+            }
+            foreach (BuqiEchoConfigRow expected in fixture.Echoes)
+            {
+                BuqiEchoConfigRow actual = FindEcho(generated.Echoes, expected.EchoId);
+                Assert.That(actual, Is.Not.Null, "generated echo missing: " + expected.EchoId);
+                AssertEchoEquivalent(actual, expected);
             }
         }
 
@@ -127,6 +135,42 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(Contains(errors, "overlap at slot"), Is.True, string.Join("\n", errors));
         }
 
+        [Test]
+        public void ConfigValidator_RejectsEchoesWithMissingOrMismatchedBuildMetadata()
+        {
+            BuqiConfigCatalog catalog = BuqiConfigTestData.CreateValidCatalog();
+            catalog.Echoes[0].Build = string.Empty;
+            catalog.Echoes[1].Build = "buffer";
+
+            List<string> errors = BuqiConfigValidator.Validate(catalog);
+
+            Assert.That(Contains(errors, "build is empty"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "build buffer does not match snapshot archetype fast"),
+                Is.True, string.Join("\n", errors));
+        }
+
+        [Test]
+        public void ConfigValidator_RejectsGlobalRulesThatDriftFromBattleSimulator()
+        {
+            BuqiConfigCatalog catalog = BuqiConfigTestData.CreateValidCatalog();
+            catalog.Global.InitialExecution++;
+            catalog.Global.BufferCap++;
+            catalog.Global.NoiseThreshold++;
+            catalog.Global.NoiseIncidentDamage++;
+            catalog.Global.NormalDurationTicks++;
+            catalog.Global.OvertimeStartTicks++;
+            catalog.Global.HardCapTicks++;
+
+            List<string> errors = BuqiConfigValidator.Validate(catalog);
+
+            Assert.That(Contains(errors, "initial execution must match battle simulator"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "buffer cap must match battle simulator"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "noise threshold must match battle simulator"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "noise incident damage must match battle simulator"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "normal duration must match battle simulator"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "hard cap must match battle simulator"), Is.True, string.Join("\n", errors));
+        }
+
         private static bool Contains(List<string> errors, string fragment)
         {
             foreach (string error in errors)
@@ -145,6 +189,101 @@ namespace Game.Hot.Buqi.Tests
                     return item;
             }
             return null;
+        }
+
+        private static BuqiRefinementConfigRow FindRefinement(
+            List<BuqiRefinementConfigRow> refinements,
+            string refinementId)
+        {
+            foreach (BuqiRefinementConfigRow refinement in refinements)
+            {
+                if (refinement.RefinementId == refinementId)
+                    return refinement;
+            }
+            return null;
+        }
+
+        private static BuqiEchoConfigRow FindEcho(List<BuqiEchoConfigRow> echoes, string echoId)
+        {
+            foreach (BuqiEchoConfigRow echo in echoes)
+            {
+                if (echo.EchoId == echoId)
+                    return echo;
+            }
+            return null;
+        }
+
+        private static void AssertGlobalEquivalent(BuqiGlobalConfigRow actual, BuqiGlobalConfigRow expected)
+        {
+            Assert.That(actual.ContentVersion, Is.EqualTo(expected.ContentVersion));
+            Assert.That(actual.InitialExecution, Is.EqualTo(expected.InitialExecution));
+            Assert.That(actual.BufferCap, Is.EqualTo(expected.BufferCap));
+            Assert.That(actual.NoiseThreshold, Is.EqualTo(expected.NoiseThreshold));
+            Assert.That(actual.NoiseIncidentDamage, Is.EqualTo(expected.NoiseIncidentDamage));
+            Assert.That(actual.BoardSlotCount, Is.EqualTo(expected.BoardSlotCount));
+            Assert.That(actual.NormalDurationTicks, Is.EqualTo(expected.NormalDurationTicks));
+            Assert.That(actual.HardCapTicks, Is.EqualTo(expected.HardCapTicks));
+            Assert.That(actual.OvertimeStartTicks, Is.EqualTo(expected.OvertimeStartTicks));
+            Assert.That(actual.MaxTickEvents, Is.EqualTo(expected.MaxTickEvents));
+            Assert.That(actual.MaxItemEventsPerTick, Is.EqualTo(expected.MaxItemEventsPerTick));
+        }
+
+        private static void AssertItemEquivalent(BuqiItemConfigRow actual, BuqiItemConfigRow expected)
+        {
+            string where = expected.DefinitionId;
+            Assert.That(actual.DisplayName, Is.Not.Empty, where);
+            Assert.That(actual.Size, Is.EqualTo(expected.Size), where);
+            Assert.That(actual.BasePrice, Is.EqualTo(expected.BasePrice), where);
+            Assert.That(actual.BaseCooldownTicks, Is.EqualTo(expected.BaseCooldownTicks), where);
+            Assert.That(actual.ArchetypeId, Is.EqualTo(expected.ArchetypeId), where);
+            Assert.That(actual.Tags, Is.Not.Null, where);
+            Assert.That(actual.Effects.Count, Is.EqualTo(expected.Effects.Count), where);
+            for (int index = 0; index < expected.Effects.Count; index++)
+                AssertEffectEquivalent(actual.Effects[index], expected.Effects[index], where + ".effect[" + index + "]");
+        }
+
+        private static void AssertEffectEquivalent(
+            BuqiEffectConfigRow actual,
+            BuqiEffectConfigRow expected,
+            string where)
+        {
+            Assert.That(actual.Trigger, Is.EqualTo(expected.Trigger), where);
+            Assert.That(actual.Effect, Is.EqualTo(expected.Effect), where);
+            Assert.That(actual.Target, Is.EqualTo(expected.Target), where);
+            Assert.That(actual.Amount, Is.EqualTo(expected.Amount), where);
+            Assert.That(actual.DurationTicks, Is.EqualTo(expected.DurationTicks), where);
+            Assert.That(actual.ReasonCode, Is.EqualTo(expected.ReasonCode), where);
+            Assert.That(actual.ConditionKind, Is.EqualTo(expected.ConditionKind), where);
+            Assert.That(actual.ConditionThreshold, Is.EqualTo(expected.ConditionThreshold), where);
+            Assert.That(actual.UseCountThreshold, Is.EqualTo(expected.UseCountThreshold), where);
+            Assert.That(actual.ChargeReadLimit, Is.EqualTo(expected.ChargeReadLimit), where);
+            Assert.That(actual.AmountPerCharge, Is.EqualTo(expected.AmountPerCharge), where);
+            Assert.That(actual.ChargeConsume, Is.EqualTo(expected.ChargeConsume), where);
+            Assert.That(actual.ResetCountOnReached, Is.EqualTo(expected.ResetCountOnReached), where);
+        }
+
+        private static void AssertEchoEquivalent(BuqiEchoConfigRow actual, BuqiEchoConfigRow expected)
+        {
+            string where = expected.EchoId;
+            Assert.That(actual.Tier, Is.EqualTo(expected.Tier), where);
+            Assert.That(actual.Build, Is.EqualTo(expected.Build), where);
+            Assert.That(actual.Snapshot.SnapshotId, Is.EqualTo(expected.Snapshot.SnapshotId), where);
+            Assert.That(actual.Snapshot.ArchetypeId, Is.EqualTo(expected.Snapshot.ArchetypeId), where);
+            Assert.That(actual.Snapshot.InitialExecution, Is.EqualTo(expected.Snapshot.InitialExecution), where);
+            Assert.That(actual.Snapshot.InitialBuffer, Is.EqualTo(expected.Snapshot.InitialBuffer), where);
+            Assert.That(actual.Snapshot.InitialNoiseDebt, Is.EqualTo(expected.Snapshot.InitialNoiseDebt), where);
+            Assert.That(actual.Snapshot.Items.Count, Is.EqualTo(expected.Snapshot.Items.Count), where);
+            for (int index = 0; index < expected.Snapshot.Items.Count; index++)
+            {
+                BuqiItemInstanceConfigRow actualItem = actual.Snapshot.Items[index];
+                BuqiItemInstanceConfigRow expectedItem = expected.Snapshot.Items[index];
+                string itemWhere = where + ".item[" + index + "]";
+                Assert.That(actualItem.InstanceId, Is.Not.Empty, itemWhere);
+                Assert.That(actualItem.DefinitionId, Is.EqualTo(expectedItem.DefinitionId), itemWhere);
+                Assert.That(actualItem.Quality, Is.EqualTo(expectedItem.Quality), itemWhere);
+                Assert.That(actualItem.AnchorSlot, Is.EqualTo(expectedItem.AnchorSlot), itemWhere);
+                Assert.That(actualItem.RefinementId, Is.EqualTo(expectedItem.RefinementId), itemWhere);
+            }
         }
 
         private sealed class GeneratedBuqiTables
@@ -387,7 +526,7 @@ namespace Game.Hot.Buqi.Tests
                 {
                     EchoId = id,
                     DisplayName = id,
-                    Tier = "lesson",
+                    Tier = id.EndsWith("-early") ? "early" : "lesson",
                     Build = archetypeId,
                     Snapshot = new BuqiBuildSnapshotConfigRow
                     {

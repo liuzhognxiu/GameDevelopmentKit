@@ -60,24 +60,26 @@ namespace Game.Hot.Buqi.Config
 
             if (string.IsNullOrEmpty(global.ContentVersion))
                 errors.Add("global content version is empty");
-            if (global.InitialExecution <= 0)
-                errors.Add("global initial execution must be > 0");
-            if (global.BufferCap <= 0)
-                errors.Add("global buffer cap must be > 0");
-            if (global.NoiseThreshold <= 0)
-                errors.Add("global noise threshold must be > 0");
-            if (global.NoiseIncidentDamage <= 0)
-                errors.Add("global noise incident damage must be > 0");
+            if (global.InitialExecution != BuqiBattleSimulator.DefaultMaxExecution)
+                errors.Add("global initial execution must match battle simulator");
+            if (global.BufferCap != BuqiBattleSimulator.BufferCap)
+                errors.Add("global buffer cap must match battle simulator");
+            if (global.NoiseThreshold != BuqiBattleSimulator.NoiseThreshold)
+                errors.Add("global noise threshold must match battle simulator");
+            if (global.NoiseIncidentDamage != BuqiBattleSimulator.NoiseAccidentDamage)
+                errors.Add("global noise incident damage must match battle simulator");
             if (global.BoardSlotCount != BuqiBoardValidator.BoardSlotCount)
                 errors.Add("global board slot count must be 8");
-            if (global.NormalDurationTicks <= 0 || global.HardCapTicks <= global.NormalDurationTicks)
-                errors.Add("global hard cap ticks must be greater than normal duration");
-            if (global.OvertimeStartTicks != global.NormalDurationTicks)
-                errors.Add("global overtime start must match normal duration");
-            if (global.MaxTickEvents != 64)
-                errors.Add("global max tick events must be 64");
-            if (global.MaxItemEventsPerTick != 4)
-                errors.Add("global max item events per tick must be 4");
+            if (global.NormalDurationTicks != BuqiBattleSimulator.NormalTickCount)
+                errors.Add("global normal duration must match battle simulator");
+            if (global.HardCapTicks != BuqiBattleSimulator.HardCapTick)
+                errors.Add("global hard cap must match battle simulator");
+            if (global.OvertimeStartTicks != BuqiBattleSimulator.NormalTickCount)
+                errors.Add("global overtime start must match battle simulator");
+            if (global.MaxTickEvents != BuqiBattleSimulator.MaxEventsPerTick)
+                errors.Add("global max tick events must match battle simulator");
+            if (global.MaxItemEventsPerTick != BuqiBattleSimulator.MaxEventsPerItemPerTick)
+                errors.Add("global max item events per tick must match battle simulator");
         }
 
         private static Dictionary<string, BuqiItemConfigRow> ValidateItems(
@@ -314,12 +316,22 @@ namespace Game.Hot.Buqi.Config
                     errors.Add("echo id is empty");
                 else if (!echoIds.Add(echo.EchoId))
                     errors.Add(BuqiText.Format("duplicate echo id {0}", echo.EchoId));
-                if (!string.IsNullOrEmpty(echo.Build) && !IsExpectedBuildId(echo.Build))
+                if (string.IsNullOrEmpty(echo.Build))
+                    errors.Add(BuqiText.Format("{0}: build is empty", where));
+                else if (!IsExpectedBuildId(echo.Build))
                     errors.Add(BuqiText.Format("{0}: unknown build {1}", where, echo.Build));
                 if (echo.Snapshot == null)
                 {
                     errors.Add(BuqiText.Format("{0}: snapshot is null", where));
                     continue;
+                }
+                if (!string.Equals(echo.Build, echo.Snapshot.ArchetypeId, StringComparison.Ordinal))
+                {
+                    errors.Add(BuqiText.Format(
+                        "{0}: build {1} does not match snapshot archetype {2}",
+                        where,
+                        echo.Build,
+                        echo.Snapshot.ArchetypeId));
                 }
 
                 CheckRawAnchorDuplicates(echo.Snapshot, where, errors);

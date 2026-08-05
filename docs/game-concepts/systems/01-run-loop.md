@@ -65,7 +65,13 @@ RoundStart
 ## 5. 命令模型
 
 ```text
-RunCommand
+RunCommandEnvelope
+- commandId
+- expectedRevision
+- commandType
+- payload
+
+payload variants
 - SelectStarter(starterId)
 - EnterPreparation(offerId)
 - Purchase/Refresh/Lock/Sell/Upgrade/Refine
@@ -82,6 +88,7 @@ RunCommand
 
 ```text
 CommandResult {
+  commandId;
   success;
   failureReason;
   stateRevisionBefore;
@@ -89,6 +96,8 @@ CommandResult {
   stateDelta;
 }
 ```
+
+`commandId` 由 UI 命令适配层在首次提交前生成并把待处理信封写入保存数据；重试必须复用同一 ID，结果必须原样回显。Run 命令回执表在单局结束前保留已应用 ID 与结果摘要；同一 ID 重放返回原结果，不重复应用。`expectedRevision` 负责拒绝基于旧视图的新命令，不能替代重试幂等。
 
 UI 只根据 `CommandResult` 更新，不先播放“购买成功”再等模型追账。
 
@@ -105,6 +114,7 @@ UI 只根据 `CommandResult` 更新，不先播放“购买成功”再等模型
 ### 幂等要求
 
 - `settlementId` 已应用则重复确认不再发奖励。
+- 已应用 `commandId` 随 Run 保存和恢复；崩溃后重发同一待处理信封不会重复改变状态。
 - 战斗请求 hash 已有结果时恢复该结果，不重新选择道影。
 - 未确认的商店、事件候选属于 RunState。
 - 版本不兼容时显式拒绝恢复；不能悄悄换卡或重抽。

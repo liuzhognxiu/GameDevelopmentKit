@@ -163,7 +163,7 @@ Step 3 已完成。下一门禁是利用现有 Battle Sandbox 执行 P-1 认知�
 
 - 已完成 `docs/game-concepts/systems/` 首阶段系统设计包 v0.1：总纲、单局、构筑/淬炼、战斗/复盘、经济/商店/事件、道影、公平性、跨端 UX、长期精通、P-1/埋点/调参与集中 Tuning Register。
 - 文档已按当前工程事实校准：Step 1/2/3 与 24 法门、6 淬炼、16 道影内部效果验证库均已完成；P-1 仍只有自动构筑玩家 3/3 轮，未误标为体验通过。
-- 全部体验数值继续标 `[PLACEHOLDER]`；集中登记表包含 rationale、初始试验带、主指标与停止线。`[CONTRACT]`、`[SCOPE]`、`[DERIVED]`、`[QUALITY]` 已分离，避免用工程覆盖替代体验证据。
+- 未实现的体验/经济数值继续标 `[PLACEHOLDER]`；已进入模拟器、行为断言与 approved hash 的品质/淬炼当前值标 `[CONTRACT]`，其正式内容平衡性仍标 `[TO VALIDATE]`。集中登记表包含 rationale、候选试验带、主指标与停止线，并分离 `[SCOPE]`、`[DERIVED]`、`[QUALITY]`，避免用工程覆盖替代体验证据。
 - 设计包是实现级展开稿，不修改 `buqi-battle-contract.md` v0.4.1，也不授权 Step 4、正式经济或内部验证库整体玩家启用。
 - `docs/superpowers/specs/2026-08-05-buqi-ui-interaction-design.md` 已形成待用户审阅的 UI 蓝图：当前只允许 P-1 单根走查壳，正式 GameHot Run Shell、UIForm 与领域 Widget 仍受 P-1 阻断，未创建代码或 prefab。
 

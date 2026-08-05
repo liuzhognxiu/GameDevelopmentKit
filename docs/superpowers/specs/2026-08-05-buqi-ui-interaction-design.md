@@ -161,10 +161,10 @@ P-1 使用单窗口、固定题目和真实 BattleResult；通过后再把同一
 
 ### 7.3 移动竖屏
 
-最低验证逻辑尺寸为 360x800。8 格仍保持单行连续关系，不拆成 4x2；每格使用图标、尺寸轮廓和状态标记，详细文本进入底部抽屉。
+最低验证逻辑尺寸为 360x800。8 格始终保持一维连续关系，不拆成 4x2。该宽度使用两个同步层：不可交互的全盘概览条始终显示 8 格关系；可交互编辑轨保持每格至少 44 逻辑像素并允许水平平移。选择概览格会把编辑轨定位到对应位置，详细文本进入底部抽屉。
 
 - 顶部：紧凑状态条。
-- 中部：8 格盘与当前选择的关系高亮。
+- 中部：完整 8 格概览条、可水平平移的编辑轨与当前选择关系高亮；编辑轨裁切是明确视口，不缩小或重叠命中区。
 - 下部：仓位/候选的横向列表和主命令。
 - 底部抽屉：法门详情、合法性原因、公开情报或复盘证据。
 - 旋转时保留选中实例、未确认预测草稿、播放位置和 stateRevision。
@@ -298,7 +298,7 @@ RunState / BoardState / Echo publicIntel
   -> immutable PhaseViewModel(stateRevision)
   -> UIForm / Widget render
   -> user intent
-  -> RunCommand(expectedRevision)
+  -> RunCommandEnvelope(commandId, expectedRevision, type, payload)
   -> CommandResult(success/failureReason/stateDelta)
   -> new immutable ViewModel
 ```
@@ -314,7 +314,7 @@ BattleResult + BattleLog + approved hash
 
 1. UI 不直接写 `RunState`、BoardState、货架、道影或 RNG cursor。
 2. 成功动画只在成功 `CommandResult` 后播放。
-3. 重复确认由 command ID、settlement ID 和 stateRevision 幂等处理。
+3. UI 命令适配层在首次提交前持久化待处理 `commandId`；重试复用该 ID，Run 回执表回放原结果。settlement ID 额外保护结算，stateRevision 只拒绝旧视图命令。
 4. ReplayProjector 只能消费日志，不能调用 `BuqiBattleSimulator.Simulate`。
 5. 摘要只能引用日志/结果字段，不生成策略判断。
 6. ViewTelemetry 是诊断输出，不能成为战斗、经济或匹配输入。
@@ -344,7 +344,7 @@ BattleResult + BattleLog + approved hash
 | 摘要证据缺失 | 标记数据异常并开放原始日志 | 不编造主因 |
 | 跳过回放 | 投影到同一终态和摘要 | hash 不变 |
 | 旋转/缩放/后台恢复 | 重建布局，保留阶段、选择和草稿 | 候选与 cursor 不变 |
-| 连点确认 | 只保留首个有效 command ID | 结算一次 |
+| 连点确认 | 首次点击先持久化命令信封；后续点击复用同一 commandId 并读取回执 | 命令与结算都只应用一次 |
 
 错误提示必须描述可执行原因，例如“占用格 7 越界”或“状态已更新，请重新确认”，不只显示“操作失败”。
 

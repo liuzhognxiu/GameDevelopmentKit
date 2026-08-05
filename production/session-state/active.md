@@ -178,8 +178,8 @@ Step 3 已完成。下一门禁是利用现有 Battle Sandbox 执行 P-1 认知�
 - 结构候选条件已进入代码：记录必须来自固定 P-1 题序、未跳过预测、完成归因/改动且至少绑定一个当前 BattleLog 中真实存在的事件 ID，才得到 `EligibleForGateReview=true`。该字段不判断证据语义相关性，也不代表已计入或通过 Gate；普通调试场景与无证据记录可保存但不是评审候选。
 - TDD 证据：首轮 API 编译产生 14 个预期缺失符号错误；普通调试场景候选测试先得到 `Expected False / But was True`；批次、曝光锁、版本字段和文件往返测试在第二轮 RED 产生 24 个预期缺失符号错误，最小实现后转绿。
 - 独立复审提出“核心 API 可绕过导出前置”“hash 漂移会擦除曝光事实”“替代 ID 可改回原参与者”“主会话损坏仍会丢曝光事实”和“旧未曝光快照可与新墓碑误匹配”后，新增导出推进、版本化会话、独立曝光墓碑、锁定替代批次及墓碑/主会话状态化一致性回归；每轮新增 API/行为都先得到预期 RED，再由最小实现转绿。
-- Unity 最新编译为 `generation=21`、`errorCount=0`、`warningCount=1`（既有 `TutorialForm.m_SkipButton` 未使用）；EditMode `Game.Hot.Buqi.Tests` 为 `36/36` 通过（runId `test-run-f9544836c08343b3b07a6dbab98df9c0`）。
-- `Game/Buqi/Battle Sandbox` 与三个 P-1 摘要菜单最新调用均返回 `executed=true`；三份 hash 保持 `025b...`、`a95c...`、`a23c...`，Console error 为 0。Orca 桌面 runtime 当时不可连接，因此没有用桌面自动化声明窗口像素级布局通过；菜单、编译和逻辑测试证据有效。
+- Unity 最新编译为 `generation=22`、`errorCount=0`、`warningCount=0`；EditMode `Game.Hot.Buqi.Tests` 为 `36/36` 通过（runId `test-run-d06e2105175c4ddb8561cf24dc4abec4`）。
+- `Game/Buqi/Battle Sandbox` 与三个 P-1 摘要菜单最新调用均返回 `executed=true`；三份 hash 保持 `025bde900c0e0fa1e9c547ea1b588ae67a72bd7cad5a1ebf9eea8999314e51f0`、`a95c8760347873cafc658bf4254a1b97cc7e204dccc6e2c5a94b4dce2e80fbb8`、`a23c97daa308b3a9e9315a9631cf94b32bcc089429018a96e59542a0bcfc2cec`，Console error 为 0。Orca 桌面 runtime 当时不可连接，因此没有用桌面自动化声明窗口像素级布局通过；菜单、编译和逻辑测试证据有效。
 - P-1 Gate 仍为 **3/9、样本不足**：自走棋玩家和新手玩家各 3 轮仍必须由真人完成。正式 `BattleForm`、prefab、`UI.xlsx`、回放控制器和 Step 4 代码均未开始。
 
 ## 下一步

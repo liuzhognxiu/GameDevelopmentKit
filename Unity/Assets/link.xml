@@ -46,9 +46,9 @@
     <!--UNITY_!HOTFIX-
     -UNITY_!HOTFIX-->
 
-    <!--UNITY_ET_START-->
+    <!--UNITY_ET-
     
-    <!--UNITY_ET_END-->
+    -UNITY_ET-->
 
     <!--UNITY_!HOTFIX_ET-
     <assembly fullname="Game.ET.Code.Model" preserve="all" />
@@ -57,37 +57,37 @@
     <assembly fullname="Game.ET.Code.HotfixView" preserve="all" />
     -UNITY_!HOTFIX_ET-->
 
-    <!--UNITY_HOTFIX_ET_START-->
+    <!--UNITY_HOTFIX_ET-
     <assembly fullname="MemoryPack" preserve="all" />
     <assembly fullname="MongoDB.Bson" preserve="all" />
     <assembly fullname="CommandLine" preserve="all" />
     <assembly fullname="ET.Core" preserve="all" />
     <assembly fullname="ET.ThirdParty" preserve="all" />
     <assembly fullname="Game.ET.Loader" preserve="all" />
-    <!--UNITY_HOTFIX_ET_END-->
+    -UNITY_HOTFIX_ET-->
 
     <!--UNITY_!HOTFIX_ET_CLIENT-
     -UNITY_!HOTFIX_ET_CLIENT-->
     
-    <!--UNITY_HOTFIX_ET_CLIENT_START-->
-    <!--UNITY_HOTFIX_ET_CLIENT_END-->
+    <!--UNITY_HOTFIX_ET_CLIENT-
+    -UNITY_HOTFIX_ET_CLIENT-->
 
     <!--UNITY_!HOTFIX_ET_SERVER-
     -UNITY_!HOTFIX_ET_SERVER-->
     
-    <!--UNITY_HOTFIX_ET_SERVER_START-->
+    <!--UNITY_HOTFIX_ET_SERVER-
     <assembly fullname="MongoDB.Driver" preserve="all" />
-    <!--UNITY_HOTFIX_ET_SERVER_END-->
+    -UNITY_HOTFIX_ET_SERVER-->
 
-    <!--UNITY_GAMEHOT-
-    -UNITY_GAMEHOT-->
+    <!--UNITY_GAMEHOT_START-->
+    <!--UNITY_GAMEHOT_END-->
 
     <!--UNITY_!HOTFIX_GAMEHOT-
     <assembly fullname="Game.Hot.Code" preserve="all" />
     -UNITY_!HOTFIX_GAMEHOT-->
 
-    <!--UNITY_HOTFIX_GAMEHOT-
+    <!--UNITY_HOTFIX_GAMEHOT_START-->
     <assembly fullname="protobuf-net" preserve="all" />
     <assembly fullname="Game.Hot.Loader" preserve="all" />
-    -UNITY_HOTFIX_GAMEHOT-->
+    <!--UNITY_HOTFIX_GAMEHOT_END-->
 </linker>

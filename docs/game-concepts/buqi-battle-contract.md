@@ -1,6 +1,8 @@
 # 《不器》确定性战斗契约 v0.4.1
 
-> 状态：已对齐首阶段批准范围；0.4.1 是在不增加基础效果类型的前提下定型蓄力声明时读取/消费契约。目标是让纯 C# 模拟、连续冷却回放、影子档案和批量平衡测试共享同一规则。
+> 状态：0.4.1 定型蓄力声明时读取/消费契约；旧六效果向量继续由该规则版本和 approved hash 保护。
+>
+> 内容扩展：`ContentVersion=buqi-effects-cv1` 在同一确定性内核上增加 Heal、Regen、Poison、Burn、Freeze。双方快照必须使用相同且由 definition provider 认可的内容版本。未知内容版本或旧消费者不能静默接受扩展枚举。
 
 ## 1. Contract Identity
 
@@ -56,8 +58,10 @@ ItemInstance {
 ```text
 SideState {
     int execution;
+    int maxExecution;
     int buffer;
     int noise;                 // 0..9
+    TimedStatus[] statuses;    // Regen / Poison / Burn
     ItemState[] items;
 }
 
@@ -65,6 +69,7 @@ ItemState {
     string instanceId;
     int cooldownProgress;      // 剩余进度，单位为 1/10000 tick
     int charge;                // 0..9
+    int frozenTicks;
     int ownUseCount;
     int adjacentUseCount;
     bool firstConditionUsed;
@@ -117,7 +122,7 @@ BattleEvent {
 
 1. `PreTick`：减少临时效果持续 tick，推进事项卡冷却，声明本秒加班伤害。
 2. `Declare`：收集冷却到期的主动使用、首次条件和受干扰响应。
-3. `Resolve`：确定目标，将声明展开为六类基础效果和计数事件。
+3. `Resolve`：确定目标，将声明展开为当前内容版本允许的效果和计数事件。
 4. `Chain`：处理相邻组件使用、累计次数和复写追加；重复 Resolve，直到队列为空或达到上限。
 5. `Aggregate`：汇总同 tick 双方普通伤害、缓冲和直接伤害；按稳定顺序处理加速、延迟、充能和噪音。
 6. `PostTick`：应用汇总值，写日志，检查胜负或硬上限。
@@ -191,7 +196,9 @@ RightmostEnemyItem
 - 没有合法目标时记录 `NoValidTarget`，该分支不生效。
 - 战斗目标不使用随机。`battleSeed` 仅保留给未来规则版本，本版本不能消费 RNG。
 
-## 9. Six Effect Types
+## 9. Effect Types
+
+9.1-9.5 是 v0.4.1 基础效果；9.6 是 `buqi-effects-cv1` 内容扩展。扩展不得改变旧内容向量的结果和 hash。
 
 ### 9.1 Damage
 
@@ -241,16 +248,27 @@ noise = Max(noise, 0)
 
 已经跨阈值声明的事故不被同 tick 后续降噪撤销。A-05 静音先修改来源事件的噪音增量，最低为 0；A-06 超额在 tick 0 产生 3 噪音。
 
+### 9.6 Heal, Regen, Poison, Burn and Freeze
+
+- `Heal`：在普通伤害与灼烧之后、Poison 之前立即恢复执行值，最高不超过 `MaxExecution`；溢出记录 `HealOverflow`。
+- `Regen`：按来源实例与效果类型维护持续状态，每 10 tick 产生一次 Heal。相同来源刷新时取较高强度与较长剩余时间，并保留当前 tick 进度。
+- `Poison`：按来源实例维护持续状态，每 10 tick 直接扣执行值，不经过缓冲。
+- `Burn`：按来源实例维护持续状态，每 10 tick 产生可被缓冲吸收的伤害，并参与缓冲清空条件。
+- `Freeze`：作用于确定性选中的敌方事项卡；冻结剩余 tick 大于 0 时，该卡本 tick 不推进冷却并消耗 1 tick。相同目标刷新时取较长剩余时间。
+- 新施加的持续状态和冰冻在本 tick Aggregate 写入，从下一 tick 开始产生持续效果或阻断冷却；不会追溯取消本 tick 已声明事件。
+
 ## 10. Simultaneous Resolution
 
 同 tick 的双方声明都必须进入 Aggregate 后才改变执行值。固定应用顺序：
 
 1. 新增缓冲。
 2. 普通伤害由缓冲吸收，剩余扣执行值。
-3. 噪音事件产生的直接伤害。
-4. 加班直接伤害。
-5. 更新加速、延迟和触发计数的最终状态；蓄力已按稳定 `Declare` 顺序即时更新。
-6. PostTick 检查胜负。
+3. 灼烧伤害由缓冲吸收，剩余扣执行值。
+4. 治疗与生命恢复恢复执行值，不超过最大值。
+5. 中毒直接扣执行值。
+6. 噪音事故与加班直接扣执行值。
+7. 写入加速、延迟、持续状态和冰冻；蓄力已按稳定 `Declare` 顺序即时更新。
+8. PostTick 检查胜负。
 
 因此，一方在本 tick 被击至 0 也不会取消其已经声明的效果。双方均 <=0 判平局。
 
@@ -264,7 +282,7 @@ noise = Max(noise, 0)
 
 ## 12. Content Semantics
 
-18 张事项卡必须只由以下原语组合：
+v0.4 基础 18 张事项卡只由以下原语组合：
 
 - 造成普通伤害。
 - 获得缓冲。
@@ -273,7 +291,7 @@ noise = Max(noise, 0)
 - 增减己方噪音。
 - 读取尺寸、标签、相邻、使用次数、缓冲损失和首次干扰。
 
-若某卡需要恢复、取消触发、暴击、持续伤害、冻结、弹药、随机目标或召唤，则属于规则扩容，不能以卡牌特例直接实现。
+`buqi-effects-cv1` 已通过通用枚举、状态模型、配置校验和确定性测试加入 Heal/Regen/Poison/Burn/Freeze，不按法门 ID 写特例。取消触发、暴击、弹药、随机目标、召唤或其它新语义仍属于规则扩容，必须先增加独立契约、内容版本与跨端测试。
 
 ## 13. Determinism Tests
 
@@ -290,6 +308,11 @@ noise = Max(noise, 0)
 11. 连锁达到 64 事件后安全截断并记录原因。
 12. 45 秒加班和 60 秒比较顺序正确。
 13. 重叠、越界、未知定义、未知批注和版本不匹配全部拒绝。
+14. Heal 不超过最大执行值，溢出量可追溯。
+15. Regen、Poison、Burn 按固定 10 tick 周期结算，同来源刷新不重置 tick 进度。
+16. Poison 绕过缓冲，Burn 经过缓冲并可触发缓冲清空条件。
+17. Freeze 阻断后续 tick 冷却推进，到期后恢复；同 tick 目标选择稳定。
+18. 旧六效果向量在 `buqi-effects-cv1` 实现加入后仍保持 approved hash。
 
 ### 13.1 三端验证方式
 

@@ -88,3 +88,4 @@
 - [首个可玩原型计划](buqi-prototype-plan.md)：P0-P3 实现顺序、工具、埋点和停止线。
 - [Unity Demo 分步工作计划](buqi-unity-demo-work-plan.md)：基于 GameHot 的 Step 0-8 执行计划。
 - [可行性说明](buqi-feasibility.md)：范围约束、主要风险和最小版本非目标。
+- [首阶段系统设计包 v0.1](systems/README.md)：单局、构筑、战斗、经济、道影、跨端 UX、长期精通、验证调参与系统交互矩阵。

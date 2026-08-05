@@ -40,6 +40,34 @@ namespace Game.Hot.Editor.Buqi
             window.Show();
         }
 
+        [MenuItem("Game/Buqi/Run P-1 Fast Summary", false, 201)]
+        private static void RunFastSummary()
+        {
+            LogSummary(BuqiBattleSandbox.FindScenario("fast-space-choice"));
+        }
+
+        [MenuItem("Game/Buqi/Run P-1 Fast Buffer Summary", false, 202)]
+        private static void RunFastBufferSummary()
+        {
+            LogSummary(BuqiBattleSandbox.CreateFastBufferWalkthroughVariant());
+        }
+
+        [MenuItem("Game/Buqi/Run P-1 Fast Buffer A-02 Summary", false, 203)]
+        private static void RunFastBufferDelayedDamageSummary()
+        {
+            LogSummary(BuqiBattleSandbox.CreateFastBufferDelayedDamageWalkthroughVariant());
+        }
+
+        private static void LogSummary(BuqiSandboxScenario scenario)
+        {
+            BuqiSandboxRunResult runResult = BuqiBattleSandbox.Run(scenario);
+            BuqiSandboxBattleSummary summary = BuqiBattleSandbox.CreateBattleSummary(runResult);
+            Debug.Log(BuqiText.Format(
+                "[Buqi P-1] {0}: {1}",
+                scenario.Id,
+                BuqiBattleSandbox.FormatBattleSummary(summary)));
+        }
+
         private void OnEnable()
         {
             m_Scenarios = BuqiBattleSandbox.CreateScenarios();
@@ -198,6 +226,10 @@ namespace Game.Hot.Editor.Buqi
                 BuqiText.Format("hash: {0}", result.BattleLogHash),
                 EditorStyles.textField,
                 GUILayout.Height(EditorGUIUtility.singleLineHeight));
+            BuqiSandboxBattleSummary summary = BuqiBattleSandbox.CreateBattleSummary(m_RunResult);
+            EditorGUILayout.HelpBox(
+                BuqiBattleSandbox.FormatBattleSummary(summary),
+                MessageType.None);
 
             if (m_RepeatResult != null)
             {

@@ -85,6 +85,28 @@ namespace Game.Hot.Buqi.Battle
         public string RightBoardText = string.Empty;
     }
 
+    /// <summary>P-1 通俗战斗摘要；所有字段均由模拟器终态和战斗日志投影得到。</summary>
+    public sealed class BuqiSandboxBattleSummary
+    {
+        public BattleOutcome Outcome;
+        public int DurationTicks;
+        public int LeftExecution;
+        public int RightExecution;
+        public int LeftBuffer;
+        public int RightBuffer;
+        public int LeftBufferAbsorbed;
+        public int RightBufferAbsorbed;
+        public int LeftCounterDeclarationCount;
+        public int RightCounterDeclarationCount;
+        public int LeftCounterDeclaredDamage;
+        public int RightCounterDeclaredDamage;
+        public int LeftNoiseAccidentCount;
+        public int RightNoiseAccidentCount;
+        public int LeftNoiseAccidentDamage;
+        public int RightNoiseAccidentDamage;
+        public string BattleLogHash = string.Empty;
+    }
+
     /// <summary>重复运行的确定性检查结果。</summary>
     public sealed class BuqiSandboxRepeatResult
     {
@@ -204,6 +226,46 @@ namespace Game.Hot.Buqi.Battle
             return null;
         }
 
+        /// <summary>
+        /// 创建 P-1 第二轮“强化拖延”变体：右侧在空余格增加一张临时缓冲，其他输入保持不变。
+        /// </summary>
+        public static BuqiSandboxScenario CreateFastBufferWalkthroughVariant()
+        {
+            return Scenario(
+                "fast-space-choice-buffer-plus",
+                "快速方向与双临时缓冲",
+                "验证右侧增加一张临时缓冲后，更多护体是否足以拖到左侧承受额外失衡事故。",
+                Snapshot("fast-left", "fast", 120,
+                    Item("fast-deadline", "W8-006", 0),
+                    Item("fast-board", "W8-005", 3),
+                    Item("fast-urgent", "W8-003", 5, "A-01")),
+                Snapshot("fast-right-buffer-plus", "buffer-counter", 120,
+                    Item("guard-buffer", "W8-007", 0),
+                    Item("guard-risk", "W8-008", 1, "A-04"),
+                    Item("guard-center", "W8-012", 2),
+                    Item("guard-buffer-extra", "W8-007", 5)));
+        }
+
+        /// <summary>
+        /// 创建 P-1 第三轮“强化输出”变体：保留右侧双缓冲，只给左侧蓄力法门增加 A-02 延期。
+        /// </summary>
+        public static BuqiSandboxScenario CreateFastBufferDelayedDamageWalkthroughVariant()
+        {
+            return Scenario(
+                "fast-space-choice-buffer-plus-a02",
+                "延期蓄力对双临时缓冲",
+                "验证 W8-005 增加 A-02 后，效果量提升能否突破右侧双缓冲的持续护体供给。",
+                Snapshot("fast-left-a02", "fast", 120,
+                    Item("fast-deadline", "W8-006", 0),
+                    Item("fast-board", "W8-005", 3, "A-02"),
+                    Item("fast-urgent", "W8-003", 5, "A-01")),
+                Snapshot("fast-right-buffer-plus", "buffer-counter", 120,
+                    Item("guard-buffer", "W8-007", 0),
+                    Item("guard-risk", "W8-008", 1, "A-04"),
+                    Item("guard-center", "W8-012", 2),
+                    Item("guard-buffer-extra", "W8-007", 5)));
+        }
+
         /// <summary>创建一条战前认知记录；参与者、场景和预测均必须明确。</summary>
         public static BuqiSandboxWalkthroughRecord BeginWalkthrough(
             BuqiSandboxScenario scenario,
@@ -284,6 +346,103 @@ namespace Game.Hot.Buqi.Battle
                 LeftBoardText = FormatBoard(scenario.Request.Left, provider),
                 RightBoardText = FormatBoard(scenario.Request.Right, provider),
             };
+        }
+
+        /// <summary>从真实终态和日志生成 P-1 通俗摘要，不重新计算战斗结果。</summary>
+        public static BuqiSandboxBattleSummary CreateBattleSummary(BuqiSandboxRunResult runResult)
+        {
+            if (runResult == null)
+                throw new ArgumentNullException(nameof(runResult));
+
+            var leftInstances = CreateInstanceSet(runResult.Scenario.Request.Left);
+            var rightInstances = CreateInstanceSet(runResult.Scenario.Request.Right);
+            var summary = new BuqiSandboxBattleSummary
+            {
+                Outcome = runResult.Result.Outcome,
+                DurationTicks = runResult.Result.DurationTicks,
+                LeftExecution = runResult.Result.LeftExecution,
+                RightExecution = runResult.Result.RightExecution,
+                LeftBuffer = runResult.Result.LeftBuffer,
+                RightBuffer = runResult.Result.RightBuffer,
+                BattleLogHash = runResult.Result.BattleLogHash,
+            };
+
+            foreach (BattleEvent battleEvent in runResult.Log)
+            {
+                if ((battleEvent.ReasonCode == "W8-008-buffer-counter" ||
+                     battleEvent.ReasonCode == "W8-012-buffer-counter") &&
+                    battleEvent.Type == BuqiEventType.Declare)
+                {
+                    if (leftInstances.Contains(battleEvent.SourceInstanceId))
+                    {
+                        summary.LeftCounterDeclarationCount++;
+                        summary.LeftCounterDeclaredDamage += battleEvent.Amount;
+                    }
+                    else if (rightInstances.Contains(battleEvent.SourceInstanceId))
+                    {
+                        summary.RightCounterDeclarationCount++;
+                        summary.RightCounterDeclaredDamage += battleEvent.Amount;
+                    }
+                    continue;
+                }
+
+                if (battleEvent.Type != BuqiEventType.Effect)
+                    continue;
+
+                if (battleEvent.ReasonCode == "BufferAbsorb")
+                {
+                    if (leftInstances.Contains(battleEvent.SourceInstanceId))
+                        summary.RightBufferAbsorbed += battleEvent.Amount;
+                    else if (rightInstances.Contains(battleEvent.SourceInstanceId))
+                        summary.LeftBufferAbsorbed += battleEvent.Amount;
+                }
+                else if (battleEvent.ReasonCode == "NoiseAccident")
+                {
+                    if (leftInstances.Contains(battleEvent.SourceInstanceId))
+                    {
+                        summary.LeftNoiseAccidentCount++;
+                        summary.LeftNoiseAccidentDamage += battleEvent.Amount;
+                    }
+                    else if (rightInstances.Contains(battleEvent.SourceInstanceId))
+                    {
+                        summary.RightNoiseAccidentCount++;
+                        summary.RightNoiseAccidentDamage += battleEvent.Amount;
+                    }
+                }
+            }
+            return summary;
+        }
+
+        /// <summary>将 P-1 摘要格式化为玩家可直接理解的文本。</summary>
+        public static string FormatBattleSummary(BuqiSandboxBattleSummary summary)
+        {
+            if (summary == null)
+                throw new ArgumentNullException(nameof(summary));
+
+            string finalState = BuqiText.Format(
+                "胜负={0}，时长={1} tick；左侧生命={2}、护体={3}；右侧生命={4}、护体={5}。",
+                summary.Outcome,
+                summary.DurationTicks,
+                summary.LeftExecution,
+                summary.LeftBuffer,
+                summary.RightExecution,
+                summary.RightBuffer);
+            string bufferAndCounter = BuqiText.Format(
+                "护体吸收：左侧={0}、右侧={1}；反击声明：左侧={2} 次/{3} 伤害，右侧={4} 次/{5} 伤害。",
+                summary.LeftBufferAbsorbed,
+                summary.RightBufferAbsorbed,
+                summary.LeftCounterDeclarationCount,
+                summary.LeftCounterDeclaredDamage,
+                summary.RightCounterDeclarationCount,
+                summary.RightCounterDeclaredDamage);
+            string noise = BuqiText.Format(
+                "失衡事故：左侧={0} 次/{1} 伤害，右侧={2} 次/{3} 伤害；hash={4}",
+                summary.LeftNoiseAccidentCount,
+                summary.LeftNoiseAccidentDamage,
+                summary.RightNoiseAccidentCount,
+                summary.RightNoiseAccidentDamage,
+                summary.BattleLogHash);
+            return BuqiText.Format("{0}\n{1}\n{2}", finalState, bufferAndCounter, noise);
         }
 
         /// <summary>重复运行同一场景，验证结果和日志哈希没有状态残留或平台漂移。</summary>
@@ -531,6 +690,14 @@ namespace Game.Hot.Buqi.Battle
             spec.ConditionKind = condition;
             spec.ConditionThreshold = threshold;
             return spec;
+        }
+
+        private static HashSet<string> CreateInstanceSet(BuildSnapshot snapshot)
+        {
+            var instances = new HashSet<string>(StringComparer.Ordinal);
+            foreach (ItemInstance item in snapshot.Items)
+                instances.Add(item.InstanceId);
+            return instances;
         }
 
         private static string SizeLabel(int size)

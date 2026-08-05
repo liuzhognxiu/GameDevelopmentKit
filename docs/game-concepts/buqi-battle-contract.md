@@ -120,12 +120,12 @@ BattleEvent {
 
 每个 tick 严格按以下阶段执行：
 
-1. `PreTick`：减少临时效果持续 tick，推进事项卡冷却，声明本秒加班伤害。
+1. `PreTick`：tick 0 先声明 `OnBattleStart` 与开局噪音；随后先按当前加速/延迟或冰冻推进冷却并消耗冰冻 tick，再减少临时修正持续 tick、推进既有 Regen/Poison/Burn 状态，最后从 tick 450 起每 10 tick 声明加班伤害。
 2. `Declare`：收集冷却到期的主动使用、首次条件和受干扰响应。
 3. `Resolve`：确定目标，将声明展开为当前内容版本允许的效果和计数事件。
 4. `Chain`：处理相邻组件使用、累计次数和复写追加；重复 Resolve，直到队列为空或达到上限。
-5. `Aggregate`：汇总同 tick 双方普通伤害、缓冲和直接伤害；按稳定顺序处理加速、延迟、充能和噪音。
-6. `PostTick`：应用汇总值，写日志，检查胜负或硬上限。
+5. `Aggregate`：按新增缓冲、普通伤害、灼烧、Heal/Regen、中毒、噪音事故、加班、加速/延迟、持续状态、冰冻的稳定顺序应用汇总；蓄力已在 `Declare` 中即时读写。
+6. `PostTick`：在双方 Aggregate 都完成后检查胜负或硬上限。
 
 同阶段固定排序键：
 
@@ -275,8 +275,8 @@ noise = Max(noise, 0)
 ## 11. Overtime and End Conditions
 
 - tick 0-449 为正常阶段。
-- 从 tick 450 后的第一个完整秒开始，每 10 tick 声明一次加班直接伤害。
-- 伤害公式：`2 + Floor(completedOvertimeSeconds / 5)`。
+- tick 450 立即声明第一次 2 点加班直接伤害，之后每 10 tick 再声明一次。
+- 伤害公式：`2 + Floor(((tick - 450) / 10) / 5)`；因此 tick 450-490 为 2 点，tick 500 起为 3 点。
 - 任一 PostTick 结束时一方执行值 <=0，按 10 节判胜负。
 - tick 600 PostTick 后仍存活，依次比较执行值、缓冲、噪音：前两项高者优先，噪音低者优先；仍相同则 Draw。
 

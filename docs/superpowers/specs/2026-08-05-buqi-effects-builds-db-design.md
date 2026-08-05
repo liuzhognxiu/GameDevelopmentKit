@@ -60,16 +60,15 @@ Recommendation: keep existing enum identifiers as migration aliases for one cont
 
 Settlement order:
 
-1. Expire timed statuses and item modifiers.
-2. Apply cooldown progress; frozen items receive zero progress.
-3. Declare ready triggers.
-4. Resolve charge reads/consumes.
-5. Aggregate new shield.
-6. Apply attack and burn damage through shield.
-7. Apply heal and regen.
-8. Apply poison direct life loss.
-9. Apply overload accidents.
-10. Check win/loss and hard cap.
+1. At tick 0, declare `OnBattleStart` and opening noise before the first cooldown advance.
+2. Apply cooldown progress using the modifiers active at the start of the tick; frozen items receive zero progress and consume one frozen tick.
+3. Decrement and expire timed side/item modifiers, then advance existing Regen/Poison/Burn timers.
+4. Enqueue overtime direct damage at tick 450 and every 10 ticks after it.
+5. Declare ready and pending-condition triggers.
+6. Resolve charge reads/consumes immediately in stable Declare order.
+7. Aggregate new shield, attack, burn, Heal/Regen, poison, overload accidents, and overtime in that order.
+8. Apply new haste/slow modifiers, persistent statuses, and freeze for future ticks.
+9. Check win/loss and hard cap after both sides complete Aggregate.
 
 This order makes each state readable: shield answers attack and burn, healing answers normal attrition, poison pressures life directly, and freeze answers cooldown-based engines.
 

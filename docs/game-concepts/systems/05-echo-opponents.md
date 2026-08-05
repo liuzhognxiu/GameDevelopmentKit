@@ -178,9 +178,11 @@ RoundStart
 | `publicThreatSummaryKey` | 可本地化文案 | 不写策略建议 |
 | `stageGate` | 控制启用数量 | 不用隐藏开关偷跑后续内容 |
 | `buildInvestment` | 用公式计算 | 不显示为战力，不作为胜率承诺 |
-| `archetypeId` | 快速、护体、连锁、混合 | 不是硬克制或职业标签 |
+| `archetypeId` | fast、buffer、chain、heal、poison、burn、freeze、overload | 当前内部验证库的 8 值分类，不是硬克制或职业标签 |
 
 完整首阶段的 12 份玩家道影是体验预算，不等于内部验证库的物理行数。当前 16 份道影可以参与配置、合法性和模拟回归，但玩家流程只允许 stageGate 明确启用的固定题目；扩大玩家可见池仍需对应阶段门禁。
+
+历史 P-1 题目可在展示层归纳为快速、护体、连锁、混合等较粗认知标签，但持久化快照的 `archetypeId` 必须保留上述 8 值内部分类；展示标签不得反向改写配置枚举或确定性 hash。
 
 ## 11. Acceptance
 

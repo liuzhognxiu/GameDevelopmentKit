@@ -123,8 +123,8 @@
 - 行为断言已覆盖：稳定 `Declare` 顺序即时获得、读取与消费；消费日志为负值且处于 `Declare` 阶段；无合法目标不消费；只读可重复读取；A-03 复写复用原声明快照且不二次消费；双方同 tick 消费后仍在 Aggregate/PostTick 同时判定。
 - 在行为契约通过后，已显式运行无头 Release `update-hashes` 更新 approved hash；随后只读 `verify` 通过：15 个向量全部匹配。
 - 无头 Release `all 10000` 真实通过：`builds=10000`、`distinct=10000`、`invalid=0`、`hung=0`、`elapsedMs=5844`。
-- 本次独立门禁未启动第二个 Unity Editor，未操作主工作区 Unity Agent Bridge；Unity 编译/EditMode 仍由协调器整合后运行，本节不宣称 Unity 9/9。
+- 独立门禁未启动第二个 Unity Editor；协调器整合后通过主工作区 Unity Agent Bridge 复验：重编译 `generation=26`、`errorCount=0`、`warningCount=1`（既有 `TutorialForm.m_SkipButton` 未使用警告）；EditMode `Game.Hot.Buqi.Tests` 为 `total=9`、`passed=9`、`failed=0`、`success=true`（runId `test-run-0f3cb05e70654dcaa2398b7efaac6495`）；`Game/Buqi/Battle Sandbox` 菜单返回 `executed=true`。
 
 ## 下一步
 
-协调器整合本次 Charge 提交后，继续运行 Unity 编译/EditMode 与沙盒菜单验收；通过后进入 Step 3 Luban Schema。仍不得直接录入完整 18 个法门或创建正式玩家 UI。
+Charge 0.4.1 门禁已经完成，下一节点进入 Step 3 Luban Schema。Step 3 只建立 9 法门、3 淬炼与 6 道影的最小配置链路，仍不得直接录入完整 18 个法门或创建正式玩家 UI。

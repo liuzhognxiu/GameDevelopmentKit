@@ -20,6 +20,7 @@ Opt/
 bin/
 Bin/
 obj/
+obj.*/
 _ReSharper.CSharp/
 *.opensdf
 *.sdf
@@ -76,3 +77,7 @@ nul
 /.claude/settings.local.json
 /CLAUDE.local.md
 /production/session-logs/
+
+# Local agent/build scratch state.
+/.workbuddy/
+/Unity/TestResults-*.log

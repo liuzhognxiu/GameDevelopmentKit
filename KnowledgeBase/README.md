@@ -24,7 +24,7 @@
 ## 当前验收状态
 
 - `catalog.json` 共 54 个模块，当前全部标记为 `verified`。
-- `01` 至 `31` 文档均按统一模板组织；2026-08-04 已在隔离的干净 worktree 通过普通校验和 `-RequireStaticComplete`，结果为 54 个 verified 模块、31 篇编号文档、0 warning。
+- `01` 至 `31` 文档均按统一模板组织；2026-08-05 已完成 45 个历史模块的 8 分区审查、丰富和逐组一次复审，并在隔离的干净 worktree 刷新源码指纹后通过普通校验和 `-RequireStaticComplete`：54 个 verified 模块、31 篇编号文档、0 warning。
 - 普通校验与 `-RequireStaticComplete` 静态完整校验必须在干净源码基线中同时通过，不能用刷新指纹掩盖当前工作区的源码改动。
 - [`runtime-acceptance.json`](runtime-acceptance.json) 如实记录五类运行验收；当前均为 `not_run`，因此 `-RequireComplete` 预期失败，不能声明全流程完成。
 

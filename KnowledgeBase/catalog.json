@@ -130,7 +130,7 @@
       "area": "unity-feature",
       "status": "verified",
       "document": "KnowledgeBase/10-本地化模块.md",
-      "sources": ["Unity/Assets/Scripts/Game/Localization", "Unity/Assets/Scripts/Game/Builtin", "Unity/Assets/Scripts/Game/Generate/Localization", "Design/Excel/Localization.xlsx", "Share/Tool/ExcelExporter/ExcelExporter.Localization.cs"],
+      "sources": ["Unity/Assets/Scripts/Game/Localization", "Unity/Assets/Scripts/Game/Builtin", "Unity/Assets/Scripts/Game/Generate/Localization", "Unity/Assets/Scripts/Game/Procedure/ProcedureLaunch.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedurePreload.cs", "Unity/Assets/Scripts/Game/Hot/Code/UI/SettingForm.cs", "Unity/Assets/Scripts/Game/Hot/Code/UI/StarForceUIForm.cs", "Unity/Assets/Res/Localization", "Design/Excel/Localization.xlsx", "Share/Tool/ExcelExporter/ExcelExporter.Localization.cs"],
       "keywords": ["Localization", "多语言", "Language", "Luban"]
     },
     {
@@ -139,7 +139,7 @@
       "area": "unity-feature",
       "status": "verified",
       "document": "KnowledgeBase/11-事件与日志模块.md",
-      "sources": ["Unity/Assets/Scripts/Game/Event", "Unity/Assets/Scripts/Game/Log", "Unity/Assets/Scripts/Game/Debugger", "Unity/Assets/Scripts/Game/Editor/Log/GLogTool.cs"],
+      "sources": ["Unity/Assets/Scripts/Game/Event", "Unity/Assets/Scripts/Game/Log", "Unity/Assets/Scripts/Game/Debugger", "Unity/Assets/Scripts/Game/Container/EventContainer.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureLaunch.cs", "Unity/Assets/Res/GameEntry.prefab", "Unity/Assets/Scripts/Game/Editor/Log/GLogTool.cs"],
       "keywords": ["Event", "Log", "Debugger", "事件"]
     },
     {
@@ -157,7 +157,7 @@
       "area": "unity-feature",
       "status": "verified",
       "document": "KnowledgeBase/13-内置窗体与通用UI.md",
-      "sources": ["Unity/Assets/Scripts/Game/Builtin", "Unity/Assets/Scripts/Game/UI/Common", "Unity/Assets/Scripts/Game/UI/RuntimeInspector", "Unity/Assets/Res/Builtin", "Unity/Assets/Res/GameEntry.prefab"],
+      "sources": ["Unity/Assets/Scripts/Game/Builtin", "Unity/Assets/Scripts/Game/UI/Common", "Unity/Assets/Scripts/Game/UI/Common/AExUIForm.cs", "Unity/Assets/Scripts/Game/UI/RuntimeInspector", "Unity/Assets/Scripts/Game/Container", "Unity/Assets/Scripts/Game/Procedure/ProcedureCheckVersion.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureUpdateResources.cs", "Unity/Assets/Res/Builtin", "Unity/Assets/Res/GameEntry.prefab"],
       "keywords": ["Builtin", "Dialog", "Loading", "RuntimeInspector"]
     },
     {
@@ -166,7 +166,7 @@
       "area": "unity-feature",
       "status": "verified",
       "document": "KnowledgeBase/14-工具类库.md",
-      "sources": ["Unity/Assets/Scripts/Game/Utility", "Unity/Assets/Scripts/Game/Definition", "Unity/Assets/Scripts/Game/Generate/Localization", "Unity/Assets/Res/GameEntry.prefab"],
+      "sources": ["Unity/Assets/Scripts/Game/Utility", "Unity/Assets/Scripts/Game/Definition", "Unity/Assets/Scripts/Game/Generate/Localization", "Unity/Assets/Scripts/Game/Procedure/ProcedureCheckVersion.cs", "Unity/Assets/Scripts/Library/UGF/GameFramework/Utility/Utility.Json.cs", "Unity/Assets/Res/GameEntry.prefab"],
       "keywords": ["Utility", "Constant", "Helper", "扩展方法"]
     },
     {
@@ -175,7 +175,7 @@
       "area": "data",
       "status": "verified",
       "document": "KnowledgeBase/17-Luban配置表.md",
-      "sources": ["Unity/Assets/Scripts/Game/Tables", "Unity/Assets/Scripts/Game/Generate/Luban", "Unity/Assets/Scripts/Game/Hot/Code/Tables"],
+      "sources": ["Unity/Assets/Scripts/Game/Tables", "Unity/Assets/Scripts/Game/Generate/Luban", "Unity/Assets/Scripts/Game/Hot/Code/Tables", "Unity/Assets/Res/Luban", "Unity/Assets/Res/Hot/Luban"],
       "keywords": ["Tables", "Luban", "DT", "配置表"]
     },
     {
@@ -184,7 +184,7 @@
       "area": "editor",
       "status": "verified",
       "document": "KnowledgeBase/19-编辑器工具集.md",
-      "sources": ["Unity/Assets/Scripts/Game/Editor", "Unity/Assets/Scripts/Game/ET/Editor", "Unity/Assets/Scripts/Game/Hot/Loader/Editor", "Unity/Assets/Scripts/Library/ET/Core/Editor", "Unity/Assets/Scripts/Library/ET/ThirdParty/Editor"],
+      "sources": ["Unity/Assets/Scripts/Game/Editor", "Unity/Assets/Scripts/Game/ET/Editor", "Unity/Assets/Scripts/Game/Hot/Loader/Editor", "Unity/Assets/Res/Editor/ET/Config", "Unity/Assets/Res/Editor/UI", "Unity/Assets/Res/Editor/Config/ResourceRuleEditor_ET.asset", "Unity/Assets/Res/Editor/Config/ResourceRuleEditor_GameHot.asset", "Unity/Assets/Scripts/Library/ET/Core/Editor", "Unity/Assets/Scripts/Library/ET/ThirdParty/Editor"],
       "keywords": ["Editor", "Toolbar", "CodeCreator", "DefineSymbol"]
     },
     {
@@ -211,7 +211,7 @@
       "area": "build",
       "status": "verified",
       "document": "KnowledgeBase/20-热更新与一键打包.md",
-      "sources": ["Unity/Assets/Scripts/Game/HybridCLR", "Unity/Assets/Scripts/Game/Editor/HybridCLR", "Unity/Assets/Scripts/Game/Editor/DefineSymbol", "Unity/Assets/Scripts/Game/Editor/Build", "Unity/Assets/Scripts/Game/ET/Editor/Build", "Unity/Assets/Scripts/Game/Hot/Loader/Editor/Build", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Editor/Resource", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Editor/Build", "Unity/ProjectSettings/HybridCLRSettings.asset", "Unity/Assets/link.xml", "Unity/Assets/Res/Editor/Config/ResourceBuilder.xml", "Book/HybridCLR热更.md", "Book/一键打包.md"],
+      "sources": ["Unity/Assets/Scripts/Game/HybridCLR", "Unity/Assets/Scripts/Game/Editor/HybridCLR", "Unity/Assets/Scripts/Game/Editor/DefineSymbol", "Unity/Assets/Scripts/Game/Editor/Build", "Unity/Assets/Scripts/Game/Procedure", "Unity/Assets/Scripts/Game/ET/Loader", "Unity/Assets/Scripts/Game/Hot/Loader", "Unity/Assets/Scripts/Game/ET/Editor/Build", "Unity/Assets/Scripts/Game/Hot/Loader/Editor/Build", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Editor/Resource", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Editor/Build", "Unity/Assets/Res/GameEntry.prefab", "Unity/Assets/Res/Editor/Config/ResourceRuleEditor_ET.asset", "Unity/Assets/Res/Editor/Config/ResourceRuleEditor_GameHot.asset", "Unity/ProjectSettings/HybridCLRSettings.asset", "Unity/Assets/link.xml", "Unity/Assets/Res/Editor/Config/ResourceBuilder.xml", "Unity/.gitignore", "Book/HybridCLR热更.md", "Book/一键打包.md"],
       "keywords": ["HybridCLR", "Build", "AOT", "热更新", "打包"]
     },
     {
@@ -229,7 +229,7 @@
       "area": "et",
       "status": "verified",
       "document": "KnowledgeBase/15-ET模块.md",
-      "sources": ["Unity/Assets/Scripts/Game/ET/Loader/Init.cs", "Unity/Assets/Scripts/Game/ET/Loader/CodeLoader.cs", "Unity/Assets/Scripts/Game/ET/Loader/Helper"],
+      "sources": ["Unity/Assets/Scripts/Game/ET/Loader/Init.cs", "Unity/Assets/Scripts/Game/ET/Loader/CodeLoader.cs", "Unity/Assets/Scripts/Game/ET/Loader/Helper", "Unity/Assets/Scripts/Game/ET/Loader/Game.ET.Loader.asmdef", "Unity/Assets/Scripts/Game/ET/Loader/Define.cs", "Unity/Assets/Scripts/Game/ET/Loader/ConfigReader.cs", "Unity/Assets/Scripts/Game/ET/Loader/UnityLogger.cs", "Unity/Assets/Scripts/Game/ET/Loader/UnityTimeNow.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedurePreset.cs", "Unity/Assets/Scripts/Game/Procedure/ProcedureET.cs"],
       "keywords": ["ET.Init", "CodeLoader", "UnityLogger", "ConfigReader"]
     },
     {
@@ -247,7 +247,7 @@
       "area": "et-integration",
       "status": "verified",
       "document": "KnowledgeBase/06-Entity实体模块.md",
-      "sources": ["Unity/Assets/Scripts/Game/ET/Loader/UGF/Entity", "Unity/Assets/Scripts/Game/ET/Code/ModelView/Client"],
+      "sources": ["Unity/Assets/Scripts/Game/ET/Loader/UGF/Entity", "Unity/Assets/Scripts/Game/ET/Loader/UGF/UGFSystemSingleton.cs", "Unity/Assets/Scripts/Game/ET/Code/ModelView/Client", "Unity/Assets/Scripts/Game/ET/Code/HotfixView/Client"],
       "keywords": ["ETEntity", "UGFEntity", "MonoUGFEntity", "EntitySystem"]
     },
     {
@@ -256,7 +256,7 @@
       "area": "et-integration",
       "status": "verified",
       "document": "KnowledgeBase/04-UI窗体体系.md",
-      "sources": ["Unity/Assets/Scripts/Game/ET/Loader/UGF/UIForm", "Unity/Assets/Scripts/Game/ET/Loader/UGF/UIWidget", "Unity/Assets/Scripts/Game/ET/Code/HotfixView/Client"],
+      "sources": ["Unity/Assets/Scripts/Game/ET/Loader/UGF/UIForm", "Unity/Assets/Scripts/Game/ET/Loader/UGF/UIWidget", "Unity/Assets/Scripts/Game/ET/Loader/UGF/UGFSystemSingleton.cs", "Unity/Assets/Scripts/Game/ET/Code/HotfixView/Client"],
       "keywords": ["ETUI", "UGFUIForm", "UGFUIWidget", "UIComponent"]
     },
     {
@@ -265,7 +265,7 @@
       "area": "et",
       "status": "verified",
       "document": "KnowledgeBase/16-ET动态事件.md",
-      "sources": ["Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/DynamicEvent", "Book/ET动态事件.md"],
+      "sources": ["Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/DynamicEvent", "Unity/Assets/Scripts/Game/ET/Loader/CodeLoader.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Code/CodeTypes.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/CodeLoader/CodeLoaderComponent.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Share/Module/Console/ReloadDllConsoleHandler.cs", "Unity/Assets/Scripts/Game/ET/Editor/ToolBar/CompileDllToolBar_ET.cs", "Book/ET动态事件.md"],
       "keywords": ["DynamicEvent", "ADynamicEvent", "EventSystem"]
     },
     {
@@ -274,7 +274,7 @@
       "area": "et",
       "status": "verified",
       "document": "KnowledgeBase/25-ET网络与锁步.md",
-      "sources": ["Unity/Assets/Scripts/Game/ET/Code/Hotfix/Client", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Share"],
+      "sources": ["Unity/Assets/Scripts/Game/ET/Code/Hotfix/Client", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Share", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/LockStep", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/Message", "Unity/Assets/Scripts/Library/ET/Core/Runtime/Network", "Unity/Assets/Scripts/Library/ET/Core/Runtime/Fiber", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Actor", "Design/Proto/ET-Client", "Design/Proto/ET-ClientServer"],
       "keywords": ["Network", "Message", "LockStep", "Room", "Demo"]
     },
     {
@@ -283,7 +283,7 @@
       "area": "server",
       "status": "verified",
       "document": "KnowledgeBase/21-DotNet服务端.md",
-      "sources": ["DotNet/App/Program.cs", "DotNet/Loader/Init.cs", "DotNet/Loader/CodeLoader.cs"],
+      "sources": ["DotNet/App/Program.cs", "DotNet/Loader/Init.cs", "DotNet/Loader/CodeLoader.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Log/Log.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Log/Logger.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Singleton.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Options/Options.cs"],
       "keywords": ["server", "Program", "Init", "CodeLoader", "Hotfix.dll"]
     },
     {
@@ -301,7 +301,7 @@
       "area": "server-ops",
       "status": "verified",
       "document": "KnowledgeBase/21-DotNet服务端.md",
-      "sources": ["Share/Aspire/Program.cs", "Config/Luban", "Tools/Shell/start aspire.bat", "Tools/Shell/start et server.bat", "Publish-linux-x64.ps1"],
+      "sources": ["Share/Aspire/Program.cs", "Config/Luban", "Tools/Shell/start aspire.bat", "Tools/Shell/start et server.bat", "Tools/Shell/start admin.bat", "Tools/Shell/start agent.bat", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Options/Options.cs", "Publish-linux-x64.ps1"],
       "keywords": ["Aspire", "Process", "Scene", "StartConfig", "部署"]
     },
     {
@@ -328,7 +328,7 @@
       "area": "data",
       "status": "verified",
       "document": "KnowledgeBase/17-Luban配置表.md",
-      "sources": ["Design/Excel", "Tools/Luban", "Share/Tool/ExcelExporter", "Config/Luban"],
+      "sources": ["Design/Excel", "Tools/Luban", "Share/Tool/Loader", "Share/Tool/ExcelExporter", "Config/Luban"],
       "keywords": ["Luban", "Excel", "Export", "bytes", "配置"]
     },
     {
@@ -337,7 +337,7 @@
       "area": "data",
       "status": "verified",
       "document": "KnowledgeBase/18-Proto协议生成.md",
-      "sources": ["Design/Proto", "Share/Tool/Proto2CS", "Unity/Assets/Scripts/Game/ET/Code/Model/Generate", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Message", "DotNet/Model/Generate/Message"],
+      "sources": ["Design/Proto", "Share/Tool/Proto2CS", "Share/Tool/Loader", "Unity/Assets/Scripts/Game/ET/Code/Model/Generate", "Unity/Assets/Scripts/Game/Hot/Code/Generate/Message", "DotNet/Model/Generate/Message", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Options/Options.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/Network/OpcodeRangeDefine.cs"],
       "keywords": ["Proto", "Proto2CS", "Message", "协议", "生成"]
     },
     {
@@ -346,7 +346,7 @@
       "area": "tooling",
       "status": "verified",
       "document": "KnowledgeBase/22-共享工具链.md",
-      "sources": ["Kit.sln", "Share/Tool/Loader", "Share/Tool/ExcelExporter", "Share/Tool/Proto2CS", "Share/Tool/Share.Tool.csproj"],
+      "sources": ["Kit.sln", "Share/Tool/Loader", "Share/Tool/ExcelExporter", "Share/Tool/Proto2CS", "Share/Tool/Share.Tool.csproj", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Log/Log.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Log/Logger.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Singleton.cs", "Unity/Assets/Scripts/Library/ET/Core/Runtime/World/Module/Options/Options.cs"],
       "keywords": ["Share.Tool", "ExcelExporter", "Proto2CS", "LocalizationExporter"]
     },
     {
@@ -373,7 +373,7 @@
       "area": "tooling",
       "status": "verified",
       "document": "KnowledgeBase/22-共享工具链.md",
-      "sources": ["Tools/Shell", "Tools/Luban", "Tools/RecastNavExportor", "Tools/Config", "Tools/cwRsync", "Share/Libs"],
+      "sources": ["Tools/Shell", "Tools/Luban", "Tools/RecastNavExportor", "Tools/Config", "Tools/cwRsync", "Share/Libs", "Unity/Assets/Scripts/Library/ET/ThirdParty/Editor/RecastNavDataExporter/NavMeshExporter.cs", "Unity/ProjectSettings/TagManager.asset"],
       "keywords": ["Shell", "Luban", "Recast", "NavMesh", "工具"]
     },
     {
@@ -409,7 +409,7 @@
       "area": "library",
       "status": "verified",
       "document": "KnowledgeBase/23-UGF与扩展库.md",
-      "sources": ["Unity/Assets/Scripts/Library/UGF/GameFramework"],
+      "sources": ["Unity/Assets/Scripts/Library/UGF/GameFramework", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base", "Unity/Assets/Scripts/Game/Base/GameEntry.cs", "Unity/Assets/Res/GameEntry.prefab"],
       "keywords": ["GameFramework", "Module", "ObjectPool", "FSM", "Resource"]
     },
     {
@@ -418,7 +418,7 @@
       "area": "library",
       "status": "verified",
       "document": "KnowledgeBase/23-UGF与扩展库.md",
-      "sources": ["Unity/Assets/Scripts/Library/UGF/UnityGameFramework/Runtime", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework/Editor"],
+      "sources": ["Unity/Assets/Scripts/Library/UGF/UnityGameFramework/Runtime", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework/Editor", "Unity/Assets/Scripts/Game/Base/GameEntry.cs", "Unity/Assets/Scripts/Game/Procedure", "Unity/Assets/Res/GameEntry.prefab"],
       "keywords": ["UnityGameFramework", "GameEntry", "Component", "Editor"]
     },
     {
@@ -427,7 +427,7 @@
       "area": "library",
       "status": "verified",
       "document": "KnowledgeBase/23-UGF与扩展库.md",
-      "sources": ["Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Editor"],
+      "sources": ["Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Editor", "Unity/Assets/Scripts/Game/Base/GameEntry.cs", "Unity/Assets/Scripts/Game/Procedure", "Unity/Assets/Scripts/Game/Hot/Code/Procedure/ProcedureGame.cs", "Unity/Assets/Scripts/Game/ET/Loader/CodeLoader.cs", "Unity/Assets/Scripts/Game/Hot/Loader/Network/NetworkServiceHelper.cs", "Unity/Assets/Res/GameEntry.prefab"],
       "keywords": ["Awaitable", "AssetSet", "CodeRunner", "NetworkService", "Extension"]
     },
     {
@@ -436,7 +436,7 @@
       "area": "library",
       "status": "verified",
       "document": "KnowledgeBase/24-仓库内辅助库.md",
-      "sources": ["Unity/Assets/Scripts/Library/Extension/UniTask", "Unity/Assets/Scripts/Library/Extension/StateController"],
+      "sources": ["Unity/Assets/Scripts/Library/Extension/UniTask", "Unity/Assets/Scripts/Library/Extension/StateController", "Unity/Assets/Scripts/Game/ET/Loader/UGF/UIForm", "Unity/Assets/Scripts/Game/ET/Loader/UGF/Entity", "Unity/Assets/Scripts/Game/Hot/Loader/Network/NetworkServiceHelper.cs"],
       "keywords": ["UniTask", "StateController", "async", "状态"]
     },
     {
@@ -445,7 +445,7 @@
       "area": "library",
       "status": "verified",
       "document": "KnowledgeBase/24-仓库内辅助库.md",
-      "sources": ["Unity/Assets/Scripts/Library/LubanLib/Runtime", "Unity/Assets/Scripts/Library/LubanLib/Editor"],
+      "sources": ["Unity/Assets/Scripts/Library/LubanLib/Runtime", "Unity/Assets/Scripts/Library/LubanLib/Editor", "Unity/Assets/Scripts/Game/Tables", "Unity/Assets/Scripts/Game/Generate/Luban", "Unity/Assets/Scripts/Game/Hot/Code/Tables", "Unity/Assets/Scripts/Game/ET/Code/Model/Generate/Client/Luban", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/Config"],
       "keywords": ["LubanLib", "ByteBuf", "Editor", "配置加载"]
     },
     {
@@ -463,7 +463,7 @@
       "area": "library",
       "status": "verified",
       "document": "KnowledgeBase/24-仓库内辅助库.md",
-      "sources": ["Unity/Assets/Scripts/Library/UXTool/Runtime", "Unity/Assets/Scripts/Library/UXTool/Editor"],
+      "sources": ["Unity/Assets/Scripts/Library/UXTool/Runtime", "Unity/Assets/Scripts/Library/UXTool/Editor", "Unity/Assets/Scripts/Game/Procedure/ProcedurePreload.cs", "Unity/Assets/Res/UI/UXTool/UXToolAssetCollection.asset"],
       "keywords": ["UXTool", "UI", "Analysis", "Editor"]
     },
     {
@@ -472,7 +472,7 @@
       "area": "library",
       "status": "verified",
       "document": "KnowledgeBase/24-仓库内辅助库.md",
-      "sources": ["Unity/Assets/Scripts/Library/FolderTag", "Unity/Assets/Scripts/Library/ReplaceComponent"],
+      "sources": ["Unity/Assets/Scripts/Library/FolderTag", "Unity/Assets/Scripts/Library/ReplaceComponent", "Unity/Assets/Scripts/Game/UI/UGuiExtension/Button/ExButton.cs"],
       "keywords": ["FolderTag", "ReplaceComponent", "Editor", "组件替换"]
     },
     {
@@ -481,7 +481,7 @@
       "area": "server-ops",
       "status": "verified",
       "document": "KnowledgeBase/26-管理后台与动态扩容.md",
-      "sources": ["Book/管理后台.md", "Book/动态扩容.md", "Design/Proto/ET-Admin", "DotNet/Hotfix/Server/Admin", "DotNet/Hotfix/Server/Agent"],
+      "sources": ["Book/管理后台.md", "Book/动态扩容.md", "Design/Proto/ET-Admin", "DotNet/Hotfix/DotNet.Hotfix.csproj", "DotNet/Hotfix/Server/Admin", "DotNet/Hotfix/Server/Agent", "Share/Aspire/Program.cs", "Tools/Shell/start admin.bat", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/EntryEvent2_InitServer.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Module/Message/ProcessOuterSenderSystem.cs"],
       "keywords": ["Admin", "动态扩容", "Robot", "部署", "服务发现"]
     },
     {
@@ -490,7 +490,7 @@
       "area": "dependency",
       "status": "verified",
       "document": "KnowledgeBase/27-Unity包与第三方依赖.md",
-      "sources": ["Unity/Packages/manifest.json", "Unity/Packages/packages-lock.json", "Unity/ProjectSettings/ProjectVersion.txt", "Unity/Assets/Plugins", "Unity/Assets/Scripts/Game/Game.asmdef", "Unity/Assets/Scripts/Library/ET", "DotNet", "Share"],
+      "sources": ["Unity/Packages/manifest.json", "Unity/Packages/packages-lock.json", "Unity/ProjectSettings/ProjectVersion.txt", "Unity/Assets/Plugins", "Unity/Assets/Scripts/Game/Game.asmdef", "Unity/Assets/Scripts/Game/Editor/Game.Editor.asmdef", "Unity/Assets/Scripts/Library/ET", "Unity/Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/UnityGameFramework.Extension.asmdef", "DotNet", "DotNet/Hotfix/DotNet.Hotfix.csproj", "Share", "AGENTS.md"],
       "keywords": ["UPM", "package", "Odin", "HybridCLR", "依赖"]
     }
   ]

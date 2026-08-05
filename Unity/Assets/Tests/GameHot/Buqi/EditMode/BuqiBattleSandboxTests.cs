@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.IO;
 using Game.Hot.Buqi.Battle;
 using NUnit.Framework;
 
@@ -188,6 +190,430 @@ namespace Game.Hot.Buqi.Tests
             Assert.Throws<System.ArgumentException>(() =>
                 BuqiBattleSandbox.CompleteWalkthrough(
                     record, "护体被打穿", BuqiSandboxChangeKind.Refinement, ""));
+        }
+
+        [Test]
+        public void P1WalkthroughScenarios_ReturnThreeOrderedSingleVariableRounds()
+        {
+            List<BuqiSandboxScenario> scenarios = BuqiBattleSandbox.CreateP1WalkthroughScenarios();
+
+            Assert.That(scenarios.Count, Is.EqualTo(3));
+            Assert.That(scenarios[0].Id, Is.EqualTo("fast-space-choice"));
+            Assert.That(scenarios[1].Id, Is.EqualTo("fast-space-choice-buffer-plus"));
+            Assert.That(scenarios[2].Id, Is.EqualTo("fast-space-choice-buffer-plus-a02"));
+        }
+
+        [Test]
+        public void WalkthroughRecord_CreatesExportWithProfileLockedPredictionEvidenceAndNotes()
+        {
+            BuqiSandboxScenario scenario = BuqiBattleSandbox.CreateP1WalkthroughScenarios()[0];
+            BuqiSandboxWalkthroughBatch batch = BuqiBattleSandbox.CreateWalkthroughBatch(
+                "batch-auto-chess-01",
+                "auto-chess-01",
+                BuqiSandboxParticipantProfile.AutoChessPlayer);
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenario,
+                "右侧会靠护体拖到硬上限。",
+                false,
+                "2026-08-06T00:00:00.0000000Z",
+                "attempt-auto-chess-01-r1");
+            BuqiSandboxRunResult run = BuqiBattleSandbox.Run(scenario);
+            BuqiBattleSandbox.BindWalkthroughResult(batch, record, run);
+            int evidenceEventId = run.Log[0].Sequence;
+
+            BuqiBattleSandbox.CompleteWalkthrough(
+                batch,
+                record,
+                run,
+                "左侧持续伤害超过了护体供给。",
+                BuqiSandboxChangeKind.Purchase,
+                "增加一张缓冲法门，预期提高护体供给。",
+                new List<int> { evidenceEventId },
+                "参与者未展开原始日志。");
+
+            Assert.That(record.EligibleForGateReview, Is.True);
+            BuqiSandboxWalkthroughExport exported = BuqiBattleSandbox.CreateWalkthroughExport(record);
+            Assert.That(exported.SchemaVersion, Is.EqualTo(2));
+            Assert.That(exported.BatchId, Is.EqualTo("batch-auto-chess-01"));
+            Assert.That(exported.AttemptId, Is.EqualTo("attempt-auto-chess-01-r1"));
+            Assert.That(exported.RoundIndex, Is.EqualTo(0));
+            Assert.That(exported.ParticipantProfile, Is.EqualTo("AutoChessPlayer"));
+            Assert.That(exported.PredictionLockedAtUtc, Is.EqualTo("2026-08-06T00:00:00.0000000Z"));
+            Assert.That(exported.EvidenceEventIds, Is.EqualTo(new[] { evidenceEventId }));
+            Assert.That(exported.ModeratorNotes, Is.EqualTo("参与者未展开原始日志。"));
+            Assert.That(exported.BattleLogHash, Is.EqualTo(run.Result.BattleLogHash));
+            Assert.That(exported.RuleVersion, Is.EqualTo(BuqiBattleSimulator.RuleVersion));
+            Assert.That(exported.SimulationVersion, Is.EqualTo(BuqiBattleSimulator.SimulationVersion));
+            Assert.That(exported.ContentVersion, Is.EqualTo(BuqiBattleSandbox.ContentVersion));
+            Assert.That(exported.EligibleForGateReview, Is.True);
+
+            string path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString("N") + ".json");
+            try
+            {
+                BuqiBattleSandbox.WriteWalkthroughJson(path, record);
+                string json = File.ReadAllText(path);
+                BuqiSandboxWalkthroughExport roundTripped =
+                    BuqiBattleSandbox.DeserializeWalkthroughExport(json);
+                Assert.That(roundTripped.BatchId, Is.EqualTo(exported.BatchId));
+                Assert.That(roundTripped.EvidenceEventIds, Is.EqualTo(exported.EvidenceEventIds));
+                Assert.That(roundTripped.EligibleForGateReview, Is.True);
+            }
+            finally
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+            }
+        }
+
+        [Test]
+        public void SkippedPrediction_CanBeRecordedButIsNotEligibleForGateReview()
+        {
+            BuqiSandboxScenario scenario = BuqiBattleSandbox.CreateP1WalkthroughScenarios()[0];
+            BuqiSandboxWalkthroughBatch batch = BuqiBattleSandbox.CreateWalkthroughBatch(
+                "batch-new-player-01",
+                "new-player-01",
+                BuqiSandboxParticipantProfile.NewPlayer);
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenario,
+                string.Empty,
+                true,
+                "2026-08-06T00:00:00.0000000Z",
+                "attempt-new-player-01-r1");
+            BuqiSandboxRunResult run = BuqiBattleSandbox.Run(scenario);
+            BuqiBattleSandbox.BindWalkthroughResult(batch, record, run);
+            BuqiBattleSandbox.CompleteWalkthrough(
+                batch,
+                record,
+                run,
+                "未形成明确判断。",
+                BuqiSandboxChangeKind.Position,
+                "调整核心位置后重新观察。",
+                new List<int> { run.Log[0].Sequence },
+                string.Empty);
+
+            Assert.That(record.IsComplete, Is.True);
+            Assert.That(record.PredictionSkipped, Is.True);
+            Assert.That(record.EligibleForGateReview, Is.False);
+        }
+
+        [Test]
+        public void NonP1Scenario_CanBeRecordedButIsNotEligibleForGateReview()
+        {
+            BuqiSandboxScenario scenario = BuqiBattleSandbox.FindScenario("adjacency-chain");
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                scenario,
+                "auto-chess-02",
+                BuqiSandboxParticipantProfile.AutoChessPlayer,
+                "左侧相邻连锁会先形成主要伤害。",
+                false,
+                "2026-08-06T00:00:00.0000000Z");
+            BuqiSandboxRunResult run = BuqiBattleSandbox.Run(scenario);
+            BuqiBattleSandbox.BindWalkthroughResult(record, run);
+            BuqiBattleSandbox.CompleteWalkthrough(
+                record,
+                run,
+                "左侧相邻响应形成了更早的输出。",
+                BuqiSandboxChangeKind.Position,
+                "调整相邻关系后重新观察。",
+                new List<int> { run.Log[0].Sequence },
+                string.Empty);
+
+            Assert.That(record.IsComplete, Is.True);
+            Assert.That(record.EligibleForGateReview, Is.False);
+        }
+
+        [Test]
+        public void P1Batch_EnforcesOrderedUniqueQuestions()
+        {
+            List<BuqiSandboxScenario> scenarios = BuqiBattleSandbox.CreateP1WalkthroughScenarios();
+            BuqiSandboxWalkthroughBatch batch = BuqiBattleSandbox.CreateWalkthroughBatch(
+                "batch-ordered",
+                "auto-chess-ordered",
+                BuqiSandboxParticipantProfile.AutoChessPlayer);
+
+            Assert.Throws<InvalidOperationException>(() => BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenarios[1],
+                "第二题预测",
+                false,
+                "2026-08-06T00:00:00.0000000Z",
+                "attempt-out-of-order"));
+
+            BuqiSandboxWalkthroughRecord first = BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenarios[0],
+                "第一题预测",
+                false,
+                "2026-08-06T00:00:00.0000000Z",
+                "attempt-r1");
+            Assert.Throws<InvalidOperationException>(() => BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenarios[0],
+                "重复第一题预测",
+                false,
+                "2026-08-06T00:00:01.0000000Z",
+                "attempt-r1-duplicate"));
+
+            BuqiSandboxRunResult run = BuqiBattleSandbox.Run(scenarios[0]);
+            BuqiBattleSandbox.BindWalkthroughResult(batch, first, run);
+            BuqiBattleSandbox.CompleteWalkthrough(
+                batch,
+                first,
+                run,
+                "第一题主因",
+                BuqiSandboxChangeKind.Purchase,
+                "下一题增加缓冲。",
+                new List<int> { run.Log[0].Sequence },
+                string.Empty);
+
+            Assert.That(batch.NextQuestionIndex, Is.EqualTo(0));
+            Assert.That(batch.HasActiveAttempt, Is.True);
+            Assert.That(batch.ActiveAttemptExposed, Is.True);
+            Assert.Throws<InvalidOperationException>(() => BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenarios[1],
+                "导出前不能开始第二题。",
+                false,
+                "2026-08-06T00:00:02.0000000Z",
+                "attempt-r2-before-export"));
+
+            BuqiBattleSandbox.MarkWalkthroughExported(batch, first);
+            Assert.That(batch.NextQuestionIndex, Is.EqualTo(1));
+            Assert.That(batch.CompletedQuestionIds, Is.EqualTo(new[] { scenarios[0].Id }));
+            Assert.Throws<InvalidOperationException>(() => BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenarios[0],
+                "再次重复第一题",
+                false,
+                "2026-08-06T00:00:02.0000000Z",
+                "attempt-r1-after-complete"));
+        }
+
+        [Test]
+        public void ExposedAttempt_CannotBeCancelledAndRestarted()
+        {
+            BuqiSandboxScenario scenario = BuqiBattleSandbox.CreateP1WalkthroughScenarios()[0];
+            BuqiSandboxWalkthroughBatch batch = BuqiBattleSandbox.CreateWalkthroughBatch(
+                "batch-exposed",
+                "new-player-exposed",
+                BuqiSandboxParticipantProfile.NewPlayer);
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenario,
+                "左侧获胜。",
+                false,
+                "2026-08-06T00:00:00.0000000Z",
+                "attempt-exposed");
+            BuqiBattleSandbox.BindWalkthroughResult(
+                batch, record, BuqiBattleSandbox.Run(scenario));
+
+            Assert.Throws<InvalidOperationException>(() =>
+                BuqiBattleSandbox.MarkWalkthroughExported(batch, record));
+            Assert.Throws<InvalidOperationException>(() =>
+                BuqiBattleSandbox.CancelWalkthroughAttempt(batch, record));
+            Assert.That(batch.ActiveAttemptExposed, Is.True);
+            Assert.Throws<InvalidOperationException>(() => BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenario,
+                "看过结果后的预测。",
+                false,
+                "2026-08-06T00:00:01.0000000Z",
+                "attempt-after-exposure"));
+        }
+
+        [Test]
+        public void WalkthroughSession_RoundTripPreservesPendingExportAndInvalidationTombstone()
+        {
+            BuqiSandboxScenario scenario = BuqiBattleSandbox.CreateP1WalkthroughScenarios()[0];
+            BuqiSandboxWalkthroughBatch batch = BuqiBattleSandbox.CreateWalkthroughBatch(
+                "batch-session",
+                "new-player-session",
+                BuqiSandboxParticipantProfile.NewPlayer);
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenario,
+                "左侧获胜。",
+                false,
+                "2026-08-06T00:00:00.0000000Z",
+                "attempt-session-r1");
+            BuqiSandboxRunResult run = BuqiBattleSandbox.Run(scenario);
+            BuqiBattleSandbox.BindWalkthroughResult(batch, record, run);
+            BuqiBattleSandbox.CompleteWalkthrough(
+                batch,
+                record,
+                run,
+                "左侧持续伤害更高。",
+                BuqiSandboxChangeKind.Purchase,
+                "右侧增加缓冲。",
+                new List<int> { run.Log[0].Sequence },
+                string.Empty);
+
+            BuqiSandboxWalkthroughSession session = BuqiBattleSandbox.CreateWalkthroughSession(
+                batch, record, false, string.Empty);
+            BuqiSandboxWalkthroughSession restored = BuqiBattleSandbox.DeserializeWalkthroughSession(
+                BuqiBattleSandbox.SerializeWalkthroughSession(session));
+
+            Assert.That(restored.Batch.ActiveAttemptExposed, Is.True);
+            Assert.That(restored.Batch.NextQuestionIndex, Is.EqualTo(0));
+            Assert.That(restored.Record.IsComplete, Is.True);
+            Assert.That(restored.CurrentRecordExported, Is.False);
+
+            BuqiBattleSandbox.InvalidateWalkthroughSession(restored, "restored hash drift");
+            restored = BuqiBattleSandbox.DeserializeWalkthroughSession(
+                BuqiBattleSandbox.SerializeWalkthroughSession(restored));
+
+            Assert.That(restored.IsInvalidated, Is.True);
+            Assert.That(restored.InvalidatedReason, Is.EqualTo("restored hash drift"));
+            Assert.That(restored.Batch.ActiveAttemptExposed, Is.True);
+            Assert.Throws<InvalidOperationException>(() => BuqiBattleSandbox.BeginWalkthrough(
+                restored.Batch,
+                scenario,
+                "看到结果后的新预测。",
+                false,
+                "2026-08-06T00:00:01.0000000Z",
+                "attempt-session-retry"));
+        }
+
+        [Test]
+        public void ExportedSession_CanBeInvalidatedWithoutLosingExposedParticipant()
+        {
+            BuqiSandboxScenario scenario = BuqiBattleSandbox.CreateP1WalkthroughScenarios()[0];
+            BuqiSandboxWalkthroughBatch batch = BuqiBattleSandbox.CreateWalkthroughBatch(
+                "batch-exported-session",
+                "auto-chess-exported-session",
+                BuqiSandboxParticipantProfile.AutoChessPlayer);
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenario,
+                "右侧获胜。",
+                false,
+                "2026-08-06T00:00:00.0000000Z",
+                "attempt-exported-session-r1");
+            BuqiSandboxRunResult run = BuqiBattleSandbox.Run(scenario);
+            BuqiBattleSandbox.BindWalkthroughResult(batch, record, run);
+            BuqiBattleSandbox.CompleteWalkthrough(
+                batch,
+                record,
+                run,
+                "右侧护体不足。",
+                BuqiSandboxChangeKind.Purchase,
+                "右侧增加缓冲。",
+                new List<int> { run.Log[0].Sequence },
+                string.Empty);
+            BuqiBattleSandbox.MarkWalkthroughExported(batch, record);
+            BuqiSandboxWalkthroughSession session = BuqiBattleSandbox.CreateWalkthroughSession(
+                batch, record, true, string.Empty);
+
+            Assert.DoesNotThrow(() =>
+                BuqiBattleSandbox.InvalidateWalkthroughSession(session, "exported hash drift"));
+            Assert.That(session.IsInvalidated, Is.True);
+            Assert.That(session.CurrentRecordExported, Is.True);
+            Assert.That(session.Batch.ParticipantId, Is.EqualTo("auto-chess-exported-session"));
+            Assert.DoesNotThrow(() => BuqiBattleSandbox.DeserializeWalkthroughSession(
+                BuqiBattleSandbox.SerializeWalkthroughSession(session)));
+        }
+
+        [Test]
+        public void ExposureTombstone_RoundTripBlocksSameParticipantAndCreatesLockedReplacementBatch()
+        {
+            BuqiSandboxScenario scenario = BuqiBattleSandbox.CreateP1WalkthroughScenarios()[0];
+            BuqiSandboxWalkthroughBatch batch = BuqiBattleSandbox.CreateWalkthroughBatch(
+                "batch-exposure-tombstone",
+                "new-player-exposed-original",
+                BuqiSandboxParticipantProfile.NewPlayer);
+            BuqiSandboxWalkthroughRecord record = BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenario,
+                "左侧获胜。",
+                false,
+                "2026-08-06T00:00:00.0000000Z",
+                "attempt-exposure-tombstone-r1");
+            BuqiBattleSandbox.BindWalkthroughResult(batch, record, BuqiBattleSandbox.Run(scenario));
+
+            BuqiSandboxExposureTombstone tombstone = BuqiBattleSandbox.DeserializeExposureTombstone(
+                BuqiBattleSandbox.SerializeExposureTombstone(
+                    BuqiBattleSandbox.CreateExposureTombstone(batch, record)));
+
+            Assert.That(tombstone.ParticipantId, Is.EqualTo("new-player-exposed-original"));
+            Assert.That(tombstone.ParticipantProfile, Is.EqualTo(BuqiSandboxParticipantProfile.NewPlayer));
+            Assert.That(tombstone.ScenarioId, Is.EqualTo(scenario.Id));
+            Assert.That(tombstone.BattleLogHash, Is.EqualTo(record.BattleLogHash));
+            Assert.Throws<InvalidOperationException>(() =>
+                BuqiBattleSandbox.CreateReplacementWalkthroughBatch(
+                    tombstone,
+                    "batch-replacement-same",
+                    "new-player-exposed-original"));
+
+            BuqiSandboxWalkthroughBatch replacement =
+                BuqiBattleSandbox.CreateReplacementWalkthroughBatch(
+                    tombstone,
+                    "batch-replacement-new",
+                    "new-player-replacement");
+            Assert.That(replacement.ParticipantId, Is.EqualTo("new-player-replacement"));
+            Assert.That(replacement.ParticipantProfile, Is.EqualTo(BuqiSandboxParticipantProfile.NewPlayer));
+            Assert.That(replacement.NextQuestionIndex, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void ExposureTombstone_RejectsStaleUnexposedSessionAndAcceptsValidProgression()
+        {
+            List<BuqiSandboxScenario> scenarios = BuqiBattleSandbox.CreateP1WalkthroughScenarios();
+            BuqiSandboxWalkthroughBatch batch = BuqiBattleSandbox.CreateWalkthroughBatch(
+                "batch-exposure-consistency",
+                "auto-chess-exposure-consistency",
+                BuqiSandboxParticipantProfile.AutoChessPlayer);
+            BuqiSandboxWalkthroughRecord first = BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenarios[0],
+                "左侧获胜。",
+                false,
+                "2026-08-06T00:00:00.0000000Z",
+                "attempt-exposure-consistency-r1");
+            BuqiSandboxWalkthroughSession staleUnexposed =
+                BuqiBattleSandbox.DeserializeWalkthroughSession(
+                    BuqiBattleSandbox.SerializeWalkthroughSession(
+                        BuqiBattleSandbox.CreateWalkthroughSession(
+                            batch, first, false, string.Empty)));
+
+            BuqiSandboxRunResult run = BuqiBattleSandbox.Run(scenarios[0]);
+            BuqiBattleSandbox.BindWalkthroughResult(batch, first, run);
+            BuqiSandboxExposureTombstone tombstone =
+                BuqiBattleSandbox.CreateExposureTombstone(batch, first);
+
+            Assert.That(BuqiBattleSandbox.IsExposureTombstoneConsistent(
+                staleUnexposed, tombstone, out string staleReason), Is.False);
+            Assert.That(staleReason, Does.Contain("未曝光"));
+
+            BuqiSandboxWalkthroughSession exposed = BuqiBattleSandbox.CreateWalkthroughSession(
+                batch, first, false, string.Empty);
+            Assert.That(BuqiBattleSandbox.IsExposureTombstoneConsistent(
+                exposed, tombstone, out string exposedReason), Is.True, exposedReason);
+
+            BuqiBattleSandbox.CompleteWalkthrough(
+                batch,
+                first,
+                run,
+                "左侧持续伤害更高。",
+                BuqiSandboxChangeKind.Purchase,
+                "右侧增加缓冲。",
+                new List<int> { run.Log[0].Sequence },
+                string.Empty);
+            BuqiBattleSandbox.MarkWalkthroughExported(batch, first);
+            BuqiSandboxWalkthroughRecord second = BuqiBattleSandbox.BeginWalkthrough(
+                batch,
+                scenarios[1],
+                "右侧获胜。",
+                false,
+                "2026-08-06T00:00:01.0000000Z",
+                "attempt-exposure-consistency-r2");
+            BuqiSandboxWalkthroughSession nextUnexposed =
+                BuqiBattleSandbox.CreateWalkthroughSession(
+                    batch, second, false, string.Empty);
+
+            Assert.That(BuqiBattleSandbox.IsExposureTombstoneConsistent(
+                nextUnexposed, tombstone, out string progressedReason), Is.True, progressedReason);
         }
 
         [Test]

@@ -5,6 +5,7 @@ using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.Demo;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.DemoUI.Deployment;
 using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
 using UnityEngine;
@@ -23,8 +24,8 @@ namespace Game.Hot.Buqi.UI
     {
         private static readonly string[] phaseLabels =
         {
-            "\u8D77\u59CB\u9009\u62E9", "\u5BF9\u624B\u5FEB\u7167", "\u6218\u524D\u51C6\u5907", "\u5546\u5E97", "\u4E8B\u4EF6", "\u6539\u9020",
-            "\u68CB\u76D8\u7F16\u8F91", "\u80DC\u8D1F\u9884\u6D4B", "\u6218\u6597\u56DE\u653E", "\u6218\u6597\u603B\u7ED3", "\u56DE\u5408\u7ED3\u7B97", "\u5355\u5C40\u7ED3\u675F",
+            "起始选择", "对手快照", "战前准备", "商店", "事件", "改造",
+            "棋盘编辑", "胜负预测", "战斗回放", "战斗总结", "回合结算", "单局结束",
         };
 
         [SerializeField]
@@ -67,6 +68,7 @@ namespace Game.Hot.Buqi.UI
         private Text m_ErrorText = null;
 
         private BuqiConfigCatalog m_Catalog;
+        private BuqiUIDemoCatalog m_DemoCatalog;
         private BuqiUIDemoController m_Controller;
         private BuqiStageWidgetRegistry m_Registry;
         private bool m_OpeningBattle;
@@ -92,6 +94,7 @@ namespace Game.Hot.Buqi.UI
         {
             base.OnOpen(userData);
             m_OpeningBattle = false;
+            m_DemoCatalog = null;
             if (!TryResolveCatalog(userData, out m_Catalog, out string error))
             {
                 m_Controller = null;
@@ -105,7 +108,8 @@ namespace Game.Hot.Buqi.UI
                 return;
             }
 
-            m_Controller = BuqiUIDemoController.Create(demoCatalog);
+            m_DemoCatalog = demoCatalog;
+            m_Controller = BuqiUIDemoController.Create(m_DemoCatalog);
             HideError();
             Render();
         }
@@ -122,6 +126,7 @@ namespace Game.Hot.Buqi.UI
             foreach (PhaseStepWidget step in m_PhaseSteps)
                 step?.Clear();
             m_Controller = null;
+            m_DemoCatalog = null;
             m_Catalog = null;
             m_OpeningBattle = false;
             SetText(m_StatusText, string.Empty);
@@ -142,8 +147,42 @@ namespace Game.Hot.Buqi.UI
                 return;
             BuqiUIDemoCommandResult result = m_Controller.Execute(command);
             SetText(m_StatusText, result.Accepted ? string.Empty : result.Reason);
-            if (result.Accepted)
-                Render();
+            if (!result.Accepted)
+                return;
+            if (command.Type == BuqiUIDemoCommandType.OpenDragDeploy)
+            {
+                OpenDragDeploy();
+                return;
+            }
+            Render();
+        }
+
+        private void OpenDragDeploy()
+        {
+            if (m_DemoCatalog == null || m_Controller == null)
+                return;
+            BuqiUIDemoView view = m_Controller.View;
+            GameEntry.UI.OpenUIForm(UIFormId.BuqiDragDeployForm, new BuqiDragDeployOpenData
+            {
+                Catalog = m_DemoCatalog,
+                Board = view.BoardSlots,
+                Storage = view.StorageSlots,
+                Round = view.Round,
+                Coins = view.Coins,
+                Wins = view.Wins,
+                Lives = view.Lives,
+                OpponentName = view.Opponent?.Name ?? string.Empty,
+                Confirmed = ApplyDeployment,
+            });
+        }
+
+        private void ApplyDeployment(BuqiDeploymentSnapshot snapshot)
+        {
+            Submit(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.ApplyDeployment,
+                Deployment = snapshot,
+            });
         }
 
         private void GoBack()
@@ -187,10 +226,10 @@ namespace Game.Hot.Buqi.UI
 
         private void RenderResources(BuqiUIDemoView view)
         {
-            RenderChip(0, "\u91D1\u5E01", view.Coins.ToString(), "+", ResourceChipState.Normal);
-            RenderChip(1, "\u80DC\u573A", view.Wins.ToString(), "胜", ResourceChipState.Normal);
-            RenderChip(2, "\u5355\u5C40\u751F\u547D", view.Lives.ToString(), "命", view.Lives <= 1 ? ResourceChipState.Warning : ResourceChipState.Normal);
-            RenderChip(3, "\u56DE\u5408", view.Round.ToString(), "合", ResourceChipState.Normal);
+            RenderChip(0, "金币", view.Coins.ToString(), "+", ResourceChipState.Normal);
+            RenderChip(1, "胜场", view.Wins.ToString(), "胜", ResourceChipState.Normal);
+            RenderChip(2, "单局生命", view.Lives.ToString(), "命", view.Lives <= 1 ? ResourceChipState.Warning : ResourceChipState.Normal);
+            RenderChip(3, "回合", view.Round.ToString(), "合", ResourceChipState.Normal);
         }
 
         private void RenderChip(int index, string label, string value, string icon, ResourceChipState state)

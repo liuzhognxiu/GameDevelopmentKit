@@ -344,9 +344,13 @@ namespace Game.Hot.Buqi.DemoUI.Deployment
 
         private static bool IsValidSlot(BuqiDeploymentSlotRef slot)
         {
-            return slot.Index >= 0 && (slot.Area == BuqiDeploymentArea.Board
-                ? slot.Index < BoardSlotCount
-                : slot.Index < StorageSlotCount);
+            if (slot.Index < 0)
+                return false;
+            if (slot.Area == BuqiDeploymentArea.Board)
+                return slot.Index < BoardSlotCount;
+            if (slot.Area == BuqiDeploymentArea.Storage)
+                return slot.Index < StorageSlotCount;
+            return false;
         }
 
         private BuqiDeploymentCommandResult Rejected(string reason)

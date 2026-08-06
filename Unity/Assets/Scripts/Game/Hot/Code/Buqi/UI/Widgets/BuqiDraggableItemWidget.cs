@@ -58,9 +58,9 @@ namespace Game.Hot.Buqi.UI.Widgets
             SetText(m_NameText, item == null ? string.Empty : item.Name);
             SetText(m_SizeText, item == null
                 ? string.Empty
-                : GameFramework.Utility.Text.Format("\u5360\u7528 {0} \u683C", item.Size));
+                : GameFramework.Utility.Text.Format("占用 {0} 格", item.Size));
             SetText(m_SourceText, GameFramework.Utility.Text.Format(
-                source.Area == BuqiDeploymentArea.Board ? "\u68CB\u76D8 {0:00}" : "\u4ED3\u5E93 {0:00}",
+                source.Area == BuqiDeploymentArea.Board ? "棋盘 {0:00}" : "仓库 {0:00}",
                 source.Index + 1));
         }
 
@@ -78,11 +78,16 @@ namespace Game.Hot.Buqi.UI.Widgets
             SetText(m_SourceText, string.Empty);
         }
 
+        public void SetRaycastEnabled(bool enabled)
+        {
+            ResolveCanvasGroup().blocksRaycasts = enabled;
+        }
+
         public void OnBeginDrag(PointerEventData eventData)
         {
             CanvasGroup canvasGroup = ResolveCanvasGroup();
             canvasGroup.alpha = 0.35f;
-            canvasGroup.blocksRaycasts = false;
+            SetRaycastEnabled(false);
             m_BeginDrag?.Invoke(m_Source, eventData);
         }
 
@@ -95,7 +100,7 @@ namespace Game.Hot.Buqi.UI.Widgets
         {
             CanvasGroup canvasGroup = ResolveCanvasGroup();
             canvasGroup.alpha = 1f;
-            canvasGroup.blocksRaycasts = true;
+            SetRaycastEnabled(true);
             m_EndDrag?.Invoke(m_Source, eventData);
         }
 

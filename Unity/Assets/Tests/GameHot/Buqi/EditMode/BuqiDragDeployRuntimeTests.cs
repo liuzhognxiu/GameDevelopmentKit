@@ -41,6 +41,7 @@ namespace Game.Hot.Buqi.Tests
             }.All(contract => contract.IsAssignableFrom(slot)), Is.True);
             Assert.That(draggable.GetMethod("Render"), Is.Not.Null);
             Assert.That(draggable.GetMethod("Clear"), Is.Not.Null);
+            Assert.That(draggable.GetMethod("SetRaycastEnabled"), Is.Not.Null);
             Assert.That(slot.GetMethod("Render"), Is.Not.Null);
             Assert.That(slot.GetMethod("Clear"), Is.Not.Null);
             Assert.That(form.GetMethod("TryInitialize"), Is.Not.Null);
@@ -49,10 +50,35 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(form.GetMethod("ResetDeployment"), Is.Not.Null);
             Assert.That(form.GetMethod("TryConfirm"), Is.Not.Null);
             Assert.That(form.GetMethod("CancelSession"), Is.Not.Null);
+            Assert.That(form.GetMethod(
+                "SetItemRaycasts",
+                System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic), Is.Not.Null);
             Assert.That(openData.GetField("Catalog"), Is.Not.Null);
             Assert.That(openData.GetField("Board"), Is.Not.Null);
             Assert.That(openData.GetField("Storage"), Is.Not.Null);
             Assert.That(openData.GetField("Confirmed"), Is.Not.Null);
+            Assert.That(openData.GetField("Round"), Is.Not.Null);
+            Assert.That(openData.GetField("Coins"), Is.Not.Null);
+            Assert.That(openData.GetField("Wins"), Is.Not.Null);
+            Assert.That(openData.GetField("Lives"), Is.Not.Null);
+            Assert.That(openData.GetField("OpponentName"), Is.Not.Null);
+        }
+
+        [Test]
+        public void RunShell_ExposesDragDeployLaunchAndApplyHooks()
+        {
+            Type shell = RuntimeType("Game.Hot.Buqi.UI.BuqiRunShellForm");
+            var flags = System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.NonPublic;
+
+            Assert.That(shell, Is.Not.Null);
+            Assert.That(shell.GetField("m_DemoCatalog", flags)?.FieldType,
+                Is.EqualTo(typeof(BuqiUIDemoCatalog)));
+            Assert.That(shell.GetMethod("OpenDragDeploy", flags), Is.Not.Null);
+            System.Reflection.MethodInfo apply = shell.GetMethod("ApplyDeployment", flags);
+            Assert.That(apply, Is.Not.Null);
+            Assert.That(apply.GetParameters().Select(parameter => parameter.ParameterType),
+                Is.EqualTo(new[] { typeof(BuqiDeploymentSnapshot) }));
         }
 
         [Test]
@@ -77,6 +103,132 @@ namespace Game.Hot.Buqi.Tests
 
                 Assert.That(form.View, Is.SameAs(opening));
                 Assert.That(form.View.StorageSlots[0], Is.EqualTo("item-m"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(formObject);
+            }
+        }
+
+        [Test]
+        public void ClickFallback_OccupiedItemIsTreatedAsDestination()
+        {
+            var formObject = new GameObject("DragDeployFormTest");
+            FormHandle form = FormHandle.Create(formObject);
+            try
+            {
+                object data = CreateOpenData();
+                SetBoardItem(data, 0, "item-s", "Short", 1);
+                Assert.That(form.TryInitialize(data, out string error), Is.True, error);
+
+                BuqiDeploymentSlotRef source = BuqiDeploymentSlotRef.Storage(0);
+                form.SelectSource(source);
+                form.ClickItem(BuqiDeploymentSlotRef.Board(0));
+
+                Assert.That(form.SelectedSource, Is.EqualTo(source));
+                Assert.That(form.View.StorageSlots[0], Is.EqualTo("item-m"));
+                Assert.That(form.View.BoardSlots[0], Is.EqualTo("item-s"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(formObject);
+            }
+        }
+
+        [Test]
+        public void StorageHover_RendersIllegalAndLegalTargetStates()
+        {
+            var formObject = new GameObject("DragDeployFormTest");
+            FormHandle form = FormHandle.Create(formObject);
+            var states = new Text[5];
+            var backgrounds = new Image[5];
+            var slots = new BuqiDeploySlotWidget[5];
+            try
+            {
+                for (int index = 0; index < slots.Length; index++)
+                    slots[index] = CreateSlot(formObject.transform, index, out backgrounds[index], out states[index]);
+                form.SetPrivateField("m_StorageSlots", slots);
+
+                object data = CreateOpenData();
+                SetBoardItem(data, 0, "item-s", "Short", 1);
+                Assert.That(form.TryInitialize(data, out string error), Is.True, error);
+                form.SelectSource(BuqiDeploymentSlotRef.Board(0));
+
+                form.HoverSlot(BuqiDeploymentSlotRef.Storage(0), true);
+                Assert.That(states[0].text, Does.StartWith("×"));
+                Assert.That(backgrounds[0].color.r, Is.GreaterThan(backgrounds[0].color.g));
+
+                form.HoverSlot(BuqiDeploymentSlotRef.Storage(1), true);
+                Assert.That(states[1].text, Is.EqualTo("✓ 可放置"));
+                Assert.That(backgrounds[1].color.g, Is.GreaterThan(backgrounds[1].color.r));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(formObject);
+            }
+        }
+
+        [Test]
+        public void Initialize_RejectsMissingConfirmationCallback()
+        {
+            var formObject = new GameObject("DragDeployFormTest");
+            FormHandle form = FormHandle.Create(formObject);
+            try
+            {
+                object data = CreateOpenData();
+                data.GetType().GetField("Confirmed").SetValue(data, null);
+
+                Assert.That(form.TryInitialize(data, out string error), Is.False);
+                Assert.That(error, Is.EqualTo("拖拽上阵确认回调不可用"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(formObject);
+            }
+        }
+
+        [Test]
+        public void Header_RendersRunContext()
+        {
+            var formObject = new GameObject("DragDeployFormTest");
+            FormHandle form = FormHandle.Create(formObject);
+            Text contextText = CreateText(formObject.transform, "Context");
+            try
+            {
+                form.SetPrivateField("m_ContextText", contextText);
+                object data = CreateOpenData();
+                SetOpenDataField(data, "Round", 3);
+                SetOpenDataField(data, "Coins", 12);
+                SetOpenDataField(data, "Wins", 4);
+                SetOpenDataField(data, "Lives", 2);
+                SetOpenDataField(data, "OpponentName", "清虚真人");
+
+                Assert.That(form.TryInitialize(data, out string error), Is.True, error);
+                Assert.That(contextText.text,
+                    Is.EqualTo("第 3 回合  |  金币 12  |  胜场 4  |  生命 2  |  对手 清虚真人"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(formObject);
+            }
+        }
+
+        [Test]
+        public void StaticLabels_RestoreTextAfterBaseLocalizationMiss()
+        {
+            var formObject = new GameObject("DragDeployFormTest");
+            FormHandle form = FormHandle.Create(formObject);
+            Text missingKey = CreateText(formObject.transform, "MissingKey");
+            Text dynamicText = CreateText(formObject.transform, "Dynamic");
+            try
+            {
+                missingKey.text = "<NoKey>待上阵道具";
+                dynamicText.text = "当前阵容";
+
+                form.RestoreStaticLabels();
+
+                Assert.That(missingKey.text, Is.EqualTo("待上阵道具"));
+                Assert.That(dynamicText.text, Is.EqualTo("当前阵容"));
             }
             finally
             {
@@ -184,6 +336,13 @@ namespace Game.Hot.Buqi.Tests
                 Assert.That(beginCount, Is.EqualTo(1));
                 Assert.That(endCount, Is.EqualTo(1));
 
+                System.Reflection.MethodInfo setRaycast = widget.GetType().GetMethod("SetRaycastEnabled");
+                Assert.That(setRaycast, Is.Not.Null);
+                setRaycast.Invoke(widget, new object[] { false });
+                Assert.That(canvasGroup.blocksRaycasts, Is.False);
+                setRaycast.Invoke(widget, new object[] { true });
+                Assert.That(canvasGroup.blocksRaycasts, Is.True);
+
                 widget.Clear();
                 widget.OnPointerClick(null);
                 Assert.That(clickCount, Is.EqualTo(0));
@@ -223,7 +382,7 @@ namespace Game.Hot.Buqi.Tests
                     null);
 
                 Assert.That(invalidSymbol.activeSelf, Is.True);
-                Assert.That(stateText.text, Is.EqualTo("\u00D7 \u4E0D\u53EF\u653E\u7F6E"));
+                Assert.That(stateText.text, Is.EqualTo("× 不可放置"));
                 Assert.That(background.color.r, Is.GreaterThan(background.color.g));
 
                 widget.Render(
@@ -236,7 +395,7 @@ namespace Game.Hot.Buqi.Tests
                     null);
 
                 Assert.That(invalidSymbol.activeSelf, Is.False);
-                Assert.That(stateText.text, Is.EqualTo("\u2713 \u53EF\u653E\u7F6E"));
+                Assert.That(stateText.text, Is.EqualTo("✓ 可放置"));
                 Assert.That(background.color.g, Is.GreaterThan(background.color.r));
                 Assert.That(indexText.text, Is.EqualTo("03"));
                 Assert.That(itemText.text, Is.EqualTo("Middle"));
@@ -249,6 +408,7 @@ namespace Game.Hot.Buqi.Tests
 
         private static object CreateOpenData(Action<BuqiDeploymentSnapshot> confirmed = null)
         {
+            confirmed ??= _ => { };
             var catalog = new BuqiUIDemoCatalog();
             catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-s", Name = "Short", Size = 1 });
             catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-m", Name = "Middle", Size = 2 });
@@ -275,6 +435,48 @@ namespace Game.Hot.Buqi.Tests
             return openData;
         }
 
+        private static void SetBoardItem(object openData, int slot, string id, string name, int size)
+        {
+            var board = (List<BuqiDemoItemView>)openData.GetType().GetField("Board").GetValue(openData);
+            board[slot] = new BuqiDemoItemView
+            {
+                Id = id,
+                Name = name,
+                Size = size,
+                Slot = slot,
+            };
+        }
+
+        private static void SetOpenDataField(object openData, string fieldName, object value)
+        {
+            System.Reflection.FieldInfo field = openData.GetType().GetField(fieldName);
+            Assert.That(field, Is.Not.Null, fieldName);
+            field.SetValue(openData, value);
+        }
+
+        private static BuqiDeploySlotWidget CreateSlot(
+            Transform parent,
+            int index,
+            out Image background,
+            out Text stateText)
+        {
+            var owner = new GameObject("StorageSlot_" + index, typeof(RectTransform), typeof(Image));
+            owner.transform.SetParent(parent, false);
+            var widget = owner.AddComponent<BuqiDeploySlotWidget>();
+            background = owner.GetComponent<Image>();
+            Text indexText = CreateText(owner.transform, "Index");
+            Text itemText = CreateText(owner.transform, "Item");
+            stateText = CreateText(owner.transform, "State");
+            var invalidSymbol = new GameObject("InvalidSymbol");
+            invalidSymbol.transform.SetParent(owner.transform, false);
+            SetPrivate(widget, "m_Background", background);
+            SetPrivate(widget, "m_IndexText", indexText);
+            SetPrivate(widget, "m_ItemText", itemText);
+            SetPrivate(widget, "m_StateText", stateText);
+            SetPrivate(widget, "m_InvalidSymbol", invalidSymbol);
+            return widget;
+        }
+
         private sealed class FormHandle
         {
             private readonly Component m_Component;
@@ -288,6 +490,12 @@ namespace Game.Hot.Buqi.Tests
 
             public BuqiDeploymentSnapshot View =>
                 (BuqiDeploymentSnapshot)m_Type.GetProperty("View").GetValue(m_Component, null);
+
+            public BuqiDeploymentSlotRef? SelectedSource =>
+                (BuqiDeploymentSlotRef?)m_Type.GetField(
+                    "m_SelectedSource",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .GetValue(m_Component);
 
             public static FormHandle Create(GameObject owner)
             {
@@ -307,6 +515,40 @@ namespace Game.Hot.Buqi.Tests
             public void SelectSource(BuqiDeploymentSlotRef source)
             {
                 m_Type.GetMethod("SelectSource").Invoke(m_Component, new object[] { source });
+            }
+
+            public void ClickItem(BuqiDeploymentSlotRef source)
+            {
+                m_Type.GetMethod(
+                    "OnItemClick",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .Invoke(m_Component, new object[] { source });
+            }
+
+            public void HoverSlot(BuqiDeploymentSlotRef target, bool isInside)
+            {
+                m_Type.GetMethod(
+                    "OnSlotHover",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                    .Invoke(m_Component, new object[] { target, isInside });
+            }
+
+            public void SetPrivateField(string fieldName, object value)
+            {
+                System.Reflection.FieldInfo field = m_Type.GetField(
+                    fieldName,
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                Assert.That(field, Is.Not.Null, fieldName);
+                field.SetValue(m_Component, value);
+            }
+
+            public void RestoreStaticLabels()
+            {
+                System.Reflection.MethodInfo method = m_Type.GetMethod(
+                    "RestoreStaticLabels",
+                    System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);
+                Assert.That(method, Is.Not.Null);
+                method.Invoke(m_Component, null);
             }
 
             public BuqiDeploymentCommandResult MoveSelectedTo(BuqiDeploymentSlotRef target)

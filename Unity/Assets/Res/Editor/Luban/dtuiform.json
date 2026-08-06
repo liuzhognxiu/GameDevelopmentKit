@@ -133,5 +133,14 @@
     "UIGroupName": "Message",
     "AllowMultiInstance": true,
     "PauseCoveredUIForm": false
+  },
+  {
+    "Id": 108,
+    "CSName": "BuqiDragDeployForm",
+    "Desc": "拖拽上阵",
+    "AssetName": "Hot/Buqi/BuqiDragDeployForm",
+    "UIGroupName": "Pop",
+    "AllowMultiInstance": false,
+    "PauseCoveredUIForm": true
   }
 ]

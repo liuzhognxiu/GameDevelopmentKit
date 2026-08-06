@@ -69,6 +69,22 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void TryMove_UnknownAreaIsRejectedWithoutMutation()
+        {
+            BuqiDragDeployController controller = BuqiDragDeployController.Create(
+                CreateCatalog(), Slots(8), new List<string> { "item-s", "", "", "", "" });
+            BuqiDeploymentSnapshot before = controller.View;
+
+            BuqiDeploymentCommandResult result = controller.TryMove(
+                BuqiDeploymentSlotRef.Storage(0),
+                new BuqiDeploymentSlotRef((BuqiDeploymentArea)99, 1));
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Reason, Is.EqualTo("目标位置无效"));
+            Assert.That(controller.View, Is.SameAs(before));
+        }
+
+        [Test]
         public void TryMove_BoardToBoardAndBoardToStorageAreAtomic()
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(

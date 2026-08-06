@@ -83,5 +83,10 @@ namespace Game.Hot
         /// 不器状态提示
         /// </summary>
         public const int BuqiMessageForm = 107;
+
+        /// <summary>
+        /// 拖拽上阵
+        /// </summary>
+        public const int BuqiDragDeployForm = 108;
     }
 }

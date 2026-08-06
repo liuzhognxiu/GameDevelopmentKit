@@ -1,13 +1,13 @@
 # 《不器》战斗回放 UI Demo 设计
 
 - 日期：2026-08-06
-- 状态：已批准，可进入实施计划
+- 状态：已批准，作为完整 Demo UI 系统的战斗子规格进入实施计划
 - 目标分辨率：1920x1080 横屏
 - 替代文档：`2026-08-05-buqi-ui-interaction-design.md` 的正式 UI 与 Run Shell 部分
 
 ## 1. 决策摘要
 
-本轮只制作可从现有 GameHot 主菜单进入的战斗回放 Demo，不建设完整 Run Shell。
+本子规格只约束可从现有 GameHot 主菜单进入的战斗回放 Demo，不建设完整 Run Shell。Run Shell 与其他阶段界面由 `2026-08-06-buqi-full-demo-ui-system-design.md` 统一约束。
 
 - 现有“开始游戏”按钮改为直接打开 `BattleForm`，暂时绕过 `ProcedureMain/SurvivalGame`。
 - 采用“上下双轨战场 + 右侧固定证据栏 + 底部回放控制”的 1920x1080 布局。
@@ -42,7 +42,7 @@ Canvas 使用 `CanvasScaler.ScaleWithScreenSize`，参考分辨率 `1920x1080`�
 |---|---:|---|
 | 外边距 | 32 px | 四边固定安全留白 |
 | 顶部状态栏 | 1856x72 | 场次、双方名称、当前 tick、规则/内容版本 |
-| 主战场 | 1376x824 | 上方道影轨、中央关键事件、下方玩家轨 |
+| 主战场 | 1376x824 | 上方对手快照轨、中央关键事件、下方玩家轨 |
 | 主区间距 | 24 px | 战场与证据栏分隔 |
 | 证据栏 | 456x824 | 当前事件、关键战报、全部日志与筛选 |
 | 底部控制栏 | 1856x88 | 返回、播放控制、时间线、跳过、重播 |
@@ -53,14 +53,14 @@ Canvas 使用 `CanvasScaler.ScaleWithScreenSize`，参考分辨率 `1920x1080`�
 
 每一方使用相同结构：
 
-- 左侧 216 px 显示名称、气血、护体、失衡和当前关键状态。
+- 左侧 216 px 显示名称、生命值、护盾、过载和当前关键状态。
 - 右侧为 8 格轨道；单格宽 134 px，格间距 8 px。
 - 轨道底层始终显示 8 个固定槽位。
-- 法门只在 `AnchorSlot` 创建一个 `ItemCardWidget`；宽度为 `Size * 134 + (Size - 1) * 8`。
-- 被多格法门覆盖的槽位显示统一占用底纹，不重复名称或数值。
+- 装备只在 `AnchorSlot` 创建一个 `ItemCardWidget`；宽度为 `Size * 134 + (Size - 1) * 8`。
+- 被多格装备覆盖的槽位显示统一占用底纹，不重复名称或数值。
 - 空格明确显示“空位”，视为构筑取舍，不显示错误态。
 
-上方为道影，下方为玩家。双方顺序不会因胜负、播放速度或重播改变。
+上方为对手快照，下方为玩家。双方顺序不会因胜负、播放速度或重播改变。
 
 ### 3.3 中央关键事件
 
@@ -69,7 +69,7 @@ Canvas 使用 `CanvasScaler.ScaleWithScreenSize`，参考分辨率 `1920x1080`�
 1. 致胜或致败。
 2. 首次核心发动、未发动或无合法目标。
 3. 连锁中断、免疫、截断。
-4. 失衡临界与走火。
+4. 过载临界与过载伤害。
 5. 普通效果与重复触发。
 
 显示内容为 `tick + 来源 -> 目标 + 效果 + 数值`。连锁最多同时标出三层，使用 `1/2/3` 编号；更深层显示 `+N 次响应`。
@@ -85,15 +85,15 @@ Canvas 使用 `CanvasScaler.ScaleWithScreenSize`，参考分辨率 `1920x1080`�
 | 主文本 | `#EDF0ED` | 正文 |
 | 次文本 | `#AEB8B3` | 较小字号 |
 | 伤害/灼烧 | `#C65F55` | “伤”标记 |
-| 护体/冻结 | `#5D94AD` | “护”或“冻”标记 |
+| 护盾/冻结 | `#5D94AD` | “护”或“冻”标记 |
 | 治疗/恢复 | `#5B9C73` | “愈”标记 |
-| 蓄力 | `#C19B52` | 层数数字 |
+| 充能 | `#C19B52` | 层数数字 |
 | 延迟/毒 | `#7A668C` | “迟”或“毒”标记 |
 | 连锁 | `#5F9A78` | 链深编号 |
 | 当前来源 | `#E0B75E` | 顶边框 |
 | 当前目标 | `#EDF0ED` | 完整外框 |
 
-卡面第一层固定显示：名称、尺寸、主要效果、冷却进度和蓄力层数。定义 ID、effect ID、reasonCode 和完整数值进入右侧日志，不挤进卡面。
+卡面第一层固定显示：名称、尺寸、主要效果、冷却进度和充能层数。定义 ID、effect ID、reasonCode 和完整数值进入右侧日志，不挤进卡面。
 
 现有 `Assets/Res/UI/UISprite/Common/` 与公共组件库提供面板、按钮、进度条和选择轮廓。本轮不新增位图插画。
 
@@ -120,7 +120,7 @@ Unity/Assets/Scripts/Game/Hot/Code/Buqi/UI/BattleLogWidget.cs
 - `BattleReplayFacts`：从日志聚合最大有效贡献、关键连锁/中断和最大风险账单，不产生策略建议。
 - `BattleReplayController`：纯 C# 状态机，拥有播放位置、速度、暂停、跳过、重播、筛选和日志分页；不得引用 Unity UI 或调用 `BuqiBattleSimulator.Simulate`。
 - `BattleForm`：`StarForceUIForm` 子类，是控制器、静态卡位、日志条目和 UI 回调的唯一 Owner。
-- `ItemCardWidget`：无业务决策，只渲染一张法门或空位的当前状态。
+- `ItemCardWidget`：无业务决策，只渲染一件装备或空位的当前状态。
 - `BattleLogWidget`：无业务决策，只渲染一条格式化日志或战后事实。
 
 ### 5.2 Editor 代码
@@ -168,7 +168,7 @@ HotEntry.Tables.BuqiConfig + HotEntry.Tables.BuqiItemDefinitions
 
 控制器从 BuildSnapshot 初始资源开始，按 `Sequence` 顺序应用 `BattleEvent`。效果类型通过当前定义表和 `EffectId` 查询，不从 reasonCode 猜测规则。
 
-播放到结尾时，投影得到的气血、护体和失衡必须与 `BattleResult` 一致；不一致时进入数据错误状态，不用 `BattleResult` 覆盖错误投影。
+播放到结尾时，投影得到的生命值、护盾和过载必须与 `BattleResult` 一致；不一致时进入数据错误状态，不用 `BattleResult` 覆盖错误投影。
 
 未知但不影响资源的日志仍可作为原始日志展示。无法识别的资源变化、hash 不一致、缺失实例或乱序事件会终止播放并显示数据错误。
 
@@ -183,11 +183,11 @@ HotEntry.Tables.BuqiConfig + HotEntry.Tables.BuqiItemDefinitions
 
 战后固定三条事实：
 
-- 最大有效贡献：伤害、护体或治疗中绝对有效量最高的一项。
+- 最大有效贡献：伤害、护盾或治疗中绝对有效量最高的一项。
 - 关键连锁或中断：优先取致胜链、截断、无目标或免疫；没有时取最深链。
-- 最大风险账单：失衡走火、持续伤害或空转中总损失最高的一项。
+- 最大风险账单：过载伤害、持续伤害或空转中总损失最高的一项。
 
-每条事实保留来源 event IDs，点击后跳到对应 tick 并选中日志页；事实不输出购买、淬炼、摆位或强弱建议。
+每条事实保留来源 event IDs，点击后跳到对应 tick 并选中日志页；事实不输出购买、改造、摆位或强弱建议。
 
 ## 8. 控件与生命周期
 
@@ -278,7 +278,7 @@ HotEntry.Tables.BuqiConfig + HotEntry.Tables.BuqiItemDefinitions
 本轮完成条件：
 
 1. 主菜单“开始战斗”能稳定打开正式 GameHot `BattleForm`。
-2. 双方 8 格、卡面尺寸、气血、护体、失衡、蓄力和连续冷却均可见。
+2. 双方 8 格、卡面尺寸、生命值、护盾、过载、充能和连续冷却均可见。
 3. 暂停、1x/2x/4x、跳过、重播和日志筛选可用。
 4. 当前来源、目标、连锁和延迟可辨认。
 5. 战后显示三条有 event IDs 的事实，且不包含策略建议。
@@ -286,4 +286,4 @@ HotEntry.Tables.BuqiConfig + HotEntry.Tables.BuqiItemDefinitions
 7. 1920x1080 下布局通过真实截图检查。
 8. 所有新增测试、Unity 编译和 Console 检查通过。
 
-精美卡图、移动端和完整 Run Shell 不属于本轮完成条件。
+精美卡图、移动端和完整 Run Shell 不属于本战斗子规格的完成条件。

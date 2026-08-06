@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.UI.Stages;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Game.Hot.Buqi.Tests
 {
@@ -70,6 +73,41 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(field, Is.Not.Null, fieldName);
             Assert.That(field.GetValue(null), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void BoardEditor_ExposesDragDeployCommand()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(StageFolder + "BoardEditorWidget.prefab");
+            GameObject instance = Object.Instantiate(prefab);
+            try
+            {
+                IBuqiStageWidget stage = instance.GetComponents<MonoBehaviour>().OfType<IBuqiStageWidget>().Single();
+                BuqiUIDemoCommand submitted = null;
+                stage.Render(new BuqiUIDemoView
+                {
+                    Phase = BuqiUIDemoPhase.BoardEditor,
+                    ContextTitle = "Board",
+                    ContextBody = "Deploy",
+                    BoardSlots = Enumerable.Range(0, 8)
+                        .Select(slot => new BuqiDemoItemView { Empty = true, Slot = slot })
+                        .ToList(),
+                }, command => submitted = command);
+
+                Button openButton = instance.GetComponentsInChildren<Button>(true)
+                    .FirstOrDefault(button => button.gameObject.activeSelf &&
+                        button.GetComponentInChildren<Text>(true)?.text == "\u62D6\u62FD\u4E0A\u9635");
+                Assert.That(openButton, Is.Not.Null);
+
+                openButton.onClick.Invoke();
+
+                Assert.That(submitted, Is.Not.Null);
+                Assert.That(submitted.Type, Is.EqualTo(BuqiUIDemoCommandType.OpenDragDeploy));
+            }
+            finally
+            {
+                Object.DestroyImmediate(instance);
+            }
         }
 
         private static void AssertChild(GameObject prefab, string name)

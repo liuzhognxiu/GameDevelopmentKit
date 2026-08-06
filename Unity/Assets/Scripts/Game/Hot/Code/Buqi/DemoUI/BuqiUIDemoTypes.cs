@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Hot.Buqi.DemoUI.Deployment;
 
 namespace Game.Hot.Buqi.DemoUI
 {
@@ -28,6 +29,8 @@ namespace Game.Hot.Buqi.DemoUI
         ToggleShopLock,
         SelectBoardSource,
         PlaceBoardItem,
+        OpenDragDeploy,
+        ApplyDeployment,
         SubmitPrediction,
         SkipPrediction,
         NextPhase,
@@ -41,6 +44,7 @@ namespace Game.Hot.Buqi.DemoUI
         public string PrimaryId = string.Empty;
         public string SecondaryId = string.Empty;
         public int Slot = -1;
+        public BuqiDeploymentSnapshot Deployment;
     }
 
     public sealed class BuqiUIDemoCommandResult

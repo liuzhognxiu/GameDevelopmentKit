@@ -49,7 +49,7 @@ namespace Game.Hot.Buqi.Tests
                 BuqiDeploymentSlotRef.Storage(1), BuqiDeploymentSlotRef.Board(2));
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("\u76EE\u6807\u4F4D\u7F6E\u4E0E\u5176\u4ED6\u88C5\u5907\u91CD\u53E0"));
+            Assert.That(result.Reason, Is.EqualTo("目标位置与其他装备重叠"));
             Assert.That(controller.View, Is.SameAs(before));
         }
 
@@ -64,7 +64,7 @@ namespace Game.Hot.Buqi.Tests
                 BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(6));
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("\u88C5\u5907\u8D85\u51FA\u68CB\u76D8\u8303\u56F4"));
+            Assert.That(result.Reason, Is.EqualTo("装备超出棋盘范围"));
             Assert.That(controller.View, Is.SameAs(before));
         }
 
@@ -113,16 +113,37 @@ namespace Game.Hot.Buqi.Tests
                 BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(0));
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("\u6765\u6E90\u4F4D\u7F6E\u6CA1\u6709\u88C5\u5907"));
+            Assert.That(result.Reason, Is.EqualTo("来源位置没有装备"));
             Assert.That(controller.View, Is.SameAs(before));
+        }
+
+        [Test]
+        public void Snapshot_PublicSlotConstructorCopiesPayload()
+        {
+            var signature = new[]
+            {
+                typeof(IReadOnlyList<string>),
+                typeof(IReadOnlyList<string>),
+            };
+            System.Reflection.ConstructorInfo constructor = typeof(BuqiDeploymentSnapshot).GetConstructor(signature);
+            Assert.That(constructor, Is.Not.Null);
+            var board = Slots(8);
+            var storage = Slots(5);
+            board[0] = "item-s";
+
+            var snapshot = (BuqiDeploymentSnapshot)constructor.Invoke(new object[] { board, storage });
+            board[0] = "changed";
+
+            Assert.That(snapshot.BoardSlots[0], Is.EqualTo("item-s"));
+            Assert.That(snapshot.StorageSlots.Count, Is.EqualTo(5));
         }
 
         private static BuqiUIDemoCatalog CreateCatalog()
         {
             var catalog = new BuqiUIDemoCatalog();
-            catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-s", Name = "\u77ED\u5203", Size = 1 });
-            catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-m", Name = "\u4E2D\u9635", Size = 2 });
-            catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-l", Name = "\u957F\u9635", Size = 3 });
+            catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-s", Name = "短刃", Size = 1 });
+            catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-m", Name = "中阵", Size = 2 });
+            catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-l", Name = "长阵", Size = 3 });
             return catalog;
         }
 

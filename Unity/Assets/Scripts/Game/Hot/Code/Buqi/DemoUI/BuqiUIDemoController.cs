@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Hot.Buqi.DemoUI.Deployment;
 
 namespace Game.Hot.Buqi.DemoUI
 {
@@ -27,6 +28,8 @@ namespace Game.Hot.Buqi.DemoUI
         {
             if (command == null)
                 return Rejected("Command is null.");
+            if (command.Type == BuqiUIDemoCommandType.OpenDragDeploy)
+                return OpenDragDeploy();
             if (command.Type == BuqiUIDemoCommandType.PreviousPhase)
                 return GoBack();
             if (command.Type == BuqiUIDemoCommandType.Restart)
@@ -49,18 +52,18 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 case BuqiUIDemoCommandType.SelectStarter:
                     if (state.Phase != BuqiUIDemoPhase.StarterSelection)
-                        return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u9009\u62E9\u8D77\u59CB\u88C5\u5907");
+                        return Reject(out reason, "当前阶段不能选择起始装备");
                     if (m_Catalog.FindItem(command.PrimaryId) == null)
-                        return Reject(out reason, "\u8D77\u59CB\u88C5\u5907\u4E0D\u5B58\u5728");
+                        return Reject(out reason, "起始装备不存在");
                     state.SelectedId = command.PrimaryId;
                     return true;
 
                 case BuqiUIDemoCommandType.SelectChoice:
                     List<BuqiDemoChoiceView> choices = ChoicesForPhase(state.Phase);
                     if (choices == null)
-                        return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u9009\u62E9\u8BE5\u9879");
+                        return Reject(out reason, "当前阶段不能选择该项");
                     if (!choices.Exists(choice => string.Equals(choice.Id, command.PrimaryId, StringComparison.Ordinal)))
-                        return Reject(out reason, "\u9009\u9879\u4E0D\u5B58\u5728");
+                        return Reject(out reason, "选项不存在");
                     state.SelectedId = command.PrimaryId;
                     return true;
 
@@ -69,11 +72,11 @@ namespace Game.Hot.Buqi.DemoUI
 
                 case BuqiUIDemoCommandType.RefreshShop:
                     if (state.Phase != BuqiUIDemoPhase.Shop)
-                        return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u5237\u65B0\u5546\u5E97");
+                        return Reject(out reason, "当前阶段不能刷新商店");
                     if (state.Coins < 1)
-                        return Reject(out reason, "\u91D1\u5E01\u4E0D\u8DB3");
+                        return Reject(out reason, "金币不足");
                     if (state.ShopLocked)
-                        return Reject(out reason, "\u5546\u5E97\u5DF2\u9501\u5B9A");
+                        return Reject(out reason, "商店已锁定");
                     state.Coins--;
                     state.ShopRefreshCount++;
                     state.SoldOffers.Clear();
@@ -81,33 +84,36 @@ namespace Game.Hot.Buqi.DemoUI
 
                 case BuqiUIDemoCommandType.ToggleShopLock:
                     if (state.Phase != BuqiUIDemoPhase.Shop)
-                        return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u9501\u5B9A\u5546\u5E97");
+                        return Reject(out reason, "当前阶段不能锁定商店");
                     state.ShopLocked = !state.ShopLocked;
                     return true;
 
                 case BuqiUIDemoCommandType.SelectBoardSource:
                     if (state.Phase != BuqiUIDemoPhase.BoardEditor)
-                        return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u7F16\u8F91\u68CB\u76D8");
+                        return Reject(out reason, "当前阶段不能编辑棋盘");
                     state.SelectedBoardSourceId = command.PrimaryId ?? string.Empty;
                     return true;
 
                 case BuqiUIDemoCommandType.PlaceBoardItem:
                     return TryPlace(state, command, out reason);
 
+                case BuqiUIDemoCommandType.ApplyDeployment:
+                    return TryApplyDeployment(state, command.Deployment, out reason);
+
                 case BuqiUIDemoCommandType.SubmitPrediction:
                     if (state.Phase != BuqiUIDemoPhase.Prediction)
-                        return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u63D0\u4EA4\u9884\u6D4B");
+                        return Reject(out reason, "当前阶段不能提交预测");
                     if (state.PredictionSubmitted)
-                        return Reject(out reason, "\u9884\u6D4B\u5DF2\u7ECF\u63D0\u4EA4");
+                        return Reject(out reason, "预测已经提交");
                     state.PredictionSubmitted = true;
                     state.Prediction = string.IsNullOrEmpty(command.PrimaryId) ? "Draw" : command.PrimaryId;
                     return true;
 
                 case BuqiUIDemoCommandType.SkipPrediction:
                     if (state.Phase != BuqiUIDemoPhase.Prediction)
-                        return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u8DF3\u8FC7\u9884\u6D4B");
+                        return Reject(out reason, "当前阶段不能跳过预测");
                     if (state.PredictionSubmitted)
-                        return Reject(out reason, "\u9884\u6D4B\u5DF2\u7ECF\u63D0\u4EA4");
+                        return Reject(out reason, "预测已经提交");
                     state.PredictionSubmitted = true;
                     state.Prediction = "Skipped";
                     return true;
@@ -123,17 +129,17 @@ namespace Game.Hot.Buqi.DemoUI
         private bool TryBuy(BuqiUIDemoState state, string offerId, out string reason)
         {
             if (state.Phase != BuqiUIDemoPhase.Shop)
-                return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u8D2D\u4E70\u88C5\u5907");
+                return Reject(out reason, "当前阶段不能购买装备");
             BuqiDemoOfferView offer = m_Catalog.ShopOffers.Find(value => value.Id == offerId);
             if (offer == null)
-                return Reject(out reason, "\u5546\u5E97\u88C5\u5907\u4E0D\u5B58\u5728");
+                return Reject(out reason, "商店装备不存在");
             if (state.SoldOffers.Contains(offerId))
-                return Reject(out reason, "\u8BE5\u88C5\u5907\u5DF2\u552E\u51FA");
+                return Reject(out reason, "该装备已售出");
             if (state.Coins < offer.Price)
-                return Reject(out reason, "\u91D1\u5E01\u4E0D\u8DB3");
+                return Reject(out reason, "金币不足");
             int slot = state.Storage.FindIndex(string.IsNullOrEmpty);
             if (slot < 0)
-                return Reject(out reason, "\u4ED3\u5E93\u5DF2\u6EE1");
+                return Reject(out reason, "仓库已满");
             state.Coins -= offer.Price;
             state.Storage[slot] = offer.Item.Id;
             state.SoldOffers.Add(offerId);
@@ -144,19 +150,19 @@ namespace Game.Hot.Buqi.DemoUI
         private bool TryPlace(BuqiUIDemoState state, BuqiUIDemoCommand command, out string reason)
         {
             if (state.Phase != BuqiUIDemoPhase.BoardEditor)
-                return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u7F16\u8F91\u68CB\u76D8");
+                return Reject(out reason, "当前阶段不能编辑棋盘");
             if (command.Slot < 0 || command.Slot >= state.Board.Count)
-                return Reject(out reason, "\u68CB\u76D8\u4F4D\u7F6E\u65E0\u6548");
+                return Reject(out reason, "棋盘位置无效");
             string itemId = string.IsNullOrEmpty(command.PrimaryId) ? state.SelectedBoardSourceId : command.PrimaryId;
             BuqiUIDemoItemDefinition item = m_Catalog.FindItem(itemId);
             if (item == null)
-                return Reject(out reason, "\u8BF7\u5148\u9009\u62E9\u88C5\u5907");
+                return Reject(out reason, "请先选择装备");
             if (command.Slot + item.Size > state.Board.Count)
-                return Reject(out reason, "\u88C5\u5907\u8D85\u51FA\u68CB\u76D8\u8303\u56F4");
+                return Reject(out reason, "装备超出棋盘范围");
             for (int slot = command.Slot; slot < command.Slot + item.Size; slot++)
             {
                 if (!string.IsNullOrEmpty(state.Board[slot]))
-                    return Reject(out reason, "\u76EE\u6807\u4F4D\u7F6E\u5DF2\u5360\u7528");
+                    return Reject(out reason, "目标位置已占用");
             }
             for (int slot = command.Slot; slot < command.Slot + item.Size; slot++)
                 state.Board[slot] = itemId;
@@ -168,18 +174,78 @@ namespace Game.Hot.Buqi.DemoUI
             return true;
         }
 
+        private BuqiUIDemoCommandResult OpenDragDeploy()
+        {
+            if (m_State.Phase != BuqiUIDemoPhase.BoardEditor)
+                return Rejected("\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u7F16\u8F91\u68CB\u76D8");
+            return new BuqiUIDemoCommandResult { Accepted = true, View = View };
+        }
+
+        private bool TryApplyDeployment(
+            BuqiUIDemoState state,
+            BuqiDeploymentSnapshot deployment,
+            out string reason)
+        {
+            if (state.Phase != BuqiUIDemoPhase.BoardEditor)
+                return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u7F16\u8F91\u68CB\u76D8");
+            if (deployment == null)
+                return Reject(out reason, "\u90E8\u7F72\u5FEB\u7167\u4E0D\u53EF\u7528");
+            if (!BuqiDragDeployController.TryCreate(
+                    m_Catalog,
+                    state.Board,
+                    state.Storage,
+                    out BuqiDragDeployController current,
+                    out reason))
+                return false;
+            if (!BuqiDragDeployController.TryCreate(
+                    m_Catalog,
+                    deployment.BoardSlots,
+                    deployment.StorageSlots,
+                    out BuqiDragDeployController proposed,
+                    out reason))
+                return false;
+            if (!SameOwnedItems(current.View, proposed.View))
+                return Reject(out reason, "\u90E8\u7F72\u5FEB\u7167\u4E0E\u5F53\u524D\u88C5\u5907\u4E0D\u4E00\u81F4");
+
+            state.Board = new List<string>(proposed.View.BoardSlots);
+            state.Storage = new List<string>(proposed.View.StorageSlots);
+            state.SelectedBoardSourceId = string.Empty;
+            reason = string.Empty;
+            return true;
+        }
+
+        private static bool SameOwnedItems(BuqiDeploymentSnapshot left, BuqiDeploymentSnapshot right)
+        {
+            HashSet<string> leftItems = OwnedItems(left);
+            HashSet<string> rightItems = OwnedItems(right);
+            return leftItems.SetEquals(rightItems);
+        }
+
+        private static HashSet<string> OwnedItems(BuqiDeploymentSnapshot snapshot)
+        {
+            var result = new HashSet<string>(StringComparer.Ordinal);
+            foreach (BuqiDeploymentPlacement placement in snapshot.Placements)
+                result.Add(placement.ItemId);
+            foreach (string itemId in snapshot.StorageSlots)
+            {
+                if (!string.IsNullOrEmpty(itemId))
+                    result.Add(itemId);
+            }
+            return result;
+        }
+
         private bool TryAdvance(BuqiUIDemoState state, out string reason)
         {
             if (state.Phase == BuqiUIDemoPhase.StarterSelection)
             {
                 if (string.IsNullOrEmpty(state.SelectedId))
-                    return Reject(out reason, "\u8BF7\u5148\u9009\u62E9\u8D77\u59CB\u88C5\u5907");
+                    return Reject(out reason, "请先选择起始装备");
                 state.Board[0] = state.SelectedId;
             }
             if (state.Phase == BuqiUIDemoPhase.Prediction && !state.PredictionSubmitted)
-                return Reject(out reason, "\u8BF7\u5148\u63D0\u4EA4\u6216\u8DF3\u8FC7\u9884\u6D4B");
+                return Reject(out reason, "请先提交或跳过预测");
             if (state.Phase == BuqiUIDemoPhase.RunTerminal)
-                return Reject(out reason, "\u672C\u5C40\u5DF2\u7ED3\u675F");
+                return Reject(out reason, "本局已结束");
 
             state.Phase++;
             state.SelectedId = string.Empty;
@@ -192,7 +258,7 @@ namespace Game.Hot.Buqi.DemoUI
         private BuqiUIDemoCommandResult GoBack()
         {
             if (m_History.Count == 0)
-                return Rejected("\u5DF2\u7ECF\u662F\u7B2C\u4E00\u4E2A\u9636\u6BB5");
+                return Rejected("已经是第一个阶段");
             m_State = m_History.Pop();
             View = CreateView(m_State);
             return new BuqiUIDemoCommandResult { Accepted = true, View = View };
@@ -221,8 +287,8 @@ namespace Game.Hot.Buqi.DemoUI
                 Prediction = state.Prediction,
                 ContextTitle = PhaseTitle(state.Phase),
                 ContextBody = PhaseBody(state.Phase),
-                PrimaryCommandLabel = state.Phase == BuqiUIDemoPhase.RunTerminal ? "\u91CD\u65B0\u5F00\u59CB" : "\u7EE7\u7EED",
-                SecondaryCommandLabel = "\u8FD4\u56DE",
+                PrimaryCommandLabel = state.Phase == BuqiUIDemoPhase.RunTerminal ? "重新开始" : "继续",
+                SecondaryCommandLabel = "返回",
                 VisitedPhases = new List<BuqiUIDemoPhase>(state.Visited),
                 BoardSlots = CreateSlots(state.Board, state.SelectedBoardSourceId),
                 StorageSlots = CreateSlots(state.Storage, state.SelectedBoardSourceId),
@@ -308,9 +374,9 @@ namespace Game.Hot.Buqi.DemoUI
         {
             return new List<BuqiDemoFactView>
             {
-                new BuqiDemoFactView { Title = "\u8F93\u51FA\u8D21\u732E", Body = "\u6838\u5FC3\u88C5\u5907\u5B8C\u6210\u4E86\u6700\u9AD8\u6709\u6548\u4F24\u5BB3", Tick = 180 },
-                new BuqiDemoFactView { Title = "\u8FDE\u9501\u8BC1\u636E", Body = "\u5145\u80FD\u5728\u540C\u4E00\u89E6\u53D1\u94FE\u5185\u88AB\u6D88\u8017", Tick = 260 },
-                new BuqiDemoFactView { Title = "\u98CE\u9669\u8D26\u5355", Body = "\u8FC7\u8F7D\u4F24\u5BB3\u9020\u6210\u672C\u573A\u6700\u5927\u635F\u5931", Tick = 420 },
+                new BuqiDemoFactView { Title = "输出贡献", Body = "核心装备完成了最高有效伤害", Tick = 180 },
+                new BuqiDemoFactView { Title = "连锁证据", Body = "充能在同一触发链内被消耗", Tick = 260 },
+                new BuqiDemoFactView { Title = "风险账单", Body = "过载伤害造成本场最大损失", Tick = 420 },
             };
         }
 
@@ -318,8 +384,8 @@ namespace Game.Hot.Buqi.DemoUI
         {
             string[] titles =
             {
-                "\u8D77\u59CB\u9009\u62E9", "\u5BF9\u624B\u5FEB\u7167", "\u6218\u524D\u51C6\u5907", "\u5546\u5E97", "\u4E8B\u4EF6", "\u6539\u9020",
-                "\u68CB\u76D8\u7F16\u8F91", "\u80DC\u8D1F\u9884\u6D4B", "\u6218\u6597\u56DE\u653E", "\u6218\u6597\u603B\u7ED3", "\u56DE\u5408\u7ED3\u7B97", "\u5355\u5C40\u7ED3\u675F",
+                "起始选择", "对手快照", "战前准备", "商店", "事件", "改造",
+                "棋盘编辑", "胜负预测", "战斗回放", "战斗总结", "回合结算", "单局结束",
             };
             return titles[(int)phase];
         }
@@ -328,18 +394,18 @@ namespace Game.Hot.Buqi.DemoUI
         {
             string[] bodies =
             {
-                "\u4ECE\u4E09\u4EF6\u88C5\u5907\u4E2D\u9009\u62E9\u672C\u5C40\u7684\u6784\u7B51\u8D77\u70B9\u3002",
-                "\u68C0\u67E5\u5BF9\u624B\u7684\u68CB\u76D8\u3001\u6539\u9020\u548C\u6784\u7B51\u65B9\u5411\u3002",
-                "\u9009\u62E9\u672C\u56DE\u5408\u7684\u51C6\u5907\u6536\u76CA\u3002",
-                "\u4F7F\u7528\u91D1\u5E01\u8D2D\u4E70\u88C5\u5907\uFF0C\u6216\u9501\u5B9A\u5F53\u524D\u62A5\u4EF7\u3002",
-                "\u5728\u6536\u76CA\u4E0E\u98CE\u9669\u4E4B\u95F4\u9009\u62E9\u3002",
-                "\u4E3A\u4E00\u4EF6\u88C5\u5907\u6DFB\u52A0\u6536\u76CA\u4E0E\u4EE3\u4EF7\u5E76\u5B58\u7684\u6539\u9020\u3002",
-                "\u5C06\u88C5\u5907\u5728 8 \u683C\u68CB\u76D8\u4E0E 5 \u683C\u4ED3\u5E93\u4E4B\u95F4\u6574\u7406\u3002",
-                "\u5728\u6218\u6597\u524D\u8BB0\u5F55\u4F60\u5BF9\u7ED3\u679C\u7684\u5224\u65AD\u3002",
-                "\u4F7F\u7528\u771F\u5B9E\u6A21\u62DF\u65E5\u5FD7\u8FDB\u884C\u53EF\u6682\u505C\u3001\u53D8\u901F\u7684\u56DE\u653E\u3002",
-                "\u53EA\u5C55\u793A\u53EF\u56DE\u6EAF\u7684\u6218\u6597\u4E8B\u5B9E\u3002",
-                "\u7ED3\u7B97\u80DC\u573A\u3001\u5355\u5C40\u751F\u547D\u4E0E\u91D1\u5E01\u53D8\u5316\u3002",
-                "\u67E5\u770B\u672C\u5C40\u7684\u6784\u7B51\u4E0E\u6218\u6597\u6458\u8981\u3002",
+                "从三件装备中选择本局的构筑起点。",
+                "检查对手的棋盘、改造和构筑方向。",
+                "选择本回合的准备收益。",
+                "使用金币购买装备，或锁定当前报价。",
+                "在收益与风险之间选择。",
+                "为一件装备添加收益与代价并存的改造。",
+                "将装备在 8 格棋盘与 5 格仓库之间整理。",
+                "在战斗前记录你对结果的判断。",
+                "使用真实模拟日志进行可暂停、变速的回放。",
+                "只展示可回溯的战斗事实。",
+                "结算胜场、单局生命与金币变化。",
+                "查看本局的构筑与战斗摘要。",
             };
             return bodies[(int)phase];
         }

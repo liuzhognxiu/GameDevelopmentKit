@@ -1,7 +1,9 @@
+using System;
 using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.DemoUI.Deployment;
 using NUnit.Framework;
 
 namespace Game.Hot.Buqi.Tests
@@ -37,7 +39,7 @@ namespace Game.Hot.Buqi.Tests
             });
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u9009\u62E9\u8BE5\u9879"));
+            Assert.That(result.Reason, Is.EqualTo("当前阶段不能选择该项"));
             Assert.That(controller.View, Is.SameAs(before));
         }
 
@@ -61,9 +63,121 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(first.Accepted, Is.True);
             Assert.That(second.Accepted, Is.False);
-            Assert.That(second.Reason, Is.EqualTo("\u9884\u6D4B\u5DF2\u7ECF\u63D0\u4EA4"));
+            Assert.That(second.Reason, Is.EqualTo("预测已经提交"));
             Assert.That(controller.View, Is.SameAs(lockedView));
             Assert.That(controller.View.Prediction, Is.EqualTo("Win"));
+        }
+
+        [TestCase("OpenDragDeploy")]
+        [TestCase("ApplyDeployment")]
+        public void CommandType_ContainsDeploymentCommands(string commandName)
+        {
+            Assert.That(Enum.GetNames(typeof(BuqiUIDemoCommandType)), Contains.Item(commandName));
+        }
+
+        [Test]
+        public void Command_ContainsTypedDeploymentPayload()
+        {
+            Assert.That(typeof(BuqiUIDemoCommand).GetField("Deployment")?.FieldType,
+                Is.EqualTo(typeof(BuqiDeploymentSnapshot)));
+        }
+
+        [Test]
+        public void OpenDragDeploy_IsAcceptedOnlyInBoardEditorWithoutMutation()
+        {
+            BuqiUIDemoController controller = CreateController();
+            BuqiUIDemoView starter = controller.View;
+
+            BuqiUIDemoCommandResult rejected = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.OpenDragDeploy,
+            });
+
+            Assert.That(rejected.Accepted, Is.False);
+            Assert.That(controller.View, Is.SameAs(starter));
+
+            AdvanceTo(controller, BuqiUIDemoPhase.BoardEditor);
+            BuqiUIDemoView boardEditor = controller.View;
+            BuqiUIDemoCommandResult accepted = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.OpenDragDeploy,
+            });
+
+            Assert.That(accepted.Accepted, Is.True, accepted.Reason);
+            Assert.That(controller.View, Is.SameAs(boardEditor));
+        }
+
+        [Test]
+        public void ApplyDeployment_ValidOwnedSnapshotReplacesBoardAtomically()
+        {
+            BuqiUIDemoController controller = CreateController();
+            AdvanceTo(controller, BuqiUIDemoPhase.BoardEditor);
+            BuqiUIDemoView before = controller.View;
+            var board = Enumerable.Repeat(string.Empty, 8).ToList();
+            board[3] = "item-01";
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.ApplyDeployment,
+                Deployment = new BuqiDeploymentSnapshot(
+                    board,
+                    Enumerable.Repeat(string.Empty, 5).ToList()),
+            });
+
+            Assert.That(result.Accepted, Is.True, result.Reason);
+            Assert.That(controller.View, Is.Not.SameAs(before));
+            Assert.That(controller.View.BoardSlots[0].Empty, Is.True);
+            Assert.That(controller.View.BoardSlots[3].Id, Is.EqualTo("item-01"));
+            Assert.That(controller.View.BoardSlots[4].Id, Is.EqualTo("item-01"));
+        }
+
+        [Test]
+        public void ApplyDeployment_InvalidSnapshotsAreRejectedWithoutMutation()
+        {
+            BuqiUIDemoController controller = CreateController();
+            AdvanceTo(controller, BuqiUIDemoPhase.BoardEditor);
+            BuqiUIDemoView before = controller.View;
+
+            var malformedBoard = Enumerable.Repeat(string.Empty, 7).ToList();
+            var overlapBoard = Enumerable.Repeat(string.Empty, 8).ToList();
+            overlapBoard[0] = "item-01";
+            overlapBoard[1] = "item-02";
+            var unknownBoard = Enumerable.Repeat(string.Empty, 8).ToList();
+            unknownBoard[0] = "missing-item";
+            var addedStorage = Enumerable.Repeat(string.Empty, 5).ToList();
+            addedStorage[0] = "item-02";
+            var currentBoard = Enumerable.Repeat(string.Empty, 8).ToList();
+            currentBoard[0] = "item-01";
+
+            BuqiDeploymentSnapshot[] invalid =
+            {
+                null,
+                new BuqiDeploymentSnapshot(malformedBoard, Enumerable.Repeat(string.Empty, 5).ToList()),
+                new BuqiDeploymentSnapshot(overlapBoard, Enumerable.Repeat(string.Empty, 5).ToList()),
+                new BuqiDeploymentSnapshot(unknownBoard, Enumerable.Repeat(string.Empty, 5).ToList()),
+                new BuqiDeploymentSnapshot(currentBoard, addedStorage),
+            };
+            string[] expectedReasons =
+            {
+                "\u90E8\u7F72\u5FEB\u7167\u4E0D\u53EF\u7528",
+                "\u68CB\u76D8\u4F4D\u7F6E\u6570\u91CF\u65E0\u6548",
+                "\u68CB\u76D8\u4E0A\u5B58\u5728\u91CD\u53E0\u88C5\u5907",
+                "\u88C5\u5907\u5DF2\u4E0D\u5B58\u5728",
+                "\u90E8\u7F72\u5FEB\u7167\u4E0E\u5F53\u524D\u88C5\u5907\u4E0D\u4E00\u81F4",
+            };
+
+            for (int index = 0; index < invalid.Length; index++)
+            {
+                BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+                {
+                    Type = BuqiUIDemoCommandType.ApplyDeployment,
+                    Deployment = invalid[index],
+                });
+
+                Assert.That(result.Accepted, Is.False);
+                Assert.That(result.Reason, Is.EqualTo(expectedReasons[index]));
+                Assert.That(controller.View, Is.SameAs(before));
+            }
         }
 
         private static BuqiUIDemoController CreateController()
@@ -108,7 +222,7 @@ namespace Game.Hot.Buqi.Tests
                 catalog.Items.Add(new BuqiItemConfigRow
                 {
                     DefinitionId = $"item-{index:00}",
-                    DisplayName = $"\u88C5\u5907 {index}",
+                    DisplayName = $"装备 {index}",
                     Size = index == 1
                         ? Game.Hot.Buqi.Battle.BuqiSize.M
                         : Game.Hot.Buqi.Battle.BuqiSize.S,
@@ -122,8 +236,8 @@ namespace Game.Hot.Buqi.Tests
                 catalog.Refinements.Add(new BuqiRefinementConfigRow
                 {
                     RefinementId = $"mod-{index:00}",
-                    DisplayName = $"\u6539\u9020 {index}",
-                    Summary = $"\u6539\u9020\u6548\u679C {index}",
+                    DisplayName = $"改造 {index}",
+                    Summary = $"改造效果 {index}",
                 });
             }
 
@@ -141,7 +255,7 @@ namespace Game.Hot.Buqi.Tests
             catalog.Echoes.Add(new BuqiEchoConfigRow
             {
                 EchoId = "echo-01",
-                DisplayName = "\u5BF9\u624B\u5FEB\u7167",
+                DisplayName = "对手快照",
                 Build = "demo",
                 Snapshot = snapshot,
             });

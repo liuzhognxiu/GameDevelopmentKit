@@ -72,6 +72,13 @@ namespace Game.Hot.Buqi.DemoUI.Deployment
 
     public sealed class BuqiDeploymentSnapshot
     {
+        public BuqiDeploymentSnapshot(
+            IReadOnlyList<string> boardSlots,
+            IReadOnlyList<string> storageSlots)
+            : this(CopySlots(boardSlots), CopySlots(storageSlots), Array.Empty<BuqiDeploymentPlacement>())
+        {
+        }
+
         internal BuqiDeploymentSnapshot(
             IReadOnlyList<string> boardSlots,
             IReadOnlyList<string> storageSlots,
@@ -85,6 +92,16 @@ namespace Game.Hot.Buqi.DemoUI.Deployment
         public IReadOnlyList<string> BoardSlots { get; }
         public IReadOnlyList<string> StorageSlots { get; }
         public IReadOnlyList<BuqiDeploymentPlacement> Placements { get; }
+
+        private static IReadOnlyList<string> CopySlots(IReadOnlyList<string> slots)
+        {
+            if (slots == null)
+                return Array.Empty<string>();
+            var copy = new string[slots.Count];
+            for (int index = 0; index < slots.Count; index++)
+                copy[index] = slots[index] ?? string.Empty;
+            return Array.AsReadOnly(copy);
+        }
     }
 
     public sealed class BuqiDeploymentTargetPreview

@@ -39,7 +39,7 @@ namespace Game.Hot.Buqi.UI
             gameObject.SetActive(false);
         }
 
-        private static string FormatReason(string reasonCode)
+        internal static string FormatReason(string reasonCode)
         {
             switch (reasonCode)
             {

@@ -380,7 +380,7 @@ namespace Game.Hot.Buqi.UI
         {
             return battleEvent == null
                 ? "\u5C1A\u65E0\u4E8B\u4EF6"
-                : BuqiText.Format("第 {0} tick  {1}  {2}", battleEvent.Tick, FormatReason(battleEvent.ReasonCode), battleEvent.Amount);
+                : BuqiText.Format("第 {0} tick  {1}  {2}", battleEvent.Tick, BattleLogWidget.FormatReason(battleEvent.ReasonCode), battleEvent.Amount);
         }
 
         private static string FormatOutcome(BattleResult result)

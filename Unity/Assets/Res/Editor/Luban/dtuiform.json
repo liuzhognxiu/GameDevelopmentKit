@@ -88,5 +88,14 @@
     "UIGroupName": "Default",
     "AllowMultiInstance": false,
     "PauseCoveredUIForm": true
+  },
+  {
+    "Id": 103,
+    "CSName": "BattleForm",
+    "Desc": "战斗回放",
+    "AssetName": "Hot/Buqi/BattleForm",
+    "UIGroupName": "Default",
+    "AllowMultiInstance": false,
+    "PauseCoveredUIForm": true
   }
 ]

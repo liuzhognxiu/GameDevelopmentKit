@@ -58,5 +58,10 @@ namespace ET.Client
         /// 关于
         /// </summary>
         public const int AboutForm = 102;
+
+        /// <summary>
+        /// 战斗回放
+        /// </summary>
+        public const int BattleForm = 103;
     }
 }

@@ -4,7 +4,11 @@
     "references": [
         "LubanLib",
         "LubanLib.Editor",
-        "Game.Hot.Code"
+        "Game.Hot.Code",
+        "Game.Hot.Loader",
+        "Game",
+        "UnityGameFramework.Runtime",
+        "GameFramework"
     ],
     "includePlatforms": [
         "Editor"

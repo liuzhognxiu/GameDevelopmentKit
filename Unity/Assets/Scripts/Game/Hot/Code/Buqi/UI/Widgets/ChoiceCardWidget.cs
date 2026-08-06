@@ -8,9 +8,9 @@ namespace Game.Hot.Buqi.UI
     [DisallowMultipleComponent]
     public sealed class ChoiceCardWidget : MonoBehaviour
     {
-        private static readonly Color BaseColor = new Color32(36, 43, 51, 255);
-        private static readonly Color SelectedColor = new Color32(27, 155, 142, 255);
-        private static readonly Color DisabledColor = new Color32(70, 73, 80, 255);
+        private static readonly Color baseColor = new Color32(36, 43, 51, 255);
+        private static readonly Color selectedColor = new Color32(27, 155, 142, 255);
+        private static readonly Color disabledColor = new Color32(70, 73, 80, 255);
 
         [SerializeField]
         private Image m_Background = null;
@@ -44,10 +44,10 @@ namespace Game.Hot.Buqi.UI
             Clear();
             gameObject.SetActive(true);
 
-            SetText(m_TitleText, view.Selected ? string.Format("[SELECTED] {0}", view.Title) : view.Title);
+            SetText(m_TitleText, view.Selected ? GameFramework.Utility.Text.Format("[已选择] {0}", view.Title) : view.Title);
             SetText(m_DescriptionText, view.Description);
-            SetText(m_CostText, view.Disabled ? "UNAVAILABLE" : FormatCost(view.Cost));
-            SetBackground(view.Disabled ? DisabledColor : view.Selected ? SelectedColor : BaseColor);
+            SetText(m_CostText, view.Disabled ? "不可用" : FormatCost(view.Cost));
+            SetBackground(view.Disabled ? disabledColor : view.Selected ? selectedColor : baseColor);
 
             if (m_Selection != null)
                 m_Selection.gameObject.SetActive(view.Selected);
@@ -69,10 +69,10 @@ namespace Game.Hot.Buqi.UI
                 m_Button.interactable = true;
             }
             if (m_Background != null)
-                m_Background.color = BaseColor;
+                m_Background.color = baseColor;
             if (m_Selection != null)
             {
-                m_Selection.color = SelectedColor;
+                m_Selection.color = selectedColor;
                 m_Selection.gameObject.SetActive(false);
             }
             if (m_DisabledOverlay != null)
@@ -85,7 +85,7 @@ namespace Game.Hot.Buqi.UI
 
         private static string FormatCost(int cost)
         {
-            return cost <= 0 ? "FREE" : string.Format("COST {0}", cost);
+            return cost <= 0 ? "免费" : GameFramework.Utility.Text.Format("消耗 {0}", cost);
         }
 
         private void SetBackground(Color color)

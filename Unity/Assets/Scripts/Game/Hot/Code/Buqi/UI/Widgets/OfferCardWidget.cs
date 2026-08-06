@@ -8,9 +8,9 @@ namespace Game.Hot.Buqi.UI
     [DisallowMultipleComponent]
     public sealed class OfferCardWidget : MonoBehaviour
     {
-        private static readonly Color BaseColor = new Color32(36, 43, 51, 255);
-        private static readonly Color LockedColor = new Color32(70, 73, 80, 255);
-        private static readonly Color SoldColor = new Color32(77, 73, 61, 255);
+        private static readonly Color baseColor = new Color32(36, 43, 51, 255);
+        private static readonly Color lockedColor = new Color32(70, 73, 80, 255);
+        private static readonly Color soldColor = new Color32(77, 73, 61, 255);
 
         [SerializeField]
         private Image m_Background = null;
@@ -53,9 +53,9 @@ namespace Game.Hot.Buqi.UI
             bool unavailable = view.Locked || view.Sold;
 
             SetText(m_NameText, itemName);
-            SetText(m_DescriptionText, view.Locked ? "OFFER LOCKED" : view.Sold ? "SOLD" : itemDescription);
-            SetText(m_PriceText, view.Sold ? "PURCHASED" : string.Format("PRICE {0}", view.Price));
-            SetBackground(view.Sold ? SoldColor : view.Locked ? LockedColor : BaseColor);
+            SetText(m_DescriptionText, view.Locked ? "报价已锁定" : view.Sold ? "已售出" : itemDescription);
+            SetText(m_PriceText, view.Sold ? "已购买" : GameFramework.Utility.Text.Format("价格 {0}", view.Price));
+            SetBackground(view.Sold ? soldColor : view.Locked ? lockedColor : baseColor);
 
             if (m_LockOverlay != null)
                 m_LockOverlay.SetActive(view.Locked);
@@ -88,7 +88,7 @@ namespace Game.Hot.Buqi.UI
                 m_DetailsButton.interactable = true;
             }
             if (m_Background != null)
-                m_Background.color = BaseColor;
+                m_Background.color = baseColor;
             if (m_LockOverlay != null)
                 m_LockOverlay.SetActive(false);
             if (m_SoldOverlay != null)

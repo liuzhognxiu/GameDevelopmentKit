@@ -116,7 +116,7 @@ namespace Game.Hot.Buqi.DemoUI
                     return TryAdvance(state, out reason);
 
                 default:
-                    return Reject(out reason, "Unsupported demo command.");
+                    return Reject(out reason, "不支持的演示指令。");
             }
         }
 

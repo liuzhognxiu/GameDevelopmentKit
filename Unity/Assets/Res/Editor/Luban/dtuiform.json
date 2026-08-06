@@ -97,5 +97,41 @@
     "UIGroupName": "Default",
     "AllowMultiInstance": false,
     "PauseCoveredUIForm": true
+  },
+  {
+    "Id": 104,
+    "CSName": "BuqiRunShellForm",
+    "Desc": "不器界面预览",
+    "AssetName": "Hot/Buqi/BuqiRunShellForm",
+    "UIGroupName": "Default",
+    "AllowMultiInstance": false,
+    "PauseCoveredUIForm": true
+  },
+  {
+    "Id": 105,
+    "CSName": "BuqiItemDetailForm",
+    "Desc": "装备详情",
+    "AssetName": "Hot/Buqi/BuqiItemDetailForm",
+    "UIGroupName": "Pop",
+    "AllowMultiInstance": false,
+    "PauseCoveredUIForm": true
+  },
+  {
+    "Id": 106,
+    "CSName": "BuqiConfirmForm",
+    "Desc": "不器确认框",
+    "AssetName": "Hot/Buqi/BuqiConfirmForm",
+    "UIGroupName": "Pop",
+    "AllowMultiInstance": false,
+    "PauseCoveredUIForm": true
+  },
+  {
+    "Id": 107,
+    "CSName": "BuqiMessageForm",
+    "Desc": "不器状态提示",
+    "AssetName": "Hot/Buqi/BuqiMessageForm",
+    "UIGroupName": "Message",
+    "AllowMultiInstance": true,
+    "PauseCoveredUIForm": false
   }
 ]

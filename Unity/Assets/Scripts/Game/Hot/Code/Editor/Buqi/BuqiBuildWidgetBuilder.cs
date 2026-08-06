@@ -23,7 +23,7 @@ namespace Game.Hot.Editor
         private static readonly Color textColor = new Color32(245, 247, 250, 255);
         private static readonly Color mutedTextColor = new Color32(190, 199, 208, 255);
 
-        [MenuItem("Game/Buqi/Rebuild Build Widgets")]
+        [MenuItem("游戏/不器/重建构筑控件")]
         public static void BuildAll()
         {
             EnsureFolder(OutputFolder);
@@ -32,7 +32,7 @@ namespace Game.Hot.Editor
             BuildOfferCard();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("Buqi build widgets rebuilt.");
+            Debug.Log("不器构筑控件已重建。");
         }
 
         private static void BuildBoardSlot()
@@ -50,18 +50,18 @@ namespace Game.Hot.Editor
             selection.gameObject.SetActive(false);
 
             GameObject lockedOverlay = CreatePanel(root.transform, "LockedOverlay", Vector2.zero, new Vector2(132f, 132f), new Color(0f, 0f, 0f, 0.64f));
-            Text lockedLabel = CreateText(lockedOverlay.transform, "Label", "LOCKED", 17, TextAnchor.MiddleCenter, textColor);
+            Text lockedLabel = CreateText(lockedOverlay.transform, "Label", "已锁定", 17, TextAnchor.MiddleCenter, textColor);
             Stretch(lockedLabel.rectTransform, new Vector2(4f, 4f), new Vector2(-4f, -4f));
             lockedOverlay.SetActive(false);
 
-            Text name = CreateText(root.transform, "Name_Text", "ITEM", 18, TextAnchor.MiddleCenter, textColor);
+            Text name = CreateText(root.transform, "Name_Text", "装备", 18, TextAnchor.MiddleCenter, textColor);
             SetRect(name.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 22f), new Vector2(118f, 34f));
             name.fontStyle = FontStyle.Bold;
 
-            Text size = CreateText(root.transform, "Size_Text", "SIZE 1", 15, TextAnchor.MiddleCenter, accentColor);
+            Text size = CreateText(root.transform, "Size_Text", "占用 1 格", 15, TextAnchor.MiddleCenter, accentColor);
             SetRect(size.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, -8f), new Vector2(118f, 27f));
 
-            Text slot = CreateText(root.transform, "Slot_Text", "SLOT 01", 13, TextAnchor.MiddleCenter, mutedTextColor);
+            Text slot = CreateText(root.transform, "Slot_Text", "棋位 01", 13, TextAnchor.MiddleCenter, mutedTextColor);
             SetRect(slot.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 13f), new Vector2(118f, 23f));
 
             Assign(widget, "m_Background", background);
@@ -89,20 +89,20 @@ namespace Game.Hot.Editor
             selection.gameObject.SetActive(false);
 
             GameObject disabledOverlay = CreatePanel(root.transform, "DisabledOverlay", Vector2.zero, new Vector2(320f, 168f), new Color(0f, 0f, 0f, 0.64f));
-            Text disabledLabel = CreateText(disabledOverlay.transform, "Label", "UNAVAILABLE", 17, TextAnchor.MiddleCenter, textColor);
+            Text disabledLabel = CreateText(disabledOverlay.transform, "Label", "不可用", 17, TextAnchor.MiddleCenter, textColor);
             Stretch(disabledLabel.rectTransform, new Vector2(8f, 8f), new Vector2(-8f, -8f));
             disabledOverlay.SetActive(false);
 
-            Text title = CreateText(root.transform, "Title_Text", "CHOICE", 21, TextAnchor.UpperLeft, textColor);
+            Text title = CreateText(root.transform, "Title_Text", "选择", 21, TextAnchor.UpperLeft, textColor);
             SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(18f, -27f), new Vector2(284f, 30f));
             title.fontStyle = FontStyle.Bold;
 
-            Text description = CreateText(root.transform, "Description_Text", "Choice description", 15, TextAnchor.UpperLeft, mutedTextColor);
+            Text description = CreateText(root.transform, "Description_Text", "选择说明", 15, TextAnchor.UpperLeft, mutedTextColor);
             SetRect(description.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(18f, -77f), new Vector2(284f, 54f));
             description.horizontalOverflow = HorizontalWrapMode.Wrap;
             description.verticalOverflow = VerticalWrapMode.Truncate;
 
-            Text cost = CreateText(root.transform, "Cost_Text", "COST 0", 15, TextAnchor.MiddleLeft, accentColor);
+            Text cost = CreateText(root.transform, "Cost_Text", "消耗 0", 15, TextAnchor.MiddleLeft, accentColor);
             SetRect(cost.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(18f, 21f), new Vector2(284f, 25f));
 
             Assign(widget, "m_Background", background);
@@ -122,12 +122,12 @@ namespace Game.Hot.Editor
             OfferCardWidget widget = root.AddComponent<OfferCardWidget>();
 
             GameObject lockOverlay = CreatePanel(root.transform, "LockOverlay", Vector2.zero, new Vector2(320f, 188f), new Color(0f, 0f, 0f, 0.64f));
-            Text lockLabel = CreateText(lockOverlay.transform, "Label", "LOCKED", 17, TextAnchor.MiddleCenter, textColor);
+            Text lockLabel = CreateText(lockOverlay.transform, "Label", "已锁定", 17, TextAnchor.MiddleCenter, textColor);
             Stretch(lockLabel.rectTransform, new Vector2(8f, 8f), new Vector2(-8f, -8f));
             lockOverlay.SetActive(false);
 
             GameObject soldOverlay = CreatePanel(root.transform, "SoldOverlay", Vector2.zero, new Vector2(320f, 188f), new Color(0.12f, 0.10f, 0.05f, 0.72f));
-            Text soldLabel = CreateText(soldOverlay.transform, "Label", "SOLD", 18, TextAnchor.MiddleCenter, accentColor);
+            Text soldLabel = CreateText(soldOverlay.transform, "Label", "已售出", 18, TextAnchor.MiddleCenter, accentColor);
             Stretch(soldLabel.rectTransform, new Vector2(8f, 8f), new Vector2(-8f, -8f));
             soldOverlay.SetActive(false);
 

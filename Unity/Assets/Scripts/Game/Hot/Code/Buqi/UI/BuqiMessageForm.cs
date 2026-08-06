@@ -53,7 +53,7 @@ namespace Game.Hot.Buqi.UI
             m_DurationSeconds = data.DurationSeconds > 0f ? data.DurationSeconds : DefaultDurationSeconds;
             m_RemainingSeconds = m_DurationSeconds;
             SetText(m_MessageText, data.Message);
-            SetText(m_KindText, IsError ? "ERROR" : "INFO");
+            SetText(m_KindText, IsError ? "错误" : "提示");
             ApplyStateColor();
             UpdateProgress();
         }

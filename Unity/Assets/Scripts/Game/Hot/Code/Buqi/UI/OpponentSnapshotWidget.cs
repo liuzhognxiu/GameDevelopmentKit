@@ -46,7 +46,7 @@ namespace Game.Hot.Buqi.UI
             m_ItemIds = new string[m_ItemButtons.Length];
 
             SetText(m_NameText, string.IsNullOrEmpty(view.Name) ? view.Id : view.Name);
-            SetText(m_BuildText, string.Format("\u65B9\u5411  {0}", EmptyFallback(view.Build, "\u672A\u516C\u5F00")));
+            SetText(m_BuildText, GameFramework.Utility.Text.Format("\u65B9\u5411  {0}", EmptyFallback(view.Build, "\u672A\u516C\u5F00")));
             SetText(m_SlotsText, "\u8FDE\u7EED 8 \u683C\u6784\u7B51  \u00B7  \u516C\u5F00\u60C5\u62A5");
             SetText(m_ThreatText, "\u4E3B\u8981\u5A01\u80C1\uFF1A\u516C\u5F00\u88C5\u5907\u89E6\u53D1\u5173\u7CFB");
             SetText(m_RiskText, "\u5DF2\u77E5\u98CE\u9669\uFF1A\u672A\u516C\u5F00\u6539\u9020");
@@ -70,7 +70,7 @@ namespace Game.Hot.Buqi.UI
                 m_ItemIds[index] = item.Id ?? string.Empty;
                 string itemText = string.IsNullOrEmpty(item.Name) ? item.Id : item.Name;
                 if (!string.IsNullOrEmpty(item.Description))
-                    itemText = string.Format("{0}\n{1}", itemText, item.Description);
+                    itemText = GameFramework.Utility.Text.Format("{0}\n{1}", itemText, item.Description);
                 SetText(GetItemLabel(index), itemText);
                 button.interactable = m_ItemDetailsHandler != null;
                 int slotIndex = index;

@@ -18,7 +18,7 @@ namespace Game.Hot.Buqi.Demo
             error = string.Empty;
             if (catalog == null || catalog.Global == null)
             {
-                error = "Buqi config catalog is unavailable.";
+                error = "不器配置目录不可用。";
                 return false;
             }
 
@@ -57,7 +57,7 @@ namespace Game.Hot.Buqi.Demo
                 out _);
             if (result == null || result.Outcome == BattleOutcome.InvalidBuild)
             {
-                error = "Demo battle snapshots failed battle validation.";
+                error = "演示战斗快照未通过战斗校验。";
                 return false;
             }
 
@@ -88,7 +88,7 @@ namespace Game.Hot.Buqi.Demo
             }
             catch (Exception exception)
             {
-                error = BuqiText.Format("Demo replay validation failed: {0}", exception.Message);
+                error = BuqiText.Format("演示回放校验失败：{0}", exception.Message);
                 return false;
             }
 

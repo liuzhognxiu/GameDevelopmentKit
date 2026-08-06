@@ -63,5 +63,25 @@ namespace Game.Hot
         /// 战斗回放
         /// </summary>
         public const int BattleForm = 103;
+
+        /// <summary>
+        /// 不器界面预览
+        /// </summary>
+        public const int BuqiRunShellForm = 104;
+
+        /// <summary>
+        /// 装备详情
+        /// </summary>
+        public const int BuqiItemDetailForm = 105;
+
+        /// <summary>
+        /// 不器确认框
+        /// </summary>
+        public const int BuqiConfirmForm = 106;
+
+        /// <summary>
+        /// 不器状态提示
+        /// </summary>
+        public const int BuqiMessageForm = 107;
     }
 }

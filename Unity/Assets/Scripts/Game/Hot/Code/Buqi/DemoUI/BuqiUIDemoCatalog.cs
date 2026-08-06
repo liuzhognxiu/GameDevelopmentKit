@@ -30,12 +30,12 @@ namespace Game.Hot.Buqi.DemoUI
             error = string.Empty;
             if (source == null || source.Items == null || source.Refinements == null || source.Echoes == null)
             {
-                error = "Buqi demo config is unavailable.";
+                error = "不器演示配置不可用。";
                 return false;
             }
             if (source.Items.Count < 7 || source.Refinements.Count < 3 || source.Echoes.Count < 1)
             {
-                error = "Buqi demo config requires 7 items, 3 modifications, and 1 opponent.";
+                error = "不器演示配置需要至少 7 件装备、3 个改造和 1 个对手。";
                 return false;
             }
 

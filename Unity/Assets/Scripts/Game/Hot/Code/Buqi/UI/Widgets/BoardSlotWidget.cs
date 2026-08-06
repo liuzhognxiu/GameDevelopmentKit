@@ -8,10 +8,10 @@ namespace Game.Hot.Buqi.UI
     [DisallowMultipleComponent]
     public sealed class BoardSlotWidget : MonoBehaviour
     {
-        private static readonly Color BaseColor = new Color32(36, 43, 51, 255);
-        private static readonly Color SelectedColor = new Color32(27, 155, 142, 255);
-        private static readonly Color LockedColor = new Color32(80, 82, 90, 255);
-        private static readonly Color EmptyColor = new Color32(44, 52, 61, 255);
+        private static readonly Color baseColor = new Color32(36, 43, 51, 255);
+        private static readonly Color selectedColor = new Color32(27, 155, 142, 255);
+        private static readonly Color lockedColor = new Color32(80, 82, 90, 255);
+        private static readonly Color emptyColor = new Color32(44, 52, 61, 255);
 
         [SerializeField]
         private Image m_Background = null;
@@ -47,19 +47,19 @@ namespace Game.Hot.Buqi.UI
 
             if (view.Empty)
             {
-                SetText(m_NameText, "EMPTY");
-                SetText(m_SizeText, "OPEN SLOT");
+                SetText(m_NameText, "空位");
+                SetText(m_SizeText, "可用棋位");
                 SetText(m_SlotText, FormatSlot(view.Slot));
-                SetBackground(EmptyColor);
+                SetBackground(emptyColor);
                 if (m_Button != null && view.Slot >= 0 && onClick != null)
                     m_Button.onClick.AddListener(() => onClick(view.Slot));
                 return;
             }
 
             SetText(m_NameText, string.IsNullOrEmpty(view.Name) ? view.Id : view.Name);
-            SetText(m_SizeText, view.Locked ? "LOCKED" : string.Format("SIZE {0}", view.Size));
+            SetText(m_SizeText, view.Locked ? "已锁定" : GameFramework.Utility.Text.Format("占用 {0} 格", view.Size));
             SetText(m_SlotText, FormatSlot(view.Slot));
-            SetBackground(view.Locked ? LockedColor : view.Selected ? SelectedColor : BaseColor);
+            SetBackground(view.Locked ? lockedColor : view.Selected ? selectedColor : baseColor);
 
             if (m_Selection != null)
                 m_Selection.gameObject.SetActive(view.Selected);
@@ -81,10 +81,10 @@ namespace Game.Hot.Buqi.UI
                 m_Button.interactable = true;
             }
             if (m_Background != null)
-                m_Background.color = BaseColor;
+                m_Background.color = baseColor;
             if (m_Selection != null)
             {
-                m_Selection.color = SelectedColor;
+                m_Selection.color = selectedColor;
                 m_Selection.gameObject.SetActive(false);
             }
             if (m_LockedOverlay != null)
@@ -97,7 +97,7 @@ namespace Game.Hot.Buqi.UI
 
         private static string FormatSlot(int slot)
         {
-            return slot < 0 ? "SLOT --" : string.Format("SLOT {0:00}", slot + 1);
+            return slot < 0 ? "棋位 --" : GameFramework.Utility.Text.Format("棋位 {0:00}", slot + 1);
         }
 
         private void SetBackground(Color color)

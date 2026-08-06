@@ -60,7 +60,7 @@ namespace Game.Hot.Buqi.UI
 
             if (!(userData is BuqiConfirmOpenData data))
             {
-                Log.Warning("BuqiConfirmForm requires BuqiConfirmOpenData.");
+                Log.Warning("确认窗口缺少打开数据。");
                 Close();
                 return;
             }

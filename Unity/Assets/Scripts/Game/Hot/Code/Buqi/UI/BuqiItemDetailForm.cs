@@ -95,7 +95,7 @@ namespace Game.Hot.Buqi.UI
                 m_MetaText,
                 item == null
                     ? string.Empty
-                    : string.Format("{0} \u683c   \u91d1\u5e01 {1}", item.Size, item.Price));
+                    : GameFramework.Utility.Text.Format("{0} \u683c   \u91d1\u5e01 {1}", item.Size, item.Price));
             SetText(
                 m_BodyText,
                 string.IsNullOrEmpty(data.FullEffectText)

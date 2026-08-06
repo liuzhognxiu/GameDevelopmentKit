@@ -106,6 +106,7 @@ namespace Game.Hot.Editor
             body.horizontalOverflow = HorizontalWrapMode.Wrap;
 
             Button jump = CreateButton(root.transform, "JumpButton", "\u8DF3\u5230 T000", new Vector2(370f, 0f), new Vector2(126f, 42f), raisedColor, out Text tick);
+            tick.name = "Tick_Text";
             tick.fontSize = 13;
 
             Assign(widget, "m_TitleText", title);

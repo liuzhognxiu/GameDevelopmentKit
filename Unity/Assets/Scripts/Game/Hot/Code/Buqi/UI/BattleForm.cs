@@ -195,7 +195,7 @@ namespace Game.Hot.Buqi.UI
             if (HotEntry.Tables == null)
             {
                 replay = null;
-                error = "Buqi tables are not initialized.";
+                error = "不器配置表尚未初始化。";
                 return false;
             }
             if (!BuqiGeneratedConfigAdapter.TryReadFromTables(
@@ -282,7 +282,7 @@ namespace Game.Hot.Buqi.UI
             SetText(m_RightNameText, data.RightName);
             SetText(m_LeftStatsText, FormatStats(frame.Left));
             SetText(m_RightStatsText, FormatStats(frame.Right));
-            SetText(m_TickText, BuqiText.Format("TICK {0:000} / {1:000}", frame.Tick, data.Result.DurationTicks));
+            SetText(m_TickText, BuqiText.Format("第 {0:000} tick / {1:000}", frame.Tick, data.Result.DurationTicks));
             SetText(m_CurrentEventText, FormatCurrentEvent(frame.CurrentEvent));
             SetText(m_OutcomeText, frame.IsFinished ? FormatOutcome(data.Result) : "\u6218\u6597\u63A8\u6F14\u4E2D");
             SetText(m_PlayPauseText, m_Controller.IsPaused ? "\u7EE7\u7EED" : "\u6682\u505C");
@@ -336,7 +336,7 @@ namespace Game.Hot.Buqi.UI
                 visible.Reverse();
                 for (int index = 0; index < visible.Count && index < m_LogRows.Length; index++)
                     m_LogRows[index]?.Render(visible[index]);
-                SetText(m_PageText, "LIVE");
+                SetText(m_PageText, "实时");
                 return;
             }
 
@@ -380,7 +380,7 @@ namespace Game.Hot.Buqi.UI
         {
             return battleEvent == null
                 ? "\u5C1A\u65E0\u4E8B\u4EF6"
-                : BuqiText.Format("T{0}  {1}  {2}", battleEvent.Tick, battleEvent.ReasonCode, battleEvent.Amount);
+                : BuqiText.Format("第 {0} tick  {1}  {2}", battleEvent.Tick, FormatReason(battleEvent.ReasonCode), battleEvent.Amount);
         }
 
         private static string FormatOutcome(BattleResult result)
@@ -391,7 +391,7 @@ namespace Game.Hot.Buqi.UI
         private void ShowError(string error)
         {
             m_ErrorPanel?.SetActive(true);
-            SetText(m_ErrorText, string.IsNullOrEmpty(error) ? "Unknown replay error." : error);
+            SetText(m_ErrorText, string.IsNullOrEmpty(error) ? "未知的战斗回放错误。" : error);
         }
 
         private void HideError()

@@ -25,9 +25,9 @@ namespace Game.Hot.Buqi.UI
             if (m_ContentText != null)
             {
                 m_ContentText.text = BuqiText.Format(
-                    "T{0:000}  {1}  {2}",
+                    "第 {0:000} tick  {1}  {2}",
                     battleEvent.Tick,
-                    battleEvent.ReasonCode,
+                    FormatReason(battleEvent.ReasonCode),
                     battleEvent.Amount);
             }
             if (m_Marker != null)
@@ -37,6 +37,31 @@ namespace Game.Hot.Buqi.UI
         public void Clear()
         {
             gameObject.SetActive(false);
+        }
+
+        private static string FormatReason(string reasonCode)
+        {
+            switch (reasonCode)
+            {
+                case "Damage":
+                    return "伤害";
+                case "BurnDamage":
+                    return "灼烧伤害";
+                case "PoisonDamage":
+                    return "中毒伤害";
+                case "OvertimeDamage":
+                    return "持续伤害";
+                case "NoiseAccident":
+                    return "过载事故";
+                case "BufferGain":
+                    return "护体增加";
+                case "Heal":
+                    return "治疗";
+                case "Regen":
+                    return "恢复";
+                default:
+                    return string.IsNullOrEmpty(reasonCode) ? "未知事件" : reasonCode;
+            }
         }
 
         private static Color EventColor(string reasonCode)

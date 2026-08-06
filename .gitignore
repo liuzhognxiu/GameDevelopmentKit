@@ -80,4 +80,5 @@ nul
 
 # Local agent/build scratch state.
 /.workbuddy/
+/.superpowers/
 /Unity/TestResults-*.log

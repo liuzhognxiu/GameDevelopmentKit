@@ -25,7 +25,7 @@ namespace Game.Hot.Editor
         private static readonly Color jadeColor = new Color32(51, 150, 128, 255);
         private static readonly Color dangerColor = new Color32(207, 76, 71, 255);
 
-        [MenuItem("Game/Buqi/Rebuild Battle UI Demo")]
+        [MenuItem("游戏/不器/重建战斗界面演示")]
         public static void BuildAll()
         {
             EnsureFolder(WidgetFolder);
@@ -37,7 +37,7 @@ namespace Game.Hot.Editor
             BuildBattleForm();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("Buqi battle UI demo rebuilt.");
+            Debug.Log("不器战斗界面演示已重建。");
         }
 
         private static void BuildItemCard()
@@ -50,7 +50,7 @@ namespace Game.Hot.Editor
             SetRect(name.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -24f), new Vector2(126f, 28f));
             name.fontStyle = FontStyle.Bold;
 
-            Text effect = CreateText(root.transform, "Effect_Text", "Damage", 16, TextAnchor.MiddleLeft, accentColor);
+            Text effect = CreateText(root.transform, "Effect_Text", "伤害", 16, TextAnchor.MiddleLeft, accentColor);
             SetRect(effect.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -59f), new Vector2(126f, 28f));
 
             Text status = CreateText(root.transform, "Status_Text", "1格  充能 0  冻结 0", 14, TextAnchor.MiddleLeft, mutedColor);
@@ -93,7 +93,7 @@ namespace Game.Hot.Editor
 
             Image marker = CreateImage(root.transform, "Marker_Image", accentColor);
             SetRect(marker.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(4f, 0f), new Vector2(8f, 23f));
-            Text content = CreateText(root.transform, "Content_Text", "T000  --  0", 14, TextAnchor.MiddleLeft, inkColor);
+            Text content = CreateText(root.transform, "Content_Text", "第 000 tick  --  0", 14, TextAnchor.MiddleLeft, inkColor);
             Stretch(content.rectTransform, new Vector2(18f, 1f), new Vector2(-8f, -1f));
 
             Assign(widget, "m_Marker", marker);
@@ -118,7 +118,7 @@ namespace Game.Hot.Editor
             Stretch(title.rectTransform, new Vector2(180f, 12f), new Vector2(-180f, -12f));
             title.fontStyle = FontStyle.Bold;
 
-            Text tick = CreateText(header.transform, "Tick_Text", "TICK 000 / 000", 18, TextAnchor.MiddleRight, mutedColor);
+            Text tick = CreateText(header.transform, "Tick_Text", "第 000 tick / 000", 18, TextAnchor.MiddleRight, mutedColor);
             SetRect(tick.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-150f, 0f), new Vector2(260f, 42f));
             Text outcome = CreateText(header.transform, "Outcome_Text", "战斗推演中", 18, TextAnchor.MiddleLeft, accentColor);
             SetRect(outcome.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(150f, 0f), new Vector2(260f, 42f));
@@ -169,7 +169,7 @@ namespace Game.Hot.Editor
                 logRows.Add(instance.GetComponent<BattleLogWidget>());
             }
 
-            Text page = CreateText(evidence.transform, "Page_Text", "LIVE", 15, TextAnchor.MiddleCenter, mutedColor);
+            Text page = CreateText(evidence.transform, "Page_Text", "实时", 15, TextAnchor.MiddleCenter, mutedColor);
             SetRect(page.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 286f), new Vector2(100f, 32f));
             Button previousPage = CreateButton(evidence.transform, "PreviousPage", "<", new Vector2(-82f, 286f), new Vector2(48f, 34f), raisedColor, out _);
             Button nextPage = CreateButton(evidence.transform, "NextPage", ">", new Vector2(82f, 286f), new Vector2(48f, 34f), raisedColor, out _);
@@ -193,10 +193,10 @@ namespace Game.Hot.Editor
             Button speed2 = CreateButton(controls.transform, "Speed2", "2x", new Vector2(-239f, 0f), new Vector2(82f, 52f), raisedColor, out _);
             Button speed4 = CreateButton(controls.transform, "Speed4", "4x", new Vector2(-143f, 0f), new Vector2(82f, 52f), raisedColor, out _);
             Button skip = CreateButton(controls.transform, "Skip", ">>", new Vector2(14f, 0f), new Vector2(104f, 52f), accentColor, out _);
-            Button replay = CreateButton(controls.transform, "Replay", "R", new Vector2(138f, 0f), new Vector2(82f, 52f), raisedColor, out _);
+            Button replay = CreateButton(controls.transform, "Replay", "重播", new Vector2(138f, 0f), new Vector2(82f, 52f), raisedColor, out _);
 
             GameObject errorPanel = CreatePanel(root.transform, "ErrorPanel", Vector2.zero, new Vector2(760f, 250f), new Color32(66, 31, 31, 248));
-            Text errorText = CreateText(errorPanel.transform, "Error_Text", "Replay error", 22, TextAnchor.MiddleCenter, inkColor);
+            Text errorText = CreateText(errorPanel.transform, "Error_Text", "战斗回放错误", 22, TextAnchor.MiddleCenter, inkColor);
             Stretch(errorText.rectTransform, new Vector2(36f, 28f), new Vector2(-36f, -28f));
             errorText.horizontalOverflow = HorizontalWrapMode.Wrap;
             errorPanel.SetActive(false);
@@ -341,7 +341,7 @@ namespace Game.Hot.Editor
             var serializedObject = new SerializedObject(target);
             SerializedProperty property = serializedObject.FindProperty(propertyName);
             if (property == null)
-                throw new MissingReferenceException(string.Format("Missing serialized property {0} on {1}.", propertyName, target.GetType().Name));
+                throw new MissingReferenceException(string.Format("{1} 缺少序列化属性 {0}。", propertyName, target.GetType().Name));
             property.objectReferenceValue = value;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
@@ -352,7 +352,7 @@ namespace Game.Hot.Editor
             var serializedObject = new SerializedObject(target);
             SerializedProperty property = serializedObject.FindProperty(propertyName);
             if (property == null)
-                throw new MissingReferenceException(string.Format("Missing serialized array {0} on {1}.", propertyName, target.GetType().Name));
+                throw new MissingReferenceException(string.Format("{1} 缺少序列化数组 {0}。", propertyName, target.GetType().Name));
             property.arraySize = values.Count;
             for (int index = 0; index < values.Count; index++)
                 property.GetArrayElementAtIndex(index).objectReferenceValue = values[index];

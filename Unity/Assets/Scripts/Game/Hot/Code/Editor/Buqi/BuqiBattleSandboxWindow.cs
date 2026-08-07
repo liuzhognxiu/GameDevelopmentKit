@@ -45,7 +45,7 @@ namespace Game.Hot.Editor.Buqi
         private string m_ModeratorNotes = string.Empty;
         private BuqiSandboxChangeKind m_ChangeKind;
 
-        [MenuItem("Game/Buqi/Battle Sandbox", false, 200)]
+        [MenuItem("游戏/不器/战斗沙盒", false, 200)]
         private static void Open()
         {
             BuqiBattleSandboxWindow window = GetWindow<BuqiBattleSandboxWindow>();
@@ -54,19 +54,19 @@ namespace Game.Hot.Editor.Buqi
             window.Show();
         }
 
-        [MenuItem("Game/Buqi/Run P-1 Fast Summary", false, 201)]
+        [MenuItem("游戏/不器/运行 P-1 快速构筑摘要", false, 201)]
         private static void RunFastSummary()
         {
             LogSummary(BuqiBattleSandbox.FindScenario("fast-space-choice"));
         }
 
-        [MenuItem("Game/Buqi/Run P-1 Fast Buffer Summary", false, 202)]
+        [MenuItem("游戏/不器/运行 P-1 快速护体摘要", false, 202)]
         private static void RunFastBufferSummary()
         {
             LogSummary(BuqiBattleSandbox.CreateFastBufferWalkthroughVariant());
         }
 
-        [MenuItem("Game/Buqi/Run P-1 Fast Buffer A-02 Summary", false, 203)]
+        [MenuItem("游戏/不器/运行 P-1 快速护体 A-02 摘要", false, 203)]
         private static void RunFastBufferDelayedDamageSummary()
         {
             LogSummary(BuqiBattleSandbox.CreateFastBufferDelayedDamageWalkthroughVariant());

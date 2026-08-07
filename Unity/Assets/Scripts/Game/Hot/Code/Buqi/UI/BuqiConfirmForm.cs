@@ -67,8 +67,8 @@ namespace Game.Hot.Buqi.UI
 
             SetText(m_TitleText, data.Title);
             SetText(m_MessageText, data.Message);
-            SetText(m_ConfirmText, string.IsNullOrEmpty(data.ConfirmLabel) ? "\u786e\u8ba4" : data.ConfirmLabel);
-            SetText(m_CancelText, string.IsNullOrEmpty(data.CancelLabel) ? "\u53d6\u6d88" : data.CancelLabel);
+            SetText(m_ConfirmText, string.IsNullOrEmpty(data.ConfirmLabel) ? "确认" : data.ConfirmLabel);
+            SetText(m_CancelText, string.IsNullOrEmpty(data.CancelLabel) ? "取消" : data.CancelLabel);
             m_OnConfirm = data.Confirm;
             m_OnCancel = data.Cancel;
             BindButtons();

@@ -10,10 +10,10 @@ namespace Game.Hot.Buqi.UI.Stages
         {
             if (view.PredictionSubmitted)
                 return;
-            AddAction("\u9884\u6D4B: \u80DC\u5229", BuqiUIDemoCommandType.SubmitPrediction, "Win");
-            AddAction("\u9884\u6D4B: \u5931\u8D25", BuqiUIDemoCommandType.SubmitPrediction, "Lose");
-            AddAction("\u9884\u6D4B: \u5E73\u5C40", BuqiUIDemoCommandType.SubmitPrediction, "Draw");
-            AddAction("\u8DF3\u8FC7\u9884\u6D4B", BuqiUIDemoCommandType.SkipPrediction);
+            AddAction("预测: 胜利", BuqiUIDemoCommandType.SubmitPrediction, "Win");
+            AddAction("预测: 失败", BuqiUIDemoCommandType.SubmitPrediction, "Lose");
+            AddAction("预测: 平局", BuqiUIDemoCommandType.SubmitPrediction, "Draw");
+            AddAction("跳过预测", BuqiUIDemoCommandType.SkipPrediction);
         }
     }
 }

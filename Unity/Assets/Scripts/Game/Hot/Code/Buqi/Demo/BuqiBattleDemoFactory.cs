@@ -24,7 +24,7 @@ namespace Game.Hot.Buqi.Demo
 
             if (catalog.Echoes == null || catalog.Echoes.Count < 2)
             {
-                error = "Demo battle requires at least \u4E24\u4E2A opponent snapshots.";
+                error = "演示战斗至少需要两个对手快照。";
                 return false;
             }
 
@@ -32,7 +32,7 @@ namespace Game.Hot.Buqi.Demo
             List<BuqiEchoConfigRow> echoes = FindLegalEchoes(catalog.Echoes, definitions);
             if (echoes.Count < 2)
             {
-                error = "Demo battle requires at least \u4E24\u4E2A legal opponent snapshots.";
+                error = "演示战斗至少需要两个合法的对手快照。";
                 return false;
             }
 
@@ -64,7 +64,7 @@ namespace Game.Hot.Buqi.Demo
             var replay = new BattleReplayData
             {
                 Title = BuqiText.Format(
-                    "{0} \u5BF9\u9635 {1}",
+                    "{0} 对阵 {1}",
                     DisplayName(leftEcho),
                     DisplayName(rightEcho)),
                 LeftName = DisplayName(leftEcho),

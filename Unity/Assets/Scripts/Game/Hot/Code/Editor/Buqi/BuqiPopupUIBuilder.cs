@@ -21,7 +21,7 @@ namespace Game.Hot.Editor
         private static readonly Color accentColor = new Color32(229, 176, 71, 255);
         private static readonly Color jadeColor = new Color32(51, 150, 128, 255);
 
-        [MenuItem("Game/Buqi/Rebuild Popup UI")]
+        [MenuItem("游戏/不器/重建弹窗界面")]
         public static void BuildAll()
         {
             EnsureFolder(FormFolder);
@@ -30,7 +30,7 @@ namespace Game.Hot.Editor
             BuildMessageForm();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("Buqi popup UI rebuilt.");
+            Debug.Log("不器弹窗界面已重建。");
         }
 
         private static void BuildItemDetailForm()
@@ -44,12 +44,12 @@ namespace Game.Hot.Editor
             Text itemName = CreateText(itemCard.transform, "ItemName_Text", "W8-000", 22, TextAnchor.UpperCenter, inkColor);
             SetRect(itemName.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -38f), new Vector2(174f, 40f));
             itemName.fontStyle = FontStyle.Bold;
-            Text itemEffect = CreateText(itemCard.transform, "ItemEffect_Text", "Damage", 17, TextAnchor.MiddleCenter, accentColor);
+            Text itemEffect = CreateText(itemCard.transform, "ItemEffect_Text", "伤害", 17, TextAnchor.MiddleCenter, accentColor);
             SetRect(itemEffect.rectTransform, new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 10f), new Vector2(174f, 40f));
             Text itemStatus = CreateText(itemCard.transform, "ItemStatus_Text", "--", 14, TextAnchor.MiddleCenter, mutedColor);
             SetRect(itemStatus.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 40f), new Vector2(174f, 34f));
 
-            Text title = CreateText(panel.transform, "Title_Text", "\u88c5\u5907\u8be6\u60c5", 26, TextAnchor.MiddleLeft, inkColor);
+            Text title = CreateText(panel.transform, "Title_Text", "装备详情", 26, TextAnchor.MiddleLeft, inkColor);
             SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(94f, -38f), new Vector2(332f, 40f));
             title.fontStyle = FontStyle.Bold;
 
@@ -61,12 +61,12 @@ namespace Game.Hot.Editor
             body.horizontalOverflow = HorizontalWrapMode.Wrap;
             body.verticalOverflow = VerticalWrapMode.Truncate;
 
-            Text modification = CreateText(panel.transform, "Modification_Text", "\u65e0\u6539\u9020", 16, TextAnchor.UpperLeft, accentColor);
+            Text modification = CreateText(panel.transform, "Modification_Text", "无改造", 16, TextAnchor.UpperLeft, accentColor);
             SetRect(modification.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(94f, -74f), new Vector2(332f, 58f));
             modification.horizontalOverflow = HorizontalWrapMode.Wrap;
             modification.verticalOverflow = VerticalWrapMode.Truncate;
 
-            Button close = CreateButton(panel.transform, "Close", "\u5173\u95ed", new Vector2(226f, -143f), new Vector2(118f, 42f), jadeColor, out _);
+            Button close = CreateButton(panel.transform, "Close", "关闭", new Vector2(226f, -143f), new Vector2(118f, 42f), jadeColor, out _);
 
             Assign(form, "m_TitleText", title);
             Assign(form, "m_MetaText", meta);
@@ -83,7 +83,7 @@ namespace Game.Hot.Editor
             BuqiConfirmForm form = root.AddComponent<BuqiConfirmForm>();
 
             GameObject panel = CreatePanel(root.transform, "Panel", Vector2.zero, new Vector2(644f, 284f), surfaceColor);
-            Text title = CreateText(panel.transform, "Title_Text", "\u786e\u8ba4\u64cd\u4f5c", 26, TextAnchor.MiddleCenter, inkColor);
+            Text title = CreateText(panel.transform, "Title_Text", "确认操作", 26, TextAnchor.MiddleCenter, inkColor);
             SetRect(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -42f), new Vector2(580f, 42f));
             title.fontStyle = FontStyle.Bold;
 
@@ -92,8 +92,8 @@ namespace Game.Hot.Editor
             message.horizontalOverflow = HorizontalWrapMode.Wrap;
             message.verticalOverflow = VerticalWrapMode.Truncate;
 
-            Button confirm = CreateButton(panel.transform, "Confirm", "\u786e\u8ba4", new Vector2(116f, -96f), new Vector2(150f, 46f), jadeColor, out Text confirmText);
-            Button cancel = CreateButton(panel.transform, "Cancel", "\u53d6\u6d88", new Vector2(-116f, -96f), new Vector2(150f, 46f), raisedColor, out Text cancelText);
+            Button confirm = CreateButton(panel.transform, "Confirm", "确认", new Vector2(116f, -96f), new Vector2(150f, 46f), jadeColor, out Text confirmText);
+            Button cancel = CreateButton(panel.transform, "Cancel", "取消", new Vector2(-116f, -96f), new Vector2(150f, 46f), raisedColor, out Text cancelText);
 
             Assign(form, "m_TitleText", title);
             Assign(form, "m_MessageText", message);
@@ -113,7 +113,7 @@ namespace Game.Hot.Editor
 
             GameObject panel = CreatePanel(root.transform, "Panel", Vector2.zero, new Vector2(604f, 104f), new Color32(25, 46, 45, 120));
             panel.GetComponent<Image>().raycastTarget = false;
-            Text kind = CreateText(panel.transform, "Kind_Text", "INFO", 15, TextAnchor.MiddleLeft, new Color32(193, 246, 223, 255));
+            Text kind = CreateText(panel.transform, "Kind_Text", "提示", 15, TextAnchor.MiddleLeft, new Color32(193, 246, 223, 255));
             SetRect(kind.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(24f, 20f), new Vector2(86f, 30f));
             kind.fontStyle = FontStyle.Bold;
 
@@ -242,7 +242,7 @@ namespace Game.Hot.Editor
             var serializedObject = new SerializedObject(target);
             SerializedProperty property = serializedObject.FindProperty(propertyName);
             if (property == null)
-                throw new MissingReferenceException(string.Format("Missing serialized property {0} on {1}.", propertyName, target.GetType().Name));
+                throw new MissingReferenceException(string.Format("{1} 缺少序列化属性 {0}。", propertyName, target.GetType().Name));
             property.objectReferenceValue = value;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }

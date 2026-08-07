@@ -49,7 +49,7 @@ namespace Game.Hot.Buqi.UI
             if (m_StatusText != null)
             {
                 m_StatusText.text = BuqiText.Format(
-                    "{0}\u683C  \u5145\u80FD {1}  \u51BB\u7ED3 {2}",
+                    "{0}格  充能 {1}  冻结 {2}",
                     frame.Size,
                     frame.Charge,
                     frame.FrozenTicks);

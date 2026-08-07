@@ -284,8 +284,8 @@ namespace Game.Hot.Buqi.UI
             SetText(m_RightStatsText, FormatStats(frame.Right));
             SetText(m_TickText, BuqiText.Format("第 {0:000} tick / {1:000}", frame.Tick, data.Result.DurationTicks));
             SetText(m_CurrentEventText, FormatCurrentEvent(frame.CurrentEvent));
-            SetText(m_OutcomeText, frame.IsFinished ? FormatOutcome(data.Result) : "\u6218\u6597\u63A8\u6F14\u4E2D");
-            SetText(m_PlayPauseText, m_Controller.IsPaused ? "\u7EE7\u7EED" : "\u6682\u505C");
+            SetText(m_OutcomeText, frame.IsFinished ? FormatOutcome(data.Result) : "战斗推演中");
+            SetText(m_PlayPauseText, m_Controller.IsPaused ? "继续" : "暂停");
 
             if (m_TimelineFill != null)
             {
@@ -369,7 +369,7 @@ namespace Game.Hot.Buqi.UI
         private static string FormatStats(BattleReplaySideFrame side)
         {
             return BuqiText.Format(
-                "\u751F\u547D\u503C {0}/{1}   \u62A4\u76FE {2}   \u8FC7\u8F7D {3}/10",
+                "生命值 {0}/{1}   护盾 {2}   过载 {3}/10",
                 side.Execution,
                 side.MaxExecution,
                 side.Buffer,
@@ -379,7 +379,7 @@ namespace Game.Hot.Buqi.UI
         private static string FormatCurrentEvent(BattleEvent battleEvent)
         {
             return battleEvent == null
-                ? "\u5C1A\u65E0\u4E8B\u4EF6"
+                ? "尚无事件"
                 : BuqiText.Format("第 {0} tick  {1}  {2}", battleEvent.Tick, BattleLogWidget.FormatReason(battleEvent.ReasonCode), battleEvent.Amount);
         }
 

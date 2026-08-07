@@ -177,7 +177,7 @@ namespace Game.Hot.Buqi.DemoUI
         private BuqiUIDemoCommandResult OpenDragDeploy()
         {
             if (m_State.Phase != BuqiUIDemoPhase.BoardEditor)
-                return Rejected("\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u7F16\u8F91\u68CB\u76D8");
+                return Rejected("当前阶段不能编辑棋盘");
             return new BuqiUIDemoCommandResult { Accepted = true, View = View };
         }
 
@@ -187,9 +187,9 @@ namespace Game.Hot.Buqi.DemoUI
             out string reason)
         {
             if (state.Phase != BuqiUIDemoPhase.BoardEditor)
-                return Reject(out reason, "\u5F53\u524D\u9636\u6BB5\u4E0D\u80FD\u7F16\u8F91\u68CB\u76D8");
+                return Reject(out reason, "当前阶段不能编辑棋盘");
             if (deployment == null)
-                return Reject(out reason, "\u90E8\u7F72\u5FEB\u7167\u4E0D\u53EF\u7528");
+                return Reject(out reason, "部署快照不可用");
             if (!BuqiDragDeployController.TryCreate(
                     m_Catalog,
                     state.Board,
@@ -205,7 +205,7 @@ namespace Game.Hot.Buqi.DemoUI
                     out reason))
                 return false;
             if (!SameOwnedItems(current.View, proposed.View))
-                return Reject(out reason, "\u90E8\u7F72\u5FEB\u7167\u4E0E\u5F53\u524D\u88C5\u5907\u4E0D\u4E00\u81F4");
+                return Reject(out reason, "部署快照与当前装备不一致");
 
             state.Board = new List<string>(proposed.View.BoardSlots);
             state.Storage = new List<string>(proposed.View.StorageSlots);

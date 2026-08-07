@@ -92,11 +92,11 @@ namespace Game.Hot.Buqi.UI.Widgets
             switch (state)
             {
                 case ResourceChipState.Warning:
-                    return "\u8b66\u544a";
+                    return "警告";
                 case ResourceChipState.Terminal:
-                    return "\u7ed3\u675f";
+                    return "结束";
                 default:
-                    return "\u6b63\u5e38";
+                    return "正常";
             }
         }
 

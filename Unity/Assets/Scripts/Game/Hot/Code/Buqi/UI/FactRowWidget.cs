@@ -35,9 +35,9 @@ namespace Game.Hot.Buqi.UI
             gameObject.SetActive(true);
             m_JumpToTickHandler = onJumpToTick;
             m_Tick = view.Tick;
-            SetText(m_TitleText, string.IsNullOrEmpty(view.Title) ? "\u7EC8\u5C40\u4E8B\u5B9E" : view.Title);
+            SetText(m_TitleText, string.IsNullOrEmpty(view.Title) ? "终局事实" : view.Title);
             SetText(m_BodyText, view.Body);
-            SetText(m_TickText, GameFramework.Utility.Text.Format("\u8DF3\u5230 T{0:000}", view.Tick));
+            SetText(m_TickText, GameFramework.Utility.Text.Format("跳到 T{0:000}", view.Tick));
             if (m_Marker != null)
                 m_Marker.color = new Color32(229, 176, 71, 255);
 

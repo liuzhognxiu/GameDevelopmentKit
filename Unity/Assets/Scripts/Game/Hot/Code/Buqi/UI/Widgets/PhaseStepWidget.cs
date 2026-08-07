@@ -135,11 +135,11 @@ namespace Game.Hot.Buqi.UI.Widgets
                 case PhaseStepState.Current:
                     return ">";
                 case PhaseStepState.Complete:
-                    return "\u2713";
+                    return "✓";
                 case PhaseStepState.Locked:
-                    return "\u9501\u5b9a";
+                    return "锁定";
                 default:
-                    return "\u5f85\u8fdb\u5165";
+                    return "待进入";
             }
         }
 

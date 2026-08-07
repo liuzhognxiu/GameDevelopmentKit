@@ -49,7 +49,7 @@ namespace Game.Hot.Buqi.DemoUI
                 {
                     Id = item.DefinitionId,
                     Name = string.IsNullOrEmpty(item.DisplayName) ? item.DefinitionId : item.DisplayName,
-                    Description = BuqiText.Format("{0} | \u51B7\u5374 {1}", effect, item.BaseCooldownTicks),
+                    Description = BuqiText.Format("{0} | 冷却 {1}", effect, item.BaseCooldownTicks),
                     Size = (int)item.Size,
                     Price = item.BasePrice > 0 ? item.BasePrice : (int)item.Size + 1,
                 });
@@ -65,12 +65,12 @@ namespace Game.Hot.Buqi.DemoUI
                     Description = item.Description,
                 });
             }
-            result.PreparationChoices.Add(Choice("prepare-coin", "\u4FDD\u7559\u91D1\u5E01", "\u4FDD\u6301\u8D44\u6E90\uFF0C\u7A33\u5B9A\u8FDB\u5165\u5546\u5E97"));
-            result.PreparationChoices.Add(Choice("prepare-shield", "\u5F00\u5C40\u62A4\u76FE", "\u4E0B\u573A\u6218\u6597\u83B7\u5F97\u989D\u5916\u62A4\u76FE"));
-            result.PreparationChoices.Add(Choice("prepare-scout", "\u6DF1\u5EA6\u4FA6\u5BDF", "\u67E5\u770B\u66F4\u591A\u5BF9\u624B\u5FEB\u7167\u4FE1\u606F"));
-            result.EventChoices.Add(Choice("event-coins", "\u62FE\u53D6\u91D1\u5E01", "\u83B7\u5F97 4 \u91D1\u5E01"));
-            result.EventChoices.Add(Choice("event-item", "\u62FE\u53D6\u88C5\u5907", "\u83B7\u5F97\u4E00\u4EF6\u666E\u901A\u88C5\u5907"));
-            result.EventChoices.Add(Choice("event-life", "\u6062\u590D\u751F\u547D", "\u6062\u590D 1 \u70B9\u5355\u5C40\u751F\u547D"));
+            result.PreparationChoices.Add(Choice("prepare-coin", "保留金币", "保持资源，稳定进入商店"));
+            result.PreparationChoices.Add(Choice("prepare-shield", "开局护盾", "下场战斗获得额外护盾"));
+            result.PreparationChoices.Add(Choice("prepare-scout", "深度侦察", "查看更多对手快照信息"));
+            result.EventChoices.Add(Choice("event-coins", "拾取金币", "获得 4 金币"));
+            result.EventChoices.Add(Choice("event-item", "拾取装备", "获得一件普通装备"));
+            result.EventChoices.Add(Choice("event-life", "恢复生命", "恢复 1 点单局生命"));
 
             var refinements = new List<BuqiRefinementConfigRow>(source.Refinements);
             refinements.Sort((left, right) => string.Compare(left.RefinementId, right.RefinementId, StringComparison.Ordinal));

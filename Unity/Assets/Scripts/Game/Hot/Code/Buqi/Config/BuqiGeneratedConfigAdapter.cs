@@ -28,7 +28,7 @@ namespace Game.Hot.Buqi.Config
             errors = new List<string>();
             if (tables == null)
             {
-                errors.Add("tables component is null");
+                errors.Add("配置表组件不能为空");
                 return false;
             }
 
@@ -188,12 +188,12 @@ namespace Game.Hot.Buqi.Config
         {
             if (source == null)
             {
-                errors.Add(BuqiText.Format("missing {0}: source is null", name));
+                errors.Add(BuqiText.Format("缺少 {0}：数据源为空", name));
                 return null;
             }
             if (TryGetMember(source, name, out object value))
                 return value;
-            errors.Add(BuqiText.Format("{0} does not contain member {1}", source.GetType().Name, name));
+            errors.Add(BuqiText.Format("{0} 不包含成员 {1}", source.GetType().Name, name));
             return null;
         }
 
@@ -231,7 +231,7 @@ namespace Game.Hot.Buqi.Config
                 return intValue;
             if (int.TryParse(value.ToString(), out int parsed))
                 return parsed;
-            errors.Add(BuqiText.Format("{0}.{1} is not an int", source.GetType().Name, name));
+            errors.Add(BuqiText.Format("{0}.{1} 不是整数", source.GetType().Name, name));
             return 0;
         }
 
@@ -244,7 +244,7 @@ namespace Game.Hot.Buqi.Config
                 return boolValue;
             if (bool.TryParse(value.ToString(), out bool parsed))
                 return parsed;
-            errors.Add(BuqiText.Format("{0}.{1} is not a bool", source.GetType().Name, name));
+            errors.Add(BuqiText.Format("{0}.{1} 不是布尔值", source.GetType().Name, name));
             return false;
         }
 
@@ -264,7 +264,7 @@ namespace Game.Hot.Buqi.Config
             {
                 return (T)Enum.ToObject(typeof(T), intValue);
             }
-            errors.Add(BuqiText.Format("{0}.{1} is not a valid {2}", source.GetType().Name, name, typeof(T).Name));
+            errors.Add(BuqiText.Format("{0}.{1} 不是有效的 {2}", source.GetType().Name, name, typeof(T).Name));
             return fallback;
         }
 

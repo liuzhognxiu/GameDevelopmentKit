@@ -15,7 +15,7 @@ namespace Game.Hot.Buqi.UI.Stages
             if (view?.Opponent == null)
                 return base.ResolveBody(view);
             return GameFramework.Utility.Text.Format(
-                "{0}\n\u6784\u7B51\u65B9\u5411: {1}\n\u516C\u5F00\u88C5\u5907: {2}",
+                "{0}\n构筑方向: {1}\n公开装备: {2}",
                 view.Opponent.Name,
                 view.Opponent.Build,
                 view.Opponent.Items.Count);

@@ -12,12 +12,12 @@ namespace Game.Hot.Buqi.UI.Stages
             {
                 string name = offer.Item == null ? offer.Id : offer.Item.Name;
                 string label = offer.Sold
-                    ? GameFramework.Utility.Text.Format("{0} [\u5DF2\u552E\u51FA]", name)
-                    : GameFramework.Utility.Text.Format("{0}  {1} \u91D1\u5E01", name, offer.Price);
+                    ? GameFramework.Utility.Text.Format("{0} [已售出]", name)
+                    : GameFramework.Utility.Text.Format("{0}  {1} 金币", name, offer.Price);
                 AddAction(label, BuqiUIDemoCommandType.BuyOffer, offer.Id);
             }
-            AddAction(view.ShopLocked ? "\u89E3\u9501\u5546\u5E97" : "\u9501\u5B9A\u5546\u5E97", BuqiUIDemoCommandType.ToggleShopLock);
-            AddAction("\u5237\u65B0\u5546\u5E97  1 \u91D1\u5E01", BuqiUIDemoCommandType.RefreshShop);
+            AddAction(view.ShopLocked ? "解锁商店" : "锁定商店", BuqiUIDemoCommandType.ToggleShopLock);
+            AddAction("刷新商店  1 金币", BuqiUIDemoCommandType.RefreshShop);
         }
     }
 }

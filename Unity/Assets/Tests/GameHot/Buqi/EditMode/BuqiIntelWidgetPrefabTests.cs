@@ -82,15 +82,15 @@ namespace Game.Hot.Buqi.Tests
             var opponent = new BuqiDemoOpponentView
             {
                 Id = "echo-demo",
-                Name = "\u6559\u5B66\u5BF9\u624B\u5FEB\u7167",
-                Build = "\u9AD8\u901F\u6784\u7B51",
+                Name = "教学对手快照",
+                Build = "高速构筑",
                 Items = new[]
                 {
                     new BuqiDemoItemView
                     {
                         Id = "item-1",
-                        Name = "\u6D4B\u8BD5\u88C5\u5907",
-                        Description = "\u653B\u51FB",
+                        Name = "测试装备",
+                        Description = "攻击",
                         Size = 1,
                     },
                 },
@@ -118,8 +118,8 @@ namespace Game.Hot.Buqi.Tests
             widget.Render(
                 new BuqiDemoFactView
                 {
-                    Title = "\u8F93\u51FA\u8D21\u732E",
-                    Body = "\u5173\u952E\u88C5\u5907\u5B8C\u6210\u6709\u6548\u4F24\u5BB3",
+                    Title = "输出贡献",
+                    Body = "关键装备完成有效伤害",
                     Tick = 180,
                 },
                 tick => callbackTick = tick);

@@ -8,7 +8,7 @@ namespace Game.Hot.Buqi.UI.Stages
 
         protected override void ConfigureActions(BuqiUIDemoView view)
         {
-            AddAction("\u62D6\u62FD\u4E0A\u9635", BuqiUIDemoCommandType.OpenDragDeploy);
+            AddAction("拖拽上阵", BuqiUIDemoCommandType.OpenDragDeploy);
             foreach (BuqiDemoItemView item in view.BoardSlots)
             {
                 if (item.Empty)

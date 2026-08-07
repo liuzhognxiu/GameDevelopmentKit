@@ -66,7 +66,7 @@ namespace Game.Hot.Buqi.UI.Widgets
             if (m_Background != null)
                 m_Background.color = StateColor(state);
             SetText(m_IndexText, GameFramework.Utility.Text.Format(
-                slot.Area == BuqiDeploymentArea.Board ? "{0:00}" : "\u4ED3 {0:00}",
+                slot.Area == BuqiDeploymentArea.Board ? "{0:00}" : "仓 {0:00}",
                 slot.Index + 1));
             SetText(m_ItemText, itemName);
             SetText(m_StateText, ResolveStateText(state, stateText, string.IsNullOrEmpty(itemName)));
@@ -133,19 +133,19 @@ namespace Game.Hot.Buqi.UI.Widgets
             switch (state)
             {
                 case BuqiDeploySlotVisualState.Selected:
-                    return "\u25C6 \u5DF2\u9009\u62E9";
+                    return "◆ 已选择";
                 case BuqiDeploySlotVisualState.Legal:
-                    return "\u2713 \u53EF\u653E\u7F6E";
+                    return "✓ 可放置";
                 case BuqiDeploySlotVisualState.Illegal:
                     return string.IsNullOrEmpty(stateText)
-                        ? "\u00D7 \u4E0D\u53EF\u653E\u7F6E"
-                        : GameFramework.Utility.Text.Format("\u00D7 {0}", stateText);
+                        ? "× 不可放置"
+                        : GameFramework.Utility.Text.Format("× {0}", stateText);
                 case BuqiDeploySlotVisualState.Continuation:
-                    return "\u2194 \u5360\u7528\u5EF6\u7EED";
+                    return "↔ 占用延续";
                 case BuqiDeploySlotVisualState.Locked:
-                    return "\u25A0 \u5DF2\u9501\u5B9A";
+                    return "■ 已锁定";
                 default:
-                    return isEmpty ? "\u7A7A\u4F4D" : "\u5DF2\u5360\u7528";
+                    return isEmpty ? "空位" : "已占用";
             }
         }
 

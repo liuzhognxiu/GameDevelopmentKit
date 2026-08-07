@@ -96,7 +96,7 @@ namespace Game.Hot.Buqi.Tests
 
                 Button openButton = instance.GetComponentsInChildren<Button>(true)
                     .FirstOrDefault(button => button.gameObject.activeSelf &&
-                        button.GetComponentInChildren<Text>(true)?.text == "\u62D6\u62FD\u4E0A\u9635");
+                        button.GetComponentInChildren<Text>(true)?.text == "拖拽上阵");
                 Assert.That(openButton, Is.Not.Null);
 
                 openButton.onClick.Invoke();

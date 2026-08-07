@@ -19,7 +19,7 @@ namespace Game.Hot.Editor
         private static readonly Color accentColor = new Color32(229, 176, 71, 255);
         private static readonly Color jadeColor = new Color32(51, 150, 128, 255);
 
-        [MenuItem("Game/Buqi/Rebuild Navigation Widgets")]
+        [MenuItem("游戏/不器/重建导航控件")]
         public static void BuildAll()
         {
             EnsureFolder(WidgetFolder);
@@ -27,7 +27,7 @@ namespace Game.Hot.Editor
             BuildPhaseStep();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("Buqi navigation widgets rebuilt.");
+            Debug.Log("不器导航控件已重建。");
         }
 
         private static void BuildResourceChip()
@@ -39,14 +39,14 @@ namespace Game.Hot.Editor
             Text icon = CreateText(root.transform, "Icon_Text", "+", 20, TextAnchor.MiddleCenter, accentColor);
             SetRect(icon.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(22f, 0f), new Vector2(30f, 32f));
 
-            Text label = CreateText(root.transform, "Label_Text", "\u91d1\u5e01", 15, TextAnchor.MiddleLeft, mutedColor);
+            Text label = CreateText(root.transform, "Label_Text", "金币", 15, TextAnchor.MiddleLeft, mutedColor);
             SetRect(label.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(47f, 8f), new Vector2(82f, 22f));
 
             Text value = CreateText(root.transform, "Value_Text", "06", 21, TextAnchor.MiddleLeft, inkColor);
             SetRect(value.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(47f, -12f), new Vector2(82f, 24f));
             value.fontStyle = FontStyle.Bold;
 
-            Text state = CreateText(root.transform, "State_Text", "\u6b63\u5e38", 12, TextAnchor.MiddleRight, jadeColor);
+            Text state = CreateText(root.transform, "State_Text", "正常", 12, TextAnchor.MiddleRight, jadeColor);
             SetRect(state.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-8f, 0f), new Vector2(38f, 22f));
 
             Assign(widget, "m_Background", background);
@@ -73,7 +73,7 @@ namespace Game.Hot.Editor
             SetRect(index.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(23f, 0f), new Vector2(34f, 32f));
             index.fontStyle = FontStyle.Bold;
 
-            Text label = CreateText(root.transform, "Label_Text", "\u8d77\u59cb\u9009\u62e9", 16, TextAnchor.MiddleLeft, inkColor);
+            Text label = CreateText(root.transform, "Label_Text", "起始选择", 16, TextAnchor.MiddleLeft, inkColor);
             SetRect(label.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(49f, 0f), new Vector2(112f, 32f));
 
             Text state = CreateText(root.transform, "State_Text", ">", 14, TextAnchor.MiddleCenter, mutedColor);
@@ -164,7 +164,7 @@ namespace Game.Hot.Editor
             SerializedObject serializedObject = new SerializedObject(target);
             SerializedProperty property = serializedObject.FindProperty(propertyName);
             if (property == null)
-                throw new MissingReferenceException(string.Format("Missing serialized property {0} on {1}.", propertyName, target.GetType().Name));
+                throw new MissingReferenceException(string.Format("{1} 缺少序列化属性 {0}。", propertyName, target.GetType().Name));
             property.objectReferenceValue = value;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }

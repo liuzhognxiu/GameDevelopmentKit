@@ -44,7 +44,7 @@ namespace Game.Hot.Buqi.UI
 
             if (!(userData is BuqiMessageOpenData data))
             {
-                Log.Warning("BuqiMessageForm requires BuqiMessageOpenData.");
+                Log.Warning("提示窗口缺少打开数据。");
                 Close();
                 return;
             }

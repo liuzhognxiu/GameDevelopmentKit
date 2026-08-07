@@ -39,7 +39,7 @@ namespace Game.Hot.Buqi.Config
             var errors = new List<string>();
             if (catalog == null)
             {
-                errors.Add("catalog is null");
+                errors.Add("配置目录不能为空");
                 return errors;
             }
 
@@ -54,32 +54,32 @@ namespace Game.Hot.Buqi.Config
         {
             if (global == null)
             {
-                errors.Add("global config is null");
+                errors.Add("全局配置不能为空");
                 return;
             }
 
             if (string.IsNullOrEmpty(global.ContentVersion))
-                errors.Add("global content version is empty");
+                errors.Add("全局内容版本不能为空");
             if (global.InitialExecution != BuqiBattleSimulator.DefaultMaxExecution)
-                errors.Add("global initial execution must match battle simulator");
+                errors.Add("全局初始道基必须与战斗模拟器一致");
             if (global.BufferCap != BuqiBattleSimulator.BufferCap)
-                errors.Add("global buffer cap must match battle simulator");
+                errors.Add("全局护体上限必须与战斗模拟器一致");
             if (global.NoiseThreshold != BuqiBattleSimulator.NoiseThreshold)
-                errors.Add("global noise threshold must match battle simulator");
+                errors.Add("全局失衡阈值必须与战斗模拟器一致");
             if (global.NoiseIncidentDamage != BuqiBattleSimulator.NoiseAccidentDamage)
-                errors.Add("global noise incident damage must match battle simulator");
+                errors.Add("全局失衡事故伤害必须与战斗模拟器一致");
             if (global.BoardSlotCount != BuqiBoardValidator.BoardSlotCount)
-                errors.Add("global board slot count must be 8");
+                errors.Add("全局棋盘格数必须为 8");
             if (global.NormalDurationTicks != BuqiBattleSimulator.NormalTickCount)
-                errors.Add("global normal duration must match battle simulator");
+                errors.Add("全局正常战斗时长必须与战斗模拟器一致");
             if (global.HardCapTicks != BuqiBattleSimulator.HardCapTick)
-                errors.Add("global hard cap must match battle simulator");
+                errors.Add("全局战斗硬上限必须与战斗模拟器一致");
             if (global.OvertimeStartTicks != BuqiBattleSimulator.NormalTickCount)
-                errors.Add("global overtime start must match battle simulator");
+                errors.Add("全局劫火开始时刻必须与战斗模拟器一致");
             if (global.MaxTickEvents != BuqiBattleSimulator.MaxEventsPerTick)
-                errors.Add("global max tick events must match battle simulator");
+                errors.Add("全局每时刻事件上限必须与战斗模拟器一致");
             if (global.MaxItemEventsPerTick != BuqiBattleSimulator.MaxEventsPerItemPerTick)
-                errors.Add("global max item events per tick must match battle simulator");
+                errors.Add("全局每件装备每时刻事件上限必须与战斗模拟器一致");
         }
 
         private static Dictionary<string, BuqiItemConfigRow> ValidateItems(
@@ -89,13 +89,13 @@ namespace Game.Hot.Buqi.Config
             var items = new Dictionary<string, BuqiItemConfigRow>(StringComparer.Ordinal);
             if (rows == null)
             {
-                errors.Add("item table is null");
+                errors.Add("装备表不能为空");
                 return items;
             }
 
             if (rows.Count != s_EnabledItemIds.Length)
                 errors.Add(BuqiText.Format(
-                    "expected {0} enabled items, got {1}",
+                    "应有 {0} 件已启用装备，实际为 {1} 件",
                     s_EnabledItemIds.Length,
                     rows.Count));
 
@@ -103,49 +103,49 @@ namespace Game.Hot.Buqi.Config
             {
                 if (row == null)
                 {
-                    errors.Add("item row is null");
+                    errors.Add("装备表行不能为空");
                     continue;
                 }
 
-                string where = BuqiText.Format("item {0}", row.DefinitionId);
+                string where = BuqiText.Format("装备 {0}", row.DefinitionId);
                 if (string.IsNullOrEmpty(row.DefinitionId))
                 {
-                    errors.Add("item definition id is empty");
+                    errors.Add("装备 definitionId 不能为空");
                     continue;
                 }
                 if (!IsExpectedItemId(row.DefinitionId))
-                    errors.Add(BuqiText.Format("enabled item {0} is outside expanded scope", row.DefinitionId));
+                    errors.Add(BuqiText.Format("已启用装备 {0} 超出当前扩展范围", row.DefinitionId));
                 if (items.ContainsKey(row.DefinitionId))
-                    errors.Add(BuqiText.Format("duplicate item id {0}", row.DefinitionId));
+                    errors.Add(BuqiText.Format("装备 ID {0} 重复", row.DefinitionId));
                 else
                     items.Add(row.DefinitionId, row);
 
                 if (!Enum.IsDefined(typeof(BattleSize), row.Size))
-                    errors.Add(BuqiText.Format("{0}: invalid size {1}", where, row.Size));
+                    errors.Add(BuqiText.Format("{0}：尺寸 {1} 无效", where, row.Size));
                 if (row.BasePrice <= 0)
-                    errors.Add(BuqiText.Format("{0}: base price must be > 0", where));
+                    errors.Add(BuqiText.Format("{0}：基础价格必须大于 0", where));
                 if (row.BasePrice != ExpectedPrice(row.Size))
-                    errors.Add(BuqiText.Format("{0}: price must match size", where));
+                    errors.Add(BuqiText.Format("{0}：价格必须与尺寸匹配", where));
                 if (row.BaseCooldownTicks <= 0)
-                    errors.Add(BuqiText.Format("{0}: cooldown must be > 0", where));
+                    errors.Add(BuqiText.Format("{0}：冷却必须大于 0", where));
                 if (string.IsNullOrEmpty(row.ArchetypeId))
-                    errors.Add(BuqiText.Format("{0}: archetype id is empty", where));
+                    errors.Add(BuqiText.Format("{0}：构筑方向 ID 为空", where));
                 else if (!IsExpectedBuildId(row.ArchetypeId))
-                    errors.Add(BuqiText.Format("{0}: unknown build {1}", where, row.ArchetypeId));
+                    errors.Add(BuqiText.Format("{0}：未知构筑方向 {1}", where, row.ArchetypeId));
                 if (row.Effects == null || row.Effects.Count == 0)
                 {
-                    errors.Add(BuqiText.Format("{0}: at least one effect required", where));
+                    errors.Add(BuqiText.Format("{0}：至少需要一个效果", where));
                     continue;
                 }
 
                 for (int index = 0; index < row.Effects.Count; index++)
-                    ValidateEffect(row.Effects[index], BuqiText.Format("{0}.effect[{1}]", where, index), errors);
+                    ValidateEffect(row.Effects[index], BuqiText.Format("{0}.效果[{1}]", where, index), errors);
             }
 
             foreach (string expectedId in s_EnabledItemIds)
             {
                 if (!items.ContainsKey(expectedId))
-                    errors.Add(BuqiText.Format("missing enabled item {0}", expectedId));
+                    errors.Add(BuqiText.Format("缺少已启用装备 {0}", expectedId));
             }
 
             return items;
@@ -158,93 +158,93 @@ namespace Game.Hot.Buqi.Config
         {
             if (effect == null)
             {
-                errors.Add(BuqiText.Format("{0}: effect is null", where));
+                errors.Add(BuqiText.Format("{0}：效果为空", where));
                 return;
             }
 
             if (!Enum.IsDefined(typeof(BattleTrigger), effect.Trigger))
-                errors.Add(BuqiText.Format("{0}: invalid trigger {1}", where, effect.Trigger));
+                errors.Add(BuqiText.Format("{0}：触发器 {1} 无效", where, effect.Trigger));
             if (!Enum.IsDefined(typeof(BattleEffect), effect.Effect))
-                errors.Add(BuqiText.Format("{0}: invalid effect {1}", where, effect.Effect));
+                errors.Add(BuqiText.Format("{0}：效果 {1} 无效", where, effect.Effect));
             if (!Enum.IsDefined(typeof(BattleTarget), effect.Target))
-                errors.Add(BuqiText.Format("{0}: invalid target {1}", where, effect.Target));
+                errors.Add(BuqiText.Format("{0}：目标 {1} 无效", where, effect.Target));
             if (string.IsNullOrEmpty(effect.ReasonCode))
-                errors.Add(BuqiText.Format("{0}: reason code is empty", where));
+                errors.Add(BuqiText.Format("{0}：原因码为空", where));
 
             if (effect.Trigger == BattleTrigger.OnUseCountReached && effect.UseCountThreshold <= 0)
-                errors.Add(BuqiText.Format("{0}: OnUseCountReached requires use count threshold", where));
+                errors.Add(BuqiText.Format("{0}：OnUseCountReached 需要使用次数阈值", where));
             if (effect.Trigger == BattleTrigger.OnFirstConditionMet &&
                 effect.ConditionKind == BattleConditionKind.None)
             {
-                errors.Add(BuqiText.Format("{0}: OnFirstConditionMet requires condition kind", where));
+                errors.Add(BuqiText.Format("{0}：OnFirstConditionMet 需要条件类型", where));
             }
             if (effect.ChargeConsume && effect.ChargeReadLimit <= 0)
-                errors.Add(BuqiText.Format("{0}: charge consume requires read limit", where));
+                errors.Add(BuqiText.Format("{0}：消耗蓄力时需要读取上限", where));
             if (effect.ChargeReadLimit < 0 || effect.AmountPerCharge < 0)
-                errors.Add(BuqiText.Format("{0}: charge fields must be >= 0", where));
+                errors.Add(BuqiText.Format("{0}：蓄力字段必须大于等于 0", where));
 
             switch (effect.Effect)
             {
                 case BattleEffect.Damage:
                     if (effect.Target != BattleTarget.EnemyExecution)
-                        errors.Add(BuqiText.Format("{0}: Damage requires EnemyExecution target", where));
+                        errors.Add(BuqiText.Format("{0}：Damage 需要 EnemyExecution 目标", where));
                     if (effect.Amount <= 0)
-                        errors.Add(BuqiText.Format("{0}: Damage amount must be > 0", where));
+                        errors.Add(BuqiText.Format("{0}：Damage 数值必须大于 0", where));
                     break;
                 case BattleEffect.Buffer:
                     if (effect.Target != BattleTarget.Self)
-                        errors.Add(BuqiText.Format("{0}: Buffer requires Self target", where));
+                        errors.Add(BuqiText.Format("{0}：Buffer 需要 Self 目标", where));
                     if (effect.Amount <= 0)
-                        errors.Add(BuqiText.Format("{0}: Buffer amount must be > 0", where));
+                        errors.Add(BuqiText.Format("{0}：Buffer 数值必须大于 0", where));
                     break;
                 case BattleEffect.Heal:
                     if (effect.Target != BattleTarget.Self)
-                        errors.Add(BuqiText.Format("{0}: Heal requires Self target", where));
+                        errors.Add(BuqiText.Format("{0}：Heal 需要 Self 目标", where));
                     if (effect.Amount <= 0)
-                        errors.Add(BuqiText.Format("{0}: Heal amount must be > 0", where));
+                        errors.Add(BuqiText.Format("{0}：Heal 数值必须大于 0", where));
                     break;
                 case BattleEffect.Regen:
                     if (effect.Target != BattleTarget.Self)
-                        errors.Add(BuqiText.Format("{0}: Regen requires Self target", where));
+                        errors.Add(BuqiText.Format("{0}：Regen 需要 Self 目标", where));
                     ValidateStatusAmount(effect, where, errors);
                     break;
                 case BattleEffect.Poison:
                     if (effect.Target != BattleTarget.EnemyExecution)
-                        errors.Add(BuqiText.Format("{0}: Poison requires EnemyExecution target", where));
+                        errors.Add(BuqiText.Format("{0}：Poison 需要 EnemyExecution 目标", where));
                     ValidateStatusAmount(effect, where, errors);
                     break;
                 case BattleEffect.Burn:
                     if (effect.Target != BattleTarget.EnemyExecution)
-                        errors.Add(BuqiText.Format("{0}: Burn requires EnemyExecution target", where));
+                        errors.Add(BuqiText.Format("{0}：Burn 需要 EnemyExecution 目标", where));
                     ValidateStatusAmount(effect, where, errors);
                     break;
                 case BattleEffect.Freeze:
                     if (!IsEnemyItemTarget(effect.Target))
-                        errors.Add(BuqiText.Format("{0}: Freeze requires an enemy item target", where));
+                        errors.Add(BuqiText.Format("{0}：Freeze 需要敌方装备目标", where));
                     if (effect.Amount <= 0)
-                        errors.Add(BuqiText.Format("{0}: Freeze amount must be > 0", where));
+                        errors.Add(BuqiText.Format("{0}：Freeze 数值必须大于 0", where));
                     break;
                 case BattleEffect.Charge:
                     if (!IsItemTarget(effect.Target))
-                        errors.Add(BuqiText.Format("{0}: Charge requires an item target", where));
+                        errors.Add(BuqiText.Format("{0}：Charge 需要装备目标", where));
                     if (effect.Amount == 0)
-                        errors.Add(BuqiText.Format("{0}: Charge amount must be non-zero", where));
+                        errors.Add(BuqiText.Format("{0}：Charge 数值不能为 0", where));
                     break;
                 case BattleEffect.Haste:
                     if (!IsItemTarget(effect.Target))
-                        errors.Add(BuqiText.Format("{0}: Haste requires an item target", where));
+                        errors.Add(BuqiText.Format("{0}：Haste 需要装备目标", where));
                     ValidateModifierAmount(effect, where, errors);
                     break;
                 case BattleEffect.Delay:
                     if (!IsEnemyItemTarget(effect.Target))
-                        errors.Add(BuqiText.Format("{0}: Delay requires an enemy item target", where));
+                        errors.Add(BuqiText.Format("{0}：Delay 需要敌方装备目标", where));
                     ValidateModifierAmount(effect, where, errors);
                     break;
                 case BattleEffect.Noise:
                     if (effect.Target != BattleTarget.Self)
-                        errors.Add(BuqiText.Format("{0}: Noise requires Self target", where));
+                        errors.Add(BuqiText.Format("{0}：Noise 需要 Self 目标", where));
                     if (effect.Amount == 0)
-                        errors.Add(BuqiText.Format("{0}: Noise amount must be non-zero", where));
+                        errors.Add(BuqiText.Format("{0}：Noise 数值不能为 0", where));
                     break;
             }
         }
@@ -256,12 +256,12 @@ namespace Game.Hot.Buqi.Config
             var refinements = new HashSet<string>(StringComparer.Ordinal);
             if (rows == null)
             {
-                errors.Add("refinement table is null");
+                errors.Add("淬炼表不能为空");
                 return refinements;
             }
             if (rows.Count != s_EnabledRefinementIds.Length)
                 errors.Add(BuqiText.Format(
-                    "expected {0} refinements, got {1}",
+                    "应有 {0} 个淬炼，实际为 {1} 个",
                     s_EnabledRefinementIds.Length,
                     rows.Count));
 
@@ -269,20 +269,20 @@ namespace Game.Hot.Buqi.Config
             {
                 if (row == null)
                 {
-                    errors.Add("refinement row is null");
+                    errors.Add("淬炼表行不能为空");
                     continue;
                 }
                 if (string.IsNullOrEmpty(row.RefinementId))
                 {
-                    errors.Add("refinement id is empty");
+                    errors.Add("淬炼 ID 不能为空");
                     continue;
                 }
                 if (!refinements.Add(row.RefinementId))
-                    errors.Add(BuqiText.Format("duplicate refinement id {0}", row.RefinementId));
+                    errors.Add(BuqiText.Format("淬炼 ID {0} 重复", row.RefinementId));
                 if (!IsExpectedRefinementId(row.RefinementId))
-                    errors.Add(BuqiText.Format("refinement {0} is outside expanded scope", row.RefinementId));
+                    errors.Add(BuqiText.Format("淬炼 {0} 超出当前扩展范围", row.RefinementId));
                 if (string.IsNullOrEmpty(row.DisplayName))
-                    errors.Add(BuqiText.Format("refinement {0}: display name is empty", row.RefinementId));
+                    errors.Add(BuqiText.Format("淬炼 {0}：显示名称为空", row.RefinementId));
             }
 
             return refinements;
@@ -296,11 +296,11 @@ namespace Game.Hot.Buqi.Config
         {
             if (catalog.Echoes == null)
             {
-                errors.Add("echo table is null");
+                errors.Add("道影表不能为空");
                 return;
             }
             if (catalog.Echoes.Count != 16)
-                errors.Add(BuqiText.Format("expected 16 echoes, got {0}", catalog.Echoes.Count));
+                errors.Add(BuqiText.Format("应有 16 个道影，实际为 {0} 个", catalog.Echoes.Count));
 
             var echoIds = new HashSet<string>(StringComparer.Ordinal);
             IItemDefinitionProvider provider = new BuqiDefinitionProvider(catalog);
@@ -308,27 +308,27 @@ namespace Game.Hot.Buqi.Config
             {
                 if (echo == null)
                 {
-                    errors.Add("echo row is null");
+                    errors.Add("道影表行不能为空");
                     continue;
                 }
-                string where = BuqiText.Format("echo {0}", echo.EchoId);
+                string where = BuqiText.Format("道影 {0}", echo.EchoId);
                 if (string.IsNullOrEmpty(echo.EchoId))
-                    errors.Add("echo id is empty");
+                    errors.Add("道影 ID 不能为空");
                 else if (!echoIds.Add(echo.EchoId))
-                    errors.Add(BuqiText.Format("duplicate echo id {0}", echo.EchoId));
+                    errors.Add(BuqiText.Format("道影 ID {0} 重复", echo.EchoId));
                 if (string.IsNullOrEmpty(echo.Build))
-                    errors.Add(BuqiText.Format("{0}: build is empty", where));
+                    errors.Add(BuqiText.Format("{0}：构筑方向为空", where));
                 else if (!IsExpectedBuildId(echo.Build))
-                    errors.Add(BuqiText.Format("{0}: unknown build {1}", where, echo.Build));
+                    errors.Add(BuqiText.Format("{0}：未知构筑方向 {1}", where, echo.Build));
                 if (echo.Snapshot == null)
                 {
-                    errors.Add(BuqiText.Format("{0}: snapshot is null", where));
+                    errors.Add(BuqiText.Format("{0}：快照为空", where));
                     continue;
                 }
                 if (!string.Equals(echo.Build, echo.Snapshot.ArchetypeId, StringComparison.Ordinal))
                 {
                     errors.Add(BuqiText.Format(
-                        "{0}: build {1} does not match snapshot archetype {2}",
+                        "{0}：构筑方向 {1} 与快照 archetype {2} 不匹配",
                         where,
                         echo.Build,
                         echo.Snapshot.ArchetypeId));
@@ -339,13 +339,13 @@ namespace Game.Hot.Buqi.Config
                 {
                     if (instance == null)
                     {
-                        errors.Add(BuqiText.Format("{0}: null snapshot item", where));
+                        errors.Add(BuqiText.Format("{0}：快照装备为空", where));
                         continue;
                     }
                     if (!items.ContainsKey(instance.DefinitionId))
-                        errors.Add(BuqiText.Format("{0}: unknown definitionId {1}", where, instance.DefinitionId));
+                        errors.Add(BuqiText.Format("{0}：未知的 definitionId {1}", where, instance.DefinitionId));
                     if (!string.IsNullOrEmpty(instance.RefinementId) && !refinements.Contains(instance.RefinementId))
-                        errors.Add(BuqiText.Format("{0}: unknown refinementId {1}", where, instance.RefinementId));
+                        errors.Add(BuqiText.Format("{0}：未知的 refinementId {1}", where, instance.RefinementId));
                 }
 
                 BuildSnapshot snapshot = ToBattleSnapshot(catalog.Global, echo.Snapshot);
@@ -398,7 +398,7 @@ namespace Game.Hot.Buqi.Config
                 if (item == null)
                     continue;
                 if (anchors.TryGetValue(item.AnchorSlot, out int previous))
-                    errors.Add(BuqiText.Format("{0}: overlap at slot {1} with item[{2}]", where, item.AnchorSlot, previous));
+                    errors.Add(BuqiText.Format("{0}：在棋位 {1} 与装备[{2}] 重叠", where, item.AnchorSlot, previous));
                 else
                     anchors[item.AnchorSlot] = index;
             }
@@ -410,9 +410,9 @@ namespace Game.Hot.Buqi.Config
             List<string> errors)
         {
             if (effect.Amount <= 0)
-                errors.Add(BuqiText.Format("{0}: modifier amount must be > 0", where));
+                errors.Add(BuqiText.Format("{0}：修正数值必须大于 0", where));
             if (effect.DurationTicks <= 0)
-                errors.Add(BuqiText.Format("{0}: modifier duration must be > 0", where));
+                errors.Add(BuqiText.Format("{0}：修正持续时刻必须大于 0", where));
         }
 
         private static void ValidateStatusAmount(
@@ -421,9 +421,9 @@ namespace Game.Hot.Buqi.Config
             List<string> errors)
         {
             if (effect.Amount <= 0)
-                errors.Add(BuqiText.Format("{0}: status amount must be > 0", where));
+                errors.Add(BuqiText.Format("{0}：状态数值必须大于 0", where));
             if (effect.DurationTicks <= 0)
-                errors.Add(BuqiText.Format("{0}: status duration must be > 0", where));
+                errors.Add(BuqiText.Format("{0}：状态持续时刻必须大于 0", where));
         }
 
         private static bool IsExpectedItemId(string itemId)

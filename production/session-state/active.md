@@ -15,12 +15,12 @@
 其他 Agent 生成的工作计划已经完成首轮审阅，其中前五项问题已于 2026-08-04 修正：
 
 1. 平衡测试改为不同构筑样本的交叉对战，不再重复相同确定性对局制造样本量。
-2. 内容顺序改为 9 法门战斗切片、12 法门迷你局、18 法门完整局。
+2. 内容顺序改为 9 装备战斗切片、12 装备迷你局、18 装备完整局。
 3. 增加链接同一模拟源码的无头 .NET 验证器，不新增运行时或 HybridCLR 程序集。
 4. 增加版本化 `RunRandomState` 和四条隔离的单局随机流。
-5. 六卡验证集改为九法门验证集，覆盖三种真实联动和 S/M/L 空间取舍。
+5. 六卡验证集改为九装备验证集，覆盖三种真实联动和 S/M/L 空间取舍。
 
-审阅中的第 6-9 项尚未修正：事件/道影配置原语、菜单与 Procedure 职责、EditorWindow/测试 asmdef 约束、当前终端的 `dotnet` PATH。
+审阅中的第 6-9 项尚未修正：事件/对手快照配置原语、菜单与 Procedure 职责、EditorWindow/测试 asmdef 约束、当前终端的 `dotnet` PATH。
 
 ## 已锁定核心
 
@@ -29,20 +29,20 @@
 通俗核心：
 
 > 玩家在战斗中不手动出牌。
-> 玩家在战前购买、升级、改造和排列组件，组成一套自动运行的卡牌机器。
-> 战斗开始后，双方组件按照冷却和触发关系自行运转。
+> 玩家在战前购买、升级、改造和排列装备，组成一套自动运行的自动战斗构筑。
+> 战斗开始后，双方装备按照冷却和触发关系自行运转。
 > 玩家看懂胜负原因，再在下一轮调整构筑。
 
 最短介绍：
 
-> 组装一套自动卡牌机器，再让它与另一名玩家保存下来的机器交战。
+> 组装一套自动自动战斗构筑，再让它与另一名玩家保存下来的机器交战。
 
 ## 世界与主线
 
 - 游戏暂定名：《不器》。
 - 核心舞台：不断迁徙并暗中修炼自身的不器城。
-- 玩家身份：无门无派、善于把残缺法门拼成周天的年轻散修。
-- 日常舞台：众妙集；单局竞赛：百炼问道；异步对手：道影。
+- 玩家身份：无门无派、善于把残缺装备拼成构筑的年轻散修。
+- 日常舞台：众妙集；单局竞赛：百炼问道；异步对手：对手快照。
 - 主线命题：一条尚未完成的道路，有没有资格被称为大道？
 - 不器城会模仿获胜构筑，却必须学习取舍，最终以城池身份渡劫。
 - 天衡院是立场合理的对手，代表稳定、纯粹和可控制的道路，不是邪恶宗门。
@@ -54,17 +54,17 @@
 
 - 战斗表现：连续实时冷却；战斗中无玩家输入。
 - 模拟要求：固定步长、确定性、可回放。
-- 棋盘：8 格；小/中/大型法门占 1/2/3 格。
-- 单局：8-12 分钟；获得 5 枚道印胜利，道基累计损失 3 点失败。
-- 内容：18 个法门、6 种淬炼、3 个构筑方向、3 类商店、6 个事件、12 份离线道影。
-- 构筑方向：快速执行、护体反制、周天连锁。
-- 战斗目标：30-45 秒；45 秒进入劫火，60 秒硬上限。
-- 基础效果：伤害、护体、加速、延迟、蓄力、失衡。
+- 棋盘：8 格；小/中/大型装备占 1/2/3 格。
+- 单局：8-12 分钟；获得 5 枚胜场胜利，单局生命累计损失 3 点失败。
+- 内容：18 个装备、6 种改造、3 个构筑方向、3 类商店、6 个事件、12 份离线对手快照。
+- 构筑方向：快攻、护盾反制、充能连锁。
+- 战斗目标：30-45 秒；45 秒进入加时伤害，60 秒硬上限。
+- 基础效果：伤害、护盾、加速、延迟、充能、过载。
 - 不做：在线对战、多角色、独立技能、排行、赛季、重美术和完整剧情演出。
 
 ## 渐进内容门槛
 
-| 阶段 | 法门 | 淬炼 | 商店 | 事件 | 道影 |
+| 阶段 | 装备 | 改造 | 商店 | 事件 | 对手快照 |
 |---|---:|---:|---:|---:|---:|
 | 战斗沙盒 | 9 | 3 | 0 | 0 | 代码内测试快照 |
 | 最小配置链路 | 9 | 3 | 0 | 0 | 6 |
@@ -86,9 +86,9 @@
 ## 核心循环评审（2026-08-04）
 
 - 已确认产品边界：PC/移动双端；目标用户偏《The Bazaar（大巴扎）》的自动构筑玩家；单局仍为 8-12 分钟。
-- Fun Hypothesis：玩家用有限格位与带代价的法门组装可预测的自动周天，对抗公开但不完整的道影；结果证明或推翻判断后，通过一次有代价的重构让下一战更接近预期。
+- Fun Hypothesis：玩家用有限格位与带代价的装备组装可预测的自动构筑，对抗公开但不完整的对手快照；结果证明或推翻判断后，通过一次有代价的重构让下一战更接近预期。
 - 设计支柱：先预测再验证、每格代表取舍、强度必须带账单、败因能转成行动、异步对手是题目而非倍率墙。
-- 流程裁决：现有 P0 能证明战斗算得对，但核心乐趣到 P2 才验证，顺序偏晚。Step 1 前新增 P-1 Fun Gate，用 9 个既有法门做纸面原型，验证“预测 -> 归因 -> 针对性重构”，不新增内容。
+- 流程裁决：现有 P0 能证明战斗算得对，但核心乐趣到 P2 才验证，顺序偏晚。Step 1 前新增 P-1 Fun Gate，用 9 个既有装备做纸面原型，验证“预测 -> 归因 -> 针对性重构”，不新增内容。
 - 评审报告：`output/buqi-core-loop-review-v0.1.md`。
 
 ## Step 1 当前结论（2026-08-04）
@@ -100,46 +100,46 @@
 - 无头 Release 编译：0 warning / 0 error。
 - 无头 `verify`：行为契约全部通过，15 个 approved hash 全部匹配，未自动修改基线。
 - 无头 `stress 10000`：`builds=10000`、`distinct=10000`、`invalid=0`、`hung=0`、`elapsedMs=5879`。
-- 已补齐战斗模型、规则、模拟器、测试夹具、无头验证器和 Unity 测试的中文注释，明确 tick 0、同 tick 聚合、A-01..A-06、相邻空格阻断、劫火、硬上限和双层事件上限。
-- 剩余风险：蓄力当前在 Resolve 内即时更新但日志阶段标为 Aggregate；Step 1 尚未覆盖复杂蓄力消费链。该风险不影响当前已批准向量，但进入后续内容扩展前需单独裁决。
+- 已补齐战斗模型、规则、模拟器、测试夹具、无头验证器和 Unity 测试的中文注释，明确 tick 0、同 tick 聚合、A-01..A-06、相邻空格阻断、加时伤害、硬上限和双层事件上限。
+- 剩余风险：充能当前在 Resolve 内即时更新但日志阶段标为 Aggregate；Step 1 尚未覆盖复杂充能消费链。该风险不影响当前已批准向量，但进入后续内容扩展前需单独裁决。
 
 ## Step 2 当前结论（2026-08-04）
 
-- 已新增 `Unity/Assets/Scripts/Game/Hot/Code/Buqi/Debug/BuqiBattleSandbox.cs`：Editor-only 沙盒模型，固定 seed `2026080402`，9 个临时法门、3 个方向、3 个固定场景、8 格文本棋盘、单场运行、100 次复跑、日志按 tick/chainId/来源/reasonCode 过滤。
+- 已新增 `Unity/Assets/Scripts/Game/Hot/Code/Buqi/Debug/BuqiBattleSandbox.cs`：Editor-only 沙盒模型，固定 seed `2026080402`，9 个临时装备、3 个方向、3 个固定场景、8 格文本棋盘、单场运行、100 次复跑、日志按 tick/chainId/来源/reasonCode 过滤。
 - 已新增 `Unity/Assets/Scripts/Game/Hot/Code/Editor/Buqi/BuqiBattleSandboxWindow.cs`：EditorWindow 菜单 `Game/Buqi/Battle Sandbox`，只负责调试输入和展示，不进入正式玩家流程、不创建正式 UI/prefab。
-- 已新增 `Unity/Assets/Tests/GameHot/Buqi/EditMode/BuqiBattleSandboxTests.cs`：覆盖九法门、三方向、S/M/L、护体获得/吸收/清空反击、相邻连锁、A-01/A-03/A-04、四维日志过滤、100 次 hash 一致和关闭重开状态隔离。
+- 已新增 `Unity/Assets/Tests/GameHot/Buqi/EditMode/BuqiBattleSandboxTests.cs`：覆盖九装备、三方向、S/M/L、护盾获得/吸收/清空反击、相邻连锁、A-01/A-03/A-04、四维日志过滤、100 次 hash 一致和关闭重开状态隔离。
 - Unity 刷新与编译真实通过：`generation=24`、`errorCount=0`、`warningCount=0`。
 - Unity EditMode 真实终态通过：`Game.Hot.Buqi.Tests`，`total=9`、`completed=9`、`passed=9`、`failed=0`、`skipped=0`、`inconclusive=0`、`success=true`，耗时约 12.184 秒。首次测试发现并修正了 Step 2 对 A-01 日志原因码的过宽假设，未修改战斗契约或 approved hash。
 - 菜单入口真实验证通过：`invoke_menu("Game/Buqi/Battle Sandbox")` 返回 `executed=true`。
 - 无头回归真实通过：行为契约全部通过，15 个 approved hash 全部匹配；为避免历史 `obj`/`obj.wb` 被 SDK 默认扫描，`Buqi.Simulation.Headless.csproj` 增加 `DefaultItemExcludes` 排除生成目录。
-- 已知风险保持不变：Charge 当前在 Resolve 内即时更新但日志阶段标记 Aggregate；沙盒只验证蓄力生成、条件阈值和联动，不硬编码法门 ID 实现动态消费。
+- 已知风险保持不变：Charge 当前在 Resolve 内即时更新但日志阶段标记 Aggregate；沙盒只验证充能生成、条件阈值和联动，不硬编码装备 ID 实现动态消费。
 - 首次批处理测试因 Unity 工程已被另一实例占用而停止，后续改用当前实例 Bridge 完成真实验收；没有删除锁文件或启动第二实例。
 - 独立子 Agent 调用曾因服务端 403 无法使用，未伪装结果；本阶段以本地检查、跨端编译、Unity Bridge 和真实 EditMode 测试为准。
 
 ## Charge 0.4.1 门禁状态（2026-08-05）
 
-- 已将蓄力读取/消费定型为通用配置字段 `ChargeReadLimit`、`AmountPerCharge`、`ChargeConsume`，不增加第七类基础效果，也不按法门 ID 写特例。
-- 独立审计发现并修复同来源同触发声明的排序缺陷：同一 source/anchor 下现在按本批 `Declare` 插入序列作为最终 tie-breaker，确保先声明的蓄力可被同 tick 后续声明读取。
-- 行为断言已覆盖：稳定 `Declare` 顺序即时获得、读取与消费；消费日志为负值且处于 `Declare` 阶段；无合法目标不消费；只读可重复读取；A-03 复写复用原声明快照且不二次消费；双方同 tick 消费后仍在 Aggregate/PostTick 同时判定。
+- 已将充能读取/消费定型为通用配置字段 `ChargeReadLimit`、`AmountPerCharge`、`ChargeConsume`，不增加第七类基础效果，也不按装备 ID 写特例。
+- 独立审计发现并修复同来源同触发声明的排序缺陷：同一 source/anchor 下现在按本批 `Declare` 插入序列作为最终 tie-breaker，确保先声明的充能可被同 tick 后续声明读取。
+- 行为断言已覆盖：稳定 `Declare` 顺序即时获得、读取与消费；消费日志为负值且处于 `Declare` 阶段；无合法目标不消费；只读可重复读取；A-03 复制复用原声明快照且不二次消费；双方同 tick 消费后仍在 Aggregate/PostTick 同时判定。
 - 在行为契约通过后，已显式运行无头 Release `update-hashes` 更新 approved hash；随后只读 `verify` 通过：15 个向量全部匹配。
 - 无头 Release `all 10000` 真实通过：`builds=10000`、`distinct=10000`、`invalid=0`、`hung=0`、`elapsedMs=5844`。
 - 独立门禁未启动第二个 Unity Editor；协调器整合后通过主工作区 Unity Agent Bridge 复验：重编译 `generation=26`、`errorCount=0`、`warningCount=1`（既有 `TutorialForm.m_SkipButton` 未使用警告）；EditMode `Game.Hot.Buqi.Tests` 为 `total=9`、`passed=9`、`failed=0`、`success=true`（runId `test-run-0f3cb05e70654dcaa2398b7efaac6495`）；`Game/Buqi/Battle Sandbox` 菜单返回 `executed=true`。
 
 ## 下一步
 
-Charge 0.4.1 门禁已经完成，下一节点进入 Step 3 Luban Schema。Step 3 只建立 9 法门、3 淬炼与 6 道影的最小配置链路，仍不得直接录入完整 18 个法门或创建正式玩家 UI。
+Charge 0.4.1 门禁已经完成，下一节点进入 Step 3 Luban Schema。Step 3 只建立 9 装备、3 改造与 6 对手快照的最小配置链路，仍不得直接录入完整 18 个装备或创建正式玩家 UI。
 
 ## Step 3 当前进展（2026-08-05）
 
-- 已在 `Design/Excel/GameHot/Datas/Buqi/` 新增 `BuqiGlobal.xlsx`、`BuqiItem.xlsx`、`BuqiRefinement.xlsx`、`BuqiEcho.xlsx`，仅录入最小配置链路范围：9 个验证法门、3 个淬炼、6 份道影。
+- 已在 `Design/Excel/GameHot/Datas/Buqi/` 新增 `BuqiGlobal.xlsx`、`BuqiItem.xlsx`、`BuqiRefinement.xlsx`、`BuqiEcho.xlsx`，仅录入最小配置链路范围：9 个验证装备、3 个改造、6 份对手快照。
 - 已在 GameHot 的 `__enums__.xlsx`、`__beans__.xlsx`、`__tables__.xlsx` 注册尺寸、品质、构筑方向、效果、触发、目标、条件、效果配置、格位实例与构筑快照；补齐 `__beans__.xlsx` 中 Luban 当前运行时需要的 `alias` 与 `variants` 字段子列。
-- 已新增 `Game.Hot.Buqi.Config` 适配层：`BuqiDefinitionProvider` 深拷贝配置为战斗定义，`BuqiConfigValidator` 校验 Step 3 计数、ID、尺寸/价格、触发/效果/目标组合、引用和道影棋盘；`TablesComponent` 在生成表存在时通过反射读取并校验，不让战斗核心直接依赖 Luban 生成类。
+- 已新增 `Game.Hot.Buqi.Config` 适配层：`BuqiDefinitionProvider` 深拷贝配置为战斗定义，`BuqiConfigValidator` 校验 Step 3 计数、ID、尺寸/价格、触发/效果/目标组合、引用和对手快照棋盘；`TablesComponent` 在生成表存在时通过反射读取并校验，不让战斗核心直接依赖 Luban 生成类。
 - 命令行 `ExcelExporter` 已实际导出 GameHot Luban 代码与 bin/json 数据；协调器整合后又通过主 Unity 执行 `Game/Tool/ExcelExporter`，生成结果与提交一致，没有产生额外 diff。
 - Step 3 主工作区验收完成：Unity 重编译 `generation=29`、`errorCount=0`、`warningCount=1`（既有 `TutorialForm.m_SkipButton` 未使用警告）；EditMode `Game.Hot.Buqi.Tests` 为 `total=14`、`passed=14`、`failed=0`、`success=true`（runId `test-run-a28a8b146218445bbbc47b511a884138`）；`Game/Buqi/Battle Sandbox` 菜单返回 `executed=true`。Luban Check/Export、无头战斗 `verify`、配置适配静态编译和生成 JSON 数量检查也均通过。
 
 ## 下一步
 
-Step 3 已完成。下一门禁是利用现有 Battle Sandbox 执行 P-1 认知走查，验证“预测 -> 归因 -> 针对性重构”是否成立；P-1 通过前不进入正式玩家 UI、完整经济内容或 18 法门批量录入。
+Step 3 已完成。下一门禁是利用现有 Battle Sandbox 执行 P-1 认知走查，验证“预测 -> 归因 -> 针对性重构”是否成立；P-1 通过前不进入正式玩家 UI、完整经济内容或 18 装备批量录入。
 
 ## P-1 认知走查准备（2026-08-05）
 
@@ -148,22 +148,22 @@ Step 3 已完成。下一门禁是利用现有 Battle Sandbox 执行 P-1 认知�
 - `BuqiBattleSandboxWindow` 已提供 P-1 记录入口，并在场景切换/清空结果时清理走查状态；菜单真实执行成功。
 - Unity 真实编译：`generation=32`、`errorCount=0`、`warningCount=1`；唯一 warning 为既有 `TutorialForm.m_SkipButton` 未使用警告。
 - Unity EditMode 真实终态：`Game.Hot.Buqi.Tests`，`total=17`、`passed=17`、`failed=0`、`skipped=0`、`success=true`。
-- 已增加 P-1 通俗战斗摘要：直接投影模拟器终态和事件日志，显示双方最终生命/护体、护体吸收、反击声明与失衡事故；菜单 `Game/Buqi/Run P-1 Fast Summary` 可重复输出固定第一场证据。摘要不重新计算胜负。
+- 已增加 P-1 通俗战斗摘要：直接投影模拟器终态和事件日志，显示双方最终生命/护盾、护盾吸收、反击声明与过载伤害；菜单 `Game/Buqi/Run P-1 Fast Summary` 可重复输出固定第一场证据。摘要不重新计算胜负。
 - 当前主工作区 Unity 编译 `generation=5` 为 0 error / 1 个既有 warning；EditMode `Game.Hot.Buqi.Tests` 为 `25/25` 通过（runId `test-run-978d9eeec31d47eaa2f4f1ae8396ef1a`），覆盖 P-1 摘要/三轮候选、真实 Luban bytes 语义对比和扩展效果配置契约。
-- P-1 第 1 轮已完成：自动构筑玩家预测“右侧靠左侧失衡自伤获胜”；真实结果为左侧胜、生命 `24:14`，右侧护体吸收 `170`，右侧反击声明 `2` 次/`22` 伤害，左侧失衡事故 `3` 次/`24` 伤害，hash `025bde900c0e0fa1e9c547ea1b588ae67a72bd7cad5a1ebf9eea8999314e51f0`。玩家归因为左侧持续输出更高，下一轮选择强化拖延能力。
-- P-1 第 2 轮已完成模拟与归因：右侧增加第二张 `W8-007` 后，玩家预测“右侧靠双缓冲拖到硬上限获胜”；真实结果为右侧胜、时长 `601 tick`，生命 `24:68`，右侧剩余护体 `42`、累计吸收 `224`，反击仍为 `2` 次/`22` 伤害，左侧失衡仍为 `3` 次/`24` 伤害，hash `a95c8760347873cafc658bf4254a1b97cc7e204dccc6e2c5a94b4dce2e80fbb8`。玩家归因为护体供给超过输出，下一轮选择以 `Refinement` 强化左侧输出。
-- P-1 第 3 轮已完成：保留右侧双缓冲，只给左侧 `W8-005` 增加 A-02“延期”。玩家授权代理预测，预测右侧仍拖到硬上限获胜；真实结果为右侧胜、时长 `601 tick`，生命 `24:70`，右侧剩余护体 `24`、累计吸收 `244`，反击仍为 `2` 次/`22` 伤害，左侧失衡仍为 `3` 次/`24` 伤害，hash `a23c97daa308b3a9e9315a9631cf94b32bcc089429018a96e59542a0bcfc2cec`。结论是 A-02 降低了终局护体，但冷却代价使其仍无法突破持续护体供给。
-- 自动构筑玩家的连续 3 轮已完整闭环：第 1 轮预测被推翻后能归因；第 2 轮针对性加缓冲成功翻转；第 3 轮针对性淬炼未翻转但代价可解释。第 2/3 轮证据已增加固定摘要与 hash 回归断言。
+- P-1 第 1 轮已完成：自动构筑玩家预测“右侧靠左侧过载自伤获胜”；真实结果为左侧胜、生命 `24:14`，右侧护盾吸收 `170`，右侧反击声明 `2` 次/`22` 伤害，左侧过载伤害 `3` 次/`24` 伤害，hash `025bde900c0e0fa1e9c547ea1b588ae67a72bd7cad5a1ebf9eea8999314e51f0`。玩家归因为左侧持续输出更高，下一轮选择强化拖延能力。
+- P-1 第 2 轮已完成模拟与归因：右侧增加第二张 `W8-007` 后，玩家预测“右侧靠双护盾拖到硬上限获胜”；真实结果为右侧胜、时长 `601 tick`，生命 `24:68`，右侧剩余护盾 `42`、累计吸收 `224`，反击仍为 `2` 次/`22` 伤害，左侧过载仍为 `3` 次/`24` 伤害，hash `a95c8760347873cafc658bf4254a1b97cc7e204dccc6e2c5a94b4dce2e80fbb8`。玩家归因为护盾供给超过输出，下一轮选择以 `Refinement` 强化左侧输出。
+- P-1 第 3 轮已完成：保留右侧双护盾，只给左侧 `W8-005` 增加 A-02“强效”。玩家授权代理预测，预测右侧仍拖到硬上限获胜；真实结果为右侧胜、时长 `601 tick`，生命 `24:70`，右侧剩余护盾 `24`、累计吸收 `244`，反击仍为 `2` 次/`22` 伤害，左侧过载仍为 `3` 次/`24` 伤害，hash `a23c97daa308b3a9e9315a9631cf94b32bcc089429018a96e59542a0bcfc2cec`。结论是 A-02 降低了终局护盾，但冷却代价使其仍无法突破持续护盾供给。
+- 自动构筑玩家的连续 3 轮已完整闭环：第 1 轮预测被推翻后能归因；第 2 轮针对性加护盾成功翻转；第 3 轮针对性改造未翻转但代价可解释。第 2/3 轮证据已增加固定摘要与 hash 回归断言。
 - 本轮纯 C# 同源码 runner 编译和输入合法性检查通过；无头 `verify` 通过，行为契约与 15 个 approved hash 全部匹配。Unity 主实例已通过固定槽位复验新增 EditMode 测试；菜单入口保留为 Editor-only 调试工具，不进入正式玩家流程。
 - 独立 Review 已完成：未发现 P0-P2；三个 P3（真实 bytes 半自证、Echo Build 交叉校验、Global 与模拟器常量漂移）已在 `65519d1c` 修复并通过红绿回归。知识库四项预期漂移已由 `6b016292` 同步，普通与严格静态门禁均通过，五项运行验收保持 `not_run`。
 - P-1 体验结论尚未形成：当前完成 1 位自动构筑玩家的 3/3 轮；仍需自走棋玩家和新手玩家各 3 轮，再依据真实记录判断是否进入 Step 4。自动测试不能替代玩家样本。
-- effects/builds 扩展已在 `2253f0a2` 落地：当前内部验证库为 8 构筑方向、24 法门、6 淬炼、16 道影，Heal/Regen/Poison/Burn/Freeze 语义与生成 bytes 均有测试覆盖。该扩展不等于 P-1 通过，也不授权正式玩家 UI 或完整经济。
+- effects/builds 扩展已在 `2253f0a2` 落地：当前内部验证库为 8 构筑方向、24 装备、6 改造、16 对手快照，Heal/Regen/Poison/Burn/Freeze 语义与生成 bytes 均有测试覆盖。该扩展不等于 P-1 通过，也不授权正式玩家 UI 或完整经济。
 
 ## 系统设计包状态（2026-08-05）
 
-- 已完成 `docs/game-concepts/systems/` 首阶段系统设计包 v0.1：总纲、单局、构筑/淬炼、战斗/复盘、经济/商店/事件、道影、公平性、跨端 UX、长期精通、P-1/埋点/调参与集中 Tuning Register。
-- 文档已按当前工程事实校准：Step 1/2/3 与 24 法门、6 淬炼、16 道影内部效果验证库均已完成；P-1 仍只有自动构筑玩家 3/3 轮，未误标为体验通过。
-- 未实现的体验/经济数值继续标 `[PLACEHOLDER]`；已进入模拟器、行为断言与 approved hash 的品质/淬炼当前值标 `[CONTRACT]`，其正式内容平衡性仍标 `[TO VALIDATE]`。集中登记表包含 rationale、候选试验带、主指标与停止线，并分离 `[SCOPE]`、`[DERIVED]`、`[QUALITY]`，避免用工程覆盖替代体验证据。
+- 已完成 `docs/game-concepts/systems/` 首阶段系统设计包 v0.1：总纲、单局、构筑/改造、战斗/复盘、经济/商店/事件、对手快照、公平性、跨端 UX、长期精通、P-1/埋点/调参与集中 Tuning Register。
+- 文档已按当前工程事实校准：Step 1/2/3 与 24 装备、6 改造、16 对手快照内部效果验证库均已完成；P-1 仍只有自动构筑玩家 3/3 轮，未误标为体验通过。
+- 未实现的体验/经济数值继续标 `[PLACEHOLDER]`；已进入模拟器、行为断言与 approved hash 的品质/改造当前值标 `[CONTRACT]`，其正式内容平衡性仍标 `[TO VALIDATE]`。集中登记表包含 rationale、候选试验带、主指标与停止线，并分离 `[SCOPE]`、`[DERIVED]`、`[QUALITY]`，避免用工程覆盖替代体验证据。
 - 设计包是实现级展开稿，不修改 `buqi-battle-contract.md` v0.4.1，也不授权 Step 4、正式经济或内部验证库整体玩家启用。
 - `docs/superpowers/specs/2026-08-05-buqi-ui-interaction-design.md` 已形成待用户审阅的 UI 蓝图：当前只允许 P-1 单根走查壳，正式 GameHot Run Shell、UIForm 与领域 Widget 仍受 P-1 阻断，未创建代码或 prefab。
 

@@ -46,10 +46,10 @@ namespace Game.Hot.Buqi.UI
             m_ItemIds = new string[m_ItemButtons.Length];
 
             SetText(m_NameText, string.IsNullOrEmpty(view.Name) ? view.Id : view.Name);
-            SetText(m_BuildText, GameFramework.Utility.Text.Format("\u65B9\u5411  {0}", EmptyFallback(view.Build, "\u672A\u516C\u5F00")));
-            SetText(m_SlotsText, "\u8FDE\u7EED 8 \u683C\u6784\u7B51  \u00B7  \u516C\u5F00\u60C5\u62A5");
-            SetText(m_ThreatText, "\u4E3B\u8981\u5A01\u80C1\uFF1A\u516C\u5F00\u88C5\u5907\u89E6\u53D1\u5173\u7CFB");
-            SetText(m_RiskText, "\u5DF2\u77E5\u98CE\u9669\uFF1A\u672A\u516C\u5F00\u6539\u9020");
+            SetText(m_BuildText, GameFramework.Utility.Text.Format("方向  {0}", EmptyFallback(view.Build, "未公开")));
+            SetText(m_SlotsText, "连续 8 格构筑  ·  公开情报");
+            SetText(m_ThreatText, "主要威胁：公开装备触发关系");
+            SetText(m_RiskText, "已知风险：未公开改造");
             if (m_StatusMarker != null)
                 m_StatusMarker.color = new Color32(229, 176, 71, 255);
 
@@ -61,7 +61,7 @@ namespace Game.Hot.Buqi.UI
 
                 button.onClick.RemoveAllListeners();
                 button.interactable = false;
-                SetText(GetItemLabel(index), "\u7A7A\u7F6E");
+                SetText(GetItemLabel(index), "空置");
 
                 BuqiDemoItemView item = GetItem(view.Items, index);
                 if (item == null || item.Empty)

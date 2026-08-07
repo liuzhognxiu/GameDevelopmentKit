@@ -54,7 +54,7 @@ namespace Game.Hot.Buqi.UI
 
             if (!(userData is BuqiItemDetailOpenData data))
             {
-                Log.Warning("BuqiItemDetailForm requires BuqiItemDetailOpenData.");
+                Log.Warning("装备详情窗口缺少打开数据。");
                 Close();
                 return;
             }
@@ -90,12 +90,12 @@ namespace Game.Hot.Buqi.UI
         private void Render(BuqiItemDetailOpenData data)
         {
             BuqiDemoItemView item = data.Item;
-            SetText(m_TitleText, item == null ? "\u88c5\u5907\u8be6\u60c5" : item.Name);
+            SetText(m_TitleText, item == null ? "装备详情" : item.Name);
             SetText(
                 m_MetaText,
                 item == null
                     ? string.Empty
-                    : GameFramework.Utility.Text.Format("{0} \u683c   \u91d1\u5e01 {1}", item.Size, item.Price));
+                    : GameFramework.Utility.Text.Format("{0} 格   金币 {1}", item.Size, item.Price));
             SetText(
                 m_BodyText,
                 string.IsNullOrEmpty(data.FullEffectText)
@@ -103,7 +103,7 @@ namespace Game.Hot.Buqi.UI
                     : data.FullEffectText);
             SetText(
                 m_ModificationText,
-                string.IsNullOrEmpty(data.ModificationText) ? "\u65e0\u6539\u9020" : data.ModificationText);
+                string.IsNullOrEmpty(data.ModificationText) ? "无改造" : data.ModificationText);
         }
 
         private void BindCloseButton()

@@ -66,7 +66,7 @@ namespace Game.Hot.Buqi.Battle
                 }
                 else if (result.BattleLogHash != firstHash || !SameResult(firstResult, result))
                 {
-                    failures.Add("determinism: repeated simulation changed result or hash");
+                    failures.Add("确定性：重复模拟改变了结果或哈希");
                     return;
                 }
             }
@@ -127,11 +127,11 @@ namespace Game.Hot.Buqi.Battle
             if (gap == null)
                 return;
             if (CountReason(gapLog, "adjacent-response") != 0)
-                failures.Add("adjacency: a gap did not block adjacent response");
+                failures.Add("相邻关系：空位未阻断相邻响应");
 
             Simulate(vectors, "adjacency-chain", provider, out List<BattleEvent> adjacentLog, failures);
             if (CountReason(adjacentLog, "adjacent-response") == 0)
-                failures.Add("adjacency: touching items did not trigger adjacent response");
+                failures.Add("相邻关系：相接装备未触发相邻响应");
         }
 
         private static void CheckReadyUseIsolation(IItemDefinitionProvider provider, List<string> failures)
@@ -152,7 +152,7 @@ namespace Game.Hot.Buqi.Battle
                 }
             }
             if (slowDeclarationsBeforeTick29 != 0)
-                failures.Add("ready-use: one ready item triggered another item's OnUse");
+                failures.Add("就绪使用：一件就绪装备错误触发了另一件装备的 OnUse");
         }
 
         private static void CheckSameTickBuffer(
@@ -167,7 +167,7 @@ namespace Game.Hot.Buqi.Battle
                 SumReasonAtTick(log, "BufferAbsorb", 0) != 15 ||
                 SumReasonAtTick(log, "Damage", 0) != 0)
             {
-                failures.Add("aggregate: tick-0 buffer did not absorb tick-0 normal damage");
+                failures.Add("聚合结算：第 0 时刻的护体未吸收同刻普通伤害");
             }
         }
 
@@ -182,7 +182,7 @@ namespace Game.Hot.Buqi.Battle
             int firstNoiseTick = FindFirstReasonTick(log, "noise");
             int accidentCount = CountReasonAtTick(log, "NoiseAccident", firstNoiseTick);
             if (accidentCount != 2)
-                failures.Add("noise: 21 noise did not produce exactly two accidents");
+                failures.Add("失衡：21 点失衡值未准确触发两次事故");
         }
 
         private static void CheckHealAndRegen(IItemDefinitionProvider provider, List<string> failures)
@@ -195,11 +195,11 @@ namespace Game.Hot.Buqi.Battle
             BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out SideState left, out _);
 
             if (left.Execution <= 30)
-                failures.Add("heal/regen: execution did not increase above the wounded starting value");
+                failures.Add("治疗/再生：道基未从受伤初始值恢复");
             if (CountReason(log, "Heal") == 0)
-                failures.Add("heal: direct heal was not logged");
+                failures.Add("治疗：未记录直接治疗");
             if (CountReason(log, "Regen") == 0)
-                failures.Add("regen: periodic heal was not logged");
+                failures.Add("再生：未记录周期治疗");
         }
 
         private static void CheckPoisonBypassesShield(IItemDefinitionProvider provider, List<string> failures)
@@ -210,11 +210,11 @@ namespace Game.Hot.Buqi.Battle
             BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out SideState right);
 
             if (right.Execution >= 100)
-                failures.Add("poison: poison did not reduce execution");
+                failures.Add("中毒：未降低道基");
             if (right.Buffer != 60)
-                failures.Add("poison: poison consumed shield even though it should bypass shield");
+                failures.Add("中毒：本应绕过护体却消耗了护体");
             if (CountReason(log, "PoisonDamage") == 0)
-                failures.Add("poison: poison damage was not logged");
+                failures.Add("中毒：未记录中毒伤害");
         }
 
         private static void CheckBurnUsesShield(IItemDefinitionProvider provider, List<string> failures)
@@ -225,9 +225,9 @@ namespace Game.Hot.Buqi.Battle
             BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out SideState right);
 
             if (right.Buffer >= 60)
-                failures.Add("burn: burn did not consume shield first");
+                failures.Add("灼烧：未优先消耗护体");
             if (CountReason(log, "BurnDamage") == 0 && CountReason(log, "BurnShieldAbsorb") == 0)
-                failures.Add("burn: burn damage or shield absorption was not logged");
+                failures.Add("灼烧：未记录灼烧伤害或护体吸收");
         }
 
         private static void CheckFreezeStopsCooldown(IItemDefinitionProvider provider, List<string> failures)
@@ -245,9 +245,9 @@ namespace Game.Hot.Buqi.Battle
             int controlUses = CountActorDeclarations(controlLog, "attacker", "strike");
             int frozenUses = CountActorDeclarations(freezeLog, "attacker", "strike");
             if (frozenUses >= controlUses)
-                failures.Add("freeze: frozen enemy item did not lose cooldown progress");
+                failures.Add("冻结：被冻结的敌方装备未损失冷却进度");
             if (CountReason(freezeLog, "FreezeApplied") == 0)
-                failures.Add("freeze: freeze application was not logged");
+                failures.Add("冻结：未记录冻结施加事件");
         }
 
         private static void CheckChargeCap(
@@ -260,7 +260,7 @@ namespace Game.Hot.Buqi.Battle
                 return;
             BuqiBattleSimulator.Simulate(vector.Request, provider, out _, out SideState left, out _);
             if (left.Items[0].Charge != BuqiBattleSimulator.ChargeCap)
-                failures.Add("charge: final charge exceeded or missed cap 9");
+                failures.Add("蓄力：最终蓄力值超过或未达到上限 9");
         }
 
         private static void CheckChargeDeclarationConsumption(
@@ -279,10 +279,10 @@ namespace Game.Hot.Buqi.Battle
                 SumActorDeclaredAtTick(consumingLog, "consumer", "charge-consume-a", 0) != 7 ||
                 SumActorDeclaredAtTick(consumingLog, "consumer", "charge-consume-b", 0) != 1)
             {
-                failures.Add("charge: declaration-time consumption was not single-use and deterministic");
+                failures.Add("蓄力：声明阶段消耗不是单次且确定的");
             }
             if (CountReasonAtTick(consumingLog, "ChargeConsumed", 0) != 1)
-                failures.Add("charge: consumed charge was not logged once at declaration");
+                failures.Add("蓄力：声明时未准确记录一次蓄力消耗");
 
             BattleRequest reader = BuqiTestSuite.Request(
                 BuqiTestSuite.Snapshot("L", 100, 0,
@@ -296,7 +296,7 @@ namespace Game.Hot.Buqi.Battle
                 SumActorDeclaredAtTick(readerLog, "reader", "charge-read-a", 0) != 7 ||
                 SumActorDeclaredAtTick(readerLog, "reader", "charge-read-b", 0) != 7)
             {
-                failures.Add("charge: read-only effects did not reuse the same declared snapshot");
+                failures.Add("蓄力：只读效果未复用同一个声明快照");
             }
 
             BattleRequest rewrite = BuqiTestSuite.Request(
@@ -314,7 +314,7 @@ namespace Game.Hot.Buqi.Battle
                 SumActorDeclaredAtTick(rewriteLog, "rewrite", "charge-rewrite", rewriteTick) != 12 ||
                 CountReasonAtTick(rewriteLog, "ChargeConsumed", rewriteTick) != 1)
             {
-                failures.Add("charge: A-03 rewrite did not reuse the direct declaration snapshot without double consumption");
+                failures.Add("蓄力：A-03 复写未复用直接声明快照，或发生了重复消耗");
             }
 
             BattleRequest noTarget = BuqiTestSuite.Request(
@@ -329,7 +329,7 @@ namespace Game.Hot.Buqi.Battle
                 CountActorReasonAtTick(noTargetLog, "no-target", "NoValidTarget", 0) != 1 ||
                 CountReasonAtTick(noTargetLog, "ChargeConsumed", 0) != 0)
             {
-                failures.Add("charge: declaration without a valid target consumed or read charge");
+                failures.Add("蓄力：没有有效目标的声明仍消耗或读取了蓄力");
             }
         }
 
@@ -350,7 +350,7 @@ namespace Game.Hot.Buqi.Battle
                 SumActorDeclaredAtTick(log, "sequenced", "a-same-actor-buffer", 0) != 7 ||
                 SumActorReasonAtTick(log, "sequenced", "ChargeConsumed", 0) != -3)
             {
-                failures.Add("charge: same-source Declare sequence did not let prior charge feed a later consuming declaration");
+                failures.Add("蓄力：同来源声明序列中，先前蓄力未供后续消耗声明使用");
             }
         }
 
@@ -373,14 +373,14 @@ namespace Game.Hot.Buqi.Battle
                 left.Execution != 0 ||
                 right.Execution != 0)
             {
-                failures.Add("charge: same-tick bilateral consuming declarations did not resolve simultaneously");
+                failures.Add("蓄力：同刻双方消耗声明未同时结算");
             }
 
             if (CountReasonAtTick(log, "ChargeConsumed", 0) != 2 ||
                 SumReasonAtTick(log, "ChargeConsumed", 0) != -6 ||
                 !AllReasonEventsAtTickMatch(log, "ChargeConsumed", 0, BuqiEventPhase.Declare, BuqiEventType.Effect))
             {
-                failures.Add("charge: consumption log events were not negative Declare-phase resource changes");
+                failures.Add("蓄力：消耗日志不是声明阶段的负资源变化");
             }
         }
 
@@ -394,9 +394,9 @@ namespace Game.Hot.Buqi.Battle
             int sourceDamage = SumDeclaredAtTick(log, "adjacent-source", firstUseTick);
             int adjacentResponses = CountReasonAtTick(log, "adjacent-response", firstUseTick);
             if (sourceDamage != 12)
-                failures.Add("A-03: first direct effect was not 100% + 50%");
+                failures.Add("A-03：首次直接效果不是 100% + 50%");
             if (adjacentResponses != 1)
-                failures.Add("A-03: rewrite retriggered adjacent response");
+                failures.Add("A-03：复写错误地再次触发了相邻响应");
         }
 
         private static void CheckReliable(
@@ -406,9 +406,9 @@ namespace Game.Hot.Buqi.Battle
         {
             Simulate(vectors, "reliable", provider, out List<BattleEvent> log, failures);
             if (CountReason(log, "A04Immune") == 0)
-                failures.Add("A-04: effective enemy delay was not logged as immune");
+                failures.Add("A-04：有效的敌方延迟未记录为免疫");
             if (CountReason(log, "interfered-response") != 0)
-                failures.Add("A-04: immune delay incorrectly triggered OnFirstInterfered");
+                failures.Add("A-04：被免疫的延迟错误触发了 OnFirstInterfered");
         }
 
         private static void CheckUseCount(
@@ -419,7 +419,7 @@ namespace Game.Hot.Buqi.Battle
             Simulate(vectors, "use-count", provider, out List<BattleEvent> log, failures);
             int burstTick = FindFirstReasonTick(log, "count-burst");
             if (burstTick != 29)
-                failures.Add("use-count: third use did not trigger at tick 29");
+                failures.Add("使用次数：第三次使用未在第 29 时刻触发");
         }
 
         /// <summary>
@@ -440,23 +440,23 @@ namespace Game.Hot.Buqi.Battle
             BuqiBattleSimulator.Simulate(annotations, provider, out List<BattleEvent> log, out SideState left, out _);
 
             if (left.Items[0].EffectiveBaseCooldownTicks != 26)
-                failures.Add("A-01: cooldown was not reduced by 15% with rounding");
+                failures.Add("A-01：冷却未按取整规则降低 15%");
             if (left.Items[1].EffectiveBaseCooldownTicks != 36)
-                failures.Add("A-02: cooldown was not increased by 20%");
+                failures.Add("A-02：冷却未增加 20%");
             int a02Tick = FindFirstActorReasonTick(log, "a02", "strike");
             if (SumActorDeclaredAtTick(log, "a02", "strike", a02Tick) != 13)
-                failures.Add("A-02: non-opening effect was not increased by 30%");
+                failures.Add("A-02：非开局效果未增加 30%");
             int a05Tick = FindFirstActorReasonTick(log, "a05", "noise");
             if (SumActorDeclaredAtTick(log, "a05", "noise", a05Tick) != 21 ||
                 SumActorReasonAtTick(log, "a05", "NoiseChange", a05Tick) != 20)
             {
-                failures.Add("A-05: noise source was not reduced by exactly one");
+                failures.Add("A-05：失衡来源数值未准确减少 1");
             }
             if (SumActorReasonAtTick(log, "a06", "NoiseChange", 0) != 3)
-                failures.Add("A-06: opening noise was not applied at tick 0");
+                failures.Add("A-06：开局失衡未在第 0 时刻施加");
             int a06Tick = FindFirstActorReasonTick(log, "a06", "strike");
             if (SumActorDeclaredAtTick(log, "a06", "strike", a06Tick) != 14)
-                failures.Add("A-06: damage was not increased by 35% with rounding");
+                failures.Add("A-06：伤害未按取整规则增加 35%");
 
             BattleRequest quality = BuqiTestSuite.Request(
                 BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("quality", "damage", 0)),
@@ -465,7 +465,7 @@ namespace Game.Hot.Buqi.Battle
             BuqiBattleSimulator.Simulate(quality, provider, out List<BattleEvent> qualityLog, out _, out _);
             int qualityTick = FindFirstActorReasonTick(qualityLog, "quality", "strike");
             if (SumActorDeclaredAtTick(qualityLog, "quality", "strike", qualityTick) != 16)
-                failures.Add("quality: improved multiplier was not 1.60");
+                failures.Add("品质：改良品质倍率不是 1.60");
         }
 
         private static void CheckCanonicalSnapshot(
@@ -481,7 +481,7 @@ namespace Game.Hot.Buqi.Battle
             if (!BuqiBoardValidator.Validate(first, provider, out _) ||
                 BuqiCrypto.SnapshotHash(first) != BuqiCrypto.SnapshotHash(second))
             {
-                failures.Add("snapshot: canonical hash depended on input item order");
+                failures.Add("快照：规范哈希受输入装备顺序影响");
             }
         }
 
@@ -495,9 +495,9 @@ namespace Game.Hot.Buqi.Battle
         {
             Simulate(vectors, "loop-cap", provider, out List<BattleEvent> log, failures);
             if (CountReasonAtTick(log, "cap-5", 0) != 0)
-                failures.Add("loop-cap: fifth event from one item was not truncated");
+                failures.Add("循环上限：同一装备的第五个事件未被截断");
             if (CountReason(log, "PerItemLoopCapReached") != 1)
-                failures.Add("loop-cap: per-item truncation was not logged exactly once");
+                failures.Add("循环上限：每件装备的截断未准确记录一次");
         }
 
         /// <summary>验证 tick 450 双方劫火经 Aggregate 同时造成直接伤害并允许平局。</summary>
@@ -510,9 +510,9 @@ namespace Game.Hot.Buqi.Battle
             if (result == null)
                 return;
             if (result.Outcome != BattleOutcome.Draw || result.TerminationReason != TerminationReason.Overtime.ToString())
-                failures.Add("overtime: simultaneous direct damage did not produce overtime draw");
+                failures.Add("劫火：同时直接伤害未产生劫火平局");
             if (CountReasonAtTick(log, "OvertimeDamage", BuqiBattleSimulator.NormalTickCount) != 2)
-                failures.Add("overtime: both sides did not receive aggregate direct damage at tick 450");
+                failures.Add("劫火：双方未在第 450 时刻承受聚合直接伤害");
         }
 
         /// <summary>验证 tick 600 后按执行值、护体、失衡的固定顺序裁决。</summary>
@@ -528,7 +528,7 @@ namespace Game.Hot.Buqi.Battle
             if (executionResult.TerminationReason != TerminationReason.HardCap.ToString() ||
                 executionResult.Outcome != BattleOutcome.LeftWin)
             {
-                failures.Add("hard-cap: execution was not the first comparison key");
+                failures.Add("硬上限：道基不是第一比较项");
             }
 
             BattleRequest noiseRequest = BuqiTestSuite.Request(
@@ -539,7 +539,7 @@ namespace Game.Hot.Buqi.Battle
             BattleResult noiseResult = BuqiBattleSimulator.Simulate(
                 noiseRequest, provider, out _, out _, out _);
             if (noiseResult.Outcome != BattleOutcome.LeftWin)
-                failures.Add("hard-cap: lower noise did not win after execution and buffer tied");
+                failures.Add("硬上限：道基与护体相同时，较低失衡值未获胜");
         }
 
         private static void CheckMirror(
@@ -565,7 +565,7 @@ namespace Game.Hot.Buqi.Battle
                 original.RightExecution != mirror.LeftExecution ||
                 MirrorOutcome(original.Outcome) != mirror.Outcome)
             {
-                failures.Add("mirror: swapped input did not produce mirrored result");
+                failures.Add("镜像：交换输入后未产生镜像结果");
             }
         }
 
@@ -592,7 +592,7 @@ namespace Game.Hot.Buqi.Battle
         {
             BuqiTestVector vector = BuqiTestSuite.FindVector(vectors, id);
             if (vector == null)
-                failures.Add(BuqiText.Format("missing vector: {0}", id));
+                failures.Add(BuqiText.Format("缺少向量：{0}", id));
             return vector;
         }
 
@@ -605,7 +605,7 @@ namespace Game.Hot.Buqi.Battle
         {
             BattleResult result = BuqiBattleSimulator.Simulate(request, provider, out _, out _, out _);
             if (result.Outcome != expected)
-                failures.Add(BuqiText.Format("{0}: expected {1}, got {2}", label, expected, result.Outcome));
+                failures.Add(BuqiText.Format("{0}：期望 {1}，实际为 {2}", label, expected, result.Outcome));
         }
 
         private static bool SameResult(BattleResult left, BattleResult right)

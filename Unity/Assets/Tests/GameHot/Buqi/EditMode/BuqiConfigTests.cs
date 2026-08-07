@@ -69,20 +69,20 @@ namespace Game.Hot.Buqi.Tests
             foreach (BuqiItemConfigRow expected in fixture.Items)
             {
                 BuqiItemConfigRow actual = FindItem(generated.Items, expected.DefinitionId);
-                Assert.That(actual, Is.Not.Null, "generated item missing: " + expected.DefinitionId);
+                Assert.That(actual, Is.Not.Null, "缺少生成的装备：" + expected.DefinitionId);
                 AssertItemEquivalent(actual, expected);
             }
             foreach (BuqiRefinementConfigRow expected in fixture.Refinements)
             {
                 BuqiRefinementConfigRow actual = FindRefinement(generated.Refinements, expected.RefinementId);
-                Assert.That(actual, Is.Not.Null, "generated refinement missing: " + expected.RefinementId);
+                Assert.That(actual, Is.Not.Null, "缺少生成的淬炼：" + expected.RefinementId);
                 Assert.That(actual.DisplayName, Is.EqualTo(expected.DisplayName), expected.RefinementId);
                 Assert.That(actual.Summary, Is.EqualTo(expected.Summary), expected.RefinementId);
             }
             foreach (BuqiEchoConfigRow expected in fixture.Echoes)
             {
                 BuqiEchoConfigRow actual = FindEcho(generated.Echoes, expected.EchoId);
-                Assert.That(actual, Is.Not.Null, "generated echo missing: " + expected.EchoId);
+                Assert.That(actual, Is.Not.Null, "缺少生成的道影：" + expected.EchoId);
                 AssertEchoEquivalent(actual, expected);
             }
         }
@@ -97,8 +97,8 @@ namespace Game.Hot.Buqi.Tests
 
             List<string> errors = BuqiConfigValidator.Validate(catalog);
 
-            Assert.That(Contains(errors, "enabled item W8-001"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "missing enabled item W8-030"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "已启用装备 W8-001"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "缺少已启用装备 W8-030"), Is.True, string.Join("\n", errors));
         }
 
         [Test]
@@ -114,9 +114,9 @@ namespace Game.Hot.Buqi.Tests
 
             List<string> errors = BuqiConfigValidator.Validate(catalog);
 
-            Assert.That(Contains(errors, "Buffer requires Self target"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "OnUseCountReached requires use count threshold"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "OnFirstConditionMet requires condition kind"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "Buffer 需要 Self 目标"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "OnUseCountReached 需要使用次数阈值"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "OnFirstConditionMet 需要条件类型"), Is.True, string.Join("\n", errors));
         }
 
         [Test]
@@ -130,9 +130,9 @@ namespace Game.Hot.Buqi.Tests
 
             List<string> errors = BuqiConfigValidator.Validate(catalog);
 
-            Assert.That(Contains(errors, "unknown definitionId W8-999"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "unknown refinementId A-99"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "overlap at slot"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "未知的 definitionId W8-999"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "未知的 refinementId A-99"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "在棋位 0 与装备[1] 重叠"), Is.True, string.Join("\n", errors));
         }
 
         [Test]
@@ -144,8 +144,8 @@ namespace Game.Hot.Buqi.Tests
 
             List<string> errors = BuqiConfigValidator.Validate(catalog);
 
-            Assert.That(Contains(errors, "build is empty"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "build buffer does not match snapshot archetype fast"),
+            Assert.That(Contains(errors, "构筑方向为空"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "构筑方向 buffer 与快照 archetype fast 不匹配"),
                 Is.True, string.Join("\n", errors));
         }
 
@@ -163,12 +163,12 @@ namespace Game.Hot.Buqi.Tests
 
             List<string> errors = BuqiConfigValidator.Validate(catalog);
 
-            Assert.That(Contains(errors, "initial execution must match battle simulator"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "buffer cap must match battle simulator"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "noise threshold must match battle simulator"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "noise incident damage must match battle simulator"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "normal duration must match battle simulator"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "hard cap must match battle simulator"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "全局初始道基必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "全局护体上限必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "全局失衡阈值必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "全局失衡事故伤害必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "全局正常战斗时长必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "全局战斗硬上限必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
         }
 
         private static bool Contains(List<string> errors, string fragment)

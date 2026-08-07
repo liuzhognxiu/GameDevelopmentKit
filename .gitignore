@@ -82,3 +82,7 @@ nul
 /.workbuddy/
 /.superpowers/
 /Unity/TestResults-*.log
+
+# Local spreadsheet and agent scratch artifacts.
+/.codex-tmp/
+*.wbtmp.xlsx

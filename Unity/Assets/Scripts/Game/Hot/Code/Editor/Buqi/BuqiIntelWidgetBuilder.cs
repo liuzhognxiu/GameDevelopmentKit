@@ -21,7 +21,7 @@ namespace Game.Hot.Editor
         private static readonly Color accentColor = new Color32(229, 176, 71, 255);
         private static readonly Color jadeColor = new Color32(51, 150, 128, 255);
 
-        [MenuItem("Game/Buqi/Rebuild Intel Widgets")]
+        [MenuItem("游戏/不器/重建情报控件")]
         public static void BuildAll()
         {
             EnsureFolder(WidgetFolder);
@@ -29,7 +29,7 @@ namespace Game.Hot.Editor
             BuildFactRow();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-            Debug.Log("Buqi intel widgets rebuilt.");
+            Debug.Log("不器情报控件已重建。");
         }
 
         private static void BuildOpponentSnapshot()
@@ -41,14 +41,14 @@ namespace Game.Hot.Editor
             Image marker = CreateImage(root.transform, "StatusMarker", accentColor);
             SetRect(marker.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(18f, -20f), new Vector2(8f, 36f));
 
-            Text name = CreateText(root.transform, "OpponentName_Text", "\u5BF9\u624B\u5FEB\u7167", 22, TextAnchor.MiddleLeft, inkColor);
+            Text name = CreateText(root.transform, "OpponentName_Text", "对手快照", 22, TextAnchor.MiddleLeft, inkColor);
             SetRect(name.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(38f, -24f), new Vector2(300f, 32f));
             name.fontStyle = FontStyle.Bold;
 
-            Text build = CreateText(root.transform, "Build_Text", "\u65B9\u5411  \u9AD8\u901F\u6784\u7B51", 15, TextAnchor.MiddleLeft, accentColor);
+            Text build = CreateText(root.transform, "Build_Text", "方向  高速构筑", 15, TextAnchor.MiddleLeft, accentColor);
             SetRect(build.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(38f, -53f), new Vector2(340f, 24f));
 
-            Text slots = CreateText(root.transform, "BoardSummary_Text", "\u8FDE\u7EED 8 \u683C\u6784\u7B51  \u00B7  \u516C\u5F00\u60C5\u62A5", 14, TextAnchor.MiddleLeft, mutedColor);
+            Text slots = CreateText(root.transform, "BoardSummary_Text", "连续 8 格构筑  ·  公开情报", 14, TextAnchor.MiddleLeft, mutedColor);
             SetRect(slots.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-100f, -40f), new Vector2(180f, 48f));
 
             Text[] itemLabels = new Text[3];
@@ -59,7 +59,7 @@ namespace Game.Hot.Editor
                 Button button = CreateButton(
                     root.transform,
                     string.Format("KeyItem{0:00}", index + 1),
-                    "\u7A7A\u7F6E",
+                    "空置",
                     new Vector2(x, 53f),
                     new Vector2(136f, 72f),
                     raisedColor,
@@ -71,10 +71,10 @@ namespace Game.Hot.Editor
                 itemLabels[index] = label;
             }
 
-            Text threat = CreateText(root.transform, "Threat_Text", "\u4E3B\u8981\u5A01\u80C1\uFF1A\u516C\u5F00\u88C5\u5907\u89E6\u53D1\u5173\u7CFB", 14, TextAnchor.MiddleLeft, inkColor);
+            Text threat = CreateText(root.transform, "Threat_Text", "主要威胁：公开装备触发关系", 14, TextAnchor.MiddleLeft, inkColor);
             SetRect(threat.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(28f, 72f), new Vector2(400f, 24f));
 
-            Text risk = CreateText(root.transform, "Risk_Text", "\u5DF2\u77E5\u98CE\u9669\uFF1A\u672A\u516C\u5F00\u6539\u9020", 14, TextAnchor.MiddleLeft, mutedColor);
+            Text risk = CreateText(root.transform, "Risk_Text", "已知风险：未公开改造", 14, TextAnchor.MiddleLeft, mutedColor);
             SetRect(risk.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(28f, 42f), new Vector2(400f, 24f));
 
             Assign(widget, "m_NameText", name);
@@ -97,15 +97,15 @@ namespace Game.Hot.Editor
             Image marker = CreateImage(root.transform, "Marker_Image", accentColor);
             SetRect(marker.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(8f, 0f), new Vector2(6f, 50f));
 
-            Text title = CreateText(root.transform, "Title_Text", "\u7EC8\u5C40\u4E8B\u5B9E", 15, TextAnchor.MiddleLeft, inkColor);
+            Text title = CreateText(root.transform, "Title_Text", "终局事实", 15, TextAnchor.MiddleLeft, inkColor);
             SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(24f, -19f), new Vector2(230f, 24f));
             title.fontStyle = FontStyle.Bold;
 
-            Text body = CreateText(root.transform, "Body_Text", "\u5173\u952E\u88C5\u5907\u5B8C\u6210\u6709\u6548\u4F24\u5BB3", 13, TextAnchor.MiddleLeft, mutedColor);
+            Text body = CreateText(root.transform, "Body_Text", "关键装备完成有效伤害", 13, TextAnchor.MiddleLeft, mutedColor);
             SetRect(body.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(24f, 19f), new Vector2(310f, 25f));
             body.horizontalOverflow = HorizontalWrapMode.Wrap;
 
-            Button jump = CreateButton(root.transform, "JumpButton", "\u8DF3\u5230 T000", new Vector2(370f, 0f), new Vector2(126f, 42f), raisedColor, out Text tick);
+            Button jump = CreateButton(root.transform, "JumpButton", "跳到 T000", new Vector2(370f, 0f), new Vector2(126f, 42f), raisedColor, out Text tick);
             tick.name = "Tick_Text";
             tick.fontSize = 13;
 
@@ -219,7 +219,7 @@ namespace Game.Hot.Editor
             SerializedObject serializedObject = new SerializedObject(target);
             SerializedProperty property = serializedObject.FindProperty(propertyName);
             if (property == null)
-                throw new MissingReferenceException(string.Format("Missing serialized property {0} on {1}.", propertyName, target.GetType().Name));
+                throw new MissingReferenceException(string.Format("{1} 缺少序列化属性 {0}。", propertyName, target.GetType().Name));
             property.objectReferenceValue = value;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
@@ -230,7 +230,7 @@ namespace Game.Hot.Editor
             SerializedObject serializedObject = new SerializedObject(target);
             SerializedProperty property = serializedObject.FindProperty(propertyName);
             if (property == null)
-                throw new MissingReferenceException(string.Format("Missing serialized array {0} on {1}.", propertyName, target.GetType().Name));
+                throw new MissingReferenceException(string.Format("{1} 缺少序列化数组 {0}。", propertyName, target.GetType().Name));
             property.arraySize = values.Count;
             for (int index = 0; index < values.Count; index++)
                 property.GetArrayElementAtIndex(index).objectReferenceValue = values[index];

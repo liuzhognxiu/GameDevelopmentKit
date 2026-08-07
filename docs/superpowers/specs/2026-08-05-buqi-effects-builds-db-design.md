@@ -40,7 +40,7 @@ No real-time PvP, no server ghost upload, no hidden win-rate tuning, no random b
 | BufferLost | 护盾破裂 | Rename condition and log summary. |
 | OnUse | 自动触发 | Card text should say “触发时”. |
 | OnBattleStart | 开战时 | Card text should say “开战时”. |
-| OnAdjacentUse | 相邻法门触发时 | Preserve positional clarity. |
+| OnAdjacentUse | 相邻装备触发时 | Preserve positional clarity. |
 
 Recommendation: keep existing enum identifiers as migration aliases for one content version, but generate all visible card text from display terms. Designers may author new content with aliases such as `Attack`, `Shield`, `Slow`, and `Overload` only after the adapter explicitly supports them.
 
@@ -113,8 +113,8 @@ Each deck is a legal 8-slot board target, not a balance promise.
 | heal | 回春长线 | S instant heal, S regen seed, M heal amplifier, L life furnace, S shield patch | 8 | Stabilize low life and win after overtime starts. |
 | poison | 蚀脉拖局 | S poison opener, S slow, M poison jar, L plague core, S shield-bypass finisher | 8 | Stack direct loss while slowing the enemy answer. |
 | burn | 燎原压迫 | S ember, M oil lamp, M burn attacker, L wildfire core | 8 | Force shield spending, then convert to attack pressure. |
-| freeze | 寒镜控核 | S frost charm, M slow bell, M ice mirror, L freeze core | 8 | Identify and pause the enemy highest-value item. |
-| chain | 周天传功 | S charge sender, S charge reader, M relay node, L circuit map, S backup hitter | 8 | Position matters; wrong adjacency lowers output sharply. |
+| freeze | 小型冰冻控核 | S frost charm, M slow bell, M ice mirror, L freeze core | 8 | Identify and pause the enemy highest-value item. |
+| chain | 构筑传功 | S charge sender, S charge reader, M relay node, L circuit map, S backup hitter | 8 | Position matters; wrong adjacency lowers output sharply. |
 | overload | 乱流爆发 | S overload spark, S safety shield, S vent valve, M burst engine, L unstable core | 8 | Spend life/risk for a short lethal window. |
 
 ## DB Shape

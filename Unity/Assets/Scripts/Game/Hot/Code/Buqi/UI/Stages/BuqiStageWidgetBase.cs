@@ -96,7 +96,7 @@ namespace Game.Hot.Buqi.UI.Stages
             return view == null
                 ? string.Empty
                 : GameFramework.Utility.Text.Format(
-                    "\u7B2C {0} \u56DE\u5408   \u91D1\u5E01 {1}   \u80DC\u573A {2}   \u5355\u5C40\u751F\u547D {3}",
+                    "第 {0} 回合   金币 {1}   胜场 {2}   单局生命 {3}",
                     view.Round,
                     view.Coins,
                     view.Wins,

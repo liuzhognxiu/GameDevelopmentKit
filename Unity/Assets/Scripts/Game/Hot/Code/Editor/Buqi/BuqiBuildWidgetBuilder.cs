@@ -131,20 +131,20 @@ namespace Game.Hot.Editor
             Stretch(soldLabel.rectTransform, new Vector2(8f, 8f), new Vector2(-8f, -8f));
             soldOverlay.SetActive(false);
 
-            Text name = CreateText(root.transform, "Name_Text", "OFFER", 19, TextAnchor.UpperLeft, textColor);
+            Text name = CreateText(root.transform, "Name_Text", "报价", 19, TextAnchor.UpperLeft, textColor);
             SetRect(name.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(16f, -26f), new Vector2(288f, 28f));
             name.fontStyle = FontStyle.Bold;
 
-            Text description = CreateText(root.transform, "Description_Text", "Offer description", 14, TextAnchor.UpperLeft, mutedTextColor);
+            Text description = CreateText(root.transform, "Description_Text", "报价说明", 14, TextAnchor.UpperLeft, mutedTextColor);
             SetRect(description.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(16f, -66f), new Vector2(288f, 36f));
             description.horizontalOverflow = HorizontalWrapMode.Wrap;
             description.verticalOverflow = VerticalWrapMode.Truncate;
 
-            Text price = CreateText(root.transform, "Price_Text", "PRICE 0", 15, TextAnchor.MiddleLeft, accentColor);
+            Text price = CreateText(root.transform, "Price_Text", "价格 0", 15, TextAnchor.MiddleLeft, accentColor);
             SetRect(price.rectTransform, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(16f, 55f), new Vector2(288f, 25f));
 
-            Button buyButton = CreateButton(root.transform, "BuyButton", "BUY", new Vector2(-70f, 20f), new Vector2(124f, 36f), primaryColor, out _);
-            Button detailsButton = CreateButton(root.transform, "DetailsButton", "DETAILS", new Vector2(72f, 20f), new Vector2(124f, 36f), raisedColor, out _);
+            Button buyButton = CreateButton(root.transform, "BuyButton", "购买", new Vector2(-70f, 20f), new Vector2(124f, 36f), primaryColor, out _);
+            Button detailsButton = CreateButton(root.transform, "DetailsButton", "详情", new Vector2(72f, 20f), new Vector2(124f, 36f), raisedColor, out _);
 
             Assign(widget, "m_Background", background);
             Assign(widget, "m_LockOverlay", lockOverlay);
@@ -270,7 +270,7 @@ namespace Game.Hot.Editor
             var serializedObject = new SerializedObject(target);
             SerializedProperty property = serializedObject.FindProperty(propertyName);
             if (property == null)
-                throw new MissingReferenceException(string.Format("Missing serialized property {0} on {1}.", propertyName, target.GetType().Name));
+                throw new MissingReferenceException(string.Format("{1} 缺少序列化属性 {0}。", propertyName, target.GetType().Name));
             property.objectReferenceValue = value;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }

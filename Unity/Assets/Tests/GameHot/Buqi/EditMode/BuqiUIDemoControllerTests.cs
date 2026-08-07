@@ -159,11 +159,11 @@ namespace Game.Hot.Buqi.Tests
             };
             string[] expectedReasons =
             {
-                "\u90E8\u7F72\u5FEB\u7167\u4E0D\u53EF\u7528",
-                "\u68CB\u76D8\u4F4D\u7F6E\u6570\u91CF\u65E0\u6548",
-                "\u68CB\u76D8\u4E0A\u5B58\u5728\u91CD\u53E0\u88C5\u5907",
-                "\u88C5\u5907\u5DF2\u4E0D\u5B58\u5728",
-                "\u90E8\u7F72\u5FEB\u7167\u4E0E\u5F53\u524D\u88C5\u5907\u4E0D\u4E00\u81F4",
+                "部署快照不可用",
+                "棋盘位置数量无效",
+                "棋盘上存在重叠装备",
+                "装备已不存在",
+                "部署快照与当前装备不一致",
             };
 
             for (int index = 0; index < invalid.Length; index++)

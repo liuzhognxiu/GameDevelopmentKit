@@ -56,9 +56,10 @@ namespace Game.Hot.Buqi.Tests
         [Test]
         public void CreateInitialStartsAtFirstEncounterWithEightSlotStorage()
         {
-            BuqiRunState state = BuqiRunState.CreateInitial(812345L);
+            BuqiRunState state = BuqiRunState.CreateInitial(812345L, "content-v1");
 
             Assert.That(state.RunSeed, Is.EqualTo(812345L));
+            Assert.That(state.ContentVersion, Is.EqualTo("content-v1"));
             Assert.That(state.Day, Is.EqualTo(1));
             Assert.That(state.EncounterIndex, Is.EqualTo(0));
             Assert.That(state.Phase, Is.EqualTo(BuqiRunPhase.Encounter));
@@ -152,6 +153,7 @@ namespace Game.Hot.Buqi.Run.Core
     {
         public const string CurrentRuleVersion = "buqi-day-run-v1";
 
+        public string ContentVersion = string.Empty;
         public string RuleVersion = CurrentRuleVersion;
         public long RunSeed;
         public int RngCursor;
@@ -168,10 +170,11 @@ namespace Game.Hot.Buqi.Run.Core
         public HashSet<string> AppliedCommandIds = new HashSet<string>();
         public HashSet<string> AppliedSettlementIds = new HashSet<string>();
 
-        public static BuqiRunState CreateInitial(long runSeed)
+        public static BuqiRunState CreateInitial(long runSeed, string contentVersion = "")
         {
             return new BuqiRunState
             {
+                ContentVersion = contentVersion ?? string.Empty,
                 RunSeed = runSeed,
                 Day = 1,
                 Phase = BuqiRunPhase.Encounter,
@@ -186,6 +189,7 @@ namespace Game.Hot.Buqi.Run.Core
         {
             return new BuqiRunState
             {
+                ContentVersion = ContentVersion,
                 RuleVersion = RuleVersion,
                 RunSeed = RunSeed,
                 RngCursor = RngCursor,

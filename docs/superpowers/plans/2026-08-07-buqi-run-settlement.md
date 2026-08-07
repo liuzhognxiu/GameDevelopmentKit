@@ -80,7 +80,7 @@ Expected: exact facts and empty-log behavior pass.
 
 - [ ] **Step 1: Add failing round-trip and rejection tests**
 
-Tests must round-trip every Core field including board/storage slots, command IDs, settlement IDs, phase, outcome, RNG cursor, day, wins, lives, coins, and revision. Also cover malformed JSON, empty JSON, wrong save version, wrong rule version, and slot counts other than 8.
+Tests must round-trip every Core field including content/rule versions, board/storage slots, command IDs, settlement IDs, phase, outcome, RNG cursor, day, wins, lives, coins, and revision. Also cover malformed JSON, empty JSON, wrong save version, wrong rule version, wrong/empty content version, and slot counts other than 8.
 
 Use serializable DTO lists, never `HashSet` or `Dictionary` fields:
 
@@ -90,6 +90,7 @@ public sealed class BuqiRunSaveData
 {
     public const string CurrentSaveVersion = "buqi-run-save-v1";
     public string SaveVersion = CurrentSaveVersion;
+    public string ContentVersion = string.Empty;
     public string RuleVersion = string.Empty;
     public long RunSeed;
     public int RngCursor;

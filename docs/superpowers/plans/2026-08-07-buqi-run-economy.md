@@ -32,7 +32,10 @@ Do not modify `Run/Core`, the old Demo controller/state, UI forms, stage widgets
 ```csharp
 using NUnit.Framework;
 
-namespace Game.Hot.Tests
+using Game.Hot.Buqi.Run.Core;
+using Game.Hot.Buqi.Run.Economy;
+
+namespace Game.Hot.Buqi.Tests
 {
     public sealed class BuqiRunEconomyTests
     {
@@ -74,7 +77,7 @@ Expected: missing `BuqiRunEconomySnapshot` and item economy types.
 Create these contracts in `BuqiRunEconomyTypes.cs`:
 
 ```csharp
-namespace Game.Hot
+namespace Game.Hot.Buqi.Run.Economy
 {
     public enum BuqiRunItemQuality
     {
@@ -128,7 +131,7 @@ namespace Game.Hot
 ```csharp
 using System.Collections.Generic;
 
-namespace Game.Hot
+namespace Game.Hot.Buqi.Run.Economy
 {
     public sealed class BuqiRunEconomySnapshot
     {

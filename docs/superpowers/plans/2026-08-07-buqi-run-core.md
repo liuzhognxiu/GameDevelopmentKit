@@ -6,7 +6,7 @@
 
 **Architecture:** Add a Unity-independent domain under `Buqi/Run/Core`. The controller owns only phase transitions, counters, terminal checks, revision checks, and idempotency; encounter content, economy mutations, battle simulation, persistence, and UI remain outside this package.
 
-**Tech Stack:** C#, NUnit EditMode tests, Unity GameHot assembly, existing `Game.Hot` namespace.
+**Tech Stack:** C#, NUnit EditMode tests, Unity GameHot assembly, existing `Game.Hot.Buqi.*` namespace convention.
 
 ---
 
@@ -36,7 +36,9 @@ Create the test fixture with these first tests:
 ```csharp
 using NUnit.Framework;
 
-namespace Game.Hot.Tests
+using Game.Hot.Buqi.Run.Core;
+
+namespace Game.Hot.Buqi.Tests
 {
     public sealed class BuqiRunCoreTests
     {
@@ -87,7 +89,7 @@ Expected: build fails because `BuqiRunRules`, `BuqiRunState`, and run enums do n
 Create `BuqiRunRules.cs`:
 
 ```csharp
-namespace Game.Hot
+namespace Game.Hot.Buqi.Run.Core
 {
     public static class BuqiRunRules
     {
@@ -104,7 +106,7 @@ namespace Game.Hot
 Create `BuqiRunTypes.cs`:
 
 ```csharp
-namespace Game.Hot
+namespace Game.Hot.Buqi.Run.Core
 {
     public enum BuqiRunPhase
     {
@@ -144,7 +146,7 @@ Create `BuqiRunState.cs` with this public contract and deep clone:
 ```csharp
 using System.Collections.Generic;
 
-namespace Game.Hot
+namespace Game.Hot.Buqi.Run.Core
 {
     public sealed class BuqiRunState
     {
@@ -296,7 +298,7 @@ Expected: failure for missing `BuqiRunController` and `BuqiRunTransitionResult`.
 Create `BuqiRunTransitionResult.cs`:
 
 ```csharp
-namespace Game.Hot
+namespace Game.Hot.Buqi.Run.Core
 {
     public sealed class BuqiRunTransitionResult
     {
@@ -315,7 +317,7 @@ Create `BuqiRunController.cs` with these methods and invariants:
 ```csharp
 using System;
 
-namespace Game.Hot
+namespace Game.Hot.Buqi.Run.Core
 {
     public sealed class BuqiRunController
     {

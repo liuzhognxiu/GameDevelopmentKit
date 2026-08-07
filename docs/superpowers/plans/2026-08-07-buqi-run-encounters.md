@@ -30,7 +30,10 @@ Do not modify Core, Economy, Battle, Settlement, existing Demo/UI files, generat
 ```csharp
 using NUnit.Framework;
 
-namespace Game.Hot.Tests
+using Game.Hot.Buqi.Run.Core;
+using Game.Hot.Buqi.Run.Encounter;
+
+namespace Game.Hot.Buqi.Tests
 {
     public sealed class BuqiRunEncounterTests
     {

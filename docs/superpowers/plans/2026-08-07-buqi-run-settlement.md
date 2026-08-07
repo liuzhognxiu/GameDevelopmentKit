@@ -43,7 +43,7 @@ Use this contract:
 ```csharp
 using System.Collections.Generic;
 
-namespace Game.Hot
+namespace Game.Hot.Buqi.Run.Settlement
 {
     public sealed class BuqiRunBattleSummary
     {

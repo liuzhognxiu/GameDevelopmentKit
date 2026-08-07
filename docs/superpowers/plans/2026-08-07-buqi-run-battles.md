@@ -35,7 +35,10 @@ Keep all fixtures in this test file. `TestPool.Create` must build legal, deep-co
 using System.Collections.Generic;
 using NUnit.Framework;
 
-namespace Game.Hot.Tests
+using Game.Hot.Buqi.Run.Battle;
+using Game.Hot.Buqi.Run.Core;
+
+namespace Game.Hot.Buqi.Tests
 {
     public sealed class BuqiRunBattleIntegrationTests
     {
@@ -93,7 +96,7 @@ Use these public types:
 ```csharp
 using System.Collections.Generic;
 
-namespace Game.Hot
+namespace Game.Hot.Buqi.Run.Battle
 {
     public enum BuqiRunOpponentSource
     {

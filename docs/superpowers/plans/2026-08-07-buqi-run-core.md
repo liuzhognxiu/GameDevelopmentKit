@@ -24,6 +24,7 @@ Do not modify `BuqiUIDemoController.cs`, `BuqiUIDemoState.cs`, `BuqiRunShellForm
 **Files:**
 
 - Create: `Unity/Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunRules.cs`
+- Create: `Unity/Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunRandom.cs`
 - Create: `Unity/Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunTypes.cs`
 - Create: `Unity/Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunState.cs`
 - Test: `Unity/Assets/Tests/GameHot/Buqi/EditMode/BuqiRunCoreTests.cs`
@@ -221,6 +222,10 @@ dotnet build Unity/Game.Hot.Buqi.Tests.csproj -v:minimal
 ```
 
 Expected: build succeeds and `RulesMatchApprovedDemoContract` plus `CreateInitialStartsAtFirstEncounterWithEightSlotStorage` pass when run in Unity EditMode.
+
+- [ ] **Step 6: Add the shared deterministic RNG contract**
+
+Add `BuqiRunRandom.Next(long seed, ref int cursor, int maxExclusive)` under Core. It must validate `maxExclusive > 0` before changing the cursor, use a documented SplitMix64-style integer mix of `seed + cursor`, increment the cursor exactly once per valid call, avoid `System.Random`, and return `[0, maxExclusive)` with a deterministic unbiased range mapping. Add tests proving identical sequences for identical seed/cursor, no cursor movement on invalid range, and five locked outputs for seed `12345`. Encounter and Battle packages will both depend on this exact implementation.
 
 ## Task 2: Deterministic Day-Loop Transitions
 

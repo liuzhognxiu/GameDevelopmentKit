@@ -8,7 +8,9 @@ namespace Game.Hot.Buqi.Run.Core
         private const string RequiredSettlementId = "Settlement id is required.";
         private const string RevisionMismatch = "State revision mismatch.";
         private const string InvalidPhase = "Command is not valid in the current phase.";
+        private const string InvalidBattleKindValue = "Battle kind is invalid.";
         private const string InvalidBattleKind = "Battle kind does not match current phase.";
+        private const string InvalidBattleOutcome = "Battle outcome is invalid.";
         private const string RunEnded = "Run has already ended.";
 
         private BuqiRunState m_State;
@@ -67,6 +69,16 @@ namespace Game.Hot.Buqi.Run.Core
             if (m_State.Revision != expectedRevision)
             {
                 return Rejected(RevisionMismatch);
+            }
+
+            if (!Enum.IsDefined(typeof(BuqiRunBattleKind), battleKind))
+            {
+                return Rejected(InvalidBattleKindValue);
+            }
+
+            if (!Enum.IsDefined(typeof(BuqiRunRawBattleOutcome), rawOutcome))
+            {
+                return Rejected(InvalidBattleOutcome);
             }
 
             BuqiRunPhase expectedPhase = battleKind == BuqiRunBattleKind.Pve

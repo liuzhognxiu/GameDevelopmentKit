@@ -220,6 +220,46 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void InvalidBattleKind_IsRejectedWithoutMutatingState()
+        {
+            BuqiRunState state = BuqiRunState.CreateInitial(51);
+            state.Phase = BuqiRunPhase.PvpBattle;
+            state.Wins = 2;
+            state.Lives = 2;
+            var controller = new BuqiRunController(state);
+
+            BuqiRunTransitionResult result =
+                controller.SettleBattle("invalid-kind", 0, (BuqiRunBattleKind)99, BuqiRunRawBattleOutcome.PlayerWin);
+
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.FailureReason, Is.EqualTo("Battle kind is invalid."));
+            Assert.That(controller.State.Wins, Is.EqualTo(2));
+            Assert.That(controller.State.Lives, Is.EqualTo(2));
+            Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.PvpBattle));
+            Assert.That(controller.State.Revision, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void InvalidBattleOutcome_IsRejectedWithoutMutatingState()
+        {
+            BuqiRunState state = BuqiRunState.CreateInitial(52);
+            state.Phase = BuqiRunPhase.PveBattle;
+            state.Wins = 3;
+            state.Lives = 1;
+            var controller = new BuqiRunController(state);
+
+            BuqiRunTransitionResult result =
+                controller.SettleBattle("invalid-outcome", 0, BuqiRunBattleKind.Pve, (BuqiRunRawBattleOutcome)77);
+
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.FailureReason, Is.EqualTo("Battle outcome is invalid."));
+            Assert.That(controller.State.Wins, Is.EqualTo(3));
+            Assert.That(controller.State.Lives, Is.EqualTo(1));
+            Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.PveBattle));
+            Assert.That(controller.State.Revision, Is.EqualTo(0));
+        }
+
+        [Test]
         public void TerminalRunRejectsNewCommandsAndSettlements()
         {
             BuqiRunState state = BuqiRunState.CreateInitial(60);

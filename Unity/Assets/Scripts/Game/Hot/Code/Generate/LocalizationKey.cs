@@ -459,6 +459,31 @@ namespace Game.Hot
         public const string Key_Buqi_RunShell_CurrentPhase = "Buqi.RunShell.CurrentPhase";
 
         /// <summary>
+        /// 日记录
+        /// </summary>
+        public const string Key_Buqi_RunShell_DayRecord = "Buqi.RunShell.DayRecord";
+
+        /// <summary>
+        /// 昏 · PVE
+        /// </summary>
+        public const string Key_Buqi_RunShell_DuskPve = "Buqi.RunShell.DuskPve";
+
+        /// <summary>
+        /// 晨 · 经营
+        /// </summary>
+        public const string Key_Buqi_RunShell_MorningOperation = "Buqi.RunShell.MorningOperation";
+
+        /// <summary>
+        /// 夜 · 异步 PVP
+        /// </summary>
+        public const string Key_Buqi_RunShell_NightPvp = "Buqi.RunShell.NightPvp";
+
+        /// <summary>
+        /// 昼 · 经营
+        /// </summary>
+        public const string Key_Buqi_RunShell_NoonOperation = "Buqi.RunShell.NoonOperation";
+
+        /// <summary>
         /// R
         /// </summary>
         public const string Key_Buqi_RunShell_RestartTag = "Buqi.RunShell.RestartTag";
@@ -587,6 +612,11 @@ namespace Game.Hot
         /// 单局结束
         /// </summary>
         public const string Key_Buqi_Stage_RunTerminal_Title = "Buqi.Stage.RunTerminal.Title";
+
+        /// <summary>
+        /// 当前周天
+        /// </summary>
+        public const string Key_Buqi_Stage_Shared_CurrentBoard = "Buqi.Stage.Shared.CurrentBoard";
 
         /// <summary>
         /// 购买装备、刷新或锁定当前报价。

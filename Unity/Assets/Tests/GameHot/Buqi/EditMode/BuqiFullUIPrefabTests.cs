@@ -58,8 +58,74 @@ namespace Game.Hot.Buqi.Tests
             AssertChild(prefab, "StageHost");
             AssertChild(prefab, "ContextRail");
             AssertChild(prefab, "CommandBar");
-            Assert.That(Children(prefab, "PhaseStep").Count, Is.EqualTo(12));
+            Assert.That(Children(prefab, "PhaseStep").Count, Is.EqualTo(4));
             Assert.That(stageNames.All(name => Children(prefab, name).Count == 1), Is.True);
+            Transform stageHost = prefab.transform.Find("StageHost");
+            Assert.That(
+                stageHost.Cast<Transform>().Select(child => child.name),
+                Is.EquivalentTo(stageNames));
+        }
+
+        [Test]
+        public void StageWithoutReadOnlyBoard_CanClear()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(StageFolder + "ShopWidget.prefab");
+            GameObject instance = Object.Instantiate(prefab);
+            try
+            {
+                IBuqiStageWidget stage = instance.GetComponents<MonoBehaviour>().OfType<IBuqiStageWidget>().Single();
+                Assert.DoesNotThrow(stage.Clear);
+            }
+            finally
+            {
+                Object.DestroyImmediate(instance);
+            }
+        }
+
+        [TestCase("OperationChoiceWidget")]
+        [TestCase("PveSelectionStageWidget")]
+        public void FinalFlowChoiceStages_ShowEightReadOnlyBoardSlots(string stageName)
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(StageFolder + stageName + ".prefab");
+
+            Assert.That(prefab, Is.Not.Null, stageName);
+            List<Transform> slots = Children(prefab, "ReadOnlyBoardSlot");
+            Assert.That(slots.Count, Is.EqualTo(8), stageName);
+            Assert.That(slots.All(slot => slot.GetComponent<Button>() == null), Is.True, stageName);
+        }
+
+        [TestCase("OperationChoiceWidget", BuqiUIDemoPhase.OperationChoice)]
+        [TestCase("PveSelectionStageWidget", BuqiUIDemoPhase.PveSelection)]
+        public void FinalFlowChoiceStages_RenderCurrentBoard(string stageName, BuqiUIDemoPhase phase)
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(StageFolder + stageName + ".prefab");
+            GameObject instance = Object.Instantiate(prefab);
+            try
+            {
+                IBuqiStageWidget stage = instance.GetComponents<MonoBehaviour>().OfType<IBuqiStageWidget>().Single();
+                stage.Render(new BuqiUIDemoView
+                {
+                    Phase = phase,
+                    ContextTitle = "Choice",
+                    BoardSlots = Enumerable.Range(0, 8)
+                        .Select(slot => new BuqiDemoItemView
+                        {
+                            Empty = slot != 0,
+                            Name = slot == 0 ? "Test Blade" : string.Empty,
+                            Slot = slot,
+                        })
+                        .ToList(),
+                    Choices = new List<BuqiDemoChoiceView>(),
+                }, _ => { });
+
+                Text firstSlot = Children(instance, "ReadOnlyBoardSlot01").Single()
+                    .GetComponentInChildren<Text>(true);
+                Assert.That(firstSlot.text, Does.Contain("Test Blade"));
+            }
+            finally
+            {
+                Object.DestroyImmediate(instance);
+            }
         }
 
         [Test]

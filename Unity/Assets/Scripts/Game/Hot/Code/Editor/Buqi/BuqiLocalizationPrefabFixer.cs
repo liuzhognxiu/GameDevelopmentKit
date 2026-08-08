@@ -65,6 +65,10 @@ namespace Game.Hot.Editor.Buqi
                 ["继续"] = "Buqi.RunShell.Continue",
                 ["<"] = "Buqi.RunShell.BackTag",
                 ["当前阶段"] = "Buqi.RunShell.CurrentPhase",
+                ["1x"] = "Buqi.Battle.Speed1x",
+                ["2x"] = "Buqi.Battle.Speed2x",
+                [">>|"] = "Buqi.Battle.SkipEnd",
+                ["Record"] = "Buqi.RunShell.DayRecord",
             },
             ["BuqiDeploySlotWidget.prefab"] = new Dictionary<string, string>
             {
@@ -247,6 +251,7 @@ namespace Game.Hot.Editor.Buqi
             ["OperationChoiceWidget.prefab"] = new Dictionary<string, string>
             {
                 ["--"] = "Buqi.Common.Placeholder",
+                ["当前周天"] = "Buqi.Stage.Shared.CurrentBoard",
                 ["\u6F14\u793A"] = "Buqi.Common.DemoTag",
                 ["\u7ECF\u8425\u9009\u62E9"] = "Buqi.Stage.OperationChoice.Title",
                 ["\u9009\u62E9\u574A\u5E02\u3001\u673A\u7F18\u6216\u9759\u4FEE\uFF1B\u5F53\u524D\u5468\u5929\u4FDD\u6301\u53EF\u89C1\u3002"] = "Buqi.Stage.OperationChoice.Description",
@@ -254,6 +259,7 @@ namespace Game.Hot.Editor.Buqi
             ["PveSelectionStageWidget.prefab"] = new Dictionary<string, string>
             {
                 ["--"] = "Buqi.Common.Placeholder",
+                ["当前周天"] = "Buqi.Stage.Shared.CurrentBoard",
                 ["\u6F14\u793A"] = "Buqi.Common.DemoTag",
                 ["PVE \u9009\u5173"] = "Buqi.Stage.PveSelection.Title",
                 ["\u9009\u62E9\u521D\u9636\u3001\u8FDB\u9636\u6216\u9669\u9636\u540E\u76F4\u63A5\u8FDB\u5165\u6218\u6597\u3002"] = "Buqi.Stage.PveSelection.Description",

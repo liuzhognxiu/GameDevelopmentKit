@@ -4,6 +4,7 @@ using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.DemoUI.Deployment;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
 using UnityEngine;
@@ -20,13 +21,12 @@ namespace Game.Hot.Buqi.UI
     [DisallowMultipleComponent]
     public sealed class BuqiRunShellForm : StarForceUIForm
     {
-        private static readonly string[] s_RailLabels =
+        private static readonly string[] s_RailLabelKeys =
         {
-            "Encounter",
-            "PVE",
-            "PVP",
-            "Settlement",
-            "Terminal",
+            "Buqi.RunShell.MorningOperation",
+            "Buqi.RunShell.NoonOperation",
+            "Buqi.RunShell.DuskPve",
+            "Buqi.RunShell.NightPvp",
         };
 
         [SerializeField]
@@ -316,7 +316,7 @@ namespace Game.Hot.Buqi.UI
 
         private void RenderPhaseRail(BuqiUIDemoView view)
         {
-            int count = Math.Min(m_PhaseSteps.Length, s_RailLabels.Length);
+            int count = Math.Min(m_PhaseSteps.Length, s_RailLabelKeys.Length);
             int currentIndex = ResolveRailIndex(view);
             for (int index = 0; index < count; index++)
             {
@@ -324,7 +324,7 @@ namespace Game.Hot.Buqi.UI
                 {
                     Phase = ResolveRailPhase(index),
                     Index = index + 1,
-                    Label = s_RailLabels[index],
+                    Label = GameEntry.Localization.GetString(s_RailLabelKeys[index]),
                     IsCurrent = index == currentIndex,
                     IsVisited = index <= currentIndex,
                     IsLocked = index > currentIndex,
@@ -373,15 +373,7 @@ namespace Game.Hot.Buqi.UI
 
         private static int ResolveRailIndex(BuqiUIDemoView view)
         {
-            if (view.Phase == BuqiUIDemoPhase.OperationChoice || view.Phase == BuqiUIDemoPhase.Shop || view.Phase == BuqiUIDemoPhase.Event)
-                return 0;
-            if (view.Phase == BuqiUIDemoPhase.PveSelection)
-                return 1;
-            if (view.Phase == BuqiUIDemoPhase.BattleReplay || view.Phase == BuqiUIDemoPhase.BattleSummary)
-                return view.ContextTitle.IndexOf("PVP", StringComparison.OrdinalIgnoreCase) >= 0 ? 2 : 1;
-            if (view.Phase == BuqiUIDemoPhase.RoundSettlement)
-                return 3;
-            return 4;
+            return Mathf.Clamp((int)view.Period, 0, s_RailLabelKeys.Length - 1);
         }
 
         private static BuqiUIDemoPhase ResolveRailPhase(int index)
@@ -389,12 +381,12 @@ namespace Game.Hot.Buqi.UI
             switch (index)
             {
                 case 0:
-                    return BuqiUIDemoPhase.Shop;
                 case 1:
+                    return BuqiUIDemoPhase.OperationChoice;
                 case 2:
-                    return BuqiUIDemoPhase.BattleReplay;
+                    return BuqiUIDemoPhase.PveSelection;
                 case 3:
-                    return BuqiUIDemoPhase.RoundSettlement;
+                    return BuqiUIDemoPhase.BattleReplay;
                 default:
                     return BuqiUIDemoPhase.RunTerminal;
             }

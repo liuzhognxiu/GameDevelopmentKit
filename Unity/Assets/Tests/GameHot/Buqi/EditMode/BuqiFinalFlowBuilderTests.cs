@@ -96,6 +96,9 @@ namespace Game.Hot.Buqi.Tests
             Transform toolbar = Required("BattleToolbar");
 
             Assert.That(DirectChildNames(toolbar), Is.EquivalentTo(new[] { "Speed1x", "Speed2x", "Skip" }));
+            Assert.That(Label(toolbar.Find("Speed1x")), Is.EqualTo("Buqi.Battle.Speed1x"));
+            Assert.That(Label(toolbar.Find("Speed2x")), Is.EqualTo("Buqi.Battle.Speed2x"));
+            Assert.That(Label(toolbar.Find("Skip")), Is.EqualTo("Buqi.Battle.SkipEnd"));
         }
 
         [Test]
@@ -104,6 +107,7 @@ namespace Game.Hot.Buqi.Tests
             Transform dailyCycle = Required("DailyCycle");
 
             Assert.That(Required("DayRecordButton"), Is.Not.Null);
+            Assert.That(Label(Required("DayRecordButton")), Is.EqualTo("Buqi.RunShell.DayRecord"));
             Assert.That(Required("DayRecordModal").gameObject.activeSelf, Is.False);
             Assert.That(DirectChildNames(dailyCycle).Any(name =>
                 name.IndexOf("DayRecord", StringComparison.OrdinalIgnoreCase) >= 0), Is.False);
@@ -136,6 +140,11 @@ namespace Game.Hot.Buqi.Tests
         private static string[] DirectChildNames(Transform parent)
         {
             return parent.Cast<Transform>().Select(child => child.name).ToArray();
+        }
+
+        private static string Label(Transform parent)
+        {
+            return parent.GetComponentInChildren<Text>(true).text;
         }
 
         private static System.Collections.Generic.IEnumerable<Transform> DirectChildren(

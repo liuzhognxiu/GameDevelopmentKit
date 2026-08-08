@@ -72,15 +72,19 @@ namespace Game.Hot.Editor
             Text meta = CreateText(root.transform, "Meta_Text", "演示", 15, TextAnchor.MiddleLeft, accentColor);
             SetRect(meta.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(40f, -176f), new Vector2(-80f, 32f));
 
+            bool includesReadOnlyBoard = typeof(T) == typeof(OperationChoiceWidget) ||
+                                         typeof(T) == typeof(PveSelectionStageWidget);
             var buttons = new List<Button>(8);
             var labels = new List<Text>(8);
             for (int index = 0; index < 8; index++)
             {
-                int row = index / 2;
-                int column = index % 2;
-                float x = column == 0 ? -266f : 266f;
-                float y = 210f - row * 126f;
-                Button button = CreateButton(root.transform, "Action" + (index + 1).ToString("00"), "--", new Vector2(x, y), new Vector2(500f, 104f), raisedColor, out Text label);
+                int columnCount = includesReadOnlyBoard ? 3 : 2;
+                int row = index / columnCount;
+                int column = index % columnCount;
+                float x = includesReadOnlyBoard ? -340f + column * 340f : (column == 0 ? -266f : 266f);
+                float y = includesReadOnlyBoard ? 150f - row * 126f : 210f - row * 126f;
+                Vector2 size = includesReadOnlyBoard ? new Vector2(312f, 120f) : new Vector2(500f, 104f);
+                Button button = CreateButton(root.transform, "Action" + (index + 1).ToString("00"), "--", new Vector2(x, y), size, raisedColor, out Text label);
                 label.fontSize = 18;
                 label.horizontalOverflow = HorizontalWrapMode.Wrap;
                 button.gameObject.SetActive(false);
@@ -88,12 +92,41 @@ namespace Game.Hot.Editor
                 labels.Add(label);
             }
 
+            if (includesReadOnlyBoard)
+                BuildReadOnlyBoard(root.transform, widget);
+
             Assign(widget, "m_TitleText", title);
             Assign(widget, "m_BodyText", body);
             Assign(widget, "m_MetaText", meta);
             AssignArray(widget, "m_ActionButtons", buttons);
             AssignArray(widget, "m_ActionLabels", labels);
             SavePrefab(root, StageFolder + "/" + name + ".prefab");
+        }
+
+        private static void BuildReadOnlyBoard(Transform parent, MonoBehaviour widget)
+        {
+            GameObject board = CreatePanel(parent, "ReadOnlyBoard", new Vector2(0f, -245f), new Vector2(1024f, 250f), surfaceColor);
+            Text title = CreateText(board.transform, "CurrentBoard_Text", "Buqi.Stage.Shared.CurrentBoard", 20, TextAnchor.MiddleLeft, inkColor);
+            SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(24f, -30f), new Vector2(-48f, 36f));
+            title.fontStyle = FontStyle.Bold;
+
+            var labels = new List<Text>(8);
+            for (int index = 0; index < 8; index++)
+            {
+                GameObject slot = CreatePanel(
+                    board.transform,
+                    "ReadOnlyBoardSlot" + (index + 1).ToString("00"),
+                    new Vector2(-420f + index * 120f, -38f),
+                    new Vector2(112f, 136f),
+                    raisedColor);
+                Text label = CreateText(slot.transform, "Label", string.Empty, 16, TextAnchor.MiddleCenter, inkColor);
+                Stretch(label.rectTransform, new Vector2(8f, 8f), new Vector2(-8f, -8f));
+                label.horizontalOverflow = HorizontalWrapMode.Wrap;
+                labels.Add(label);
+            }
+
+            Assign(widget, "m_BoardPanel", board);
+            AssignArray(widget, "m_BoardLabels", labels);
         }
 
         private static void BuildShell()
@@ -124,8 +157,8 @@ namespace Game.Hot.Editor
             }
 
             GameObject phaseRail = CreatePanel(root.transform, "PhaseRail", new Vector2(-824f, 0f), new Vector2(208f, 824f), surfaceColor);
-            var phaseSteps = new List<PhaseStepWidget>(12);
-            for (int index = 0; index < 12; index++)
+            var phaseSteps = new List<PhaseStepWidget>(4);
+            for (int index = 0; index < 4; index++)
             {
                 GameObject step = Instantiate(phasePrefab, phaseRail.transform, "PhaseStep" + (index + 1).ToString("00"));
                 SetRect(step.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -28f - index * 66f), new Vector2(208f, 48f));
@@ -256,11 +289,11 @@ namespace Game.Hot.Editor
             }
 
             GameObject battleToolbar = CreatePanel(root.transform, "BattleToolbar", new Vector2(0f, -430f), new Vector2(520f, 72f), surfaceColor);
-            CreateButton(battleToolbar.transform, "Speed1x", "1x", new Vector2(-170f, 0f), new Vector2(120f, 48f), raisedColor, out _);
-            CreateButton(battleToolbar.transform, "Speed2x", "2x", Vector2.zero, new Vector2(120f, 48f), raisedColor, out _);
-            CreateButton(battleToolbar.transform, "Skip", ">>|", new Vector2(170f, 0f), new Vector2(120f, 48f), jadeColor, out _);
+            CreateButton(battleToolbar.transform, "Speed1x", "Buqi.Battle.Speed1x", new Vector2(-170f, 0f), new Vector2(120f, 48f), raisedColor, out _);
+            CreateButton(battleToolbar.transform, "Speed2x", "Buqi.Battle.Speed2x", Vector2.zero, new Vector2(120f, 48f), raisedColor, out _);
+            CreateButton(battleToolbar.transform, "Skip", "Buqi.Battle.SkipEnd", new Vector2(170f, 0f), new Vector2(120f, 48f), jadeColor, out _);
 
-            CreateButton(root.transform, "DayRecordButton", "Record", new Vector2(760f, 470f), new Vector2(128f, 48f), raisedColor, out _);
+            CreateButton(root.transform, "DayRecordButton", "Buqi.RunShell.DayRecord", new Vector2(760f, 470f), new Vector2(128f, 48f), raisedColor, out _);
             GameObject dayRecordModal = CreatePanel(root.transform, "DayRecordModal", Vector2.zero, new Vector2(840f, 640f), surfaceColor);
             dayRecordModal.SetActive(false);
 
@@ -600,6 +633,8 @@ namespace Game.Hot.Editor
             GameObject existingRoot = PrefabUtility.LoadPrefabContents(path);
             try
             {
+                RemoveObsoleteIndexedChildren(existingRoot, root, "PhaseRail", "PhaseStep");
+                RemoveObsoleteChildren(existingRoot, root, "StageHost");
                 MergeGeneratedHierarchy(existingRoot, root);
                 GameObject prefab = PrefabUtility.SaveAsPrefabAsset(existingRoot, path);
                 AssetDatabase.SetLabels(prefab, new[] { "All", "Pack" });
@@ -609,6 +644,63 @@ namespace Game.Hot.Editor
                 PrefabUtility.UnloadPrefabContents(existingRoot);
                 Object.DestroyImmediate(root);
             }
+        }
+
+        private static void RemoveObsoleteChildren(
+            GameObject existingRoot,
+            GameObject generatedRoot,
+            string parentName)
+        {
+            Transform existingParent = existingRoot.transform.Find(parentName);
+            Transform generatedParent = generatedRoot.transform.Find(parentName);
+            if (existingParent == null || generatedParent == null)
+                return;
+
+            var generatedNames = new HashSet<string>();
+            foreach (Transform child in generatedParent)
+                generatedNames.Add(child.name);
+
+            var obsolete = new List<GameObject>();
+            foreach (Transform child in existingParent)
+            {
+                if (!generatedNames.Contains(child.name))
+                    obsolete.Add(child.gameObject);
+            }
+
+            foreach (GameObject child in obsolete)
+                Object.DestroyImmediate(child);
+        }
+
+        private static void RemoveObsoleteIndexedChildren(
+            GameObject existingRoot,
+            GameObject generatedRoot,
+            string parentName,
+            string childPrefix)
+        {
+            Transform existingParent = existingRoot.transform.Find(parentName);
+            Transform generatedParent = generatedRoot.transform.Find(parentName);
+            if (existingParent == null || generatedParent == null)
+                return;
+
+            var generatedNames = new HashSet<string>();
+            foreach (Transform child in generatedParent)
+            {
+                if (child.name.StartsWith(childPrefix, StringComparison.Ordinal))
+                    generatedNames.Add(child.name);
+            }
+
+            var obsolete = new List<GameObject>();
+            foreach (Transform child in existingParent)
+            {
+                if (child.name.StartsWith(childPrefix, StringComparison.Ordinal) &&
+                    !generatedNames.Contains(child.name))
+                {
+                    obsolete.Add(child.gameObject);
+                }
+            }
+
+            foreach (GameObject child in obsolete)
+                Object.DestroyImmediate(child);
         }
 
         private static void MergeGeneratedHierarchy(GameObject existingRoot, GameObject generatedRoot)

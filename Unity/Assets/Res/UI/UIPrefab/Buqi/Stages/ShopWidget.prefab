@@ -1678,6 +1678,8 @@ MonoBehaviour:
   - {fileID: 2302592644579920693}
   - {fileID: 3828817493385769198}
   - {fileID: 8144891673519637307}
+  m_BoardPanel: {fileID: 0}
+  m_BoardLabels: []
 --- !u!1 &7253268548351926936
 GameObject:
   m_ObjectHideFlags: 0

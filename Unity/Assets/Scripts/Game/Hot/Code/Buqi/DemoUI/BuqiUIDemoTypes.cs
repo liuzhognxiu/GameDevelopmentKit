@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Game.Hot.Buqi.DemoUI.Deployment;
+using Game.Hot.Buqi.Run.Core;
 
 namespace Game.Hot.Buqi.DemoUI
 {
@@ -112,6 +113,7 @@ namespace Game.Hot.Buqi.DemoUI
     public sealed class BuqiUIDemoView
     {
         public BuqiUIDemoPhase Phase;
+        public BuqiRunPeriod Period;
         public int Coins;
         public int Wins;
         public int Lives;

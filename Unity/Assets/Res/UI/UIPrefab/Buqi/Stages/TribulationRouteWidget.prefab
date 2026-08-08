@@ -1957,3 +1957,5 @@ MonoBehaviour:
   - {fileID: 2366279236984376636}
   - {fileID: 8878958771875939698}
   - {fileID: 1467128460863896143}
+  m_BoardPanel: {fileID: 0}
+  m_BoardLabels: []

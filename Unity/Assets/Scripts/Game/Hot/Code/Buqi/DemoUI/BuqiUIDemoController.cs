@@ -155,6 +155,7 @@ namespace Game.Hot.Buqi.DemoUI
             BuqiUIDemoView view = new BuqiUIDemoView
             {
                 Phase = phase,
+                Period = state.Economy.Run.Period,
                 Coins = state.Economy.Run.Coins,
                 Wins = state.Economy.Run.Wins,
                 Lives = state.Economy.Run.Lives,

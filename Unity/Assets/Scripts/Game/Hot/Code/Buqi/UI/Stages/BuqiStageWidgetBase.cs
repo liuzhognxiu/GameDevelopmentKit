@@ -23,6 +23,12 @@ namespace Game.Hot.Buqi.UI.Stages
         [SerializeField]
         private Text[] m_ActionLabels = Array.Empty<Text>();
 
+        [SerializeField]
+        private GameObject m_BoardPanel = null;
+
+        [SerializeField]
+        private Text[] m_BoardLabels = Array.Empty<Text>();
+
         private readonly List<BuqiUIDemoCommand> m_Commands = new List<BuqiUIDemoCommand>();
         private readonly List<string> m_Labels = new List<string>();
 
@@ -38,6 +44,7 @@ namespace Game.Hot.Buqi.UI.Stages
             SetText(m_BodyText, ResolveBody(view));
             SetText(m_MetaText, ResolveMeta(view));
             ConfigureActions(view);
+            RenderBoard(view);
 
             int count = Math.Min(m_ActionButtons.Length, Math.Min(m_ActionLabels.Length, m_Commands.Count));
             for (int index = 0; index < m_ActionButtons.Length; index++)
@@ -63,6 +70,7 @@ namespace Game.Hot.Buqi.UI.Stages
             SetText(m_TitleText, string.Empty);
             SetText(m_BodyText, string.Empty);
             SetText(m_MetaText, string.Empty);
+            ClearBoard();
             gameObject.SetActive(false);
         }
 
@@ -114,6 +122,31 @@ namespace Game.Hot.Buqi.UI.Stages
             }
             m_Commands.Clear();
             m_Labels.Clear();
+        }
+
+        private void RenderBoard(BuqiUIDemoView view)
+        {
+            if (m_BoardPanel == null)
+                return;
+
+            m_BoardPanel.SetActive(true);
+            IReadOnlyList<BuqiDemoItemView> slots = view?.BoardSlots ?? Array.Empty<BuqiDemoItemView>();
+            for (int index = 0; index < m_BoardLabels.Length; index++)
+            {
+                BuqiDemoItemView item = index < slots.Count ? slots[index] : null;
+                string label = (index + 1).ToString("00");
+                if (item != null && !item.Empty && !string.IsNullOrEmpty(item.Name))
+                    label = GameFramework.Utility.Text.Format("{0}\n{1}", label, item.Name);
+                SetText(m_BoardLabels[index], label);
+            }
+        }
+
+        private void ClearBoard()
+        {
+            foreach (Text label in m_BoardLabels)
+                SetText(label, string.Empty);
+            if (m_BoardPanel != null)
+                m_BoardPanel.SetActive(false);
         }
 
         private static void SetText(Text text, string value)

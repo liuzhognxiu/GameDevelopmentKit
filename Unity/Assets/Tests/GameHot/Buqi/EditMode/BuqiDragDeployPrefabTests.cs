@@ -46,7 +46,7 @@ namespace Game.Hot.Buqi.Tests
             AssertChild(form, "DragLayer");
             AssertChild(form, "ItemTemplate");
             Assert.That(Children(form, "BoardSlot_").Count(), Is.EqualTo(8));
-            Assert.That(Children(form, "StorageSlot_").Count(), Is.EqualTo(5));
+            Assert.That(Children(form, "StorageSlot_").Count(), Is.EqualTo(8));
 
             MonoBehaviour component = FindComponent(form, "BuqiDragDeployForm");
             AssertReferences(component,
@@ -54,7 +54,7 @@ namespace Game.Hot.Buqi.Tests
                 "m_BoardItemLayer", "m_StorageItemLayer", "m_DragLayer",
                 "m_ResetButton", "m_CancelButton", "m_ConfirmButton");
             AssertArray(component, "m_BoardSlots", 8);
-            AssertArray(component, "m_StorageSlots", 5);
+            AssertArray(component, "m_StorageSlots", 8);
         }
 
         [Test]

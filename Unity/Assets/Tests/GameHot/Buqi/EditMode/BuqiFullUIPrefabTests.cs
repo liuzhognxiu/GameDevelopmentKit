@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Game.Hot.Buqi.DemoUI;
@@ -63,6 +64,24 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(stageNames.All(name => Children(prefab, name).Count == 1), Is.True);
         }
 
+        [Test]
+        public void RunShell_StageComponentReferencesImplementStageContract()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ShellPath);
+            MonoBehaviour form = prefab.GetComponents<MonoBehaviour>().Single(component =>
+                component.GetType().FullName == "Game.Hot.Buqi.UI.BuqiRunShellForm");
+            var serializedForm = new SerializedObject(form);
+            SerializedProperty stages = serializedForm.FindProperty("m_StageComponents");
+
+            Assert.That(stages, Is.Not.Null);
+            Assert.That(stages.arraySize, Is.EqualTo(stageNames.Length));
+            for (int index = 0; index < stages.arraySize; index++)
+            {
+                Object component = stages.GetArrayElementAtIndex(index).objectReferenceValue;
+                Assert.That(component is IBuqiStageWidget, Is.True, stageNames[index]);
+            }
+        }
+
         [TestCase("BuqiRunShellForm", 104)]
         [TestCase("BuqiItemDetailForm", 105)]
         [TestCase("BuqiConfirmForm", 106)]
@@ -73,6 +92,74 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(field, Is.Not.Null, fieldName);
             Assert.That(field.GetValue(null), Is.EqualTo(expectedValue));
+        }
+
+        [Test]
+        public void MainMenuStart_OpensRunShellInsteadOfStandaloneBattleSandbox()
+        {
+            string menuFormPath = Path.Combine(
+                Application.dataPath,
+                "Scripts/Game/Hot/Code/UI/MenuForm.cs");
+            string source = File.ReadAllText(menuFormPath);
+
+            Assert.That(
+                source.IndexOf("OpenUIForm(UIFormId.BuqiRunShellForm)", System.StringComparison.Ordinal),
+                Is.GreaterThanOrEqualTo(0));
+            Assert.That(
+                source.IndexOf("OpenUIForm(UIFormId.BattleForm)", System.StringComparison.Ordinal),
+                Is.LessThan(0));
+        }
+
+        [Test]
+        public void RunShell_BattleReplayWaitsForConfirmedCloseBeforeAdvancing()
+        {
+            string shellFormPath = Path.Combine(
+                Application.dataPath,
+                "Scripts/Game/Hot/Code/Buqi/UI/BuqiRunShellForm.cs");
+            string source = File.ReadAllText(shellFormPath);
+            int openMethodStart = source.IndexOf(
+                "private void OpenBattleReplay()",
+                System.StringComparison.Ordinal);
+            int nextMethodStart = source.IndexOf(
+                "private void CompleteBattleReplay()",
+                openMethodStart,
+                System.StringComparison.Ordinal);
+            string openMethod = source.Substring(openMethodStart, nextMethodStart - openMethodStart);
+
+            Assert.That(openMethodStart, Is.GreaterThanOrEqualTo(0));
+            Assert.That(nextMethodStart, Is.GreaterThan(openMethodStart));
+            Assert.That(openMethod, Does.Contain("BattleReplayOpenData"));
+            Assert.That(openMethod, Does.Contain("Confirmed = CompleteBattleReplay"));
+            Assert.That(openMethod, Does.Not.Contain("m_Controller.Execute"));
+        }
+
+        [Test]
+        public void RunShell_BackClosesInsteadOfSubmittingUnsupportedPreviousPhase()
+        {
+            string shellFormPath = Path.Combine(
+                Application.dataPath,
+                "Scripts/Game/Hot/Code/Buqi/UI/BuqiRunShellForm.cs");
+            string source = File.ReadAllText(shellFormPath);
+            int methodStart = source.IndexOf("private void GoBack()", System.StringComparison.Ordinal);
+            int methodEnd = source.IndexOf("private void Advance()", methodStart, System.StringComparison.Ordinal);
+            string method = source.Substring(methodStart, methodEnd - methodStart);
+
+            Assert.That(method, Does.Contain("Close();"));
+            Assert.That(method, Does.Not.Contain("PreviousPhase"));
+        }
+
+        [Test]
+        public void RunShell_ShopPurchaseRequiresConfirmationAndEventHidesDeadPrimaryButton()
+        {
+            string shellFormPath = Path.Combine(
+                Application.dataPath,
+                "Scripts/Game/Hot/Code/Buqi/UI/BuqiRunShellForm.cs");
+            string source = File.ReadAllText(shellFormPath);
+
+            Assert.That(source, Does.Contain("command.Type == BuqiUIDemoCommandType.BuyOffer"));
+            Assert.That(source, Does.Contain("OpenPurchaseConfirmation(command)"));
+            Assert.That(source, Does.Contain("OpenUIForm(UIFormId.BuqiConfirmForm"));
+            Assert.That(source, Does.Contain("m_PrimaryButton.gameObject.SetActive(view.Phase != BuqiUIDemoPhase.Event)"));
         }
 
         [Test]

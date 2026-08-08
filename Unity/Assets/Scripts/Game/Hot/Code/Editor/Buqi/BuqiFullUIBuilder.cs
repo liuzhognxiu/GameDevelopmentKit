@@ -132,7 +132,12 @@ namespace Game.Hot.Editor
                 GameObject prefab = LoadPrefab(StageFolder + "/" + stageName + ".prefab");
                 GameObject stage = Instantiate(prefab, stageHost.transform, stageName);
                 SetRect(stage.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), Vector2.zero, new Vector2(1112f, 824f));
-                stages.Add(stage.GetComponent<MonoBehaviour>());
+                MonoBehaviour stageComponent = Array.Find(
+                    stage.GetComponents<MonoBehaviour>(),
+                    component => component is IBuqiStageWidget);
+                if (stageComponent == null)
+                    throw new InvalidOperationException("Stage prefab has no IBuqiStageWidget: " + stageName);
+                stages.Add(stageComponent);
             }
 
             GameObject context = CreatePanel(root.transform, "ContextRail", new Vector2(720f, 0f), new Vector2(488f, 824f), surfaceColor);

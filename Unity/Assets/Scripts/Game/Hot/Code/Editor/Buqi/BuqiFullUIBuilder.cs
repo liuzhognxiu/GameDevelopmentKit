@@ -5,6 +5,7 @@ using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Object = UnityEngine.Object;
 
@@ -16,6 +17,7 @@ namespace Game.Hot.Editor
         private const string WidgetFolder = "Assets/Res/UI/UIPrefab/Buqi";
         private const string FormFolder = "Assets/Res/UI/UIForm/Hot/Buqi";
         private const string ShellPath = FormFolder + "/BuqiRunShellForm.prefab";
+        private const string BattleFormPath = FormFolder + "/BattleForm.prefab";
 
         private static readonly Color canvasColor = new Color32(18, 23, 28, 255);
         private static readonly Color surfaceColor = new Color32(35, 43, 50, 255);
@@ -42,6 +44,7 @@ namespace Game.Hot.Editor
             BuildStage<RoundSettlementWidget>("RoundSettlementWidget", "回合结算", "结算胜场、单局生命与金币变化。");
             BuildStage<RunTerminalWidget>("RunTerminalWidget", "单局结束", "查看本局构筑摘要并重新开始。");
             BuildShell();
+            BuildBattleFormIntegration();
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
             Debug.Log("不器完整界面演示已重建。");
@@ -151,6 +154,11 @@ namespace Game.Hot.Editor
             SetRect(status.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(28f, 120f), new Vector2(-56f, 120f));
             status.horizontalOverflow = HorizontalWrapMode.Wrap;
 
+            GameObject finalFlowStructure = CreateFinalFlowStructure();
+            finalFlowStructure.transform.SetParent(root.transform, false);
+            Stretch(finalFlowStructure.GetComponent<RectTransform>(), Vector2.zero, Vector2.zero);
+            finalFlowStructure.SetActive(false);
+
             GameObject commands = CreatePanel(root.transform, "CommandBar", new Vector2(0f, -472f), new Vector2(1856f, 88f), surfaceColor);
             Button back = CreateButton(commands.transform, "Back", "<", new Vector2(-850f, 0f), new Vector2(64f, 52f), raisedColor, out _);
             Button restart = CreateButton(commands.transform, "Restart", "重启", new Vector2(730f, 0f), new Vector2(64f, 52f), raisedColor, out _);
@@ -176,6 +184,274 @@ namespace Game.Hot.Editor
             Assign(form, "m_ErrorPanel", errorPanel);
             Assign(form, "m_ErrorText", errorText);
             SavePrefab(root, ShellPath);
+        }
+
+        private static GameObject CreateFinalFlowStructure()
+        {
+            GameObject root = CreateRoot("FinalFlowStructure", new Vector2(1920f, 1080f));
+
+            GameObject dailyCycle = CreatePanel(root.transform, "DailyCycle", new Vector2(-700f, 300f), new Vector2(420f, 360f), surfaceColor);
+            for (int day = 1; day <= 9; day++)
+            {
+                int column = (day - 1) % 3;
+                int row = (day - 1) / 3;
+                CreatePanel(
+                    dailyCycle.transform,
+                    "DaySlot_" + day.ToString("00"),
+                    new Vector2(-120f + column * 120f, 120f - row * 90f),
+                    new Vector2(104f, 72f),
+                    raisedColor);
+            }
+            CreateContractNode(dailyCycle.transform, "MorningOperation");
+            CreateContractNode(dailyCycle.transform, "NoonOperation");
+            CreateContractNode(dailyCycle.transform, "DuskPVE");
+            CreateContractNode(dailyCycle.transform, "NightPVP");
+
+            GameObject operation = CreatePanel(root.transform, "OperationScreen", new Vector2(0f, 260f), new Vector2(1000f, 420f), surfaceColor);
+            CreatePanel(operation.transform, "Board", new Vector2(0f, -70f), new Vector2(920f, 180f), raisedColor);
+            for (int index = 0; index < 3; index++)
+            {
+                CreatePanel(
+                    operation.transform,
+                    "OperationChoice_" + (index + 1).ToString("00"),
+                    new Vector2(-320f + index * 320f, 115f),
+                    new Vector2(280f, 104f),
+                    jadeColor);
+            }
+
+            GameObject bazaar = CreatePanel(root.transform, "BazaarScreen", new Vector2(0f, 0f), new Vector2(1000f, 520f), surfaceColor);
+            CreatePanel(bazaar.transform, "SellDropZone", new Vector2(0f, 210f), new Vector2(920f, 72f), accentColor);
+            for (int index = 0; index < 4; index++)
+            {
+                GameObject product = CreatePanel(
+                    bazaar.transform,
+                    "Product_" + (index + 1).ToString("00"),
+                    new Vector2(-345f + index * 230f, 10f),
+                    new Vector2(210f, 260f),
+                    raisedColor);
+                var trigger = product.AddComponent<EventTrigger>();
+                trigger.triggers = new List<EventTrigger.Entry>
+                {
+                    new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter },
+                    new EventTrigger.Entry { eventID = EventTriggerType.PointerExit },
+                };
+            }
+
+            GameObject pveSelection = CreatePanel(root.transform, "PVESelectionScreen", new Vector2(0f, 0f), new Vector2(1000f, 520f), surfaceColor);
+            CreatePanel(pveSelection.transform, "PhaseRail", new Vector2(-450f, 0f), new Vector2(100f, 520f), raisedColor).SetActive(false);
+            CreatePanel(pveSelection.transform, "Storage", new Vector2(-350f, 0f), new Vector2(220f, 520f), raisedColor).SetActive(false);
+            for (int index = 0; index < 3; index++)
+            {
+                CreatePanel(
+                    pveSelection.transform,
+                    "DifficultyCard_" + (index + 1).ToString("00"),
+                    new Vector2(-310f + index * 310f, 0f),
+                    new Vector2(280f, 360f),
+                    raisedColor);
+            }
+
+            GameObject battleToolbar = CreatePanel(root.transform, "BattleToolbar", new Vector2(0f, -430f), new Vector2(520f, 72f), surfaceColor);
+            CreateButton(battleToolbar.transform, "Speed1x", "1x", new Vector2(-170f, 0f), new Vector2(120f, 48f), raisedColor, out _);
+            CreateButton(battleToolbar.transform, "Speed2x", "2x", Vector2.zero, new Vector2(120f, 48f), raisedColor, out _);
+            CreateButton(battleToolbar.transform, "Skip", ">>|", new Vector2(170f, 0f), new Vector2(120f, 48f), jadeColor, out _);
+
+            CreateButton(root.transform, "DayRecordButton", "Record", new Vector2(760f, 470f), new Vector2(128f, 48f), raisedColor, out _);
+            GameObject dayRecordModal = CreatePanel(root.transform, "DayRecordModal", Vector2.zero, new Vector2(840f, 640f), surfaceColor);
+            dayRecordModal.SetActive(false);
+
+            GameObject routeScreen = CreatePanel(root.transform, "TribulationRouteScreen", Vector2.zero, new Vector2(1120f, 620f), surfaceColor);
+            for (int index = 0; index < 3; index++)
+            {
+                CreatePanel(
+                    routeScreen.transform,
+                    "RouteCard_" + (index + 1).ToString("00"),
+                    new Vector2(-360f + index * 360f, 0f),
+                    new Vector2(320f, 460f),
+                    raisedColor);
+            }
+
+            GameObject tribulationSequence = CreatePanel(root.transform, "TribulationSequence", Vector2.zero, new Vector2(1120f, 620f), surfaceColor);
+            for (int index = 0; index < 3; index++)
+                CreateContractNode(tribulationSequence.transform, "TribulationStage_" + (index + 1).ToString("00"));
+            CreateContractNode(tribulationSequence.transform, "RunEnding");
+
+            return root;
+        }
+
+        private static GameObject CreateBattleIntegrationStructure()
+        {
+            GameObject root = CreateRoot("BattleIntegrationStructure", new Vector2(1920f, 1080f));
+            GameObject arena = CreatePanel(root.transform, "BattleArena", Vector2.zero, new Vector2(1600f, 760f), surfaceColor);
+            for (int side = 0; side < 2; side++)
+            {
+                string suffix = side == 0 ? "_Left" : "_Right";
+                for (int slot = 1; slot <= 8; slot++)
+                {
+                    GameObject card = CreatePanel(
+                        arena.transform,
+                        "Slot" + slot.ToString("00") + suffix,
+                        new Vector2(-560f + (slot - 1) * 160f, side == 0 ? 170f : -170f),
+                        new Vector2(148f, 164f),
+                        raisedColor);
+                    CreateBattleFloatAnchor(card.transform, null);
+                }
+            }
+
+            GameObject toolbar = CreatePanel(root.transform, "BattleToolbar", new Vector2(0f, -470f), new Vector2(760f, 72f), surfaceColor);
+            CreateButton(toolbar.transform, "Back", "<", new Vector2(-270f, 0f), new Vector2(96f, 48f), raisedColor, out _);
+            CreateButton(toolbar.transform, "Speed1", "1x", new Vector2(-120f, 0f), new Vector2(96f, 48f), raisedColor, out _);
+            CreateButton(toolbar.transform, "Speed2", "2x", Vector2.zero, new Vector2(96f, 48f), raisedColor, out _);
+            CreateButton(toolbar.transform, "Skip", ">>", new Vector2(150f, 0f), new Vector2(112f, 48f), jadeColor, out _);
+            return root;
+        }
+
+        private static void BuildBattleFormIntegration()
+        {
+            GameObject battleAsset = AssetDatabase.LoadAssetAtPath<GameObject>(BattleFormPath);
+            if (battleAsset == null)
+                return;
+
+            Type floatWidgetType = FindType("Game.Hot.Buqi.UI.Widgets.BuqiBattleFloatWidget");
+            if (floatWidgetType == null)
+            {
+                Debug.LogWarning("BuqiBattleFloatWidget is not available; run the full UI builder after Task D is integrated.");
+                return;
+            }
+
+            GameObject root = PrefabUtility.LoadPrefabContents(BattleFormPath);
+            try
+            {
+                MonoBehaviour form = FindComponentByName(root, "BattleForm");
+                if (form == null)
+                    throw new InvalidOperationException("BattleForm component is missing from " + BattleFormPath);
+
+                var leftFloats = new List<MonoBehaviour>(8);
+                var rightFloats = new List<MonoBehaviour>(8);
+                for (int slot = 1; slot <= 8; slot++)
+                {
+                    leftFloats.Add(PrepareBattleFloat(root, "Slot" + slot.ToString("00") + "_Left", floatWidgetType));
+                    rightFloats.Add(PrepareBattleFloat(root, "Slot" + slot.ToString("00") + "_Right", floatWidgetType));
+                }
+
+                DisableLegacyBattleControls(root);
+                AssignArray(form, "m_LeftFloats", leftFloats);
+                AssignArray(form, "m_RightFloats", rightFloats);
+                GameObject saved = PrefabUtility.SaveAsPrefabAsset(root, BattleFormPath);
+                AssetDatabase.SetLabels(saved, new[] { "All", "Pack" });
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(root);
+            }
+        }
+
+        private static MonoBehaviour PrepareBattleFloat(GameObject root, string cardName, Type floatWidgetType)
+        {
+            Transform card = FindDescendant(root.transform, cardName);
+            if (card == null)
+                throw new InvalidOperationException("BattleForm is missing item card " + cardName);
+
+            Transform anchor = card.Find("BattleFloatAnchor");
+            if (anchor == null)
+                anchor = CreateBattleFloatAnchor(card, floatWidgetType).transform;
+
+            CanvasGroup canvasGroup = anchor.GetComponent<CanvasGroup>() ?? anchor.gameObject.AddComponent<CanvasGroup>();
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+            Text value = anchor.GetComponentInChildren<Text>(true);
+            if (value == null)
+            {
+                value = CreateText(anchor, "Value_Text", string.Empty, 16, TextAnchor.MiddleCenter, inkColor);
+                Stretch(value.rectTransform, new Vector2(4f, 2f), new Vector2(-4f, -2f));
+            }
+
+            MonoBehaviour widget = anchor.GetComponent(floatWidgetType) as MonoBehaviour;
+            if (widget == null)
+                widget = anchor.gameObject.AddComponent(floatWidgetType) as MonoBehaviour;
+            AssignFirstExisting(widget, value, "m_Text", "m_ValueText", "m_LabelText");
+            return widget;
+        }
+
+        private static GameObject CreateBattleFloatAnchor(Transform card, Type floatWidgetType)
+        {
+            GameObject anchor = CreateRoot("BattleFloatAnchor", new Vector2(150f, 48f));
+            anchor.transform.SetParent(card, false);
+            SetRect(anchor.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), new Vector2(0f, 106f), new Vector2(150f, 48f));
+            CanvasGroup canvasGroup = anchor.AddComponent<CanvasGroup>();
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+            Text value = CreateText(anchor.transform, "Value_Text", string.Empty, 16, TextAnchor.MiddleCenter, inkColor);
+            Stretch(value.rectTransform, new Vector2(4f, 2f), new Vector2(-4f, -2f));
+            if (floatWidgetType != null)
+            {
+                MonoBehaviour widget = anchor.AddComponent(floatWidgetType) as MonoBehaviour;
+                AssignFirstExisting(widget, value, "m_Text", "m_ValueText", "m_LabelText");
+            }
+            return anchor;
+        }
+
+        private static void DisableLegacyBattleControls(GameObject root)
+        {
+            foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+            {
+                string name = child.name;
+                if (name == "PlayPause" || name == "Speed4" || name == "Replay" ||
+                    name == "PreviousPage" || name == "NextPage" || name.StartsWith("Log", StringComparison.Ordinal))
+                    child.gameObject.SetActive(false);
+            }
+        }
+
+        private static void AssignFirstExisting(MonoBehaviour target, Object value, params string[] propertyNames)
+        {
+            if (target == null)
+                return;
+            SerializedObject serialized = new SerializedObject(target);
+            foreach (string propertyName in propertyNames)
+            {
+                SerializedProperty property = serialized.FindProperty(propertyName);
+                if (property == null)
+                    continue;
+                property.objectReferenceValue = value;
+                serialized.ApplyModifiedPropertiesWithoutUndo();
+                return;
+            }
+        }
+
+        private static MonoBehaviour FindComponentByName(GameObject root, string typeName)
+        {
+            foreach (MonoBehaviour component in root.GetComponents<MonoBehaviour>())
+            {
+                if (component != null && component.GetType().Name == typeName)
+                    return component;
+            }
+            return null;
+        }
+
+        private static Transform FindDescendant(Transform root, string name)
+        {
+            foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
+            {
+                if (child.name == name)
+                    return child;
+            }
+            return null;
+        }
+
+        private static Type FindType(string fullName)
+        {
+            foreach (System.Reflection.Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                Type type = assembly.GetType(fullName, false);
+                if (type != null)
+                    return type;
+            }
+            return null;
+        }
+
+        private static void CreateContractNode(Transform parent, string name)
+        {
+            GameObject node = CreateRoot(name, Vector2.zero);
+            node.transform.SetParent(parent, false);
         }
 
         private static GameObject LoadPrefab(string path)
@@ -288,9 +564,185 @@ namespace Game.Hot.Editor
 
         private static void SavePrefab(GameObject root, string path)
         {
-            GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
-            Object.DestroyImmediate(root);
-            AssetDatabase.SetLabels(prefab, new[] { "All", "Pack" });
+            GameObject existingAsset = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+            if (existingAsset == null)
+            {
+                GameObject prefab = PrefabUtility.SaveAsPrefabAsset(root, path);
+                Object.DestroyImmediate(root);
+                AssetDatabase.SetLabels(prefab, new[] { "All", "Pack" });
+                return;
+            }
+
+            GameObject existingRoot = PrefabUtility.LoadPrefabContents(path);
+            try
+            {
+                MergeGeneratedHierarchy(existingRoot, root);
+                GameObject prefab = PrefabUtility.SaveAsPrefabAsset(existingRoot, path);
+                AssetDatabase.SetLabels(prefab, new[] { "All", "Pack" });
+            }
+            finally
+            {
+                PrefabUtility.UnloadPrefabContents(existingRoot);
+                Object.DestroyImmediate(root);
+            }
+        }
+
+        private static void MergeGeneratedHierarchy(GameObject existingRoot, GameObject generatedRoot)
+        {
+            var objectMap = new Dictionary<Object, Object>();
+            MapHierarchy(existingRoot, generatedRoot, objectMap);
+            CopyGeneratedHierarchy(existingRoot, generatedRoot, objectMap);
+        }
+
+        private static void MapHierarchy(
+            GameObject existing,
+            GameObject generated,
+            IDictionary<Object, Object> objectMap)
+        {
+            objectMap[generated] = existing;
+            objectMap[generated.transform] = existing.transform;
+
+            var componentOffsets = new Dictionary<Type, int>();
+            foreach (Component generatedComponent in generated.GetComponents<Component>())
+            {
+                if (generatedComponent is Transform || IsLocalizationComponent(generatedComponent))
+                    continue;
+
+                Type type = generatedComponent.GetType();
+                componentOffsets.TryGetValue(type, out int offset);
+                Component[] existingComponents = existing.GetComponents(type);
+                Component existingComponent = offset < existingComponents.Length
+                    ? existingComponents[offset]
+                    : existing.AddComponent(type);
+                componentOffsets[type] = offset + 1;
+                objectMap[generatedComponent] = existingComponent;
+            }
+
+            var claimedChildren = new HashSet<Transform>();
+            foreach (Transform generatedChild in generated.transform)
+            {
+                Transform existingChild = FindDirectChild(existing.transform, generatedChild.name, claimedChildren);
+                if (existingChild == null)
+                {
+                    GameObject child = generatedChild is RectTransform
+                        ? new GameObject(generatedChild.name, typeof(RectTransform))
+                        : new GameObject(generatedChild.name);
+                    child.transform.SetParent(existing.transform, false);
+                    existingChild = child.transform;
+                }
+
+                claimedChildren.Add(existingChild);
+                MapHierarchy(existingChild.gameObject, generatedChild.gameObject, objectMap);
+            }
+        }
+
+        private static void CopyGeneratedHierarchy(
+            GameObject existing,
+            GameObject generated,
+            IReadOnlyDictionary<Object, Object> objectMap)
+        {
+            existing.name = generated.name;
+            existing.layer = generated.layer;
+            existing.SetActive(generated.activeSelf);
+            CopyTransform(generated.transform, existing.transform);
+
+            foreach (Component generatedComponent in generated.GetComponents<Component>())
+            {
+                if (generatedComponent is Transform || IsLocalizationComponent(generatedComponent))
+                    continue;
+                if (!objectMap.TryGetValue(generatedComponent, out Object mapped) || !(mapped is Component existingComponent))
+                    continue;
+
+                CopySerializedProperties(generatedComponent, existingComponent, objectMap);
+            }
+
+            foreach (Transform generatedChild in generated.transform)
+            {
+                if (objectMap.TryGetValue(generatedChild, out Object mapped) && mapped is Transform existingChild)
+                    CopyGeneratedHierarchy(existingChild.gameObject, generatedChild.gameObject, objectMap);
+            }
+        }
+
+        private static void CopyTransform(Transform source, Transform target)
+        {
+            target.localPosition = source.localPosition;
+            target.localRotation = source.localRotation;
+            target.localScale = source.localScale;
+            if (source is RectTransform sourceRect && target is RectTransform targetRect)
+            {
+                targetRect.anchorMin = sourceRect.anchorMin;
+                targetRect.anchorMax = sourceRect.anchorMax;
+                targetRect.pivot = sourceRect.pivot;
+                targetRect.anchoredPosition = sourceRect.anchoredPosition;
+                targetRect.sizeDelta = sourceRect.sizeDelta;
+            }
+        }
+
+        private static void CopySerializedProperties(
+            Component source,
+            Component target,
+            IReadOnlyDictionary<Object, Object> objectMap)
+        {
+            var sourceObject = new SerializedObject(source);
+            var targetObject = new SerializedObject(target);
+            SerializedProperty property = sourceObject.GetIterator();
+            while (property.NextVisible(true))
+            {
+                if (property.propertyPath == "m_Script")
+                    continue;
+
+                SerializedProperty targetProperty = targetObject.FindProperty(property.propertyPath);
+                if (targetProperty == null || targetProperty.propertyType != property.propertyType)
+                    continue;
+                if (property.propertyPath == "m_Text" && target is Text targetText &&
+                    IsLocalizationKey(targetText.text))
+                    continue;
+
+                if (property.propertyType == SerializedPropertyType.ObjectReference)
+                {
+                    Object reference = property.objectReferenceValue;
+                    targetProperty.objectReferenceValue = reference != null && objectMap.TryGetValue(reference, out Object mapped)
+                        ? mapped
+                        : reference;
+                }
+                else
+                {
+                    targetObject.CopyFromSerializedProperty(property);
+                }
+            }
+            targetObject.ApplyModifiedPropertiesWithoutUndo();
+        }
+
+        private static bool IsLocalizationKey(string value)
+        {
+            return !string.IsNullOrEmpty(value) &&
+                   value.StartsWith("Buqi.", StringComparison.Ordinal);
+        }
+
+        private static Transform FindDirectChild(
+            Transform parent,
+            string name,
+            ISet<Transform> claimedChildren)
+        {
+            foreach (Transform child in parent)
+            {
+                if (child.name == name && !claimedChildren.Contains(child))
+                    return child;
+            }
+            return null;
+        }
+
+        private static bool IsLocalizationComponent(Component component)
+        {
+            Type type = component.GetType();
+            string typeName = type.FullName ?? type.Name;
+            foreach (Type interfaceType in type.GetInterfaces())
+            {
+                if (interfaceType.Name == "ILocalization")
+                    return true;
+            }
+            return typeName.IndexOf("Localization", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                   typeName.IndexOf("Localize", StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private static void EnsureFolder(string path)

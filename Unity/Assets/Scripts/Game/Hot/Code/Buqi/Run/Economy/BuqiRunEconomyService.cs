@@ -57,6 +57,45 @@ namespace Game.Hot.Buqi.Run.Economy
             return Success(working, instanceId);
         }
 
+        public BuqiRunEconomyResult GrantFreeItem(BuqiRunEconomySnapshot source, string definitionId)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            BuqiRunEconomySnapshot working = source.Clone();
+            if (!HasDefinedQualities(working))
+                return Fail(source, "Item quality is invalid.");
+            if (!TryResolveDefinition(definitionId, out BuqiRunItemDefinition definition))
+                return Fail(source, "Item definition was not found.");
+            if (!IsPositiveSize(definition.Size))
+                return Fail(source, "Item definition size must be positive.");
+
+            string mergeInstanceId = FindMergeTarget(working, definitionId, BuqiRunItemQuality.Common);
+            if (!string.IsNullOrEmpty(mergeInstanceId))
+            {
+                BuqiRunItemInstance mergedItem = working.Items[mergeInstanceId];
+                if (mergedItem.Quality == BuqiRunItemQuality.Finalized)
+                    return Fail(source, "Item is already finalized.");
+
+                mergedItem.Quality = AdvanceQuality(mergedItem.Quality);
+                return Success(working, mergeInstanceId);
+            }
+
+            int storageSlot = FindFirstEmptyStorageSlot(working.Run.StorageInstanceIds);
+            if (storageSlot < 0)
+                return Fail(source, "No storage slot available.");
+
+            string instanceId = working.CreateInstanceId();
+            working.Run.StorageInstanceIds[storageSlot] = instanceId;
+            working.Items[instanceId] = new BuqiRunItemInstance
+            {
+                InstanceId = instanceId,
+                DefinitionId = definitionId,
+                Quality = BuqiRunItemQuality.Common,
+            };
+            return Success(working, instanceId);
+        }
+
         public BuqiRunEconomyResult Sell(BuqiRunEconomySnapshot source, string instanceId)
         {
             if (source == null)

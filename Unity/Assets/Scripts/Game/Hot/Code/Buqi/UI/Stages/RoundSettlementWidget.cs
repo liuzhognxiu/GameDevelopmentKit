@@ -8,6 +8,7 @@ namespace Game.Hot.Buqi.UI.Stages
 
         protected override void ConfigureActions(BuqiUIDemoView view)
         {
+            AddAction("Deploy", BuqiUIDemoCommandType.OpenDragDeploy);
         }
     }
 }

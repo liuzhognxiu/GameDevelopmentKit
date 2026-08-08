@@ -1,231 +1,172 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.DemoUI.Deployment;
+using Game.Hot.Buqi.Run.Settlement;
 using NUnit.Framework;
+using BattleSize = Game.Hot.Buqi.Battle.BuqiSize;
 
 namespace Game.Hot.Buqi.Tests
 {
     public sealed class BuqiUIDemoControllerTests
     {
         [Test]
-        public void Create_AlwaysReturnsSameStarterState()
+        public void Create_StartsInEncounterWithoutLegacyTopLevelPhases()
         {
-            BuqiUIDemoCatalog catalog = CreateDemoCatalog();
+            BuqiUIDemoController controller = CreateController(new MemoryRunStore());
 
-            BuqiUIDemoController first = BuqiUIDemoController.Create(catalog);
-            BuqiUIDemoController second = BuqiUIDemoController.Create(catalog);
-
-            Assert.That(first.View.Phase, Is.EqualTo(BuqiUIDemoPhase.StarterSelection));
-            Assert.That(first.View.Coins, Is.EqualTo(second.View.Coins));
-            Assert.That(first.View.Choices.Select(choice => choice.Id),
-                Is.EqualTo(second.View.Choices.Select(choice => choice.Id)));
-            Assert.That(first.View.BoardSlots.Count, Is.EqualTo(8));
-            Assert.That(first.View.StorageSlots.Count, Is.EqualTo(5));
+            Assert.That(controller.View.Phase, Is.AnyOf(BuqiUIDemoPhase.Shop, BuqiUIDemoPhase.Event));
+            Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.StarterSelection));
+            Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.OpponentIntel));
+            Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.Prediction));
+            Assert.That(controller.View.BoardSlots.Count, Is.EqualTo(8));
+            Assert.That(controller.View.StorageSlots.Count, Is.EqualTo(8));
         }
 
         [Test]
-        public void SelectChoice_OutsideChoicePhaseIsRejectedWithoutMutation()
+        public void OpenDragDeploy_IsAcceptedInEncounterAndRejectedDuringBattleReplay()
         {
-            BuqiUIDemoController controller = CreateController();
-            BuqiUIDemoView before = controller.View;
+            BuqiUIDemoController controller = CreateController(new MemoryRunStore());
 
-            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
-            {
-                Type = BuqiUIDemoCommandType.SelectChoice,
-                PrimaryId = "prepare-coin",
-            });
-
-            Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("当前阶段不能选择该项"));
-            Assert.That(controller.View, Is.SameAs(before));
-        }
-
-        [Test]
-        public void SubmitPrediction_AfterPredictionIsLockedIsRejected()
-        {
-            BuqiUIDemoController controller = CreateController();
-            AdvanceTo(controller, BuqiUIDemoPhase.Prediction);
-
-            BuqiUIDemoCommandResult first = controller.Execute(new BuqiUIDemoCommand
-            {
-                Type = BuqiUIDemoCommandType.SubmitPrediction,
-                PrimaryId = "Win",
-            });
-            BuqiUIDemoView lockedView = controller.View;
-            BuqiUIDemoCommandResult second = controller.Execute(new BuqiUIDemoCommand
-            {
-                Type = BuqiUIDemoCommandType.SubmitPrediction,
-                PrimaryId = "Lose",
-            });
-
-            Assert.That(first.Accepted, Is.True);
-            Assert.That(second.Accepted, Is.False);
-            Assert.That(second.Reason, Is.EqualTo("预测已经提交"));
-            Assert.That(controller.View, Is.SameAs(lockedView));
-            Assert.That(controller.View.Prediction, Is.EqualTo("Win"));
-        }
-
-        [TestCase("OpenDragDeploy")]
-        [TestCase("ApplyDeployment")]
-        public void CommandType_ContainsDeploymentCommands(string commandName)
-        {
-            Assert.That(Enum.GetNames(typeof(BuqiUIDemoCommandType)), Contains.Item(commandName));
-        }
-
-        [Test]
-        public void Command_ContainsTypedDeploymentPayload()
-        {
-            Assert.That(typeof(BuqiUIDemoCommand).GetField("Deployment")?.FieldType,
-                Is.EqualTo(typeof(BuqiDeploymentSnapshot)));
-        }
-
-        [Test]
-        public void OpenDragDeploy_IsAcceptedOnlyInBoardEditorWithoutMutation()
-        {
-            BuqiUIDemoController controller = CreateController();
-            BuqiUIDemoView starter = controller.View;
-
-            BuqiUIDemoCommandResult rejected = controller.Execute(new BuqiUIDemoCommand
-            {
-                Type = BuqiUIDemoCommandType.OpenDragDeploy,
-            });
-
-            Assert.That(rejected.Accepted, Is.False);
-            Assert.That(controller.View, Is.SameAs(starter));
-
-            AdvanceTo(controller, BuqiUIDemoPhase.BoardEditor);
-            BuqiUIDemoView boardEditor = controller.View;
             BuqiUIDemoCommandResult accepted = controller.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.OpenDragDeploy,
             });
 
             Assert.That(accepted.Accepted, Is.True, accepted.Reason);
-            Assert.That(controller.View, Is.SameAs(boardEditor));
+
+            AdvanceUntil(controller, BuqiUIDemoPhase.BattleReplay);
+            BuqiUIDemoCommandResult rejected = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.OpenDragDeploy,
+            });
+
+            Assert.That(rejected.Accepted, Is.False);
         }
 
         [Test]
-        public void ApplyDeployment_ValidOwnedSnapshotReplacesBoardAtomically()
+        public void ApplyDeployment_PersistsAnchorOnlyBoardSlots()
         {
-            BuqiUIDemoController controller = CreateController();
-            AdvanceTo(controller, BuqiUIDemoPhase.BoardEditor);
-            BuqiUIDemoView before = controller.View;
-            var board = Enumerable.Repeat(string.Empty, 8).ToList();
-            board[3] = "item-01";
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store);
+            string instanceId = controller.View.BoardSlots.First(slot => !slot.Empty).Id;
+            var board = EmptySlots(8);
+            var storage = EmptySlots(8);
+            board[3] = instanceId;
+            board[4] = instanceId;
 
             BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.ApplyDeployment,
-                Deployment = new BuqiDeploymentSnapshot(
-                    board,
-                    Enumerable.Repeat(string.Empty, 5).ToList()),
+                Deployment = new BuqiDeploymentSnapshot(board, storage),
             });
 
             Assert.That(result.Accepted, Is.True, result.Reason);
-            Assert.That(controller.View, Is.Not.SameAs(before));
-            Assert.That(controller.View.BoardSlots[0].Empty, Is.True);
-            Assert.That(controller.View.BoardSlots[3].Id, Is.EqualTo("item-01"));
-            Assert.That(controller.View.BoardSlots[4].Id, Is.EqualTo("item-01"));
+            Assert.That(BuqiRunSaveCodec.TryFromJson(store.CurrentJson, out BuqiRunSaveData saveData, out string error), Is.True, error);
+            Assert.That(saveData.BoardInstanceIds[3], Is.EqualTo(instanceId));
+            Assert.That(saveData.BoardInstanceIds[4], Is.Empty);
+            Assert.That(controller.View.BoardSlots[3].Id, Is.EqualTo(instanceId));
+            Assert.That(controller.View.BoardSlots[4].Id, Is.EqualTo(instanceId));
         }
 
         [Test]
-        public void ApplyDeployment_InvalidSnapshotsAreRejectedWithoutMutation()
+        public void FirstDay_NeverEntersLegacyIntelPredictionOrBoardEditorPhases()
         {
-            BuqiUIDemoController controller = CreateController();
-            AdvanceTo(controller, BuqiUIDemoPhase.BoardEditor);
-            BuqiUIDemoView before = controller.View;
-
-            var malformedBoard = Enumerable.Repeat(string.Empty, 7).ToList();
-            var overlapBoard = Enumerable.Repeat(string.Empty, 8).ToList();
-            overlapBoard[0] = "item-01";
-            overlapBoard[1] = "item-02";
-            var unknownBoard = Enumerable.Repeat(string.Empty, 8).ToList();
-            unknownBoard[0] = "missing-item";
-            var addedStorage = Enumerable.Repeat(string.Empty, 5).ToList();
-            addedStorage[0] = "item-02";
-            var currentBoard = Enumerable.Repeat(string.Empty, 8).ToList();
-            currentBoard[0] = "item-01";
-
-            BuqiDeploymentSnapshot[] invalid =
+            BuqiUIDemoController controller = CreateController(new MemoryRunStore());
+            var seenPhases = new List<BuqiUIDemoPhase> { controller.View.Phase };
+            int guard = 0;
+            while (controller.View.Round == 1 && guard++ < 24)
             {
-                null,
-                new BuqiDeploymentSnapshot(malformedBoard, Enumerable.Repeat(string.Empty, 5).ToList()),
-                new BuqiDeploymentSnapshot(overlapBoard, Enumerable.Repeat(string.Empty, 5).ToList()),
-                new BuqiDeploymentSnapshot(unknownBoard, Enumerable.Repeat(string.Empty, 5).ToList()),
-                new BuqiDeploymentSnapshot(currentBoard, addedStorage),
-            };
-            string[] expectedReasons =
-            {
-                "部署快照不可用",
-                "棋盘位置数量无效",
-                "棋盘上存在重叠装备",
-                "装备已不存在",
-                "部署快照与当前装备不一致",
-            };
-
-            for (int index = 0; index < invalid.Length; index++)
-            {
-                BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
-                {
-                    Type = BuqiUIDemoCommandType.ApplyDeployment,
-                    Deployment = invalid[index],
-                });
-
-                Assert.That(result.Accepted, Is.False);
-                Assert.That(result.Reason, Is.EqualTo(expectedReasons[index]));
-                Assert.That(controller.View, Is.SameAs(before));
+                BuqiUIDemoCommandResult step = controller.Execute(SelectProgressCommand(controller.View));
+                Assert.That(step.Accepted, Is.True, step.Reason);
+                seenPhases.Add(controller.View.Phase);
             }
+
+            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.StarterSelection));
+            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.OpponentIntel));
+            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.Prediction));
+            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.BoardEditor));
         }
 
-        private static BuqiUIDemoController CreateController()
+        private static BuqiUIDemoController CreateController(MemoryRunStore store)
         {
-            return BuqiUIDemoController.Create(CreateDemoCatalog());
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    CreateDemoCatalog(),
+                    new BuqiUIDemoControllerOptions
+                    {
+                        Store = store,
+                        RunSeed = 1L,
+                        PveOpponentIds = new[] { "pve-a", "pve-b" },
+                        PvpOpponentIds = new[] { "pvp-a", "pvp-b" },
+                    },
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+            return controller;
         }
 
-        private static void AdvanceTo(BuqiUIDemoController controller, BuqiUIDemoPhase target)
+        private static void AdvanceUntil(BuqiUIDemoController controller, BuqiUIDemoPhase target)
         {
-            if (controller.View.Phase == BuqiUIDemoPhase.StarterSelection)
+            int guard = 0;
+            while (controller.View.Phase != target && guard++ < 32)
             {
-                Assert.That(controller.Execute(new BuqiUIDemoCommand
-                {
-                    Type = BuqiUIDemoCommandType.SelectStarter,
-                    PrimaryId = controller.View.Choices[0].Id,
-                }).Accepted, Is.True);
+                BuqiUIDemoCommandResult step = controller.Execute(SelectProgressCommand(controller.View));
+                Assert.That(step.Accepted, Is.True, step.Reason);
             }
 
-            while (controller.View.Phase < target)
+            Assert.That(controller.View.Phase, Is.EqualTo(target));
+        }
+
+        private static BuqiUIDemoCommand SelectProgressCommand(BuqiUIDemoView view)
+        {
+            if (view.Phase == BuqiUIDemoPhase.Event)
             {
-                BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+                return new BuqiUIDemoCommand
                 {
-                    Type = BuqiUIDemoCommandType.NextPhase,
-                });
-                Assert.That(result.Accepted, Is.True, result.Reason);
+                    Type = BuqiUIDemoCommandType.SelectChoice,
+                    PrimaryId = view.Choices[0].Id,
+                };
             }
+
+            return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase };
+        }
+
+        private static List<string> EmptySlots(int count)
+        {
+            var slots = new List<string>(count);
+            for (int index = 0; index < count; index++)
+                slots.Add(string.Empty);
+            return slots;
         }
 
         private static BuqiUIDemoCatalog CreateDemoCatalog()
         {
-            BuqiConfigCatalog source = CreateSourceCatalog();
-            Assert.That(BuqiUIDemoCatalog.TryCreate(source, out BuqiUIDemoCatalog catalog, out string error),
-                Is.True, error);
+            Assert.That(BuqiUIDemoCatalog.TryCreate(CreateSourceCatalog(), out BuqiUIDemoCatalog catalog, out string error), Is.True, error);
             return catalog;
         }
 
         private static BuqiConfigCatalog CreateSourceCatalog()
         {
-            var catalog = new BuqiConfigCatalog();
-            for (int index = 1; index <= 7; index++)
+            var catalog = new BuqiConfigCatalog
+            {
+                Global = new BuqiGlobalConfigRow
+                {
+                    ContentVersion = "test-content-v1",
+                    BoardSlotCount = 8,
+                },
+            };
+
+            for (int index = 1; index <= 8; index++)
             {
                 catalog.Items.Add(new BuqiItemConfigRow
                 {
                     DefinitionId = $"item-{index:00}",
-                    DisplayName = $"装备 {index}",
-                    Size = index == 1
-                        ? Game.Hot.Buqi.Battle.BuqiSize.M
-                        : Game.Hot.Buqi.Battle.BuqiSize.S,
+                    DisplayName = $"Item {index}",
+                    Size = index == 1 ? BattleSize.M : BattleSize.S,
                     BasePrice = index + 1,
                     BaseCooldownTicks = 20 + index,
                 });
@@ -236,30 +177,78 @@ namespace Game.Hot.Buqi.Tests
                 catalog.Refinements.Add(new BuqiRefinementConfigRow
                 {
                     RefinementId = $"mod-{index:00}",
-                    DisplayName = $"改造 {index}",
-                    Summary = $"改造效果 {index}",
+                    DisplayName = $"Mod {index}",
+                    Summary = $"Mod summary {index}",
                 });
             }
 
+            catalog.Echoes.Add(CreateEcho("pve-a", "PVE A", "item-02", "item-03"));
+            catalog.Echoes.Add(CreateEcho("pve-b", "PVE B", "item-03", "item-04"));
+            catalog.Echoes.Add(CreateEcho("pvp-a", "PVP A", "item-05", "item-06"));
+            catalog.Echoes.Add(CreateEcho("pvp-b", "PVP B", "item-07", "item-08"));
+            return catalog;
+        }
+
+        private static BuqiEchoConfigRow CreateEcho(string echoId, string displayName, string firstItemId, string secondItemId)
+        {
             var snapshot = new BuqiBuildSnapshotConfigRow
             {
-                SnapshotId = "snapshot-01",
-                ArchetypeId = "demo",
+                SnapshotId = echoId + "-snapshot",
+                ArchetypeId = echoId + "-build",
             };
             snapshot.Items.Add(new BuqiItemInstanceConfigRow
             {
-                InstanceId = "opponent-item-01",
-                DefinitionId = "item-01",
+                InstanceId = echoId + "-item-1",
+                DefinitionId = firstItemId,
                 AnchorSlot = 0,
             });
-            catalog.Echoes.Add(new BuqiEchoConfigRow
+            snapshot.Items.Add(new BuqiItemInstanceConfigRow
             {
-                EchoId = "echo-01",
-                DisplayName = "对手快照",
-                Build = "demo",
-                Snapshot = snapshot,
+                InstanceId = echoId + "-item-2",
+                DefinitionId = secondItemId,
+                AnchorSlot = 3,
             });
-            return catalog;
+
+            return new BuqiEchoConfigRow
+            {
+                EchoId = echoId,
+                DisplayName = displayName,
+                Build = snapshot.ArchetypeId,
+                Snapshot = snapshot,
+            };
+        }
+
+        private sealed class MemoryRunStore : IBuqiRunStore
+        {
+            public string CurrentJson { get; private set; }
+
+            public bool TryRead(out string json, out string error)
+            {
+                if (CurrentJson == null)
+                {
+                    json = string.Empty;
+                    error = "Save file does not exist.";
+                    return false;
+                }
+
+                json = CurrentJson;
+                error = string.Empty;
+                return true;
+            }
+
+            public bool TryWrite(string json, out string error)
+            {
+                CurrentJson = json;
+                error = string.Empty;
+                return true;
+            }
+
+            public bool TryDelete(out string error)
+            {
+                CurrentJson = null;
+                error = string.Empty;
+                return true;
+            }
         }
     }
 }

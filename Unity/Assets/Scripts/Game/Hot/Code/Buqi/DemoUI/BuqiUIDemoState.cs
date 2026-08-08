@@ -16,7 +16,7 @@ namespace Game.Hot.Buqi.DemoUI
         public string SelectedBoardSourceId = string.Empty;
         public string Prediction = string.Empty;
         public List<string> Board = EmptySlots(8);
-        public List<string> Storage = EmptySlots(5);
+        public List<string> Storage = EmptySlots(8);
         public HashSet<string> SoldOffers = new HashSet<string>();
         public List<BuqiUIDemoPhase> Visited = new List<BuqiUIDemoPhase> { BuqiUIDemoPhase.StarterSelection };
 

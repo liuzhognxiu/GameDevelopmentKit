@@ -10,6 +10,8 @@ namespace Game.Hot.Buqi.UI.Stages
         {
             foreach (BuqiDemoChoiceView choice in view.Choices)
                 AddAction(choice.Title, BuqiUIDemoCommandType.SelectChoice, choice.Id);
+
+            AddAction("Deploy", BuqiUIDemoCommandType.OpenDragDeploy);
         }
     }
 }

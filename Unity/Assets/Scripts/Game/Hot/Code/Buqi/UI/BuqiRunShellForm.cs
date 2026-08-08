@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
-using Game.Hot.Buqi.Demo;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.DemoUI.Deployment;
 using Game.Hot.Buqi.UI.Stages;
@@ -22,10 +20,13 @@ namespace Game.Hot.Buqi.UI
     [DisallowMultipleComponent]
     public sealed class BuqiRunShellForm : StarForceUIForm
     {
-        private static readonly string[] phaseLabels =
+        private static readonly string[] s_RailLabels =
         {
-            "起始选择", "对手快照", "战前准备", "商店", "事件", "改造",
-            "棋盘编辑", "胜负预测", "战斗回放", "战斗总结", "回合结算", "单局结束",
+            "Encounter",
+            "PVE",
+            "PVP",
+            "Settlement",
+            "Terminal",
         };
 
         [SerializeField]
@@ -101,6 +102,7 @@ namespace Game.Hot.Buqi.UI
                 ShowError(error);
                 return;
             }
+
             if (!BuqiUIDemoCatalog.TryCreate(m_Catalog, out BuqiUIDemoCatalog demoCatalog, out error))
             {
                 m_Controller = null;
@@ -108,8 +110,15 @@ namespace Game.Hot.Buqi.UI
                 return;
             }
 
+            if (!BuqiUIDemoController.TryCreate(demoCatalog, null, out BuqiUIDemoController controller, out error))
+            {
+                m_Controller = null;
+                ShowError(error);
+                return;
+            }
+
             m_DemoCatalog = demoCatalog;
-            m_Controller = BuqiUIDemoController.Create(m_DemoCatalog);
+            m_Controller = controller;
             HideError();
             Render();
         }
@@ -145,15 +154,18 @@ namespace Game.Hot.Buqi.UI
         {
             if (m_Controller == null)
                 return;
+
             BuqiUIDemoCommandResult result = m_Controller.Execute(command);
             SetText(m_StatusText, result.Accepted ? string.Empty : result.Reason);
             if (!result.Accepted)
                 return;
+
             if (command.Type == BuqiUIDemoCommandType.OpenDragDeploy)
             {
                 OpenDragDeploy();
                 return;
             }
+
             Render();
         }
 
@@ -161,6 +173,7 @@ namespace Game.Hot.Buqi.UI
         {
             if (m_DemoCatalog == null || m_Controller == null)
                 return;
+
             BuqiUIDemoView view = m_Controller.View;
             GameEntry.UI.OpenUIForm(UIFormId.BuqiDragDeployForm, new BuqiDragDeployOpenData
             {
@@ -207,6 +220,7 @@ namespace Game.Hot.Buqi.UI
         {
             if (m_Controller == null)
                 return;
+
             BuqiUIDemoView view = m_Controller.View;
             if (view.Phase == BuqiUIDemoPhase.BattleReplay)
             {
@@ -214,28 +228,31 @@ namespace Game.Hot.Buqi.UI
                 return;
             }
 
-            SetText(m_TitleText, "不器  |  演示界面总览");
+            SetText(m_TitleText, "Buqi Demo Run");
             SetText(m_ContextTitleText, view.ContextTitle);
             SetText(m_ContextBodyText, view.ContextBody);
             SetText(m_PrimaryLabel, view.PrimaryCommandLabel);
             RenderResources(view);
             RenderPhaseRail(view);
             if (!m_Registry.Show(view, Submit))
-                ShowError(GameFramework.Utility.Text.Format("缺少阶段预制体：{0}", view.Phase));
+            {
+                ShowError(GameFramework.Utility.Text.Format("Missing stage widget for {0}.", view.Phase));
+            }
         }
 
         private void RenderResources(BuqiUIDemoView view)
         {
-            RenderChip(0, "金币", view.Coins.ToString(), "+", ResourceChipState.Normal);
-            RenderChip(1, "胜场", view.Wins.ToString(), "胜", ResourceChipState.Normal);
-            RenderChip(2, "单局生命", view.Lives.ToString(), "命", view.Lives <= 1 ? ResourceChipState.Warning : ResourceChipState.Normal);
-            RenderChip(3, "回合", view.Round.ToString(), "合", ResourceChipState.Normal);
+            RenderChip(0, "Coins", view.Coins.ToString(), "+", ResourceChipState.Normal);
+            RenderChip(1, "Wins", view.Wins.ToString(), "W", ResourceChipState.Normal);
+            RenderChip(2, "Lives", view.Lives.ToString(), "L", view.Lives <= 1 ? ResourceChipState.Warning : ResourceChipState.Normal);
+            RenderChip(3, "Day", view.Round.ToString(), "D", ResourceChipState.Normal);
         }
 
         private void RenderChip(int index, string label, string value, string icon, ResourceChipState state)
         {
             if (index < 0 || index >= m_ResourceChips.Length || m_ResourceChips[index] == null)
                 return;
+
             m_ResourceChips[index].Render(new ResourceChipView
             {
                 Label = label,
@@ -247,34 +264,35 @@ namespace Game.Hot.Buqi.UI
 
         private void RenderPhaseRail(BuqiUIDemoView view)
         {
-            int count = Math.Min(m_PhaseSteps.Length, phaseLabels.Length);
+            int count = Math.Min(m_PhaseSteps.Length, s_RailLabels.Length);
+            int currentIndex = ResolveRailIndex(view);
             for (int index = 0; index < count; index++)
             {
-                BuqiUIDemoPhase phase = (BuqiUIDemoPhase)index;
                 m_PhaseSteps[index]?.Render(new PhaseStepView
                 {
-                    Phase = phase,
+                    Phase = ResolveRailPhase(index),
                     Index = index + 1,
-                    Label = phaseLabels[index],
-                    IsCurrent = phase == view.Phase,
-                    IsVisited = view.VisitedPhases.Contains(phase),
-                    IsLocked = phase > view.Phase && !view.VisitedPhases.Contains(phase),
+                    Label = s_RailLabels[index],
+                    IsCurrent = index == currentIndex,
+                    IsVisited = index <= currentIndex,
+                    IsLocked = index > currentIndex,
                 }, null);
             }
         }
 
         private void OpenBattleReplay()
         {
-            if (m_OpeningBattle)
+            if (m_OpeningBattle || m_Controller == null)
                 return;
-            m_OpeningBattle = true;
-            if (!BuqiBattleDemoFactory.TryCreate(m_Catalog, out BattleReplayData replay, out string error))
+
+            BattleReplayData replay = m_Controller.CurrentReplay;
+            if (replay == null)
             {
-                m_OpeningBattle = false;
-                ShowError(error);
+                ShowError("Battle replay is unavailable.");
                 return;
             }
 
+            m_OpeningBattle = true;
             GameEntry.UI.OpenUIForm(UIFormId.BattleForm, replay);
             BuqiUIDemoCommandResult result = m_Controller.Execute(new BuqiUIDemoCommand
             {
@@ -286,7 +304,35 @@ namespace Game.Hot.Buqi.UI
                 ShowError(result.Reason);
                 return;
             }
+
             Render();
+        }
+
+        private static int ResolveRailIndex(BuqiUIDemoView view)
+        {
+            if (view.Phase == BuqiUIDemoPhase.Shop || view.Phase == BuqiUIDemoPhase.Event)
+                return 0;
+            if (view.Phase == BuqiUIDemoPhase.BattleReplay || view.Phase == BuqiUIDemoPhase.BattleSummary)
+                return view.ContextTitle.IndexOf("PVP", StringComparison.OrdinalIgnoreCase) >= 0 ? 2 : 1;
+            if (view.Phase == BuqiUIDemoPhase.RoundSettlement)
+                return 3;
+            return 4;
+        }
+
+        private static BuqiUIDemoPhase ResolveRailPhase(int index)
+        {
+            switch (index)
+            {
+                case 0:
+                    return BuqiUIDemoPhase.Shop;
+                case 1:
+                case 2:
+                    return BuqiUIDemoPhase.BattleReplay;
+                case 3:
+                    return BuqiUIDemoPhase.RoundSettlement;
+                default:
+                    return BuqiUIDemoPhase.RunTerminal;
+            }
         }
 
         private static bool TryResolveCatalog(object userData, out BuqiConfigCatalog catalog, out string error)
@@ -297,17 +343,20 @@ namespace Game.Hot.Buqi.UI
                 error = string.Empty;
                 return true;
             }
+
             if (HotEntry.Tables == null)
             {
                 catalog = null;
-                error = "不器配置表尚未初始化。";
+                error = "Buqi tables are not initialized.";
                 return false;
             }
+
             if (!BuqiGeneratedConfigAdapter.TryReadFromTables(HotEntry.Tables, out catalog, out List<string> errors))
             {
                 error = string.Join("\n", errors);
                 return false;
             }
+
             error = string.Empty;
             return true;
         }

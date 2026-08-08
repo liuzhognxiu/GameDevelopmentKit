@@ -1,0 +1,851 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Game.Hot.Buqi.Config;
+using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.DemoUI.Deployment;
+using Game.Hot.Buqi.Run.Battle;
+using Game.Hot.Buqi.Run.Core;
+using Game.Hot.Buqi.Run.Economy;
+using Game.Hot.Buqi.Run.Integration;
+using Game.Hot.Buqi.Run.Settlement;
+using NUnit.Framework;
+using BattleSize = Game.Hot.Buqi.Battle.BuqiSize;
+using BattleOutcome = Game.Hot.Buqi.Battle.BattleOutcome;
+
+namespace Game.Hot.Buqi.Tests
+{
+    public sealed class BuqiRunDayLoopIntegrationTests
+    {
+        [Test]
+        public void Create_StartsAtEncounterWithDeterministicStarterAndEightStorageSlots()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(new MemoryRunStore()),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+
+            Assert.That(controller.View.Phase, Is.AnyOf(BuqiUIDemoPhase.Shop, BuqiUIDemoPhase.Event));
+            Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.StarterSelection));
+            Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.OpponentIntel));
+            Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.Prediction));
+            Assert.That(controller.View.BoardSlots.Count(slot => !slot.Empty), Is.EqualTo(1));
+            Assert.That(controller.View.StorageSlots.Count, Is.EqualTo(8));
+            Assert.That(controller.View.StorageSlots.All(slot => slot.Empty), Is.True);
+        }
+
+        [Test]
+        public void FullDay_RunOrderIsEncounterThreeTimesThenPveThenPvpThenSettlementThenNextDay()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+
+            var seenPhases = new List<BuqiUIDemoPhase> { controller.View.Phase };
+            int guard = 0;
+            while (controller.View.Round == 1 && guard++ < 24)
+            {
+                BuqiUIDemoCommand command = SelectProgressCommand(controller.View);
+                BuqiUIDemoCommandResult result = controller.Execute(command);
+                Assert.That(result.Accepted, Is.True, result.Reason);
+                seenPhases.Add(controller.View.Phase);
+            }
+
+            Assert.That(controller.View.Round, Is.EqualTo(2));
+            Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.Shop || phase == BuqiUIDemoPhase.Event), Is.EqualTo(3));
+            Assert.That(seenPhases, Does.Contain(BuqiUIDemoPhase.BattleReplay));
+            Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.BattleSummary), Is.EqualTo(2));
+            Assert.That(seenPhases, Does.Contain(BuqiUIDemoPhase.RoundSettlement));
+            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.StarterSelection));
+            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.OpponentIntel));
+            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.Prediction));
+        }
+
+        [Test]
+        public void TryCreate_CorruptSaveFailsClosedAndPreservesStoredBytes()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore("{broken-json");
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.False);
+
+            Assert.That(controller, Is.Null);
+            Assert.That(error, Is.Not.Empty);
+            Assert.That(store.CurrentJson, Is.EqualTo("{broken-json"));
+        }
+
+        [Test]
+        public void EventGrant_DoesNotSpendCoinsAndAdvancesImmediately()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store, runSeed: 2L),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Event));
+            int coinsBefore = controller.View.Coins;
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectChoice,
+                PrimaryId = controller.View.Choices[0].Id,
+            });
+
+            Assert.That(result.Accepted, Is.True, result.Reason);
+            Assert.That(controller.View.Coins, Is.EqualTo(coinsBefore));
+            Assert.That(controller.View.Phase, Is.AnyOf(BuqiUIDemoPhase.Shop, BuqiUIDemoPhase.Event, BuqiUIDemoPhase.BattleReplay));
+        }
+
+        [Test]
+        public void FailedStoreWrite_DuringPurchaseLeavesStateUnchanged()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateControllerOnPhase(store, BuqiUIDemoPhase.Shop);
+            RunFingerprint before = CaptureRuntime(controller);
+            string jsonBefore = store.CurrentJson;
+            store.FailNextWrite("purchase write failed");
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.BuyOffer,
+                PrimaryId = controller.View.ShopOffers[0].Id,
+            });
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Reason, Is.EqualTo("purchase write failed"));
+            Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
+            Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
+        }
+
+        [Test]
+        public void FailedStoreWrite_DuringEventLeavesStateUnchanged()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateControllerOnPhase(store, BuqiUIDemoPhase.Event);
+            RunFingerprint before = CaptureRuntime(controller);
+            string jsonBefore = store.CurrentJson;
+            store.FailNextWrite("event write failed");
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectChoice,
+                PrimaryId = controller.View.Choices[0].Id,
+            });
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Reason, Is.EqualTo("event write failed"));
+            Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
+            Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
+        }
+
+        [Test]
+        public void FailedStoreWrite_DuringDeploymentLeavesStateUnchanged()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateControllerOnPhase(store, BuqiUIDemoPhase.Shop);
+            RunFingerprint before = CaptureRuntime(controller);
+            string jsonBefore = store.CurrentJson;
+            store.FailNextWrite("deploy write failed");
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.ApplyDeployment,
+                Deployment = BuildDeploymentSnapshot(controller),
+            });
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Reason, Is.EqualTo("deploy write failed"));
+            Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
+            Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
+        }
+
+        [Test]
+        public void FailedStoreWrite_DuringBattleGenerationLeavesStateUnchanged()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store);
+            AdvanceUntilPhase(controller, BuqiUIDemoPhase.BattleSummary, summaryCountTarget: 1);
+            RunFingerprint before = CaptureRuntime(controller);
+            string jsonBefore = store.CurrentJson;
+            store.FailNextWrite("battle generation write failed");
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.NextPhase,
+            });
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Reason, Is.EqualTo("battle generation write failed"));
+            Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
+            Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
+        }
+
+        [Test]
+        public void FailedStoreWrite_DuringCompleteDayLeavesStateUnchanged()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store);
+            AdvanceUntilPhase(controller, BuqiUIDemoPhase.RoundSettlement);
+            RunFingerprint before = CaptureRuntime(controller);
+            string jsonBefore = store.CurrentJson;
+            store.FailNextWrite("day completion write failed");
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.NextPhase,
+            });
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Reason, Is.EqualTo("day completion write failed"));
+            Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
+            Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
+        }
+
+        [Test]
+        public void FailedStoreWrite_DoesNotAdvanceRuntimeOrPersistedState()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+
+            RunFingerprint before = CaptureRuntime(controller);
+            string jsonBefore = store.CurrentJson;
+            BuqiUIDemoCommand command = SelectProgressCommand(controller.View);
+            store.FailNextWrite("simulated write failure");
+
+            BuqiUIDemoCommandResult failed = controller.Execute(command);
+
+            Assert.That(failed.Accepted, Is.False);
+            Assert.That(failed.Reason, Is.EqualTo("simulated write failure"));
+            Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
+            Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
+
+            BuqiUIDemoCommandResult retried = controller.Execute(command);
+
+            Assert.That(retried.Accepted, Is.True, retried.Reason);
+            Assert.That(CaptureRuntime(controller), Is.Not.EqualTo(before));
+            Assert.That(store.CurrentJson, Is.Not.EqualTo(jsonBefore));
+        }
+
+        [Test]
+        public void TryCreate_ContentVersionMismatchFailsBeforePendingSettlementResume()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+            AdvanceUntilPhase(controller, BuqiUIDemoPhase.BattleReplay);
+
+            BuqiRunSaveData save = ReadSave(store);
+            BuqiRunBattleSummary summary = BuildSummary(controller);
+            save.ContentVersion = "mismatched-content-version";
+            save.PendingSettlement = CreatePendingSettlement(summary, save.Revision, BuqiRunBattleKind.Pve, controller.CurrentReplay.Result.Outcome);
+            store.SetJson(BuqiRunSaveCodec.ToJson(save));
+            string originalJson = store.CurrentJson;
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out error),
+                Is.False);
+
+            Assert.That(reloaded, Is.Null);
+            Assert.That(error, Does.Contain("Content version"));
+            Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
+        }
+
+        [Test]
+        public void TryCreate_InvalidEconomyPayloadFailsClosed()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+
+            BuqiRunSaveData save = ReadSave(store);
+            string starterInstanceId = save.BoardInstanceIds.Single(id => !string.IsNullOrEmpty(id));
+            save.EconomyPayload =
+                "{\"NextItemOrdinal\":2,\"Items\":[{\"InstanceId\":\"" + starterInstanceId +
+                "\",\"DefinitionId\":\"item-01\",\"Quality\":99,\"RefinementId\":\"\"}]}";
+            string originalJson = BuqiRunSaveCodec.ToJson(save);
+            store.SetJson(originalJson);
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out error),
+                Is.False);
+
+            Assert.That(reloaded, Is.Null);
+            Assert.That(error, Does.Contain("quality").IgnoreCase);
+            Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
+        }
+
+        [Test]
+        public void TryCreate_InvalidEncounterPayloadFailsClosed()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+
+            BuqiRunSaveData save = ReadSave(store);
+            save.EncounterPayload =
+                "{\"EncounterId\":\"enc-bad\",\"Kind\":0,\"Day\":99,\"EncounterIndex\":1,\"NextRngCursor\":7,\"Resolved\":false,\"ResolutionId\":\"\",\"SelectedChoiceId\":\"\",\"CandidateIds\":[\"item-02\",\"item-02\"]}";
+            string originalJson = BuqiRunSaveCodec.ToJson(save);
+            store.SetJson(originalJson);
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out error),
+                Is.False);
+
+            Assert.That(reloaded, Is.Null);
+            Assert.That(error, Does.Contain("Encounter").IgnoreCase);
+            Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
+        }
+
+        [Test]
+        public void TryCreate_IncompleteBattlePayloadFailsClosed()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+            AdvanceUntilPhase(controller, BuqiUIDemoPhase.BattleReplay);
+
+            BuqiRunSaveData save = ReadSave(store);
+            save.BattlePayload = "{\"BattleId\":\"battle-only\"}";
+            string originalJson = BuqiRunSaveCodec.ToJson(save);
+            store.SetJson(originalJson);
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out error),
+                Is.False);
+
+            Assert.That(reloaded, Is.Null);
+            Assert.That(error, Does.Contain("Battle").IgnoreCase);
+            Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
+        }
+
+        [Test]
+        public void ReloadAfterSettledPvp_ReturnsToBattleSummaryWithoutResimulation()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+
+            AdvanceUntilPhase(controller, BuqiUIDemoPhase.BattleSummary, summaryCountTarget: 2);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleSummary));
+            string persistedJson = store.CurrentJson;
+            string titleBefore = controller.View.ContextTitle;
+            string bodyBefore = controller.View.ContextBody;
+            string[] factsBefore = controller.View.Facts.Select(fact => fact.Body).ToArray();
+            string opponentBefore = controller.CurrentReplay.RightName;
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out error),
+                Is.True,
+                error);
+
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleSummary));
+            Assert.That(reloaded.View.ContextTitle, Is.EqualTo(titleBefore));
+            Assert.That(reloaded.View.ContextBody, Is.EqualTo(bodyBefore));
+            Assert.That(reloaded.View.Facts.Select(fact => fact.Body), Is.EqualTo(factsBefore));
+            Assert.That(reloaded.CurrentReplay.RightName, Is.EqualTo(opponentBefore));
+            Assert.That(store.CurrentJson, Is.EqualTo(persistedJson));
+        }
+
+        [Test]
+        public void ApplyDeployment_RejectsDuplicateOrDroppedInstances()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+
+            string boardInstanceId = controller.View.BoardSlots.Single(slot => !slot.Empty).Id;
+            var board = Slots(8);
+            var storage = Slots(8);
+            board[0] = boardInstanceId;
+            board[1] = boardInstanceId;
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.ApplyDeployment,
+                Deployment = new BuqiDeploymentSnapshot(board, storage),
+            });
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Reason, Does.Contain("Deployment").IgnoreCase.Or.Contain("instance").IgnoreCase);
+        }
+
+        [Test]
+        public void EventWithGrantedRefinementId_FailsClosedInsteadOfSilentlyIgnoring()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store, runSeed: 2L),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Event));
+
+            BuqiRunSaveData save = ReadSave(store);
+            save.EncounterPayload =
+                "{\"EncounterId\":\"enc-refine\",\"Kind\":1,\"Day\":1,\"EncounterIndex\":0,\"NextRngCursor\":1,\"Resolved\":false,\"ResolutionId\":\"\",\"SelectedChoiceId\":\"\",\"CandidateIds\":[\"event-refine\"]}";
+            store.SetJson(BuqiRunSaveCodec.ToJson(save));
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store, runSeed: 2L),
+                    out controller,
+                    out error),
+                Is.True,
+                error);
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectChoice,
+                PrimaryId = "event-refine",
+            });
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Reason, Does.Contain("refinement").IgnoreCase);
+        }
+
+        private static BuqiUIDemoCommand SelectProgressCommand(BuqiUIDemoView view)
+        {
+            if (view.Phase == BuqiUIDemoPhase.Shop)
+            {
+                return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase };
+            }
+
+            if (view.Phase == BuqiUIDemoPhase.Event)
+            {
+                return new BuqiUIDemoCommand
+                {
+                    Type = BuqiUIDemoCommandType.SelectChoice,
+                    PrimaryId = view.Choices[0].Id,
+                };
+            }
+
+            return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase };
+        }
+
+        private static void AdvanceUntilPhase(
+            BuqiUIDemoController controller,
+            BuqiUIDemoPhase targetPhase,
+            int summaryCountTarget = 1)
+        {
+            int summaryCount = controller.View.Phase == BuqiUIDemoPhase.BattleSummary ? 1 : 0;
+            int guard = 0;
+            while (guard++ < 64)
+            {
+                if (controller.View.Phase == targetPhase &&
+                    (targetPhase != BuqiUIDemoPhase.BattleSummary || summaryCount >= summaryCountTarget))
+                {
+                    return;
+                }
+
+                BuqiUIDemoCommandResult step = controller.Execute(SelectProgressCommand(controller.View));
+                Assert.That(step.Accepted, Is.True, step.Reason);
+                if (controller.View.Phase == BuqiUIDemoPhase.BattleSummary)
+                    summaryCount++;
+            }
+
+            Assert.Fail("Target phase was not reached.");
+        }
+
+        private static BuqiDeploymentSnapshot BuildDeploymentSnapshot(BuqiUIDemoController controller)
+        {
+            var board = controller.View.BoardSlots.Select(slot => slot.Empty ? string.Empty : slot.Id).ToList();
+            var storage = controller.View.StorageSlots.Select(slot => slot.Empty ? string.Empty : slot.Id).ToList();
+            return new BuqiDeploymentSnapshot(board, storage);
+        }
+
+        private static BuqiUIDemoController CreateControllerOnPhase(MemoryRunStore store, BuqiUIDemoPhase phase)
+        {
+            for (int seed = 1; seed <= 64; seed++)
+            {
+                store.Reset();
+                if (!BuqiUIDemoController.TryCreate(
+                        CreateDemoCatalog(),
+                        CreateOptions(store, seed),
+                        out BuqiUIDemoController controller,
+                        out string error))
+                {
+                    Assert.Fail(error);
+                }
+
+                if (controller.View.Phase == phase)
+                    return controller;
+            }
+
+            Assert.Fail($"Unable to find seed for phase {phase}.");
+            return null;
+        }
+
+        private static BuqiUIDemoControllerOptions CreateOptions(MemoryRunStore store, long runSeed = 1L)
+        {
+            return new BuqiUIDemoControllerOptions
+            {
+                Store = store,
+                RunSeed = runSeed,
+                PveOpponentIds = new[] { "pve-a", "pve-b" },
+                PvpOpponentIds = new[] { "pvp-a", "pvp-b" },
+            };
+        }
+
+        private static BuqiUIDemoCatalog CreateCatalog()
+        {
+            BuqiConfigCatalog source = CreateSourceCatalog();
+            Assert.That(BuqiUIDemoCatalog.TryCreate(source, out BuqiUIDemoCatalog catalog, out string error), Is.True, error);
+            return catalog;
+        }
+
+        private static BuqiConfigCatalog CreateSourceCatalog()
+        {
+            var catalog = new BuqiConfigCatalog
+            {
+                Global = new BuqiGlobalConfigRow
+                {
+                    ContentVersion = "test-content-v1",
+                    BoardSlotCount = 8,
+                },
+            };
+
+            for (int index = 1; index <= 8; index++)
+            {
+                catalog.Items.Add(new BuqiItemConfigRow
+                {
+                    DefinitionId = $"item-{index:00}",
+                    DisplayName = $"Item {index}",
+                    Size = index == 1 ? BattleSize.M : BattleSize.S,
+                    BasePrice = index + 1,
+                    BaseCooldownTicks = 10 + index,
+                });
+            }
+
+            for (int index = 1; index <= 3; index++)
+            {
+                catalog.Refinements.Add(new BuqiRefinementConfigRow
+                {
+                    RefinementId = $"A-0{index}",
+                    DisplayName = $"Refine {index}",
+                    Summary = $"Refine summary {index}",
+                });
+            }
+
+            catalog.Echoes.Add(CreateEcho("pve-a", "PVE Alpha", "item-02", "item-03"));
+            catalog.Echoes.Add(CreateEcho("pve-b", "PVE Beta", "item-03", "item-04"));
+            catalog.Echoes.Add(CreateEcho("pvp-a", "PVP Alpha", "item-05", "item-06"));
+            catalog.Echoes.Add(CreateEcho("pvp-b", "PVP Beta", "item-07", "item-08"));
+            return catalog;
+        }
+
+        private static BuqiEchoConfigRow CreateEcho(string echoId, string displayName, string firstItemId, string secondItemId)
+        {
+            var snapshot = new BuqiBuildSnapshotConfigRow
+            {
+                SnapshotId = echoId + "-snapshot",
+                ArchetypeId = echoId + "-build",
+            };
+            snapshot.Items.Add(new BuqiItemInstanceConfigRow
+            {
+                InstanceId = echoId + "-item-1",
+                DefinitionId = firstItemId,
+                AnchorSlot = 0,
+            });
+            snapshot.Items.Add(new BuqiItemInstanceConfigRow
+            {
+                InstanceId = echoId + "-item-2",
+                DefinitionId = secondItemId,
+                AnchorSlot = 3,
+            });
+
+            return new BuqiEchoConfigRow
+            {
+                EchoId = echoId,
+                DisplayName = displayName,
+                Build = snapshot.ArchetypeId,
+                Snapshot = snapshot,
+            };
+        }
+
+        private static BuqiRunSaveData ReadSave(MemoryRunStore store)
+        {
+            Assert.That(BuqiRunSaveCodec.TryFromJson(store.CurrentJson, out BuqiRunSaveData saveData, out string error), Is.True, error);
+            return saveData;
+        }
+
+        private static BuqiRunBattleSummary BuildSummary(BuqiUIDemoController controller)
+        {
+            return BuqiRunBattleSummaryBuilder.Build(controller.CurrentReplay.Result, controller.CurrentReplay.Log);
+        }
+
+        private static BuqiRunPendingSettlement CreatePendingSettlement(
+            BuqiRunBattleSummary summary,
+            int revision,
+            BuqiRunBattleKind battleKind,
+            BattleOutcome outcome)
+        {
+            return new BuqiRunPendingSettlement
+            {
+                SettlementId = "settlement:pending-test",
+                ExpectedRevision = revision,
+                BattleKind = (int)battleKind,
+                RawOutcome = (int)MapRawOutcome(outcome),
+                BattleLogHash = summary.BattleLogHash,
+                Summary = summary,
+            };
+        }
+
+        private static BuqiRunRawBattleOutcome MapRawOutcome(BattleOutcome outcome)
+        {
+            switch (outcome)
+            {
+                case BattleOutcome.LeftWin:
+                    return BuqiRunRawBattleOutcome.PlayerWin;
+                case BattleOutcome.RightWin:
+                    return BuqiRunRawBattleOutcome.OpponentWin;
+                case BattleOutcome.Draw:
+                    return BuqiRunRawBattleOutcome.Draw;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(outcome), outcome, null);
+            }
+        }
+
+        private static List<string> Slots(int count)
+        {
+            var result = new List<string>(count);
+            for (int index = 0; index < count; index++)
+                result.Add(string.Empty);
+            return result;
+        }
+
+        private static RunFingerprint CaptureRuntime(BuqiUIDemoController controller)
+        {
+            object orchestrator = typeof(BuqiUIDemoController)
+                .GetField("m_Orchestrator", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
+                .GetValue(controller);
+            object state = orchestrator.GetType().GetProperty("State").GetValue(orchestrator, null);
+            object economy = state.GetType().GetField("Economy").GetValue(state);
+            BuqiRunEconomySnapshot snapshot = (BuqiRunEconomySnapshot)economy;
+            return new RunFingerprint
+            {
+                Phase = snapshot.Run.Phase,
+                Day = snapshot.Run.Day,
+                EncounterIndex = snapshot.Run.EncounterIndex,
+                RngCursor = snapshot.Run.RngCursor,
+                Revision = snapshot.Run.Revision,
+                Coins = snapshot.Run.Coins,
+                Wins = snapshot.Run.Wins,
+                Lives = snapshot.Run.Lives,
+                Board = string.Join("|", snapshot.Run.BoardInstanceIds),
+                Storage = string.Join("|", snapshot.Run.StorageInstanceIds),
+                ViewPhase = controller.View.Phase,
+            };
+        }
+
+        private sealed class MemoryRunStore : IBuqiRunStore
+        {
+            public MemoryRunStore(string currentJson = null)
+            {
+                CurrentJson = currentJson;
+            }
+
+            public string CurrentJson { get; private set; }
+            private string NextWriteError { get; set; }
+
+            public bool TryRead(out string json, out string error)
+            {
+                if (CurrentJson == null)
+                {
+                    json = string.Empty;
+                    error = "Save file does not exist.";
+                    return false;
+                }
+
+                json = CurrentJson;
+                error = string.Empty;
+                return true;
+            }
+
+            public bool TryWrite(string json, out string error)
+            {
+                if (!string.IsNullOrEmpty(NextWriteError))
+                {
+                    error = NextWriteError;
+                    NextWriteError = null;
+                    return false;
+                }
+
+                CurrentJson = json;
+                error = string.Empty;
+                return true;
+            }
+
+            public bool TryDelete(out string error)
+            {
+                CurrentJson = null;
+                error = string.Empty;
+                return true;
+            }
+
+            public void FailNextWrite(string error)
+            {
+                NextWriteError = error;
+            }
+
+            public void SetJson(string json)
+            {
+                CurrentJson = json;
+            }
+
+            public void Reset()
+            {
+                CurrentJson = null;
+                NextWriteError = null;
+            }
+        }
+
+        private sealed class RunFingerprint
+        {
+            public BuqiRunPhase Phase;
+            public int Day;
+            public int EncounterIndex;
+            public int RngCursor;
+            public int Revision;
+            public int Coins;
+            public int Wins;
+            public int Lives;
+            public string Board = string.Empty;
+            public string Storage = string.Empty;
+            public BuqiUIDemoPhase ViewPhase;
+
+            public override bool Equals(object obj)
+            {
+                if (obj is not RunFingerprint other)
+                    return false;
+
+                return Phase == other.Phase &&
+                       Day == other.Day &&
+                       EncounterIndex == other.EncounterIndex &&
+                       RngCursor == other.RngCursor &&
+                       Revision == other.Revision &&
+                       Coins == other.Coins &&
+                       Wins == other.Wins &&
+                       Lives == other.Lives &&
+                       string.Equals(Board, other.Board, StringComparison.Ordinal) &&
+                       string.Equals(Storage, other.Storage, StringComparison.Ordinal) &&
+                       ViewPhase == other.ViewPhase;
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(
+                    (int)Phase,
+                    Day,
+                    EncounterIndex,
+                    RngCursor,
+                    Revision,
+                    Coins,
+                    Wins,
+                    Lives,
+                    Board,
+                    Storage,
+                    (int)ViewPhase);
+            }
+        }
+    }
+}

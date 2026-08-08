@@ -7,7 +7,7 @@ namespace Game.Hot.Buqi.DemoUI.Deployment
     public sealed class BuqiDragDeployController
     {
         public const int BoardSlotCount = 8;
-        public const int StorageSlotCount = 5;
+        public const int StorageSlotCount = 8;
 
         private readonly BuqiUIDemoCatalog m_Catalog;
         private readonly BuqiDeploymentSnapshot m_OpeningView;

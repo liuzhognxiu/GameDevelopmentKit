@@ -140,9 +140,9 @@ namespace Game.Hot.Buqi.Tests
         {
             var formObject = new GameObject("DragDeployFormTest");
             FormHandle form = FormHandle.Create(formObject);
-            var states = new Text[5];
-            var backgrounds = new Image[5];
-            var slots = new BuqiDeploySlotWidget[5];
+            var states = new Text[8];
+            var backgrounds = new Image[8];
+            var slots = new BuqiDeploySlotWidget[8];
             try
             {
                 for (int index = 0; index < slots.Length; index++)
@@ -416,7 +416,7 @@ namespace Game.Hot.Buqi.Tests
             for (int index = 0; index < 8; index++)
                 board.Add(new BuqiDemoItemView { Empty = true, Slot = index });
             var storage = new List<BuqiDemoItemView>();
-            for (int index = 0; index < 5; index++)
+            for (int index = 0; index < 8; index++)
                 storage.Add(new BuqiDemoItemView { Empty = true, Slot = index });
             storage[0] = new BuqiDemoItemView
             {

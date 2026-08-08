@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 
@@ -14,7 +15,8 @@ namespace Game.Hot.Buqi.DemoUI
         public int Price;
     }
 
-    public sealed class BuqiUIDemoCatalog
+    public sealed class BuqiUIDemoCatalog : Game.Hot.Buqi.Run.Encounter.IBuqiRunEncounterCatalog,
+        Game.Hot.Buqi.Run.Encounter.IBuqiRunEventCatalog
     {
         public List<BuqiUIDemoItemDefinition> Items = new List<BuqiUIDemoItemDefinition>();
         public List<BuqiDemoChoiceView> StarterChoices = new List<BuqiDemoChoiceView>();
@@ -23,6 +25,12 @@ namespace Game.Hot.Buqi.DemoUI
         public List<BuqiDemoChoiceView> Modifications = new List<BuqiDemoChoiceView>();
         public List<BuqiDemoOfferView> ShopOffers = new List<BuqiDemoOfferView>();
         public BuqiDemoOpponentView Opponent = new BuqiDemoOpponentView();
+        public BuqiConfigCatalog SourceCatalog { get; private set; }
+        public IReadOnlyList<string> ShopOfferIds => Items.Select(item => item.Id).ToArray();
+        public IReadOnlyList<string> EventIds => new[] { "event-coins", "event-life", "event-item" };
+
+        private readonly Dictionary<string, string> m_RuntimeDefinitionIds =
+            new Dictionary<string, string>(StringComparer.Ordinal);
 
         public static bool TryCreate(BuqiConfigCatalog source, out BuqiUIDemoCatalog catalog, out string error)
         {
@@ -39,7 +47,10 @@ namespace Game.Hot.Buqi.DemoUI
                 return false;
             }
 
-            var result = new BuqiUIDemoCatalog();
+            var result = new BuqiUIDemoCatalog
+            {
+                SourceCatalog = source,
+            };
             var items = new List<BuqiItemConfigRow>(source.Items);
             items.Sort((left, right) => string.Compare(left.DefinitionId, right.DefinitionId, StringComparison.Ordinal));
             foreach (BuqiItemConfigRow item in items)
@@ -122,7 +133,58 @@ namespace Game.Hot.Buqi.DemoUI
 
         public BuqiUIDemoItemDefinition FindItem(string id)
         {
+            if (string.IsNullOrEmpty(id))
+                return null;
+
+            if (m_RuntimeDefinitionIds.TryGetValue(id, out string definitionId))
+                id = definitionId;
+
             return Items.Find(item => string.Equals(item.Id, id, StringComparison.Ordinal));
+        }
+
+        public bool TryGet(string eventId, out Game.Hot.Buqi.Run.Encounter.BuqiRunEncounterDelta delta)
+        {
+            delta = null;
+            switch (eventId)
+            {
+                case "event-coins":
+                    delta = new Game.Hot.Buqi.Run.Encounter.BuqiRunEncounterDelta { Coins = 4 };
+                    return true;
+                case "event-life":
+                    delta = new Game.Hot.Buqi.Run.Encounter.BuqiRunEncounterDelta { Lives = 1 };
+                    return true;
+                case "event-item":
+                    delta = new Game.Hot.Buqi.Run.Encounter.BuqiRunEncounterDelta
+                    {
+                        GrantedItemDefinitionId = Items.Count > 1 ? Items[1].Id : string.Empty,
+                    };
+                    return true;
+                case "event-refine":
+                    delta = new Game.Hot.Buqi.Run.Encounter.BuqiRunEncounterDelta
+                    {
+                        GrantedRefinementId = SourceCatalog != null && SourceCatalog.Refinements.Count > 0
+                            ? SourceCatalog.Refinements[0].RefinementId
+                            : "missing-refinement",
+                    };
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        public void SetRuntimeItemDefinitions(IEnumerable<KeyValuePair<string, string>> definitionIdsByInstanceId)
+        {
+            m_RuntimeDefinitionIds.Clear();
+            if (definitionIdsByInstanceId == null)
+                return;
+
+            foreach (KeyValuePair<string, string> pair in definitionIdsByInstanceId)
+            {
+                if (string.IsNullOrWhiteSpace(pair.Key) || string.IsNullOrWhiteSpace(pair.Value))
+                    continue;
+                if (Items.Exists(item => string.Equals(item.Id, pair.Value, StringComparison.Ordinal)))
+                    m_RuntimeDefinitionIds[pair.Key] = pair.Value;
+            }
         }
 
         internal static BuqiDemoItemView ItemView(BuqiUIDemoItemDefinition item)

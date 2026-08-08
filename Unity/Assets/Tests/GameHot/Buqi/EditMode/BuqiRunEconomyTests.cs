@@ -112,6 +112,59 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void GrantFreeItem_DoesNotSpendCoinsAndAddsUniqueInstanceToStorage()
+        {
+            BuqiRunEconomySnapshot state = BuqiRunEconomySnapshot.CreateInitial(807);
+            state.Run.Coins = 3;
+            var service = new BuqiRunEconomyService(TestCatalog.With("blade", 1, 4));
+
+            BuqiRunEconomyResult result = service.GrantFreeItem(state, "blade");
+
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.AffectedInstanceId, Is.EqualTo("run-807-item-1"));
+            Assert.That(result.Snapshot.Run.Coins, Is.EqualTo(3));
+            Assert.That(result.Snapshot.Run.StorageInstanceIds[0], Is.EqualTo("run-807-item-1"));
+            Assert.That(result.Snapshot.Items["run-807-item-1"].DefinitionId, Is.EqualTo("blade"));
+            Assert.That(result.Snapshot.Items["run-807-item-1"].Quality, Is.EqualTo(BuqiRunItemQuality.Common));
+            Assert.That(state.Run.Coins, Is.EqualTo(3));
+            Assert.That(state.Run.StorageInstanceIds[0], Is.Empty);
+            Assert.That(state.Items, Is.Empty);
+        }
+
+        [Test]
+        public void GrantFreeItem_MergesMatchingCopyWithoutChargingCoins()
+        {
+            BuqiRunEconomySnapshot state = BuqiRunEconomySnapshot.CreateInitial(808);
+            state.Run.Coins = 1;
+            PutInStorage(state, 2, "grant-blade", "blade", BuqiRunItemQuality.Common);
+            var service = new BuqiRunEconomyService(TestCatalog.With("blade", 1, 4));
+
+            BuqiRunEconomyResult result = service.GrantFreeItem(state, "blade");
+
+            Assert.That(result.Success, Is.True);
+            Assert.That(result.AffectedInstanceId, Is.EqualTo("grant-blade"));
+            Assert.That(result.Snapshot.Items["grant-blade"].Quality, Is.EqualTo(BuqiRunItemQuality.Improved));
+            Assert.That(result.Snapshot.Run.Coins, Is.EqualTo(1));
+            Assert.That(result.Snapshot.Items.ContainsKey("run-808-item-1"), Is.False);
+        }
+
+        [Test]
+        public void GrantFreeItem_FailsClosedWhenStorageIsFullAndNoImmediateMergeExists()
+        {
+            BuqiRunEconomySnapshot state = FilledStorageWithoutMerge(809);
+            state.Run.Coins = 6;
+            BuqiRunEconomySnapshot expected = state.Clone();
+            var service = new BuqiRunEconomyService(TestCatalog.With("blade", 1, 4));
+
+            BuqiRunEconomyResult result = service.GrantFreeItem(state, "blade");
+
+            Assert.That(result.Success, Is.False);
+            Assert.That(result.FailureReason, Is.EqualTo("No storage slot available."));
+            AssertSnapshotsEqual(result.Snapshot, expected);
+            AssertSnapshotsEqual(state, expected);
+        }
+
+        [Test]
         public void RejectedPurchaseNeverChangesCoinsOrInventory()
         {
             BuqiRunEconomySnapshot state = FilledStorageWithoutMerge(802);

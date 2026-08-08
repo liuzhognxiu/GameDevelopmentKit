@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Run.Core;
 
 namespace Game.Hot.Buqi.Run.Battle
@@ -64,6 +65,59 @@ namespace Game.Hot.Buqi.Run.Battle
             return true;
         }
 
+        public bool TryCreatePveChoices(
+            BuqiRunState run,
+            out List<BuqiRunOpponent> opponents,
+            out int nextRngCursor,
+            out string error)
+        {
+            opponents = null;
+            nextRngCursor = run == null ? 0 : run.RngCursor;
+            error = string.Empty;
+
+            if (run == null)
+            {
+                error = "run is null";
+                return false;
+            }
+
+            if (run.RngCursor < 0)
+            {
+                error = "rng cursor is invalid";
+                return false;
+            }
+
+            if (run.Phase != BuqiRunPhase.PveBattle)
+            {
+                error = "phase mismatch";
+                return false;
+            }
+
+            if (m_Pool.Pve == null || m_Pool.Pve.Count < 3)
+            {
+                error = "PVE pool requires at least three opponents";
+                return false;
+            }
+
+            if (!ValidatePool(m_Pool.Pve, BuqiRunBattleKind.Pve, out error))
+                return false;
+
+            var ranked = new List<BuqiRunOpponent>(m_Pool.Pve);
+            ranked.Sort(CompareThreat);
+            int cursor = run.RngCursor;
+            opponents = new List<BuqiRunOpponent>(3);
+            for (int difficultyIndex = 0; difficultyIndex < 3; difficultyIndex++)
+            {
+                int start = (ranked.Count * difficultyIndex) / 3;
+                int end = (ranked.Count * (difficultyIndex + 1)) / 3;
+                int selectedIndex = start + BuqiRunRandom.Next(run.RunSeed, ref cursor, end - start);
+                opponents.Add(BuqiRunBattleSnapshotUtility.CloneOpponent(ranked[selectedIndex]));
+            }
+
+            nextRngCursor = cursor;
+            return true;
+        }
+
         private static bool IsDefinedKind(BuqiRunBattleKind kind)
         {
             return kind == BuqiRunBattleKind.Pve || kind == BuqiRunBattleKind.Pvp;
@@ -101,6 +155,21 @@ namespace Game.Hot.Buqi.Run.Battle
 
             error = string.Empty;
             return true;
+        }
+
+        private static int CompareThreat(BuqiRunOpponent left, BuqiRunOpponent right)
+        {
+            int scoreComparison = ThreatScore(left).CompareTo(ThreatScore(right));
+            if (scoreComparison != 0)
+                return scoreComparison;
+            return string.CompareOrdinal(left.OpponentId, right.OpponentId);
+        }
+
+        private static int ThreatScore(BuqiRunOpponent opponent)
+        {
+            BuildSnapshot build = opponent.Build;
+            int itemCount = build.Items == null ? 0 : build.Items.Count;
+            return build.InitialExecution + build.InitialBuffer - build.InitialNoiseDebt + (itemCount * 10);
         }
     }
 }

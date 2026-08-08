@@ -72,6 +72,46 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void CreatingPveDifficultyCardsDoesNotChangePvpPresetSelection()
+        {
+            BuqiLocalOpponentPool pool = TestPool.Create(
+                pveIds: new[] { "monster-a", "monster-b", "monster-c" },
+                pvpIds: new[] { "player-a", "player-b" });
+            var service = new BuqiRunBattleService(new BuqiLocalOpponentProvider(pool));
+            BuqiRunState pvpBefore = BuqiRunState.CreateInitial(2112);
+            pvpBefore.Phase = BuqiRunPhase.PvpBattle;
+            pvpBefore.RngCursor = 4;
+            BuqiRunState pvpAfter = pvpBefore.Clone();
+
+            Assert.That(new BuqiLocalOpponentProvider(pool).TrySelect(
+                pvpBefore,
+                BuqiRunBattleKind.Pvp,
+                out BuqiRunOpponent expected,
+                out int expectedCursor,
+                out string expectedError), Is.True, expectedError);
+
+            BuqiRunState pve = pvpAfter.Clone();
+            pve.Phase = BuqiRunPhase.PveBattle;
+            Assert.That(service.TryGetOrCreatePveSelection(
+                pve,
+                null,
+                TestPool.CreatePlayerBuild("pve-board", "damage", "pve-board"),
+                out BuqiPveSelection selection,
+                out string selectionError), Is.True, selectionError);
+            Assert.That(selection.Cards, Has.Count.EqualTo(3));
+
+            Assert.That(new BuqiLocalOpponentProvider(pool).TrySelect(
+                pvpAfter,
+                BuqiRunBattleKind.Pvp,
+                out BuqiRunOpponent actual,
+                out int actualCursor,
+                out string actualError), Is.True, actualError);
+            Assert.That(actual.OpponentId, Is.EqualTo(expected.OpponentId));
+            Assert.That(actualCursor, Is.EqualTo(expectedCursor));
+            Assert.That(pvpAfter.RngCursor, Is.EqualTo(4));
+        }
+
+        [Test]
         public void SelectionFailsWhenPhaseDoesNotMatchBattleKind()
         {
             var provider = new BuqiLocalOpponentProvider(TestPool.Standard());

@@ -8,6 +8,7 @@ namespace Game.Hot.Buqi.Run.Battle
     {
         public string BattleId = string.Empty;
         public BuqiRunBattleKind Kind;
+        public BuqiPveDifficulty? PveDifficulty;
         public string OpponentId = string.Empty;
         public int NextRngCursor;
         public BattleRequest Request;

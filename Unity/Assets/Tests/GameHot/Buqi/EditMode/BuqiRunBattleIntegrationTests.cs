@@ -247,7 +247,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(session.Replay.Log, Is.SameAs(session.Log));
 
             var controller = new BattleReplayController(session.Replay);
-            controller.SkipToEnd();
+            controller.SkipToResult();
             Assert.That(controller.Frame.Error, Is.Empty);
         }
 

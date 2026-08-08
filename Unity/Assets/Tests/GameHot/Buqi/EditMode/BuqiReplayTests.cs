@@ -30,6 +30,22 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void ReplayOpenData_ConfirmOnceInvokesOwnerOnlyOnce()
+        {
+            int confirmationCount = 0;
+            var openData = new BattleReplayOpenData
+            {
+                Replay = CreateReplayData(out _),
+                Confirmed = () => confirmationCount++,
+            };
+
+            openData.ConfirmOnce();
+            openData.ConfirmOnce();
+
+            Assert.That(confirmationCount, Is.EqualTo(1));
+        }
+
+        [Test]
         public void InitialFrame_ComesFromBuildSnapshots()
         {
             BattleReplayData data = CreateReplayData(out BattleRequest request);
@@ -47,21 +63,16 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void Playback_PauseSpeedSkipAndReplayUseRecordedLog()
+        public void Playback_SpeedAndSkipUseRecordedLog()
         {
             BattleReplayData data = CreateReplayData(out _);
             var controller = new BattleReplayController(data);
 
-            InvokePublicMethod(controller, "SetPaused", true);
-            InvokePublicMethod(controller, "Advance", 1f);
-            Assert.That(controller.Frame.Tick, Is.Zero);
-
-            InvokePublicMethod(controller, "SetPaused", false);
             InvokePublicMethod(controller, "SetSpeed", 2);
             InvokePublicMethod(controller, "Advance", 1f);
             Assert.That(controller.Frame.Tick, Is.EqualTo(Math.Min(20, data.Result.DurationTicks)));
 
-            InvokePublicMethod(controller, "SkipToEnd");
+            InvokePublicMethod(controller, "SkipToResult");
             Assert.That(controller.Frame.IsFinished, Is.True);
             Assert.That(controller.Frame.Left.Execution, Is.EqualTo(data.Result.LeftExecution));
             Assert.That(controller.Frame.Right.Execution, Is.EqualTo(data.Result.RightExecution));
@@ -69,10 +80,6 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(controller.Frame.Right.Buffer, Is.EqualTo(data.Result.RightBuffer));
             Assert.That(controller.Frame.Left.Noise, Is.EqualTo(data.Result.LeftNoise));
             Assert.That(controller.Frame.Right.Noise, Is.EqualTo(data.Result.RightNoise));
-
-            InvokePublicMethod(controller, "Replay");
-            Assert.That(controller.Frame.Tick, Is.Zero);
-            Assert.That(controller.Frame.IsFinished, Is.False);
         }
 
         [Test]

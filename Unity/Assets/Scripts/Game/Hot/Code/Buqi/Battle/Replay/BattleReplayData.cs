@@ -23,4 +23,21 @@ namespace Game.Hot.Buqi.Battle
         public IReadOnlyDictionary<string, BattleReplayEffectInfo> Effects =
             new Dictionary<string, BattleReplayEffectInfo>(StringComparer.Ordinal);
     }
+
+    public sealed class BattleReplayOpenData
+    {
+        private bool m_Confirmed;
+
+        public BattleReplayData Replay;
+        public Action Confirmed;
+
+        public void ConfirmOnce()
+        {
+            if (m_Confirmed)
+                return;
+
+            m_Confirmed = true;
+            Confirmed?.Invoke();
+        }
+    }
 }

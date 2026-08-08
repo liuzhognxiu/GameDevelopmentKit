@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.Demo;
+using Game.Hot.Buqi.UI.Widgets;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityGameFramework.Runtime;
@@ -54,6 +55,12 @@ namespace Game.Hot.Buqi.UI
         private ItemCardWidget[] m_RightCards = Array.Empty<ItemCardWidget>();
 
         [SerializeField]
+        private BuqiBattleFloatWidget[] m_LeftFloats = Array.Empty<BuqiBattleFloatWidget>();
+
+        [SerializeField]
+        private BuqiBattleFloatWidget[] m_RightFloats = Array.Empty<BuqiBattleFloatWidget>();
+
+        [SerializeField]
         private BattleLogWidget[] m_LogRows = Array.Empty<BattleLogWidget>();
 
         [SerializeField]
@@ -93,6 +100,13 @@ namespace Game.Hot.Buqi.UI
         private Button m_NextPageButton = null;
 
         private BattleReplayController m_Controller;
+        private BattleReplayOpenData m_OpenData;
+        private bool m_ConfirmedClose;
+        private List<BattleReplayFeedbackEvent>[] m_LeftFeedbackBuckets =
+            Array.Empty<List<BattleReplayFeedbackEvent>>();
+        private List<BattleReplayFeedbackEvent>[] m_RightFeedbackBuckets =
+            Array.Empty<List<BattleReplayFeedbackEvent>>();
+        private int m_FeedbackCursor;
         private int m_LogPage;
 
         public bool HasReplay => m_Controller != null;
@@ -106,15 +120,11 @@ namespace Game.Hot.Buqi.UI
 #endif
         {
             base.OnInit(userData);
-            m_BackButton?.onClick.AddListener(Close);
-            m_PlayPauseButton?.onClick.AddListener(TogglePause);
+            m_BackButton?.onClick.AddListener(ConfirmAndClose);
             m_Speed1Button?.onClick.AddListener(SetSpeed1);
             m_Speed2Button?.onClick.AddListener(SetSpeed2);
-            m_Speed4Button?.onClick.AddListener(SetSpeed4);
-            m_SkipButton?.onClick.AddListener(SkipToEnd);
-            m_ReplayButton?.onClick.AddListener(Replay);
-            m_PreviousPageButton?.onClick.AddListener(PreviousPage);
-            m_NextPageButton?.onClick.AddListener(NextPage);
+            m_SkipButton?.onClick.AddListener(SkipToResult);
+            HideDetailedReplayControls();
         }
 
 #if UNITY_2017_3_OR_NEWER
@@ -124,6 +134,9 @@ namespace Game.Hot.Buqi.UI
 #endif
         {
             base.OnOpen(userData);
+            m_OpenData = userData as BattleReplayOpenData;
+            m_ConfirmedClose = false;
+            m_FeedbackCursor = 0;
             m_LogPage = 0;
             if (!TryResolveReplay(userData, out BattleReplayData replay, out string error))
             {
@@ -164,27 +177,37 @@ namespace Game.Hot.Buqi.UI
         protected internal override void OnClose(bool isShutdown, object userData)
 #endif
         {
+            BattleReplayOpenData openData = m_OpenData;
+            bool confirmedClose = m_ConfirmedClose;
+            bool replayReady = m_Controller != null;
             m_Controller = null;
+            m_OpenData = null;
+            m_ConfirmedClose = false;
+            m_FeedbackCursor = 0;
             m_LogPage = 0;
             base.OnClose(isShutdown, userData);
+            if (ShouldConfirmReplay(confirmedClose, replayReady))
+                openData?.ConfirmOnce();
         }
 
         protected override void OnDestroy()
         {
-            m_BackButton?.onClick.RemoveListener(Close);
-            m_PlayPauseButton?.onClick.RemoveListener(TogglePause);
+            m_BackButton?.onClick.RemoveListener(ConfirmAndClose);
             m_Speed1Button?.onClick.RemoveListener(SetSpeed1);
             m_Speed2Button?.onClick.RemoveListener(SetSpeed2);
-            m_Speed4Button?.onClick.RemoveListener(SetSpeed4);
-            m_SkipButton?.onClick.RemoveListener(SkipToEnd);
-            m_ReplayButton?.onClick.RemoveListener(Replay);
-            m_PreviousPageButton?.onClick.RemoveListener(PreviousPage);
-            m_NextPageButton?.onClick.RemoveListener(NextPage);
+            m_SkipButton?.onClick.RemoveListener(SkipToResult);
             base.OnDestroy();
         }
 
         private static bool TryResolveReplay(object userData, out BattleReplayData replay, out string error)
         {
+            if (userData is BattleReplayOpenData openData && openData.Replay != null)
+            {
+                replay = openData.Replay;
+                error = string.Empty;
+                return true;
+            }
+
             if (userData is BattleReplayData supplied)
             {
                 replay = supplied;
@@ -210,12 +233,10 @@ namespace Game.Hot.Buqi.UI
             return BuqiBattleDemoFactory.TryCreate(catalog, out replay, out error);
         }
 
-        private void TogglePause()
+        private void ConfirmAndClose()
         {
-            if (m_Controller == null)
-                return;
-            m_Controller.SetPaused(!m_Controller.IsPaused);
-            Render();
+            m_ConfirmedClose = true;
+            Close();
         }
 
         private void SetSpeed1()
@@ -228,11 +249,6 @@ namespace Game.Hot.Buqi.UI
             SetSpeed(2);
         }
 
-        private void SetSpeed4()
-        {
-            SetSpeed(4);
-        }
-
         private void SetSpeed(int speed)
         {
             if (m_Controller == null)
@@ -241,35 +257,11 @@ namespace Game.Hot.Buqi.UI
             Render();
         }
 
-        private void SkipToEnd()
+        private void SkipToResult()
         {
             if (m_Controller == null)
                 return;
-            m_Controller.SkipToEnd();
-            m_LogPage = Math.Max(0, m_Controller.GetLogPage(int.MaxValue).PageCount - 1);
-            Render();
-        }
-
-        private void Replay()
-        {
-            if (m_Controller == null)
-                return;
-            m_Controller.Replay();
-            m_LogPage = 0;
-            Render();
-        }
-
-        private void PreviousPage()
-        {
-            m_LogPage = Math.Max(0, m_LogPage - 1);
-            Render();
-        }
-
-        private void NextPage()
-        {
-            if (m_Controller == null)
-                return;
-            m_LogPage = Math.Min(m_Controller.GetLogPage(m_LogPage).PageCount - 1, m_LogPage + 1);
+            m_Controller.SkipToResult();
             Render();
         }
 
@@ -283,9 +275,7 @@ namespace Game.Hot.Buqi.UI
             SetText(m_LeftStatsText, FormatStats(frame.Left));
             SetText(m_RightStatsText, FormatStats(frame.Right));
             SetText(m_TickText, BuqiText.Format("第 {0:000} tick / {1:000}", frame.Tick, data.Result.DurationTicks));
-            SetText(m_CurrentEventText, FormatCurrentEvent(frame.CurrentEvent));
             SetText(m_OutcomeText, frame.IsFinished ? FormatOutcome(data.Result) : "战斗推演中");
-            SetText(m_PlayPauseText, m_Controller.IsPaused ? "继续" : "暂停");
 
             if (m_TimelineFill != null)
             {
@@ -296,8 +286,7 @@ namespace Game.Hot.Buqi.UI
 
             RenderTrack(m_LeftCards, frame.Left, data.Definitions);
             RenderTrack(m_RightCards, frame.Right, data.Definitions);
-            RenderLogs(frame);
-            RenderFacts(frame.IsFinished);
+            RenderFeedback();
             RenderSpeedState();
             if (string.IsNullOrEmpty(frame.Error))
                 HideError();
@@ -363,7 +352,111 @@ namespace Game.Hot.Buqi.UI
             Color normal = new Color32(59, 72, 82, 255);
             SetButtonColor(m_Speed1Button, m_Controller.Speed == 1 ? selected : normal);
             SetButtonColor(m_Speed2Button, m_Controller.Speed == 2 ? selected : normal);
-            SetButtonColor(m_Speed4Button, m_Controller.Speed == 4 ? selected : normal);
+        }
+
+        private void RenderFeedback()
+        {
+            ClearFeedback(m_LeftFloats);
+            ClearFeedback(m_RightFloats);
+            EnsureFeedbackBuckets();
+            ClearFeedbackBuckets(m_LeftFeedbackBuckets);
+            ClearFeedbackBuckets(m_RightFeedbackBuckets);
+
+            float now = m_Controller.PresentationSeconds;
+            IReadOnlyList<BattleReplayFeedbackEvent> feedbackEvents = m_Controller.FeedbackEvents;
+            while (m_FeedbackCursor < feedbackEvents.Count &&
+                   feedbackEvents[m_FeedbackCursor].StartSeconds +
+                   feedbackEvents[m_FeedbackCursor].DurationSeconds <= now)
+            {
+                m_FeedbackCursor++;
+            }
+
+            for (int index = m_FeedbackCursor; index < feedbackEvents.Count; index++)
+            {
+                BattleReplayFeedbackEvent feedback = feedbackEvents[index];
+                if (feedback.StartSeconds > now)
+                    break;
+                if (now < feedback.StartSeconds || now >= feedback.StartSeconds + feedback.DurationSeconds)
+                    continue;
+
+                List<BattleReplayFeedbackEvent>[] buckets = feedback.Side == BattleReplayFeedbackSide.Left
+                    ? m_LeftFeedbackBuckets
+                    : m_RightFeedbackBuckets;
+                if (feedback.Slot < 0 || feedback.Slot >= buckets.Length)
+                    continue;
+
+                buckets[feedback.Slot].Add(feedback);
+            }
+
+            RenderFeedbackBuckets(m_LeftFloats, m_LeftFeedbackBuckets, now);
+            RenderFeedbackBuckets(m_RightFloats, m_RightFeedbackBuckets, now);
+        }
+
+        private void EnsureFeedbackBuckets()
+        {
+            if (m_LeftFeedbackBuckets.Length != m_LeftFloats.Length)
+                m_LeftFeedbackBuckets = CreateFeedbackBuckets(m_LeftFloats.Length);
+            if (m_RightFeedbackBuckets.Length != m_RightFloats.Length)
+                m_RightFeedbackBuckets = CreateFeedbackBuckets(m_RightFloats.Length);
+        }
+
+        private static List<BattleReplayFeedbackEvent>[] CreateFeedbackBuckets(int count)
+        {
+            var buckets = new List<BattleReplayFeedbackEvent>[count];
+            for (int index = 0; index < count; index++)
+                buckets[index] = new List<BattleReplayFeedbackEvent>();
+            return buckets;
+        }
+
+        private static void ClearFeedbackBuckets(
+            IReadOnlyList<List<BattleReplayFeedbackEvent>> buckets)
+        {
+            foreach (List<BattleReplayFeedbackEvent> bucket in buckets)
+                bucket.Clear();
+        }
+
+        private static void RenderFeedbackBuckets(
+            BuqiBattleFloatWidget[] widgets,
+            IReadOnlyList<List<BattleReplayFeedbackEvent>> buckets,
+            float presentationSeconds)
+        {
+            for (int index = 0; index < widgets.Length; index++)
+            {
+                if (buckets[index].Count > 0)
+                    widgets[index]?.Render(buckets[index], presentationSeconds);
+            }
+        }
+
+        private static void ClearFeedback(BuqiBattleFloatWidget[] widgets)
+        {
+            foreach (BuqiBattleFloatWidget widget in widgets)
+                widget?.Clear();
+        }
+
+        private static bool ShouldConfirmReplay(bool confirmedClose, bool replayReady)
+        {
+            return confirmedClose && replayReady;
+        }
+
+        private void HideDetailedReplayControls()
+        {
+            SetActive(m_CurrentEventText, false);
+            SetActive(m_PlayPauseText, false);
+            SetActive(m_PageText, false);
+            SetActive(m_PlayPauseButton, false);
+            SetActive(m_Speed4Button, false);
+            SetActive(m_ReplayButton, false);
+            SetActive(m_PreviousPageButton, false);
+            SetActive(m_NextPageButton, false);
+            foreach (Text fact in m_FactTexts)
+                SetActive(fact, false);
+            foreach (BattleLogWidget row in m_LogRows)
+                row?.gameObject.SetActive(false);
+        }
+
+        private static void SetActive(Component component, bool active)
+        {
+            component?.gameObject.SetActive(active);
         }
 
         private static string FormatStats(BattleReplaySideFrame side)

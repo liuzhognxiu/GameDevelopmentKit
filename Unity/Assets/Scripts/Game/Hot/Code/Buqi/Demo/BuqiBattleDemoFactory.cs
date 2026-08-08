@@ -79,7 +79,7 @@ namespace Game.Hot.Buqi.Demo
             try
             {
                 var controller = new BattleReplayController(replay);
-                controller.SkipToEnd();
+                controller.SkipToResult();
                 if (!string.IsNullOrEmpty(controller.Frame.Error))
                 {
                     error = controller.Frame.Error;

@@ -22,10 +22,10 @@ namespace Game.Hot.Buqi.Battle
             new Dictionary<string, BattleReplayEffectInfo>(StringComparer.Ordinal);
         private readonly Dictionary<string, List<int>> m_DeclareTicks =
             new Dictionary<string, List<int>>(StringComparer.Ordinal);
+        private readonly IReadOnlyList<BattleReplayFeedbackEvent> m_FeedbackEvents;
 
         private int m_EventCursor;
         private int m_Speed = 1;
-        private bool m_Paused;
         private float m_PresentationTick;
         private int m_SourceLessTick = -1;
         private int m_SourceLessIndex;
@@ -38,6 +38,7 @@ namespace Game.Hot.Buqi.Battle
             BuildEffectLookup(data);
             BuildDeclareLookup(data.Log);
             ResetProjection();
+            m_FeedbackEvents = BuildFeedbackEvents(data.Log).AsReadOnly();
         }
 
         public BattleReplayData Data { get; }
@@ -46,17 +47,14 @@ namespace Game.Hot.Buqi.Battle
 
         public int Speed => m_Speed;
 
-        public bool IsPaused => m_Paused;
+        public float PresentationSeconds => m_PresentationTick * TickSeconds;
 
-        public void SetPaused(bool paused)
-        {
-            m_Paused = paused;
-        }
+        public IReadOnlyList<BattleReplayFeedbackEvent> FeedbackEvents => m_FeedbackEvents;
 
         public void SetSpeed(int speed)
         {
-            if (speed != 1 && speed != 2 && speed != 4)
-                throw new ArgumentOutOfRangeException(nameof(speed), "Replay speed must be 1, 2, or 4.");
+            if (speed != 1 && speed != 2)
+                throw new ArgumentOutOfRangeException(nameof(speed), "Replay speed must be 1 or 2.");
             m_Speed = speed;
         }
 
@@ -64,7 +62,7 @@ namespace Game.Hot.Buqi.Battle
         {
             if (realSeconds < 0f)
                 throw new ArgumentOutOfRangeException(nameof(realSeconds));
-            if (m_Paused || Frame.IsFinished || !string.IsNullOrEmpty(Frame.Error))
+            if (Frame.IsFinished || !string.IsNullOrEmpty(Frame.Error))
                 return;
 
             m_PresentationTick += realSeconds * m_Speed / TickSeconds;
@@ -72,18 +70,11 @@ namespace Game.Hot.Buqi.Battle
             ProjectTo(targetTick);
         }
 
-        public void SkipToEnd()
+        public void SkipToResult()
         {
             ResetProjection();
             m_PresentationTick = Data.Result.DurationTicks;
             ProjectTo(Data.Result.DurationTicks);
-        }
-
-        public void Replay()
-        {
-            m_Speed = 1;
-            m_Paused = false;
-            ResetProjection();
         }
 
         public void SetFilter(BattleReplayFilter filter)
@@ -384,6 +375,220 @@ namespace Game.Hot.Buqi.Battle
             }
         }
 
+        private List<BattleReplayFeedbackEvent> BuildFeedbackEvents(IReadOnlyList<BattleEvent> log)
+        {
+            var feedback = new List<BattleReplayFeedbackEvent>();
+            int previousTick = -1;
+            int orderWithinTick = 0;
+            int sourceLessIndex = 0;
+            foreach (BattleEvent battleEvent in log)
+            {
+                if (battleEvent.Tick != previousTick)
+                {
+                    previousTick = battleEvent.Tick;
+                    orderWithinTick = 0;
+                    sourceLessIndex = 0;
+                }
+
+                if (TryCreateFeedback(
+                        battleEvent,
+                        orderWithinTick,
+                        ref sourceLessIndex,
+                        out BattleReplayFeedbackEvent item))
+                {
+                    feedback.Add(item);
+                    orderWithinTick++;
+                }
+            }
+            return feedback;
+        }
+
+        private bool TryCreateFeedback(
+            BattleEvent battleEvent,
+            int orderWithinTick,
+            ref int sourceLessIndex,
+            out BattleReplayFeedbackEvent feedback)
+        {
+            feedback = null;
+            if (!TryResolveFeedbackKind(battleEvent, out BattleReplayFeedbackKind kind))
+                return false;
+
+            if (!TryResolveFeedbackAnchor(
+                    battleEvent,
+                    kind,
+                    ref sourceLessIndex,
+                    out ReplaySide side,
+                    out BattleReplayItemFrame item))
+                return false;
+
+            feedback = new BattleReplayFeedbackEvent(
+                battleEvent.Sequence,
+                kind,
+                side == ReplaySide.Left
+                    ? BattleReplayFeedbackSide.Left
+                    : BattleReplayFeedbackSide.Right,
+                item.AnchorSlot,
+                Math.Abs(battleEvent.Amount),
+                battleEvent.Tick * TickSeconds + orderWithinTick * 0.05f,
+                0.8f);
+            return true;
+        }
+
+        private bool TryResolveFeedbackAnchor(
+            BattleEvent battleEvent,
+            BattleReplayFeedbackKind kind,
+            ref int sourceLessIndex,
+            out ReplaySide side,
+            out BattleReplayItemFrame item)
+        {
+            string sourceId = FirstNonEmpty(
+                battleEvent.ActorInstanceId,
+                battleEvent.SourceInstanceId);
+            if (kind == BattleReplayFeedbackKind.Attack)
+                return TryGetFeedbackItem(sourceId, out side, out item);
+
+            if (TryGetFeedbackItem(battleEvent.TargetInstanceId, out side, out item))
+                return true;
+
+            int preferredSlot = 0;
+            if (TryGetFeedbackItem(sourceId, out ReplaySide sourceSide, out BattleReplayItemFrame sourceItem))
+            {
+                preferredSlot = sourceItem.AnchorSlot;
+                side = sourceSide;
+                if (TryGetEffect(battleEvent.EffectId, out BattleReplayEffectInfo effectInfo) &&
+                    IsEnemyTarget(effectInfo.Target))
+                {
+                    side = Opposite(side);
+                }
+            }
+            else if (battleEvent.ReasonCode == "OvertimeDamage")
+            {
+                side = sourceLessIndex++ % 2 == 0 ? ReplaySide.Left : ReplaySide.Right;
+            }
+            else
+            {
+                side = default;
+                item = null;
+                return false;
+            }
+
+            return TryGetNearestFeedbackItem(side, preferredSlot, out item);
+        }
+
+        private bool TryGetFeedbackItem(
+            string instanceId,
+            out ReplaySide side,
+            out BattleReplayItemFrame item)
+        {
+            if (!string.IsNullOrEmpty(instanceId) &&
+                m_Items.TryGetValue(instanceId, out item) &&
+                m_InstanceSides.TryGetValue(instanceId, out side))
+            {
+                return true;
+            }
+
+            side = default;
+            item = null;
+            return false;
+        }
+
+        private bool TryGetNearestFeedbackItem(
+            ReplaySide side,
+            int preferredSlot,
+            out BattleReplayItemFrame item)
+        {
+            IReadOnlyList<BattleReplayItemFrame> items = side == ReplaySide.Left
+                ? Frame.Left.Items
+                : Frame.Right.Items;
+            item = null;
+            int bestDistance = int.MaxValue;
+            foreach (BattleReplayItemFrame candidate in items)
+            {
+                int distance = Math.Abs(candidate.AnchorSlot - preferredSlot);
+                if (item == null || distance < bestDistance ||
+                    (distance == bestDistance && candidate.AnchorSlot < item.AnchorSlot))
+                {
+                    item = candidate;
+                    bestDistance = distance;
+                }
+            }
+            return item != null;
+        }
+
+        private bool TryResolveFeedbackKind(
+            BattleEvent battleEvent,
+            out BattleReplayFeedbackKind kind)
+        {
+            if (battleEvent.Type == BuqiEventType.Declare)
+            {
+                if (!TryGetEffect(battleEvent.EffectId, out BattleReplayEffectInfo declaredEffect))
+                {
+                    kind = default;
+                    return false;
+                }
+
+                switch (declaredEffect.Effect)
+                {
+                    case BuqiEffect.Damage:
+                    case BuqiEffect.Burn:
+                    case BuqiEffect.Poison:
+                        kind = BattleReplayFeedbackKind.Attack;
+                        return true;
+                    case BuqiEffect.Buffer:
+                        kind = BattleReplayFeedbackKind.Guard;
+                        return true;
+                    case BuqiEffect.Heal:
+                    case BuqiEffect.Regen:
+                        kind = BattleReplayFeedbackKind.Heal;
+                        return true;
+                    default:
+                        kind = default;
+                        return false;
+                }
+            }
+
+            if (battleEvent.Type != BuqiEventType.Effect || battleEvent.Amount == 0)
+            {
+                kind = default;
+                return false;
+            }
+
+            switch (battleEvent.ReasonCode)
+            {
+                case "Damage":
+                case "BurnDamage":
+                case "PoisonDamage":
+                case "OvertimeDamage":
+                case "NoiseAccident":
+                case "BufferAbsorb":
+                case "BurnShieldAbsorb":
+                    kind = BattleReplayFeedbackKind.Damage;
+                    return true;
+                case "BufferGain":
+                    kind = BattleReplayFeedbackKind.Guard;
+                    return true;
+                case "Heal":
+                case "Regen":
+                    kind = BattleReplayFeedbackKind.Heal;
+                    return true;
+            }
+
+            if (TryGetEffect(battleEvent.EffectId, out BattleReplayEffectInfo info) &&
+                (info.Effect == BuqiEffect.Heal || info.Effect == BuqiEffect.Regen))
+            {
+                kind = BattleReplayFeedbackKind.Heal;
+                return true;
+            }
+
+            kind = default;
+            return false;
+        }
+
+        private static string FirstNonEmpty(string primary, string fallback)
+        {
+            return string.IsNullOrEmpty(primary) ? fallback : primary;
+        }
+
         private void UpdateCooldowns(int tick)
         {
             foreach (KeyValuePair<string, BattleReplayItemFrame> pair in m_Items)
@@ -590,4 +795,5 @@ namespace Game.Hot.Buqi.Battle
             Frame.IsFinished = false;
         }
     }
+
 }

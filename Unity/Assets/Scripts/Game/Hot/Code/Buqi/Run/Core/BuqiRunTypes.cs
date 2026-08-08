@@ -7,6 +7,24 @@ namespace Game.Hot.Buqi.Run.Core
         PvpBattle = 2,
         DaySettlement = 3,
         RunTerminal = 4,
+        TribulationRoute = 5,
+        TribulationStage = 6,
+    }
+
+    public enum BuqiRunPeriod
+    {
+        MorningOperation = 0,
+        NoonOperation = 1,
+        DuskPve = 2,
+        NightPvp = 3,
+    }
+
+    public enum BuqiTribulationRoute
+    {
+        None = 0,
+        FaceThunder = 1,
+        ShatterArtifact = 2,
+        QuestionHeart = 3,
     }
 
     public enum BuqiRunOutcome

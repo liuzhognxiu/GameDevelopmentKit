@@ -6,7 +6,8 @@ namespace Game.Hot.Buqi.Run.Settlement
     [Serializable]
     public sealed class BuqiRunSaveData
     {
-        public const string CurrentSaveVersion = "buqi-run-save-v2";
+        public const string LegacySaveVersion = "buqi-run-save-v2";
+        public const string CurrentSaveVersion = "buqi-run-save-v3";
 
         public string SaveVersion = CurrentSaveVersion;
         public string ContentVersion = string.Empty;
@@ -16,11 +17,18 @@ namespace Game.Hot.Buqi.Run.Settlement
         public int Revision;
         public int Day;
         public int EncounterIndex;
+        public int Period;
         public int Phase;
         public int Outcome;
         public int Coins;
         public int Wins;
+        public int DaoSeals;
+        public int CurrentOmen;
         public int Lives;
+        public int TribulationRoute;
+        public int TribulationDaoSealsSpent;
+        public int TribulationStage;
+        public int TribulationSuccesses;
         public List<string> BoardInstanceIds = new List<string>();
         public List<string> StorageInstanceIds = new List<string>();
         public List<string> AppliedCommandIds = new List<string>();
@@ -30,5 +38,7 @@ namespace Game.Hot.Buqi.Run.Settlement
         public string BattlePayload = string.Empty;
         public bool HasPendingSettlement;
         public BuqiRunPendingSettlement PendingSettlement;
+        public bool HasLastAppliedSettlement;
+        public BuqiRunPendingSettlement LastAppliedSettlement;
     }
 }

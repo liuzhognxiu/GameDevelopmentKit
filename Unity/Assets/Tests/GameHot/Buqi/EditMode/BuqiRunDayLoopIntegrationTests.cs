@@ -43,7 +43,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void FullDay_RunOrderIsEncounterThreeTimesThenPveThenPvpThenSettlementThenNextDay()
+        public void BuqiNineDay_FullDayRunsMorningNoonDuskNightThenAdvancesWithoutForcedRecordPage()
         {
             BuqiUIDemoCatalog catalog = CreateCatalog();
             var store = new MemoryRunStore();
@@ -69,13 +69,43 @@ namespace Game.Hot.Buqi.Tests
             }
 
             Assert.That(controller.View.Round, Is.EqualTo(2));
-            Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.Shop || phase == BuqiUIDemoPhase.Event), Is.EqualTo(3));
+            Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.Shop || phase == BuqiUIDemoPhase.Event), Is.EqualTo(2));
             Assert.That(seenPhases.Contains(BuqiUIDemoPhase.BattleReplay), Is.True);
             Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.BattleSummary), Is.EqualTo(2));
-            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.RoundSettlement), Is.True);
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.RoundSettlement), Is.False);
             Assert.That(seenPhases.Contains(BuqiUIDemoPhase.StarterSelection), Is.False);
             Assert.That(seenPhases.Contains(BuqiUIDemoPhase.OpponentIntel), Is.False);
             Assert.That(seenPhases.Contains(BuqiUIDemoPhase.Prediction), Is.False);
+        }
+
+        [Test]
+        public void BuqiNineDay_DayNineNightReplayMustBeConfirmedBeforeTribulationRouteGate()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store);
+            int guard = 0;
+
+            while (ReadSave(store).Phase != (int)BuqiRunPhase.TribulationRoute && guard++ < 120)
+            {
+                BuqiUIDemoCommandResult result = controller.Execute(SelectProgressCommand(controller.View));
+                Assert.That(result.Accepted, Is.True, result.Reason);
+            }
+
+            BuqiRunSaveData settledNight = ReadSave(store);
+            Assert.That(guard, Is.LessThan(120));
+            Assert.That(settledNight.Day, Is.EqualTo(BuqiRunRules.RunDayCount));
+            Assert.That(settledNight.Period, Is.EqualTo((int)BuqiRunPeriod.NightPvp));
+            Assert.That(settledNight.Phase, Is.EqualTo((int)BuqiRunPhase.TribulationRoute));
+            Assert.That(settledNight.BattlePayload, Is.Not.Empty);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleSummary));
+
+            BuqiUIDemoCommandResult confirmed = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.NextPhase,
+            });
+
+            Assert.That(confirmed.Accepted, Is.True, confirmed.Reason);
+            Assert.That(ReadSave(store).BattlePayload, Is.Empty);
         }
 
         [Test]
@@ -219,7 +249,7 @@ namespace Game.Hot.Buqi.Tests
         {
             var store = new MemoryRunStore();
             BuqiUIDemoController controller = CreateController(store);
-            AdvanceUntilPhase(controller, BuqiUIDemoPhase.RoundSettlement);
+            AdvanceUntilPhase(controller, BuqiUIDemoPhase.BattleSummary, summaryCountTarget: 2);
             RunFingerprint before = CaptureRuntime(controller);
             string jsonBefore = store.CurrentJson;
             store.FailNextWrite("day completion write failed");

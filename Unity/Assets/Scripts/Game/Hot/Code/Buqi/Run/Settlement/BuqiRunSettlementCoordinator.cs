@@ -64,11 +64,6 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return Rejected("Settlement id is required.", state);
             }
 
-            if (!TryMapPhaseToBattleKind(state.Phase, out BuqiRunBattleKind battleKind))
-            {
-                return Rejected("State phase is not settleable.", state);
-            }
-
             if (!TryMapOutcome(battleResult.Outcome, out BuqiRunRawBattleOutcome rawOutcome))
             {
                 return Rejected("Battle outcome cannot be settled.", state);
@@ -78,12 +73,48 @@ namespace Game.Hot.Buqi.Run.Settlement
 
             if (state.AppliedSettlementIds.Contains(settlementId))
             {
-                if (!TryWriteState(state, economyPayload, encounterPayload, battlePayload, null, out string replayWriteError))
+                if (!TryReadState(out BuqiRunSaveData persistedSave, out BuqiRunState persistedState, out string replayReadError))
                 {
-                    return Rejected(replayWriteError, state, summary, rawOutcome);
+                    return Rejected(replayReadError, state, summary, rawOutcome);
                 }
 
-                return Succeeded(state, summary, rawOutcome, true);
+                if (!persistedState.AppliedSettlementIds.Contains(settlementId) ||
+                    persistedState.Revision < state.Revision)
+                {
+                    return Rejected("Persisted settlement state does not match the replay.", state, summary, rawOutcome);
+                }
+
+                if (persistedState.Revision == state.Revision &&
+                    (!string.Equals(persistedSave.EconomyPayload, economyPayload ?? string.Empty, StringComparison.Ordinal) ||
+                     !string.Equals(persistedSave.EncounterPayload, encounterPayload ?? string.Empty, StringComparison.Ordinal) ||
+                     !string.Equals(persistedSave.BattlePayload, battlePayload ?? string.Empty, StringComparison.Ordinal) ||
+                     persistedSave.LastAppliedSettlement == null ||
+                     !string.Equals(persistedSave.LastAppliedSettlement.SettlementId, settlementId, StringComparison.Ordinal) ||
+                     persistedSave.LastAppliedSettlement.RawOutcome != (int)rawOutcome ||
+                     !string.Equals(
+                         persistedSave.LastAppliedSettlement.BattleLogHash,
+                         summary.BattleLogHash,
+                         StringComparison.Ordinal)))
+                {
+                    return Rejected("Replay payload does not match the persisted settlement.", persistedState, summary, rawOutcome);
+                }
+
+                if (persistedState.Revision == state.Revision)
+                {
+                    BuqiRunPendingSettlement receipt = persistedSave.LastAppliedSettlement;
+                    return Succeeded(
+                        persistedState,
+                        receipt.Summary,
+                        (BuqiRunRawBattleOutcome)receipt.RawOutcome,
+                        true);
+                }
+
+                return Succeeded(persistedState, summary, rawOutcome, true);
+            }
+
+            if (!TryMapPhaseToBattleKind(state.Phase, out BuqiRunBattleKind battleKind))
+            {
+                return Rejected("State phase is not settleable.", state);
             }
 
             var pendingSettlement = new BuqiRunPendingSettlement
@@ -127,7 +158,8 @@ namespace Game.Hot.Buqi.Run.Settlement
                     encounterPayload,
                     battlePayload,
                     null,
-                    out string finalWriteError))
+                    out string finalWriteError,
+                    pendingSettlement))
             {
                 return Rejected(finalWriteError, state, summary, rawOutcome);
             }
@@ -184,7 +216,8 @@ namespace Game.Hot.Buqi.Run.Settlement
                     saveData.EncounterPayload,
                     saveData.BattlePayload,
                     null,
-                    out string finalWriteError))
+                    out string finalWriteError,
+                    pendingSettlement))
             {
                 return Rejected(
                     finalWriteError,
@@ -206,7 +239,8 @@ namespace Game.Hot.Buqi.Run.Settlement
             string encounterPayload,
             string battlePayload,
             BuqiRunPendingSettlement pendingSettlement,
-            out string error)
+            out string error,
+            BuqiRunPendingSettlement lastAppliedSettlement = null)
         {
             try
             {
@@ -215,7 +249,8 @@ namespace Game.Hot.Buqi.Run.Settlement
                     economyPayload,
                     encounterPayload,
                     battlePayload,
-                    pendingSettlement);
+                    pendingSettlement,
+                    lastAppliedSettlement);
                 if (!BuqiRunSaveCodec.TryToState(saveData, out _, out error))
                 {
                     return false;
@@ -229,6 +264,22 @@ namespace Game.Hot.Buqi.Run.Settlement
                 error = exception.Message;
                 return false;
             }
+        }
+
+        private bool TryReadState(
+            out BuqiRunSaveData saveData,
+            out BuqiRunState state,
+            out string error)
+        {
+            saveData = null!;
+            state = null!;
+            if (!m_Store.TryRead(out string json, out error))
+                return false;
+
+            if (!BuqiRunSaveCodec.TryFromJson(json, out saveData, out error))
+                return false;
+
+            return BuqiRunSaveCodec.TryToState(saveData, out state, out error);
         }
 
         private static BuqiRunTransitionResult ExecuteSettlement(

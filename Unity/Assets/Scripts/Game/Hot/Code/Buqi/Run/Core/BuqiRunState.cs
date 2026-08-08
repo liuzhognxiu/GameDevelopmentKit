@@ -4,7 +4,7 @@ namespace Game.Hot.Buqi.Run.Core
 {
     public sealed class BuqiRunState
     {
-        public const string CurrentRuleVersion = "buqi-day-run-rule-v1";
+        public const string CurrentRuleVersion = "buqi-nine-day-run-rule-v2";
 
         public string ContentVersion = string.Empty;
         public string RuleVersion = CurrentRuleVersion;
@@ -13,11 +13,18 @@ namespace Game.Hot.Buqi.Run.Core
         public int Revision;
         public int Day;
         public int EncounterIndex;
+        public BuqiRunPeriod Period;
         public BuqiRunPhase Phase;
         public BuqiRunOutcome Outcome;
         public int Coins;
         public int Wins;
+        public int DaoSeals;
+        public int CurrentOmen;
         public int Lives;
+        public BuqiTribulationRoute TribulationRoute;
+        public int TribulationDaoSealsSpent;
+        public int TribulationStage;
+        public int TribulationSuccesses;
         public List<string> BoardInstanceIds = new List<string>();
         public List<string> StorageInstanceIds = new List<string>();
         public HashSet<string> AppliedCommandIds = new HashSet<string>();
@@ -31,11 +38,18 @@ namespace Game.Hot.Buqi.Run.Core
                 RunSeed = runSeed,
                 Day = 1,
                 EncounterIndex = 0,
+                Period = BuqiRunPeriod.MorningOperation,
                 Phase = BuqiRunPhase.Encounter,
                 Outcome = BuqiRunOutcome.None,
                 Coins = BuqiRunRules.StartingCoins,
                 Wins = 0,
+                DaoSeals = 0,
+                CurrentOmen = 0,
                 Lives = BuqiRunRules.StartingLives,
+                TribulationRoute = BuqiTribulationRoute.None,
+                TribulationDaoSealsSpent = 0,
+                TribulationStage = 0,
+                TribulationSuccesses = 0,
                 BoardInstanceIds = CreateEmptySlots(BuqiRunRules.BoardSlotCount),
                 StorageInstanceIds = CreateEmptySlots(BuqiRunRules.StorageSlotCount),
             };
@@ -52,11 +66,18 @@ namespace Game.Hot.Buqi.Run.Core
                 Revision = Revision,
                 Day = Day,
                 EncounterIndex = EncounterIndex,
+                Period = Period,
                 Phase = Phase,
                 Outcome = Outcome,
                 Coins = Coins,
                 Wins = Wins,
+                DaoSeals = DaoSeals,
+                CurrentOmen = CurrentOmen,
                 Lives = Lives,
+                TribulationRoute = TribulationRoute,
+                TribulationDaoSealsSpent = TribulationDaoSealsSpent,
+                TribulationStage = TribulationStage,
+                TribulationSuccesses = TribulationSuccesses,
                 BoardInstanceIds = new List<string>(BoardInstanceIds),
                 StorageInstanceIds = new List<string>(StorageInstanceIds),
                 AppliedCommandIds = new HashSet<string>(AppliedCommandIds),

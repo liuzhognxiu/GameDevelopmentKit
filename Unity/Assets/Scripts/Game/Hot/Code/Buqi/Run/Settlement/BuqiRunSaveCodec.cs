@@ -23,7 +23,8 @@ namespace Game.Hot.Buqi.Run.Settlement
             string economyPayload = "",
             string encounterPayload = "",
             string battlePayload = "",
-            BuqiRunPendingSettlement pendingSettlement = null)
+            BuqiRunPendingSettlement pendingSettlement = null,
+            BuqiRunPendingSettlement lastAppliedSettlement = null)
         {
             if (state == null)
             {
@@ -40,11 +41,18 @@ namespace Game.Hot.Buqi.Run.Settlement
                 Revision = state.Revision,
                 Day = state.Day,
                 EncounterIndex = state.EncounterIndex,
+                Period = (int)state.Period,
                 Phase = (int)state.Phase,
                 Outcome = (int)state.Outcome,
                 Coins = state.Coins,
                 Wins = state.Wins,
+                DaoSeals = state.DaoSeals,
+                CurrentOmen = state.CurrentOmen,
                 Lives = state.Lives,
+                TribulationRoute = (int)state.TribulationRoute,
+                TribulationDaoSealsSpent = state.TribulationDaoSealsSpent,
+                TribulationStage = state.TribulationStage,
+                TribulationSuccesses = state.TribulationSuccesses,
                 BoardInstanceIds = CopyList(state.BoardInstanceIds),
                 StorageInstanceIds = CopyList(state.StorageInstanceIds),
                 AppliedCommandIds = SortIds(state.AppliedCommandIds),
@@ -54,6 +62,8 @@ namespace Game.Hot.Buqi.Run.Settlement
                 BattlePayload = Normalize(battlePayload),
                 HasPendingSettlement = pendingSettlement != null,
                 PendingSettlement = ClonePendingSettlement(pendingSettlement),
+                HasLastAppliedSettlement = lastAppliedSettlement != null,
+                LastAppliedSettlement = ClonePendingSettlement(lastAppliedSettlement),
             };
         }
 
@@ -99,6 +109,13 @@ namespace Game.Hot.Buqi.Run.Settlement
             if (saveData == null)
             {
                 error = "Save json produced no data.";
+                return false;
+            }
+
+            if (string.Equals(saveData.SaveVersion, BuqiRunSaveData.LegacySaveVersion, StringComparison.Ordinal) &&
+                !TryMigrateLegacyV2(saveData, out error))
+            {
+                saveData = null!;
                 return false;
             }
 
@@ -149,13 +166,26 @@ namespace Game.Hot.Buqi.Run.Settlement
             if (saveData.RngCursor < 0 ||
                 saveData.Revision < 0 ||
                 saveData.Day < 1 ||
+                saveData.Day > BuqiRunRules.RunDayCount ||
                 saveData.EncounterIndex < 0 ||
-                saveData.EncounterIndex > BuqiRunRules.EncountersPerDay ||
+                saveData.EncounterIndex > BuqiRunRules.OperationsPerDay ||
                 saveData.Coins < 0 ||
                 saveData.Wins < 0 ||
-                saveData.Wins > BuqiRunRules.WinsToVictory ||
+                saveData.Wins > BuqiRunRules.MaxBattleWins ||
+                saveData.DaoSeals < 0 ||
+                saveData.DaoSeals > BuqiRunRules.MaxDaoSeals ||
+                saveData.DaoSeals > saveData.Wins ||
+                saveData.CurrentOmen < 0 ||
+                saveData.CurrentOmen > BuqiRunRules.MaxOmen ||
                 saveData.Lives < 0 ||
-                saveData.Lives > BuqiRunRules.StartingLives)
+                saveData.Lives > BuqiRunRules.StartingLives ||
+                saveData.TribulationDaoSealsSpent < 0 ||
+                saveData.TribulationDaoSealsSpent > BuqiRunRules.MaxDaoSeals ||
+                saveData.DaoSeals + saveData.TribulationDaoSealsSpent > saveData.Wins ||
+                saveData.TribulationStage < 0 ||
+                saveData.TribulationStage > BuqiRunRules.TribulationStageCount ||
+                saveData.TribulationSuccesses < 0 ||
+                saveData.TribulationSuccesses > BuqiRunRules.TribulationStageCount)
             {
                 error = "Save counters are out of range.";
                 return false;
@@ -173,20 +203,78 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
+            if (!Enum.IsDefined(typeof(BuqiRunPeriod), saveData.Period))
+            {
+                error = "Run period is invalid.";
+                return false;
+            }
+
+            if (!Enum.IsDefined(typeof(BuqiTribulationRoute), saveData.TribulationRoute))
+            {
+                error = "Tribulation route is invalid.";
+                return false;
+            }
+
             BuqiRunPhase phase = (BuqiRunPhase)saveData.Phase;
             BuqiRunOutcome outcome = (BuqiRunOutcome)saveData.Outcome;
+            BuqiRunPeriod period = (BuqiRunPeriod)saveData.Period;
+            BuqiTribulationRoute tribulationRoute = (BuqiTribulationRoute)saveData.TribulationRoute;
+
+            if (saveData.DaoSeals + saveData.TribulationDaoSealsSpent != saveData.Wins)
+            {
+                error = "Dao seal totals do not match battle wins.";
+                return false;
+            }
+
+            int omenBeforeTribulationSpend = saveData.CurrentOmen + saveData.TribulationDaoSealsSpent;
+            if (omenBeforeTribulationSpend > BuqiRunRules.MaxOmen ||
+                omenBeforeTribulationSpend < BuqiRunRules.StartingLives - saveData.Lives)
+            {
+                error = "Omen totals do not match life loss and tribulation spending.";
+                return false;
+            }
 
             if (phase == BuqiRunPhase.Encounter)
             {
-                if (saveData.EncounterIndex >= BuqiRunRules.EncountersPerDay)
+                BuqiRunPeriod expectedPeriod = saveData.EncounterIndex == 0
+                    ? BuqiRunPeriod.MorningOperation
+                    : BuqiRunPeriod.NoonOperation;
+                if (saveData.EncounterIndex >= BuqiRunRules.OperationsPerDay || period != expectedPeriod)
                 {
-                    error = "Encounter phase index is invalid.";
+                    error = "Operation phase does not match its period or index.";
                     return false;
                 }
             }
-            else if (saveData.EncounterIndex != BuqiRunRules.EncountersPerDay)
+            else if (saveData.EncounterIndex != BuqiRunRules.OperationsPerDay)
             {
-                error = "Encounter index does not match the current phase.";
+                error = "Operation index does not match the current phase.";
+                return false;
+            }
+
+            if ((phase == BuqiRunPhase.PveBattle && period != BuqiRunPeriod.DuskPve) ||
+                ((phase == BuqiRunPhase.PvpBattle || phase == BuqiRunPhase.DaySettlement ||
+                  phase == BuqiRunPhase.TribulationRoute || phase == BuqiRunPhase.TribulationStage) &&
+                 period != BuqiRunPeriod.NightPvp) ||
+                (phase == BuqiRunPhase.RunTerminal &&
+                 period != BuqiRunPeriod.DuskPve && period != BuqiRunPeriod.NightPvp))
+            {
+                error = "Run period does not match the current phase.";
+                return false;
+            }
+
+            if (phase == BuqiRunPhase.DaySettlement && saveData.Day >= BuqiRunRules.RunDayCount)
+            {
+                error = "Day nine cannot enter day settlement.";
+                return false;
+            }
+
+            bool isTribulation = phase == BuqiRunPhase.TribulationRoute ||
+                                 phase == BuqiRunPhase.TribulationStage ||
+                                 (phase == BuqiRunPhase.RunTerminal &&
+                                  tribulationRoute != BuqiTribulationRoute.None);
+            if (isTribulation && saveData.Day != BuqiRunRules.RunDayCount)
+            {
+                error = "Tribulation is only valid after day nine night.";
                 return false;
             }
 
@@ -204,27 +292,69 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
-            if (outcome == BuqiRunOutcome.Victory && saveData.Wins != BuqiRunRules.WinsToVictory)
+            if (phase == BuqiRunPhase.TribulationRoute)
             {
-                error = "Victory save must be capped at the win target.";
+                if (tribulationRoute != BuqiTribulationRoute.None ||
+                    saveData.TribulationDaoSealsSpent != 0 ||
+                    saveData.TribulationStage != 0 ||
+                    saveData.TribulationSuccesses != 0)
+                {
+                    error = "Route choice phase cannot contain a selected tribulation route.";
+                    return false;
+                }
+            }
+            else if (phase == BuqiRunPhase.TribulationStage)
+            {
+                if (tribulationRoute == BuqiTribulationRoute.None ||
+                    saveData.TribulationStage < 1 ||
+                    saveData.TribulationSuccesses >= saveData.TribulationStage)
+                {
+                    error = "Active tribulation stage fields are inconsistent.";
+                    return false;
+                }
+            }
+            else if (phase == BuqiRunPhase.RunTerminal)
+            {
+                bool earlyDefeat = tribulationRoute == BuqiTribulationRoute.None;
+                if (earlyDefeat &&
+                    (outcome != BuqiRunOutcome.Defeat || saveData.Lives != 0 ||
+                     saveData.TribulationDaoSealsSpent != 0 || saveData.TribulationStage != 0 ||
+                     saveData.TribulationSuccesses != 0))
+                {
+                    error = "Early terminal state must be a life-depletion defeat.";
+                    return false;
+                }
+
+                if (!earlyDefeat &&
+                    (saveData.TribulationStage != BuqiRunRules.TribulationStageCount ||
+                     (outcome == BuqiRunOutcome.Victory &&
+                      saveData.TribulationSuccesses != BuqiRunRules.TribulationStageCount) ||
+                     (outcome == BuqiRunOutcome.Defeat &&
+                      saveData.TribulationSuccesses >= BuqiRunRules.TribulationStageCount)))
+                {
+                    error = "Terminal tribulation fields do not match the outcome.";
+                    return false;
+                }
+            }
+            else if (tribulationRoute != BuqiTribulationRoute.None ||
+                     saveData.TribulationDaoSealsSpent != 0 ||
+                     saveData.TribulationStage != 0 ||
+                     saveData.TribulationSuccesses != 0)
+            {
+                error = "Pre-tribulation phase cannot contain tribulation progress.";
                 return false;
             }
 
-            if (outcome == BuqiRunOutcome.Defeat && saveData.Lives != 0)
+            if (phase != BuqiRunPhase.RunTerminal && saveData.Lives <= 0)
             {
-                error = "Defeat save must have zero lives.";
+                error = "Life depletion requires an early terminal defeat.";
                 return false;
             }
 
-            if (outcome != BuqiRunOutcome.Victory && saveData.Wins >= BuqiRunRules.WinsToVictory)
+            if (tribulationRoute != BuqiTribulationRoute.QuestionHeart &&
+                saveData.TribulationDaoSealsSpent != 0)
             {
-                error = "Non-victory save cannot already be at the win target.";
-                return false;
-            }
-
-            if (outcome != BuqiRunOutcome.Defeat && saveData.Lives <= 0)
-            {
-                error = "Non-defeat save must keep at least one life.";
+                error = "Only Question Heart can spend Dao seals during route choice.";
                 return false;
             }
 
@@ -276,7 +406,26 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
+            if (!TryNormalizePendingSettlement(
+                    saveData.HasLastAppliedSettlement,
+                    saveData.LastAppliedSettlement,
+                    out BuqiRunPendingSettlement lastAppliedSettlement,
+                    out error))
+            {
+                return false;
+            }
+
+            if (!TryValidateLastAppliedSettlement(
+                    lastAppliedSettlement,
+                    saveData.Revision,
+                    settlementIds,
+                    out error))
+            {
+                return false;
+            }
+
             saveData.PendingSettlement = pendingSettlement;
+            saveData.LastAppliedSettlement = lastAppliedSettlement;
 
             state = new BuqiRunState
             {
@@ -287,17 +436,102 @@ namespace Game.Hot.Buqi.Run.Settlement
                 Revision = saveData.Revision,
                 Day = saveData.Day,
                 EncounterIndex = saveData.EncounterIndex,
+                Period = period,
                 Phase = phase,
                 Outcome = outcome,
                 Coins = saveData.Coins,
                 Wins = saveData.Wins,
+                DaoSeals = saveData.DaoSeals,
+                CurrentOmen = saveData.CurrentOmen,
                 Lives = saveData.Lives,
+                TribulationRoute = tribulationRoute,
+                TribulationDaoSealsSpent = saveData.TribulationDaoSealsSpent,
+                TribulationStage = saveData.TribulationStage,
+                TribulationSuccesses = saveData.TribulationSuccesses,
                 BoardInstanceIds = CopyList(saveData.BoardInstanceIds),
                 StorageInstanceIds = CopyList(saveData.StorageInstanceIds),
                 AppliedCommandIds = commandIds,
                 AppliedSettlementIds = settlementIds,
             };
 
+            return true;
+        }
+
+        private static bool TryMigrateLegacyV2(BuqiRunSaveData saveData, out string error)
+        {
+            error = string.Empty;
+            if (!string.Equals(saveData.RuleVersion, "buqi-day-run-rule-v1", StringComparison.Ordinal))
+            {
+                error = "Legacy rule version is invalid.";
+                return false;
+            }
+
+            if (saveData.Day < 1 || saveData.Day > BuqiRunRules.RunDayCount ||
+                !Enum.IsDefined(typeof(BuqiRunPhase), saveData.Phase) ||
+                saveData.Wins >= 9)
+            {
+                error = "Legacy save cannot be migrated to the nine-day rules.";
+                return false;
+            }
+
+            BuqiRunPhase phase = (BuqiRunPhase)saveData.Phase;
+            switch (phase)
+            {
+                case BuqiRunPhase.Encounter:
+                    if (saveData.EncounterIndex < 0 || saveData.EncounterIndex >= BuqiRunRules.OperationsPerDay)
+                    {
+                        error = "Legacy third operation cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.Period = saveData.EncounterIndex == 0
+                        ? (int)BuqiRunPeriod.MorningOperation
+                        : (int)BuqiRunPeriod.NoonOperation;
+                    break;
+
+                case BuqiRunPhase.PveBattle:
+                    if (saveData.EncounterIndex != 3)
+                    {
+                        error = "Legacy PVE operation index is invalid.";
+                        return false;
+                    }
+
+                    saveData.EncounterIndex = BuqiRunRules.OperationsPerDay;
+                    saveData.Period = (int)BuqiRunPeriod.DuskPve;
+                    break;
+
+                case BuqiRunPhase.PvpBattle:
+                case BuqiRunPhase.DaySettlement:
+                    if (saveData.EncounterIndex != 3 ||
+                        (phase == BuqiRunPhase.DaySettlement && saveData.Day == BuqiRunRules.RunDayCount))
+                    {
+                        error = "Legacy night state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.EncounterIndex = BuqiRunRules.OperationsPerDay;
+                    saveData.Period = (int)BuqiRunPeriod.NightPvp;
+                    break;
+
+                case BuqiRunPhase.RunTerminal:
+                default:
+                    error = "Legacy early terminal state cannot be migrated to the fixed nine-day run.";
+                    return false;
+            }
+
+            saveData.DaoSeals = saveData.Wins;
+            saveData.CurrentOmen = Math.Max(0, BuqiRunRules.StartingLives - saveData.Lives);
+            saveData.TribulationRoute = (int)BuqiTribulationRoute.None;
+            saveData.TribulationDaoSealsSpent = 0;
+            saveData.TribulationStage = 0;
+            saveData.TribulationSuccesses = 0;
+            bool hasPendingPayload = saveData.PendingSettlement != null &&
+                                     !IsEmptyPendingSettlementPlaceholder(saveData.PendingSettlement);
+            saveData.HasPendingSettlement = hasPendingPayload;
+            saveData.HasLastAppliedSettlement = false;
+            saveData.LastAppliedSettlement = null;
+            saveData.SaveVersion = BuqiRunSaveData.CurrentSaveVersion;
+            saveData.RuleVersion = BuqiRunState.CurrentRuleVersion;
             return true;
         }
 
@@ -571,6 +805,53 @@ namespace Game.Hot.Buqi.Run.Settlement
             }
 
             normalized = null;
+            return true;
+        }
+
+        private static bool TryValidateLastAppliedSettlement(
+            BuqiRunPendingSettlement receipt,
+            int revision,
+            HashSet<string> appliedSettlementIds,
+            out string error)
+        {
+            error = string.Empty;
+            if (receipt == null)
+                return true;
+
+            if (string.IsNullOrWhiteSpace(receipt.SettlementId) ||
+                !appliedSettlementIds.Contains(receipt.SettlementId))
+            {
+                error = "Last applied settlement receipt is not present in applied ids.";
+                return false;
+            }
+
+            if (receipt.ExpectedRevision + 1 != revision ||
+                !Enum.IsDefined(typeof(BuqiRunBattleKind), receipt.BattleKind) ||
+                !Enum.IsDefined(typeof(BuqiRunRawBattleOutcome), receipt.RawOutcome) ||
+                string.IsNullOrWhiteSpace(receipt.BattleLogHash) ||
+                receipt.Summary == null ||
+                !Enum.IsDefined(typeof(BattleOutcome), receipt.Summary.RawOutcome) ||
+                !string.Equals(receipt.Summary.BattleLogHash, receipt.BattleLogHash, StringComparison.Ordinal) ||
+                !TryValidateSummaryOutcomeConsistency(
+                    (BuqiRunRawBattleOutcome)receipt.RawOutcome,
+                    receipt.Summary.RawOutcome) ||
+                receipt.Summary.TopContribution < 0 ||
+                receipt.Summary.OverloadLoss < 0 ||
+                receipt.Summary.FactLines == null)
+            {
+                error = "Last applied settlement receipt is invalid.";
+                return false;
+            }
+
+            for (int index = 0; index < receipt.Summary.FactLines.Count; index++)
+            {
+                if (receipt.Summary.FactLines[index] == null)
+                {
+                    error = BuqiText.Format("Last applied settlement fact line {0} is null.", index);
+                    return false;
+                }
+            }
+
             return true;
         }
 

@@ -33,6 +33,8 @@ namespace Game.Hot.Buqi.Run.Integration
         BattleSummary = 2,
         DaySettlement = 3,
         RunTerminal = 4,
+        TribulationRoute = 5,
+        TribulationStage = 6,
     }
 
     internal sealed class BuqiRunDemoState
@@ -317,6 +319,14 @@ namespace Game.Hot.Buqi.Run.Integration
                 case BuqiRunDemoPresentation.DaySettlement:
                     return TryCompleteDay(out error);
 
+                case BuqiRunDemoPresentation.TribulationRoute:
+                    error = "Tribulation route requires an explicit choice.";
+                    return false;
+
+                case BuqiRunDemoPresentation.TribulationStage:
+                    error = "Tribulation stage requires an explicit result.";
+                    return false;
+
                 case BuqiRunDemoPresentation.RunTerminal:
                     error = "Run has already ended.";
                     return false;
@@ -325,6 +335,58 @@ namespace Game.Hot.Buqi.Run.Integration
                     error = "Unknown presentation state.";
                     return false;
             }
+        }
+
+        public bool TrySelectTribulationRoute(
+            BuqiTribulationRoute route,
+            int daoSealsToSpend,
+            out string error)
+        {
+            BuqiRunDemoState working = m_State.Clone();
+            var controller = new BuqiRunController(working.Economy.Run);
+            BuqiRunTransitionResult result = controller.SelectTribulationRoute(
+                CreateCommandId(working.Economy.Run, "tribulation-route", route.ToString()),
+                working.Economy.Run.Revision,
+                route,
+                daoSealsToSpend);
+            if (!result.Success)
+            {
+                error = result.FailureReason;
+                return false;
+            }
+
+            working.Economy.Run = result.State.Clone();
+            working.Battle = null;
+            working.BattleSummary = new BuqiRunBattleSummary();
+            working.LastRawOutcome = default;
+            if (!EnsureCurrentContent(working, true, out error))
+                return false;
+
+            return TryCommitState(working, out error);
+        }
+
+        public bool TryResolveTribulationStage(bool survived, out string error)
+        {
+            BuqiRunDemoState working = m_State.Clone();
+            var controller = new BuqiRunController(working.Economy.Run);
+            BuqiRunTransitionResult result = controller.ResolveTribulationStage(
+                CreateCommandId(
+                    working.Economy.Run,
+                    "tribulation-stage",
+                    working.Economy.Run.TribulationStage.ToString()),
+                working.Economy.Run.Revision,
+                survived);
+            if (!result.Success)
+            {
+                error = result.FailureReason;
+                return false;
+            }
+
+            working.Economy.Run = result.State.Clone();
+            if (!EnsureCurrentContent(working, true, out error))
+                return false;
+
+            return TryCommitState(working, out error);
         }
 
         public BattleReplayData BuildReplayData()
@@ -447,6 +509,34 @@ namespace Game.Hot.Buqi.Run.Integration
                     error = string.Empty;
                     return true;
 
+                case BuqiRunPhase.TribulationRoute:
+                    if (battle != null &&
+                        (battle.Kind != BuqiRunBattleKind.Pvp ||
+                         !BuqiRunDemoCodec.IsSettledBattle(runState, battle.BattleId)))
+                    {
+                        presentation = default;
+                        error = "Only the settled day nine PVP battle can remain at route choice.";
+                        return false;
+                    }
+
+                    presentation = battle == null
+                        ? BuqiRunDemoPresentation.TribulationRoute
+                        : BuqiRunDemoPresentation.BattleSummary;
+                    error = string.Empty;
+                    return true;
+
+                case BuqiRunPhase.TribulationStage:
+                    if (battle != null)
+                    {
+                        presentation = default;
+                        error = "Battle payload is not valid during tribulation stages.";
+                        return false;
+                    }
+
+                    presentation = BuqiRunDemoPresentation.TribulationStage;
+                    error = string.Empty;
+                    return true;
+
                 case BuqiRunPhase.RunTerminal:
                     presentation = BuqiRunDemoPresentation.RunTerminal;
                     error = string.Empty;
@@ -505,7 +595,13 @@ namespace Game.Hot.Buqi.Run.Integration
 
                 case BuqiRunPhase.PvpBattle:
                     state.Encounter = null;
-                    state.Presentation = BuqiRunDemoPresentation.BattleReplay;
+                    state.Presentation = state.Battle != null &&
+                                         state.Battle.Kind == BuqiRunBattleKind.Pve &&
+                                         BuqiRunDemoCodec.IsSettledBattle(
+                                             state.Economy.Run,
+                                             state.Battle.BattleId)
+                        ? BuqiRunDemoPresentation.BattleSummary
+                        : BuqiRunDemoPresentation.BattleReplay;
                     if (state.Battle == null)
                     {
                         if (!allowGeneration)
@@ -524,6 +620,19 @@ namespace Game.Hot.Buqi.Run.Integration
                     state.Presentation = state.Battle == null
                         ? BuqiRunDemoPresentation.DaySettlement
                         : BuqiRunDemoPresentation.BattleSummary;
+                    break;
+
+                case BuqiRunPhase.TribulationRoute:
+                    state.Encounter = null;
+                    state.Presentation = state.Battle == null
+                        ? BuqiRunDemoPresentation.TribulationRoute
+                        : BuqiRunDemoPresentation.BattleSummary;
+                    break;
+
+                case BuqiRunPhase.TribulationStage:
+                    state.Encounter = null;
+                    state.Battle = null;
+                    state.Presentation = BuqiRunDemoPresentation.TribulationStage;
                     break;
 
                 case BuqiRunPhase.RunTerminal:
@@ -600,6 +709,9 @@ namespace Game.Hot.Buqi.Run.Integration
 
         private bool TryAdvanceAfterBattleSummary(out string error)
         {
+            if (m_State.Economy.Run.Phase == BuqiRunPhase.DaySettlement)
+                return TryCompleteDay(out error);
+
             BuqiRunDemoState working = m_State.Clone();
             working.Battle = null;
             working.BattleSummary = new BuqiRunBattleSummary();
@@ -1449,10 +1561,28 @@ namespace Game.Hot.Buqi.Run.Integration
                 error = "Only a settled PVP battle payload is valid during day settlement.";
                 return false;
             }
-            if (run.Phase == BuqiRunPhase.RunTerminal && !settled)
+            if (run.Phase == BuqiRunPhase.TribulationRoute &&
+                (kind != BuqiRunBattleKind.Pvp || !settled))
             {
-                error = "An unsettled battle payload is not valid after the run has ended.";
+                error = "Only the settled day nine PVP battle is valid during route choice.";
                 return false;
+            }
+            if (run.Phase == BuqiRunPhase.TribulationStage)
+            {
+                error = "Battle payload is not valid during tribulation stages.";
+                return false;
+            }
+            if (run.Phase == BuqiRunPhase.RunTerminal)
+            {
+                bool validEarlyDefeatBattle = run.TribulationRoute == BuqiTribulationRoute.None &&
+                                               settled &&
+                                               ((run.Period == BuqiRunPeriod.DuskPve && kind == BuqiRunBattleKind.Pve) ||
+                                                (run.Period == BuqiRunPeriod.NightPvp && kind == BuqiRunBattleKind.Pvp));
+                if (!validEarlyDefeatBattle)
+                {
+                    error = "Only the settled life-depletion battle is valid after an early defeat.";
+                    return false;
+                }
             }
 
             if (!TryValidateBattleRequest(payload.Request, out error) ||

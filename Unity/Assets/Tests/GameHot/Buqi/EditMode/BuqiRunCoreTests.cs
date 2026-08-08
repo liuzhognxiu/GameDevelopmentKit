@@ -9,9 +9,10 @@ namespace Game.Hot.Buqi.Tests
         [Test]
         public void RulesMatchApprovedDemoContract()
         {
-            Assert.That(BuqiRunRules.WinsToVictory, Is.EqualTo(9));
+            Assert.That(BuqiRunRules.RunDayCount, Is.EqualTo(9));
+            Assert.That(BuqiRunRules.OperationsPerDay, Is.EqualTo(2));
+            Assert.That(BuqiRunRules.TribulationStageCount, Is.EqualTo(3));
             Assert.That(BuqiRunRules.StartingLives, Is.EqualTo(3));
-            Assert.That(BuqiRunRules.EncountersPerDay, Is.EqualTo(3));
             Assert.That(BuqiRunRules.BoardSlotCount, Is.EqualTo(8));
             Assert.That(BuqiRunRules.StorageSlotCount, Is.EqualTo(8));
             Assert.That(BuqiRunRules.StartingCoins, Is.EqualTo(12));
@@ -25,6 +26,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(state.RunSeed, Is.EqualTo(812345L));
             Assert.That(state.Day, Is.EqualTo(1));
             Assert.That(state.EncounterIndex, Is.EqualTo(0));
+            Assert.That(state.Period, Is.EqualTo(BuqiRunPeriod.MorningOperation));
             Assert.That(state.Phase, Is.EqualTo(BuqiRunPhase.Encounter));
             Assert.That(state.Coins, Is.EqualTo(12));
             Assert.That(state.Wins, Is.EqualTo(0));
@@ -108,33 +110,67 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void ThreeResolvedEncountersAdvanceToPveThenPvpThenNextDay()
+        public void BuqiNineDay_TwoOperationsAdvanceToDuskPveThenNightPvpThenNextDay()
         {
             var controller = new BuqiRunController(BuqiRunState.CreateInitial(10));
 
             Assert.That(controller.ResolveEncounter("enc-1", 0).Success, Is.True);
             Assert.That(controller.State.EncounterIndex, Is.EqualTo(1));
+            Assert.That(controller.State.Period, Is.EqualTo(BuqiRunPeriod.NoonOperation));
             Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.Encounter));
 
             Assert.That(controller.ResolveEncounter("enc-2", 1).Success, Is.True);
-            Assert.That(controller.ResolveEncounter("enc-3", 2).Success, Is.True);
-            Assert.That(controller.State.EncounterIndex, Is.EqualTo(3));
+            Assert.That(controller.State.EncounterIndex, Is.EqualTo(2));
+            Assert.That(controller.State.Period, Is.EqualTo(BuqiRunPeriod.DuskPve));
             Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.PveBattle));
 
             Assert.That(
-                controller.SettleBattle("pve-1", 3, BuqiRunBattleKind.Pve, BuqiRunRawBattleOutcome.PlayerWin).Success,
+                controller.SettleBattle("pve-1", 2, BuqiRunBattleKind.Pve, BuqiRunRawBattleOutcome.PlayerWin).Success,
                 Is.True);
+            Assert.That(controller.State.Period, Is.EqualTo(BuqiRunPeriod.NightPvp));
             Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.PvpBattle));
 
             Assert.That(
-                controller.SettleBattle("pvp-1", 4, BuqiRunBattleKind.Pvp, BuqiRunRawBattleOutcome.OpponentWin).Success,
+                controller.SettleBattle("pvp-1", 3, BuqiRunBattleKind.Pvp, BuqiRunRawBattleOutcome.OpponentWin).Success,
                 Is.True);
             Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.DaySettlement));
 
-            Assert.That(controller.CompleteDay("day-1", 5).Success, Is.True);
+            Assert.That(controller.CompleteDay("day-1", 4).Success, Is.True);
             Assert.That(controller.State.Day, Is.EqualTo(2));
             Assert.That(controller.State.EncounterIndex, Is.EqualTo(0));
+            Assert.That(controller.State.Period, Is.EqualTo(BuqiRunPeriod.MorningOperation));
             Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.Encounter));
+        }
+
+        [Test]
+        public void BuqiNineDay_NightSettlementOnDayNineEntersRouteChoiceWithoutEarlyTerminal()
+        {
+            var controller = new BuqiRunController(BuqiRunState.CreateInitial(90));
+
+            for (int day = 1; day <= BuqiRunRules.RunDayCount; day++)
+            {
+                int revision = controller.State.Revision;
+                Assert.That(controller.ResolveEncounter($"morning-{day}", revision).Success, Is.True);
+                Assert.That(controller.ResolveEncounter($"noon-{day}", revision + 1).Success, Is.True);
+                Assert.That(controller.SettleBattle(
+                    $"pve-{day}", revision + 2, BuqiRunBattleKind.Pve, BuqiRunRawBattleOutcome.PlayerWin).Success, Is.True);
+                Assert.That(controller.SettleBattle(
+                    $"pvp-{day}", revision + 3, BuqiRunBattleKind.Pvp, BuqiRunRawBattleOutcome.PlayerWin).Success, Is.True);
+
+                if (day < BuqiRunRules.RunDayCount)
+                {
+                    Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.DaySettlement));
+                    Assert.That(controller.CompleteDay($"day-{day}", revision + 4).Success, Is.True);
+                    Assert.That(controller.State.Day, Is.EqualTo(day + 1));
+                }
+            }
+
+            Assert.That(controller.State.Day, Is.EqualTo(9));
+            Assert.That(controller.State.Period, Is.EqualTo(BuqiRunPeriod.NightPvp));
+            Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.TribulationRoute));
+            Assert.That(controller.State.Outcome, Is.EqualTo(BuqiRunOutcome.None));
+            Assert.That(controller.State.Wins, Is.EqualTo(18));
+            Assert.That(controller.State.DaoSeals, Is.EqualTo(18));
         }
 
         [Test]
@@ -169,11 +205,14 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void DrawCountsAsPlayerWinAndNineWinsStopsImmediately()
+        public void BuqiNineDay_DrawAwardsWinAndDaoSealWithoutEndingRun()
         {
             BuqiRunState state = BuqiRunState.CreateInitial(30);
             state.Phase = BuqiRunPhase.PveBattle;
+            state.Period = BuqiRunPeriod.DuskPve;
+            state.EncounterIndex = BuqiRunRules.OperationsPerDay;
             state.Wins = 8;
+            state.DaoSeals = 8;
             var controller = new BuqiRunController(state);
 
             BuqiRunTransitionResult result =
@@ -181,23 +220,28 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(result.Success, Is.True);
             Assert.That(controller.State.Wins, Is.EqualTo(9));
-            Assert.That(controller.State.Outcome, Is.EqualTo(BuqiRunOutcome.Victory));
-            Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.RunTerminal));
+            Assert.That(controller.State.DaoSeals, Is.EqualTo(9));
+            Assert.That(controller.State.Outcome, Is.EqualTo(BuqiRunOutcome.None));
+            Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.PvpBattle));
         }
 
         [Test]
-        public void ThirdLossStopsImmediatelyAndSkipsRemainingFlow()
+        public void BuqiNineDay_LifeDepletionEndsRunBeforeDayNine()
         {
             BuqiRunState state = BuqiRunState.CreateInitial(40);
             state.Phase = BuqiRunPhase.PvpBattle;
+            state.Period = BuqiRunPeriod.NightPvp;
+            state.EncounterIndex = BuqiRunRules.OperationsPerDay;
             state.Lives = 1;
             var controller = new BuqiRunController(state);
 
             controller.SettleBattle("loss-terminal", 0, BuqiRunBattleKind.Pvp, BuqiRunRawBattleOutcome.OpponentWin);
 
             Assert.That(controller.State.Lives, Is.EqualTo(0));
+            Assert.That(controller.State.CurrentOmen, Is.EqualTo(1));
             Assert.That(controller.State.Outcome, Is.EqualTo(BuqiRunOutcome.Defeat));
             Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.RunTerminal));
+            Assert.That(controller.State.Period, Is.EqualTo(BuqiRunPeriod.NightPvp));
         }
 
         [Test]
@@ -260,28 +304,57 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void TerminalRunRejectsNewCommandsAndSettlements()
+        public void Tribulation_QuestionHeartConsumesSealsToReduceCurrentOmen()
         {
-            BuqiRunState state = BuqiRunState.CreateInitial(60);
-            state.Phase = BuqiRunPhase.PveBattle;
-            state.Wins = 8;
+            BuqiRunState state = CreateTribulationRouteState(60);
+            state.DaoSeals = 3;
+            state.CurrentOmen = 2;
             var controller = new BuqiRunController(state);
-            Assert.That(
-                controller.SettleBattle("terminal", 0, BuqiRunBattleKind.Pve, BuqiRunRawBattleOutcome.Draw).Success,
-                Is.True);
 
-            BuqiRunTransitionResult encounter = controller.ResolveEncounter("late-encounter", 1);
-            BuqiRunTransitionResult completeDay = controller.CompleteDay("late-day", 1);
-            BuqiRunTransitionResult settlement =
-                controller.SettleBattle("late-settlement", 1, BuqiRunBattleKind.Pvp, BuqiRunRawBattleOutcome.PlayerWin);
+            BuqiRunTransitionResult selected = controller.SelectTribulationRoute(
+                "question-heart", 0, BuqiTribulationRoute.QuestionHeart, 2);
 
-            Assert.That(encounter.Success, Is.False);
-            Assert.That(completeDay.Success, Is.False);
-            Assert.That(settlement.Success, Is.False);
-            Assert.That(encounter.FailureReason, Is.EqualTo("Run has already ended."));
-            Assert.That(completeDay.FailureReason, Is.EqualTo("Run has already ended."));
-            Assert.That(settlement.FailureReason, Is.EqualTo("Run has already ended."));
-            Assert.That(controller.State.Revision, Is.EqualTo(1));
+            Assert.That(selected.Success, Is.True);
+            Assert.That(controller.State.TribulationRoute, Is.EqualTo(BuqiTribulationRoute.QuestionHeart));
+            Assert.That(controller.State.TribulationDaoSealsSpent, Is.EqualTo(2));
+            Assert.That(controller.State.DaoSeals, Is.EqualTo(1));
+            Assert.That(controller.State.CurrentOmen, Is.EqualTo(0));
+            Assert.That(controller.State.TribulationStage, Is.EqualTo(1));
+            Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.TribulationStage));
+        }
+
+        [Test]
+        public void Tribulation_ThreeStagesProduceTerminalOutcomeAndReplayIsIdempotent()
+        {
+            var controller = new BuqiRunController(CreateTribulationRouteState(61));
+            Assert.That(controller.SelectTribulationRoute(
+                "face-thunder", 0, BuqiTribulationRoute.FaceThunder, 0).Success, Is.True);
+
+            Assert.That(controller.ResolveTribulationStage("stage-1", 1, true).Success, Is.True);
+            BuqiRunTransitionResult replay = controller.ResolveTribulationStage("stage-1", 1, true);
+            Assert.That(replay.Success, Is.True);
+            Assert.That(replay.Replayed, Is.True);
+            Assert.That(controller.State.TribulationStage, Is.EqualTo(2));
+            Assert.That(controller.State.TribulationSuccesses, Is.EqualTo(1));
+
+            Assert.That(controller.ResolveTribulationStage("stage-2", 2, true).Success, Is.True);
+            Assert.That(controller.ResolveTribulationStage("stage-3", 3, true).Success, Is.True);
+            Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.RunTerminal));
+            Assert.That(controller.State.Outcome, Is.EqualTo(BuqiRunOutcome.Victory));
+
+            BuqiRunTransitionResult late = controller.ResolveTribulationStage("stage-late", 4, true);
+            Assert.That(late.Success, Is.False);
+            Assert.That(late.FailureReason, Is.EqualTo("Run has already ended."));
+        }
+
+        private static BuqiRunState CreateTribulationRouteState(long seed)
+        {
+            BuqiRunState state = BuqiRunState.CreateInitial(seed);
+            state.Day = BuqiRunRules.RunDayCount;
+            state.EncounterIndex = BuqiRunRules.OperationsPerDay;
+            state.Period = BuqiRunPeriod.NightPvp;
+            state.Phase = BuqiRunPhase.TribulationRoute;
+            return state;
         }
     }
 }

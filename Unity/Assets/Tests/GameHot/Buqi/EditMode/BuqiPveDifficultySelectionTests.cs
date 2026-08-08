@@ -184,6 +184,8 @@ namespace Game.Hot.Buqi.Tests
                 Assert.That(widget.Select(BuqiPveDifficulty.Dangerous), Is.True);
                 Assert.That(selectionCount, Is.EqualTo(1));
                 Assert.That(selected, Is.EqualTo(BuqiPveDifficulty.Dangerous));
+                Assert.That(widget.Select(BuqiPveDifficulty.Initial), Is.False);
+                Assert.That(selectionCount, Is.EqualTo(1));
 
                 widget.Clear();
                 Assert.That(widget.Select(BuqiPveDifficulty.Initial), Is.False);

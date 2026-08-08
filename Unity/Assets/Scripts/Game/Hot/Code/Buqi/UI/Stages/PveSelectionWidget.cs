@@ -48,7 +48,9 @@ namespace Game.Hot.Buqi.UI.Stages
             if (!m_Selection.Cards.Exists(card => card != null && card.Difficulty == difficulty))
                 return false;
 
-            m_Selected.Invoke(difficulty);
+            Action<BuqiPveDifficulty> selected = m_Selected;
+            m_Selected = null;
+            selected.Invoke(difficulty);
             return true;
         }
 

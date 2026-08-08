@@ -563,17 +563,17 @@ MonoBehaviour:
   - {fileID: 6763977681533423619}
   - {fileID: 3289353271130647527}
   m_StageComponents:
-  - {fileID: 4932759446412541646}
-  - {fileID: 5974034634215647402}
-  - {fileID: 4877423443296677806}
-  - {fileID: 2683701143859948677}
-  - {fileID: 621482954431477999}
-  - {fileID: 9141738792319568039}
-  - {fileID: 8811950951950644605}
-  - {fileID: 3220990531837750019}
-  - {fileID: 7814624115258855566}
-  - {fileID: 3014884430893786140}
-  - {fileID: 7887314222314556624}
+  - {fileID: 6288916184398009793}
+  - {fileID: 6840461742444065575}
+  - {fileID: 3682806056199580929}
+  - {fileID: 2209063107480789357}
+  - {fileID: 5316409738197328891}
+  - {fileID: 1056595426832728455}
+  - {fileID: 1281635723940990860}
+  - {fileID: 3473530748754430187}
+  - {fileID: 1334764981692056778}
+  - {fileID: 7984110637296405011}
+  - {fileID: 1004230610905534642}
   m_BackButton: {fileID: 2609851196031113186}
   m_PrimaryButton: {fileID: 1248244693982929483}
   m_RestartButton: {fileID: 570514250035239979}
@@ -1868,18 +1868,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 67b8e7251a04e79428c4f3fe5582604f, type: 3}
---- !u!114 &2683701143859948677 stripped
+--- !u!114 &2209063107480789357 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2900652900217811526, guid: 67b8e7251a04e79428c4f3fe5582604f,
+  m_CorrespondingSourceObject: {fileID: 1429735343815704494, guid: 67b8e7251a04e79428c4f3fe5582604f,
     type: 3}
   m_PrefabInstance: {fileID: 972596690469297859}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fcff8d6d92510e48aaf65cc71e64696, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.ShopWidget
 --- !u!224 &3928530927063170596 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4322234742685098215, guid: 67b8e7251a04e79428c4f3fe5582604f,
@@ -2826,18 +2826,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3751190004046232828}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4932759446412541646 stripped
+--- !u!114 &6288916184398009793 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8104871825985815090, guid: ea965d63f7b1c0c4486ccb2721a344bb,
+  m_CorrespondingSourceObject: {fileID: 7154056639108376893, guid: ea965d63f7b1c0c4486ccb2721a344bb,
     type: 3}
   m_PrefabInstance: {fileID: 3751190004046232828}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 930941ada8bbf7b48bd3269862465740, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.StarterSelectionWidget
 --- !u!1001 &4379292818933578882
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2956,18 +2956,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 46dfcabf3f2e3204fb73643c87823680, type: 3}
---- !u!114 &3220990531837750019 stripped
+--- !u!114 &3473530748754430187 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1185887403628402561, guid: 46dfcabf3f2e3204fb73643c87823680,
+  m_CorrespondingSourceObject: {fileID: 932854605502739561, guid: 46dfcabf3f2e3204fb73643c87823680,
     type: 3}
   m_PrefabInstance: {fileID: 4379292818933578882}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: ff4e83b567b235d4ea6c76caddfb9739, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.PredictionWidget
 --- !u!224 &8465411447610247073 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5313527663172909859, guid: 46dfcabf3f2e3204fb73643c87823680,
@@ -3092,24 +3092,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 92d1a5a7cf6ee8a48b4876c34c4811cf, type: 3}
---- !u!224 &3617386574918715656 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 977975149270578274, guid: 92d1a5a7cf6ee8a48b4876c34c4811cf,
-    type: 3}
-  m_PrefabInstance: {fileID: 4585226116186422634}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &9141738792319568039 stripped
+--- !u!114 &1056595426832728455 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4718651065728202189, guid: 92d1a5a7cf6ee8a48b4876c34c4811cf,
+  m_CorrespondingSourceObject: {fileID: 3533136762933640429, guid: 92d1a5a7cf6ee8a48b4876c34c4811cf,
     type: 3}
   m_PrefabInstance: {fileID: 4585226116186422634}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 930ed82b008692e4bb357727173c061f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.ModificationWidget
+--- !u!224 &3617386574918715656 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 977975149270578274, guid: 92d1a5a7cf6ee8a48b4876c34c4811cf,
+    type: 3}
+  m_PrefabInstance: {fileID: 4585226116186422634}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &4651453881450576982
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3228,18 +3228,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 669c13fae29f06e4086dcfdd098071f7, type: 3}
---- !u!114 &3014884430893786140 stripped
+--- !u!114 &7984110637296405011 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7591465624799189066, guid: 669c13fae29f06e4086dcfdd098071f7,
+  m_CorrespondingSourceObject: {fileID: 3332675799747753541, guid: 669c13fae29f06e4086dcfdd098071f7,
     type: 3}
   m_PrefabInstance: {fileID: 4651453881450576982}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: d1c453e6e4c1c9743b7f51a56a955454, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.RoundSettlementWidget
 --- !u!224 &8847551164728271747 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4198929633963532245, guid: 669c13fae29f06e4086dcfdd098071f7,
@@ -3364,18 +3364,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63a3368e34d797d4d8987edf0ef3f207, type: 3}
---- !u!114 &5974034634215647402 stripped
+--- !u!114 &6840461742444065575 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1924257214249705384, guid: 63a3368e34d797d4d8987edf0ef3f207,
+  m_CorrespondingSourceObject: {fileID: 1635491466226484261, guid: 63a3368e34d797d4d8987edf0ef3f207,
     type: 3}
   m_PrefabInstance: {fileID: 5214145155478320898}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 87f94b918c9aac046bbbcbb38feda9f9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.OpponentIntelWidget
 --- !u!224 &8000492555209671007 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 2835905416833398365, guid: 63a3368e34d797d4d8987edf0ef3f207,
@@ -3500,24 +3500,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9607a75da39614e4d942fd46aa517d06, type: 3}
---- !u!224 &4447851656965333272 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8528662482887437644, guid: 9607a75da39614e4d942fd46aa517d06,
-    type: 3}
-  m_PrefabInstance: {fileID: 5467955795372657748}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &7814624115258855566 stripped
+--- !u!114 &1334764981692056778 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2851073138308766938, guid: 9607a75da39614e4d942fd46aa517d06,
+  m_CorrespondingSourceObject: {fileID: 6441305796714891422, guid: 9607a75da39614e4d942fd46aa517d06,
     type: 3}
   m_PrefabInstance: {fileID: 5467955795372657748}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 582f9f88975b25b448e33aab990b08ed, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.BattleSummaryWidget
+--- !u!224 &4447851656965333272 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8528662482887437644, guid: 9607a75da39614e4d942fd46aa517d06,
+    type: 3}
+  m_PrefabInstance: {fileID: 5467955795372657748}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5607969960473810543
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4452,18 +4452,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5a7559c46c8d56047a1c9a0bbf533351, type: 3}
---- !u!114 &4877423443296677806 stripped
+--- !u!114 &3682806056199580929 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2836528644518505170, guid: 5a7559c46c8d56047a1c9a0bbf533351,
+  m_CorrespondingSourceObject: {fileID: 6338461990986213501, guid: 5a7559c46c8d56047a1c9a0bbf533351,
     type: 3}
   m_PrefabInstance: {fileID: 7272549244725265788}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 57a2e7f263940f14784c519595ca182f, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.PreparationChoiceWidget
 --- !u!224 &7194438360970687485 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 520885473078113921, guid: 5a7559c46c8d56047a1c9a0bbf533351,
@@ -4588,24 +4588,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1fdf3eaf507d1994fa91fa48c1e293fa, type: 3}
---- !u!224 &2086239338694010851 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 8286497306588239879, guid: 1fdf3eaf507d1994fa91fa48c1e293fa,
-    type: 3}
-  m_PrefabInstance: {fileID: 7929786460119580644}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &8811950951950644605 stripped
+--- !u!114 &1281635723940990860 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1460877628063861401, guid: 1fdf3eaf507d1994fa91fa48c1e293fa,
+  m_CorrespondingSourceObject: {fileID: 9206776158750060648, guid: 1fdf3eaf507d1994fa91fa48c1e293fa,
     type: 3}
   m_PrefabInstance: {fileID: 7929786460119580644}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: e2f90dafd365f9d4d96371480d47f534, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.BoardEditorWidget
+--- !u!224 &2086239338694010851 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 8286497306588239879, guid: 1fdf3eaf507d1994fa91fa48c1e293fa,
+    type: 3}
+  m_PrefabInstance: {fileID: 7929786460119580644}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8668376413417428851
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4860,24 +4860,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 090c2e40ad2db414a9a7125ec1906a75, type: 3}
---- !u!114 &621482954431477999 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8327304501630107568, guid: 090c2e40ad2db414a9a7125ec1906a75,
-    type: 3}
-  m_PrefabInstance: {fileID: 8867433903392376671}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
 --- !u!224 &3361969624766155363 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6172017988454206780, guid: 090c2e40ad2db414a9a7125ec1906a75,
     type: 3}
   m_PrefabInstance: {fileID: 8867433903392376671}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &5316409738197328891 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3659414777544352932, guid: 090c2e40ad2db414a9a7125ec1906a75,
+    type: 3}
+  m_PrefabInstance: {fileID: 8867433903392376671}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7a38c4db28cf3e42b02aace9c968bea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.EventWidget
 --- !u!1001 &8929764090937152518
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5268,18 +5268,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 73fb6e6da5dcee64f832896f44872911, type: 3}
---- !u!114 &7887314222314556624 stripped
+--- !u!114 &1004230610905534642 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1302577034799568018, guid: 73fb6e6da5dcee64f832896f44872911,
+  m_CorrespondingSourceObject: {fileID: 8253214644905462000, guid: 73fb6e6da5dcee64f832896f44872911,
     type: 3}
   m_PrefabInstance: {fileID: 9180289419611822146}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Script: {fileID: 11500000, guid: 7da26fa8b09cbd844b50855174c8b8d0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_EditorClassIdentifier: Game.Hot.Code::Game.Hot.Buqi.UI.Stages.RunTerminalWidget
 --- !u!224 &9191111390024644022 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 66308843298778612, guid: 73fb6e6da5dcee64f832896f44872911,

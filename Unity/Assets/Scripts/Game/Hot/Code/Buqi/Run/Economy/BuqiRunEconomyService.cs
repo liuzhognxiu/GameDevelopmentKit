@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using Game.Hot.Buqi.Run.Core;
 
 namespace Game.Hot.Buqi.Run.Economy
@@ -115,6 +117,65 @@ namespace Game.Hot.Buqi.Run.Economy
             working.Items.Remove(instanceId);
             working.Run.Coins += definition.SellPrice;
             return Success(working, instanceId);
+        }
+
+        public BuqiRunSellQuote QuoteBoardSale(BuqiRunEconomySnapshot source, string instanceId)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (!HasDefinedQualities(source))
+                return RejectQuote("Item quality is invalid.");
+            if (!IsOnBoard(source, instanceId))
+                return RejectQuote("Board item instance was not found.");
+            if (!TryResolveItem(source, instanceId, out BuqiRunItemInstance item, out BuqiRunItemDefinition definition))
+                return RejectQuote("Item instance was not found.");
+            if (!string.Equals(item.InstanceId, instanceId, StringComparison.Ordinal))
+                return RejectQuote("Item instance identity is invalid.");
+            if (!IsPositiveSize(definition.Size))
+                return RejectQuote("Item definition size must be positive.");
+            if (!IsNonNegativePrice(definition.SellPrice))
+                return RejectQuote("Sell price must be non-negative.");
+
+            return new BuqiRunSellQuote
+            {
+                Success = true,
+                InstanceId = instanceId,
+                ExpectedRefund = definition.SellPrice,
+                DefinitionId = item.DefinitionId,
+                Quality = item.Quality,
+                RefinementId = item.RefinementId,
+                SnapshotToken = CreateSnapshotToken(source),
+            };
+        }
+
+        public BuqiRunEconomyResult SellQuoted(BuqiRunEconomySnapshot source, BuqiRunSellQuote quote)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (quote == null || !quote.Success)
+                return Fail(source, "Sell quote was not accepted.");
+            if (!string.Equals(quote.SnapshotToken, CreateSnapshotToken(source), StringComparison.Ordinal))
+                return Fail(source, "Sell quote is stale.");
+            if (!IsOnBoard(source, quote.InstanceId))
+                return Fail(source, "Sell quote is stale.");
+            if (!TryResolveItem(
+                    source,
+                    quote.InstanceId,
+                    out BuqiRunItemInstance item,
+                    out BuqiRunItemDefinition definition))
+            {
+                return Fail(source, "Sell quote is stale.");
+            }
+            if (!string.Equals(item.InstanceId, quote.InstanceId, StringComparison.Ordinal)
+                || !string.Equals(item.DefinitionId, quote.DefinitionId, StringComparison.Ordinal)
+                || item.Quality != quote.Quality
+                || !string.Equals(item.RefinementId, quote.RefinementId, StringComparison.Ordinal)
+                || definition.SellPrice != quote.ExpectedRefund)
+            {
+                return Fail(source, "Sell quote is stale.");
+            }
+
+            return Sell(source, quote.InstanceId);
         }
 
         public BuqiRunEconomyResult Upgrade(BuqiRunEconomySnapshot source, string instanceId)
@@ -267,6 +328,81 @@ namespace Game.Hot.Buqi.Run.Economy
             }
         }
 
+        private static bool IsOnBoard(BuqiRunEconomySnapshot snapshot, string instanceId)
+        {
+            if (string.IsNullOrWhiteSpace(instanceId))
+                return false;
+
+            for (int index = 0; index < snapshot.Run.BoardInstanceIds.Count; index++)
+            {
+                if (string.Equals(snapshot.Run.BoardInstanceIds[index], instanceId, StringComparison.Ordinal))
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static string CreateSnapshotToken(BuqiRunEconomySnapshot snapshot)
+        {
+            var builder = new StringBuilder(512);
+            AppendTokenPart(builder, snapshot.Run.ContentVersion);
+            AppendTokenPart(builder, snapshot.Run.RuleVersion);
+            AppendTokenPart(builder, snapshot.Run.RunSeed.ToString());
+            AppendTokenPart(builder, snapshot.Run.RngCursor.ToString());
+            AppendTokenPart(builder, snapshot.Run.Revision.ToString());
+            AppendTokenPart(builder, snapshot.Run.Day.ToString());
+            AppendTokenPart(builder, snapshot.Run.EncounterIndex.ToString());
+            AppendTokenPart(builder, ((int)snapshot.Run.Phase).ToString());
+            AppendTokenPart(builder, ((int)snapshot.Run.Outcome).ToString());
+            AppendTokenPart(builder, snapshot.Run.Coins.ToString());
+            AppendTokenPart(builder, snapshot.Run.Wins.ToString());
+            AppendTokenPart(builder, snapshot.Run.Lives.ToString());
+            AppendTokenPart(builder, snapshot.NextItemOrdinal.ToString());
+            AppendTokenParts(builder, snapshot.Run.BoardInstanceIds);
+            AppendTokenParts(builder, snapshot.Run.StorageInstanceIds);
+            AppendSortedTokenParts(builder, snapshot.Run.AppliedCommandIds);
+            AppendSortedTokenParts(builder, snapshot.Run.AppliedSettlementIds);
+
+            var instanceIds = new List<string>(snapshot.Items.Keys);
+            instanceIds.Sort(StringComparer.Ordinal);
+            foreach (string instanceId in instanceIds)
+            {
+                AppendTokenPart(builder, instanceId);
+                BuqiRunItemInstance item = snapshot.Items[instanceId];
+                if (item == null)
+                {
+                    AppendTokenPart(builder, string.Empty);
+                    continue;
+                }
+
+                AppendTokenPart(builder, item.InstanceId);
+                AppendTokenPart(builder, item.DefinitionId);
+                AppendTokenPart(builder, ((int)item.Quality).ToString());
+                AppendTokenPart(builder, item.RefinementId);
+            }
+
+            return builder.ToString();
+        }
+
+        private static void AppendTokenParts(StringBuilder builder, IEnumerable<string> values)
+        {
+            foreach (string value in values)
+                AppendTokenPart(builder, value);
+        }
+
+        private static void AppendSortedTokenParts(StringBuilder builder, IEnumerable<string> values)
+        {
+            var sorted = new List<string>(values);
+            sorted.Sort(StringComparer.Ordinal);
+            AppendTokenParts(builder, sorted);
+        }
+
+        private static void AppendTokenPart(StringBuilder builder, string value)
+        {
+            string safeValue = value ?? string.Empty;
+            builder.Append(safeValue.Length).Append(':').Append(safeValue).Append('|');
+        }
+
         private static BuqiRunItemQuality AdvanceQuality(BuqiRunItemQuality quality)
         {
             if (quality == BuqiRunItemQuality.Common)
@@ -321,6 +457,15 @@ namespace Game.Hot.Buqi.Run.Economy
                 Success = false,
                 FailureReason = reason,
                 Snapshot = source.Clone(),
+            };
+        }
+
+        private static BuqiRunSellQuote RejectQuote(string reason)
+        {
+            return new BuqiRunSellQuote
+            {
+                Success = false,
+                FailureReason = reason,
             };
         }
     }

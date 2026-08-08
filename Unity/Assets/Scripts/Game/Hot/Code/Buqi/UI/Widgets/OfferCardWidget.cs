@@ -1,5 +1,6 @@
 using System;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.UI.Widgets;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,7 +10,6 @@ namespace Game.Hot.Buqi.UI
     public sealed class OfferCardWidget : MonoBehaviour
     {
         private static readonly Color baseColor = new Color32(36, 43, 51, 255);
-        private static readonly Color lockedColor = new Color32(70, 73, 80, 255);
         private static readonly Color soldColor = new Color32(77, 73, 61, 255);
 
         [SerializeField]
@@ -36,7 +36,18 @@ namespace Game.Hot.Buqi.UI
         [SerializeField]
         private Button m_DetailsButton = null;
 
+        private BuqiHoverDetailTrigger m_DetailTrigger;
+
         public void Render(BuqiDemoOfferView view, Action<string> onBuy, Action<string> onDetails)
+        {
+            Render(view, onBuy, onDetails, null);
+        }
+
+        public void Render(
+            BuqiDemoOfferView view,
+            Action<string> onBuy,
+            Action<string> onDetails,
+            Action onDetailsHidden)
         {
             if (view == null)
             {
@@ -50,15 +61,15 @@ namespace Game.Hot.Buqi.UI
             BuqiDemoItemView item = view.Item;
             string itemName = item == null ? view.Id : string.IsNullOrEmpty(item.Name) ? item.Id : item.Name;
             string itemDescription = item == null ? string.Empty : item.Description;
-            bool unavailable = view.Locked || view.Sold;
+            bool unavailable = view.Sold;
 
             SetText(m_NameText, itemName);
-            SetText(m_DescriptionText, view.Locked ? "报价已锁定" : view.Sold ? "已售出" : itemDescription);
+            SetText(m_DescriptionText, view.Sold ? "已售出" : itemDescription);
             SetText(m_PriceText, view.Sold ? "已购买" : GameFramework.Utility.Text.Format("价格 {0}", view.Price));
-            SetBackground(view.Sold ? soldColor : view.Locked ? lockedColor : baseColor);
+            SetBackground(view.Sold ? soldColor : baseColor);
 
             if (m_LockOverlay != null)
-                m_LockOverlay.SetActive(view.Locked);
+                m_LockOverlay.SetActive(false);
             if (m_SoldOverlay != null)
                 m_SoldOverlay.SetActive(view.Sold);
             if (m_BuyButton != null)
@@ -69,10 +80,10 @@ namespace Game.Hot.Buqi.UI
             }
             if (m_DetailsButton != null)
             {
-                m_DetailsButton.interactable = true;
-                if (onDetails != null)
-                    m_DetailsButton.onClick.AddListener(() => onDetails(view.Id));
+                m_DetailsButton.enabled = false;
+                m_DetailsButton.interactable = false;
             }
+            ResolveDetailTrigger().Bind(view.Id, onDetails, onDetailsHidden);
         }
 
         public void Clear()
@@ -85,8 +96,11 @@ namespace Game.Hot.Buqi.UI
             if (m_DetailsButton != null)
             {
                 m_DetailsButton.onClick.RemoveAllListeners();
-                m_DetailsButton.interactable = true;
+                m_DetailsButton.enabled = false;
+                m_DetailsButton.interactable = false;
             }
+            if (m_DetailTrigger != null)
+                m_DetailTrigger.Clear();
             if (m_Background != null)
                 m_Background.color = baseColor;
             if (m_LockOverlay != null)
@@ -103,6 +117,15 @@ namespace Game.Hot.Buqi.UI
         {
             if (m_Background != null)
                 m_Background.color = color;
+        }
+
+        private BuqiHoverDetailTrigger ResolveDetailTrigger()
+        {
+            if (m_DetailTrigger == null)
+                m_DetailTrigger = GetComponent<BuqiHoverDetailTrigger>();
+            if (m_DetailTrigger == null)
+                m_DetailTrigger = gameObject.AddComponent<BuqiHoverDetailTrigger>();
+            return m_DetailTrigger;
         }
 
         private static void SetText(Text text, string value)

@@ -42,4 +42,17 @@ namespace Game.Hot.Buqi.Run.Economy
         public BuqiRunEconomySnapshot Snapshot = null!;
         public string AffectedInstanceId = string.Empty;
     }
+
+    public sealed class BuqiRunSellQuote
+    {
+        public bool Success { get; internal set; }
+        public string FailureReason { get; internal set; } = string.Empty;
+        public string InstanceId { get; internal set; } = string.Empty;
+        public int ExpectedRefund { get; internal set; }
+
+        internal string DefinitionId { get; set; } = string.Empty;
+        internal BuqiRunItemQuality Quality { get; set; }
+        internal string RefinementId { get; set; } = string.Empty;
+        internal string SnapshotToken { get; set; } = string.Empty;
+    }
 }

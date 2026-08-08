@@ -524,6 +524,16 @@ namespace Game.Hot
         public const string Key_Buqi_Stage_Modification_Title = "Buqi.Stage.Modification.Title";
 
         /// <summary>
+        /// 选择坊市、机缘或静修；当前周天保持可见。
+        /// </summary>
+        public const string Key_Buqi_Stage_OperationChoice_Description = "Buqi.Stage.OperationChoice.Description";
+
+        /// <summary>
+        /// 经营选择
+        /// </summary>
+        public const string Key_Buqi_Stage_OperationChoice_Title = "Buqi.Stage.OperationChoice.Title";
+
+        /// <summary>
         /// 只展示公开的棋盘和构筑信息。
         /// </summary>
         public const string Key_Buqi_Stage_OpponentIntel_Description = "Buqi.Stage.OpponentIntel.Description";
@@ -547,6 +557,16 @@ namespace Game.Hot
         /// 战前准备
         /// </summary>
         public const string Key_Buqi_Stage_PreparationChoice_Title = "Buqi.Stage.PreparationChoice.Title";
+
+        /// <summary>
+        /// 选择初阶、进阶或险阶后直接进入战斗。
+        /// </summary>
+        public const string Key_Buqi_Stage_PveSelection_Description = "Buqi.Stage.PveSelection.Description";
+
+        /// <summary>
+        /// PVE 选关
+        /// </summary>
+        public const string Key_Buqi_Stage_PveSelection_Title = "Buqi.Stage.PveSelection.Title";
 
         /// <summary>
         /// 结算胜场、单局生命与金币变化。
@@ -582,6 +602,26 @@ namespace Game.Hot
         /// 选择本局的第一件装备。
         /// </summary>
         public const string Key_Buqi_Stage_StarterSelection_Description = "Buqi.Stage.StarterSelection.Description";
+
+        /// <summary>
+        /// 九日夜战后选择一条渡劫路线。
+        /// </summary>
+        public const string Key_Buqi_Stage_TribulationRoute_Description = "Buqi.Stage.TribulationRoute.Description";
+
+        /// <summary>
+        /// 渡劫路线
+        /// </summary>
+        public const string Key_Buqi_Stage_TribulationRoute_Title = "Buqi.Stage.TribulationRoute.Title";
+
+        /// <summary>
+        /// 应劫并推进当前阶段。
+        /// </summary>
+        public const string Key_Buqi_Stage_TribulationStage_Description = "Buqi.Stage.TribulationStage.Description";
+
+        /// <summary>
+        /// 三阶段天劫
+        /// </summary>
+        public const string Key_Buqi_Stage_TribulationStage_Title = "Buqi.Stage.TribulationStage.Title";
 
         /// <summary>
         /// 取消

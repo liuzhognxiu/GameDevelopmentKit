@@ -244,6 +244,34 @@ namespace Game.Hot.Editor.Buqi
                 ["单局结束"] = "Buqi.Stage.RunTerminal.Title",
                 ["查看本局构筑摘要并重新开始。"] = "Buqi.Stage.RunTerminal.Description",
             },
+            ["OperationChoiceWidget.prefab"] = new Dictionary<string, string>
+            {
+                ["--"] = "Buqi.Common.Placeholder",
+                ["\u6F14\u793A"] = "Buqi.Common.DemoTag",
+                ["\u7ECF\u8425\u9009\u62E9"] = "Buqi.Stage.OperationChoice.Title",
+                ["\u9009\u62E9\u574A\u5E02\u3001\u673A\u7F18\u6216\u9759\u4FEE\uFF1B\u5F53\u524D\u5468\u5929\u4FDD\u6301\u53EF\u89C1\u3002"] = "Buqi.Stage.OperationChoice.Description",
+            },
+            ["PveSelectionStageWidget.prefab"] = new Dictionary<string, string>
+            {
+                ["--"] = "Buqi.Common.Placeholder",
+                ["\u6F14\u793A"] = "Buqi.Common.DemoTag",
+                ["PVE \u9009\u5173"] = "Buqi.Stage.PveSelection.Title",
+                ["\u9009\u62E9\u521D\u9636\u3001\u8FDB\u9636\u6216\u9669\u9636\u540E\u76F4\u63A5\u8FDB\u5165\u6218\u6597\u3002"] = "Buqi.Stage.PveSelection.Description",
+            },
+            ["TribulationRouteWidget.prefab"] = new Dictionary<string, string>
+            {
+                ["--"] = "Buqi.Common.Placeholder",
+                ["\u6F14\u793A"] = "Buqi.Common.DemoTag",
+                ["\u6E21\u52AB\u8DEF\u7EBF"] = "Buqi.Stage.TribulationRoute.Title",
+                ["\u4E5D\u65E5\u591C\u6218\u540E\u9009\u62E9\u4E00\u6761\u6E21\u52AB\u8DEF\u7EBF\u3002"] = "Buqi.Stage.TribulationRoute.Description",
+            },
+            ["TribulationStageWidget.prefab"] = new Dictionary<string, string>
+            {
+                ["--"] = "Buqi.Common.Placeholder",
+                ["\u6F14\u793A"] = "Buqi.Common.DemoTag",
+                ["\u4E09\u9636\u6BB5\u5929\u52AB"] = "Buqi.Stage.TribulationStage.Title",
+                ["\u5E94\u52AB\u5E76\u63A8\u8FDB\u5F53\u524D\u9636\u6BB5\u3002"] = "Buqi.Stage.TribulationStage.Description",
+            },
         };
 
         [MenuItem("Game/Buqi/Fix Prefab Localization Keys")]

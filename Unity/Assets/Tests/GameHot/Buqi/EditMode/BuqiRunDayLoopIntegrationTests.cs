@@ -18,7 +18,7 @@ namespace Game.Hot.Buqi.Tests
     public sealed class BuqiRunDayLoopIntegrationTests
     {
         [Test]
-        public void Create_StartsAtEncounterWithDeterministicStarterAndEightStorageSlots()
+        public void Create_StartsAtOperationChoiceWithDeterministicStarterAndEightStorageSlots()
         {
             BuqiUIDemoCatalog catalog = CreateCatalog();
 
@@ -31,9 +31,8 @@ namespace Game.Hot.Buqi.Tests
                 Is.True,
                 error);
 
-            Assert.That(
-                controller.View.Phase == BuqiUIDemoPhase.Shop || controller.View.Phase == BuqiUIDemoPhase.Event,
-                Is.True);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(controller.View.Choices.Count, Is.EqualTo(3));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.StarterSelection));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.OpponentIntel));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.Prediction));
@@ -69,7 +68,8 @@ namespace Game.Hot.Buqi.Tests
             }
 
             Assert.That(controller.View.Round, Is.EqualTo(2));
-            Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.Shop || phase == BuqiUIDemoPhase.Event), Is.EqualTo(2));
+            Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.OperationChoice), Is.EqualTo(2));
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.PveSelection), Is.True);
             Assert.That(seenPhases.Contains(BuqiUIDemoPhase.BattleReplay), Is.True);
             Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.BattleSummary), Is.EqualTo(2));
             Assert.That(seenPhases.Contains(BuqiUIDemoPhase.RoundSettlement), Is.False);
@@ -106,6 +106,32 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(confirmed.Accepted, Is.True, confirmed.Reason);
             Assert.That(ReadSave(store).BattlePayload, Is.Empty);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.TribulationRoute));
+
+            BuqiUIDemoCommandResult route = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectTribulationRoute,
+                PrimaryId = "face-thunder",
+            });
+            Assert.That(route.Accepted, Is.True, route.Reason);
+
+            for (int stage = 1; stage <= BuqiRunRules.TribulationStageCount; stage++)
+            {
+                Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.TribulationStage));
+                Assert.That(controller.View.TribulationStage, Is.EqualTo(stage));
+                BuqiUIDemoCommandResult resolved = controller.Execute(new BuqiUIDemoCommand
+                {
+                    Type = BuqiUIDemoCommandType.ResolveTribulationStage,
+                });
+                Assert.That(resolved.Accepted, Is.True, resolved.Reason);
+            }
+
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.RunTerminal));
+            Assert.That(ReadSave(store).Phase, Is.EqualTo((int)BuqiRunPhase.RunTerminal));
+
+            BuqiUIDemoController restored = CreateController(store);
+            Assert.That(restored.View.Phase, Is.EqualTo(BuqiUIDemoPhase.RunTerminal));
+            Assert.That(restored.View.Round, Is.EqualTo(BuqiRunRules.RunDayCount));
         }
 
         [Test]
@@ -141,6 +167,7 @@ namespace Game.Hot.Buqi.Tests
                     out string error),
                 Is.True,
                 error);
+            SelectOperation(controller, "event");
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Event));
             int coinsBefore = controller.View.Coins;
 
@@ -153,11 +180,7 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(result.Accepted, Is.True, result.Reason);
             Assert.That(controller.View.Coins, Is.EqualTo(coinsBefore));
-            Assert.That(
-                controller.View.Phase == BuqiUIDemoPhase.Shop ||
-                controller.View.Phase == BuqiUIDemoPhase.Event ||
-                controller.View.Phase == BuqiUIDemoPhase.BattleReplay,
-                Is.True);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
         }
 
         [Test]
@@ -203,14 +226,12 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void FailedStoreWrite_DuringDeploymentLeavesStateUnchanged()
+        public void DeploymentCommand_IsDisabledAndLeavesStateUnchanged()
         {
             var store = new MemoryRunStore();
             BuqiUIDemoController controller = CreateControllerOnPhase(store, BuqiUIDemoPhase.Shop);
             RunFingerprint before = CaptureRuntime(controller);
             string jsonBefore = store.CurrentJson;
-            store.FailNextWrite("deploy write failed");
-
             BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.ApplyDeployment,
@@ -218,7 +239,7 @@ namespace Game.Hot.Buqi.Tests
             });
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("deploy write failed"));
+            Assert.That(result.Reason, Does.Contain("disabled").IgnoreCase);
             Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
             Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
         }
@@ -555,6 +576,7 @@ namespace Game.Hot.Buqi.Tests
                     out string error),
                 Is.True,
                 error);
+            SelectOperation(controller, "event");
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Event));
 
             BuqiRunSaveData save = ReadSave(store);
@@ -583,6 +605,37 @@ namespace Game.Hot.Buqi.Tests
 
         private static BuqiUIDemoCommand SelectProgressCommand(BuqiUIDemoView view)
         {
+            if (view.Phase == BuqiUIDemoPhase.OperationChoice)
+            {
+                return new BuqiUIDemoCommand
+                {
+                    Type = BuqiUIDemoCommandType.SelectOperation,
+                    PrimaryId = "meditate",
+                };
+            }
+
+            if (view.Phase == BuqiUIDemoPhase.PveSelection)
+            {
+                return new BuqiUIDemoCommand
+                {
+                    Type = BuqiUIDemoCommandType.SelectPveDifficulty,
+                    PrimaryId = view.Choices[0].Id,
+                };
+            }
+
+            if (view.Phase == BuqiUIDemoPhase.TribulationRoute)
+            {
+                return new BuqiUIDemoCommand
+                {
+                    Type = BuqiUIDemoCommandType.SelectTribulationRoute,
+                    PrimaryId = "face-thunder",
+                    Slot = 0,
+                };
+            }
+
+            if (view.Phase == BuqiUIDemoPhase.TribulationStage)
+                return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.ResolveTribulationStage };
+
             if (view.Phase == BuqiUIDemoPhase.Shop)
             {
                 return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase };
@@ -658,6 +711,11 @@ namespace Game.Hot.Buqi.Tests
                     Assert.Fail(error);
                 }
 
+                if (phase == BuqiUIDemoPhase.Shop || phase == BuqiUIDemoPhase.Event)
+                {
+                    SelectOperation(controller, phase == BuqiUIDemoPhase.Shop ? "bazaar" : "event");
+                }
+
                 if (controller.View.Phase == phase)
                     return controller;
             }
@@ -672,7 +730,7 @@ namespace Game.Hot.Buqi.Tests
             {
                 Store = store,
                 RunSeed = runSeed,
-                PveOpponentIds = new[] { "pve-a", "pve-b" },
+                PveOpponentIds = new[] { "pve-a", "pve-b", "pve-c" },
                 PvpOpponentIds = new[] { "pvp-a", "pvp-b" },
             };
         }
@@ -719,6 +777,7 @@ namespace Game.Hot.Buqi.Tests
 
             catalog.Echoes.Add(CreateEcho("pve-a", "PVE Alpha", "item-02", "item-03"));
             catalog.Echoes.Add(CreateEcho("pve-b", "PVE Beta", "item-03", "item-04"));
+            catalog.Echoes.Add(CreateEcho("pve-c", "PVE Gamma", "item-04", "item-05"));
             catalog.Echoes.Add(CreateEcho("pvp-a", "PVP Alpha", "item-05", "item-06"));
             catalog.Echoes.Add(CreateEcho("pvp-b", "PVP Beta", "item-07", "item-08"));
             return catalog;
@@ -757,6 +816,16 @@ namespace Game.Hot.Buqi.Tests
         {
             Assert.That(BuqiRunSaveCodec.TryFromJson(store.CurrentJson, out BuqiRunSaveData saveData, out string error), Is.True, error);
             return saveData;
+        }
+
+        private static void SelectOperation(BuqiUIDemoController controller, string operationId)
+        {
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectOperation,
+                PrimaryId = operationId,
+            });
+            Assert.That(result.Accepted, Is.True, result.Reason);
         }
 
         private static BuqiRunBattleSummary BuildSummary(BuqiUIDemoController controller)

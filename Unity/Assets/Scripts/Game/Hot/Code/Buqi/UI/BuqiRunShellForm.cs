@@ -51,6 +51,9 @@ namespace Game.Hot.Buqi.UI
         private PhaseStepWidget[] m_PhaseSteps = Array.Empty<PhaseStepWidget>();
 
         [SerializeField]
+        private GameObject m_PhaseRail = null;
+
+        [SerializeField]
         private MonoBehaviour[] m_StageComponents = Array.Empty<MonoBehaviour>();
 
         [SerializeField]
@@ -155,6 +158,20 @@ namespace Game.Hot.Buqi.UI
             if (m_Controller == null)
                 return;
 
+            if (command != null && command.Type == BuqiUIDemoCommandType.BuyOffer)
+            {
+                OpenPurchaseConfirmation(command);
+                return;
+            }
+
+            ExecuteCommand(command);
+        }
+
+        private void ExecuteCommand(BuqiUIDemoCommand command)
+        {
+            if (m_Controller == null)
+                return;
+
             BuqiUIDemoCommandResult result = m_Controller.Execute(command);
             SetText(m_StatusText, result.Accepted ? string.Empty : result.Reason);
             if (!result.Accepted)
@@ -167,6 +184,38 @@ namespace Game.Hot.Buqi.UI
             }
 
             Render();
+        }
+
+        private void OpenPurchaseConfirmation(BuqiUIDemoCommand command)
+        {
+            BuqiDemoOfferView selectedOffer = null;
+            foreach (BuqiDemoOfferView offer in m_Controller.View.ShopOffers)
+            {
+                if (string.Equals(offer.Id, command.PrimaryId, StringComparison.Ordinal))
+                {
+                    selectedOffer = offer;
+                    break;
+                }
+            }
+
+            if (selectedOffer == null)
+            {
+                ShowError("Selected shop offer is unavailable.");
+                return;
+            }
+
+            string itemName = selectedOffer.Item?.Name ?? selectedOffer.Id;
+            GameEntry.UI.OpenUIForm(UIFormId.BuqiConfirmForm, new BuqiConfirmOpenData
+            {
+                Title = "Confirm Purchase",
+                Message = GameFramework.Utility.Text.Format(
+                    "Buy {0} for {1} coins and leave this shop?",
+                    itemName,
+                    selectedOffer.Price),
+                ConfirmLabel = "Buy and Leave",
+                CancelLabel = "Keep Shopping",
+                Confirm = () => ExecuteCommand(command),
+            });
         }
 
         private void OpenDragDeploy()
@@ -200,7 +249,7 @@ namespace Game.Hot.Buqi.UI
 
         private void GoBack()
         {
-            Submit(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.PreviousPhase });
+            Close();
         }
 
         private void Advance()
@@ -232,6 +281,9 @@ namespace Game.Hot.Buqi.UI
             SetText(m_ContextTitleText, view.ContextTitle);
             SetText(m_ContextBodyText, view.ContextBody);
             SetText(m_PrimaryLabel, view.PrimaryCommandLabel);
+            if (m_PrimaryButton != null)
+                m_PrimaryButton.gameObject.SetActive(!string.IsNullOrEmpty(view.PrimaryCommandLabel));
+            m_PhaseRail?.SetActive(view.Phase != BuqiUIDemoPhase.PveSelection);
             RenderResources(view);
             RenderPhaseRail(view);
             if (!m_Registry.Show(view, Submit))
@@ -243,9 +295,9 @@ namespace Game.Hot.Buqi.UI
         private void RenderResources(BuqiUIDemoView view)
         {
             RenderChip(0, "Coins", view.Coins.ToString(), "+", ResourceChipState.Normal);
-            RenderChip(1, "Wins", view.Wins.ToString(), "W", ResourceChipState.Normal);
-            RenderChip(2, "Lives", view.Lives.ToString(), "L", view.Lives <= 1 ? ResourceChipState.Warning : ResourceChipState.Normal);
-            RenderChip(3, "Day", view.Round.ToString(), "D", ResourceChipState.Normal);
+            RenderChip(1, "Day", GameFramework.Utility.Text.Format("{0}/9", view.Round), "D", ResourceChipState.Normal);
+            RenderChip(2, "Lives", GameFramework.Utility.Text.Format("{0}/3", view.Lives), "L", view.Lives <= 1 ? ResourceChipState.Warning : ResourceChipState.Normal);
+            RenderChip(3, "Dao/Omen", GameFramework.Utility.Text.Format("{0}/{1}", view.DaoSeals, view.TribulationOmen), "T", ResourceChipState.Normal);
         }
 
         private void RenderChip(int index, string label, string value, string icon, ResourceChipState state)
@@ -293,12 +345,23 @@ namespace Game.Hot.Buqi.UI
             }
 
             m_OpeningBattle = true;
-            GameEntry.UI.OpenUIForm(UIFormId.BattleForm, replay);
+            GameEntry.UI.OpenUIForm(UIFormId.BattleForm, new BattleReplayOpenData
+            {
+                Replay = replay,
+                Confirmed = CompleteBattleReplay,
+            });
+        }
+
+        private void CompleteBattleReplay()
+        {
+            if (!m_OpeningBattle || m_Controller == null)
+                return;
+
+            m_OpeningBattle = false;
             BuqiUIDemoCommandResult result = m_Controller.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.NextPhase,
             });
-            m_OpeningBattle = false;
             if (!result.Accepted)
             {
                 ShowError(result.Reason);
@@ -310,8 +373,10 @@ namespace Game.Hot.Buqi.UI
 
         private static int ResolveRailIndex(BuqiUIDemoView view)
         {
-            if (view.Phase == BuqiUIDemoPhase.Shop || view.Phase == BuqiUIDemoPhase.Event)
+            if (view.Phase == BuqiUIDemoPhase.OperationChoice || view.Phase == BuqiUIDemoPhase.Shop || view.Phase == BuqiUIDemoPhase.Event)
                 return 0;
+            if (view.Phase == BuqiUIDemoPhase.PveSelection)
+                return 1;
             if (view.Phase == BuqiUIDemoPhase.BattleReplay || view.Phase == BuqiUIDemoPhase.BattleSummary)
                 return view.ContextTitle.IndexOf("PVP", StringComparison.OrdinalIgnoreCase) >= 0 ? 2 : 1;
             if (view.Phase == BuqiUIDemoPhase.RoundSettlement)

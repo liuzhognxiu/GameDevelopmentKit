@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using NUnit.Framework;
@@ -189,6 +190,15 @@ namespace Game.Hot.Buqi.Tests
     public sealed class BuqiBattleIntegrationBuilderTests
     {
         private GameObject m_Root;
+
+        [Test]
+        public void BattleFormIntegration_UsesSerializedCardArraysInsteadOfSyntheticSlotNames()
+        {
+            string source = File.ReadAllText("Assets/Scripts/Game/Hot/Code/Editor/Buqi/BuqiFullUIBuilder.cs");
+            Assert.That(source, Does.Contain("m_LeftCards"));
+            Assert.That(source, Does.Contain("m_RightCards"));
+            Assert.That(source, Does.Not.Contain("\"Slot\" + slot.ToString(\"00\") + \"_Left\""));
+        }
 
         [SetUp]
         public void SetUp()

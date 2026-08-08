@@ -13,8 +13,6 @@ namespace Game.Hot.Buqi.UI.Stages
                 string name = offer.Item == null ? offer.Id : offer.Item.Name;
                 AddAction($"{name}  {offer.Price} coins", BuqiUIDemoCommandType.BuyOffer, offer.Id);
             }
-
-            AddAction("Deploy", BuqiUIDemoCommandType.OpenDragDeploy);
         }
     }
 }

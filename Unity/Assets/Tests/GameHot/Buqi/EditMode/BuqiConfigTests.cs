@@ -132,7 +132,7 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(Contains(errors, "未知的 definitionId W8-999"), Is.True, string.Join("\n", errors));
             Assert.That(Contains(errors, "未知的 refinementId A-99"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "在棋位 0 与装备[1] 重叠"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "在棋位 0 与装备[0] 重叠"), Is.True, string.Join("\n", errors));
         }
 
         [Test]

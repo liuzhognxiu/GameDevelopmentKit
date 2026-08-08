@@ -18,17 +18,15 @@ namespace Game.Hot.Buqi.Tests
 
         private static readonly string[] stageNames =
         {
-            "StarterSelectionWidget",
-            "OpponentIntelWidget",
-            "PreparationChoiceWidget",
             "ShopWidget",
             "EventWidget",
-            "ModificationWidget",
-            "BoardEditorWidget",
-            "PredictionWidget",
             "BattleSummaryWidget",
             "RoundSettlementWidget",
             "RunTerminalWidget",
+            "OperationChoiceWidget",
+            "PveSelectionStageWidget",
+            "TribulationRouteWidget",
+            "TribulationStageWidget",
         };
 
         [Test]
@@ -149,7 +147,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void RunShell_ShopPurchaseRequiresConfirmationAndEventHidesDeadPrimaryButton()
+        public void RunShell_ShopPurchaseRequiresConfirmationAndEmptyLabelsHidePrimaryButton()
         {
             string shellFormPath = Path.Combine(
                 Application.dataPath,
@@ -159,7 +157,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(source, Does.Contain("command.Type == BuqiUIDemoCommandType.BuyOffer"));
             Assert.That(source, Does.Contain("OpenPurchaseConfirmation(command)"));
             Assert.That(source, Does.Contain("OpenUIForm(UIFormId.BuqiConfirmForm"));
-            Assert.That(source, Does.Contain("m_PrimaryButton.gameObject.SetActive(view.Phase != BuqiUIDemoPhase.Event)"));
+            Assert.That(source, Does.Contain("m_PrimaryButton.gameObject.SetActive(!string.IsNullOrEmpty(view.PrimaryCommandLabel))"));
         }
 
         [Test]

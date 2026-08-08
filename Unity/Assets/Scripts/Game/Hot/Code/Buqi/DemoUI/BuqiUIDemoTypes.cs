@@ -18,6 +18,10 @@ namespace Game.Hot.Buqi.DemoUI
         BattleSummary,
         RoundSettlement,
         RunTerminal,
+        OperationChoice,
+        PveSelection,
+        TribulationRoute,
+        TribulationStage,
     }
 
     public enum BuqiUIDemoCommandType
@@ -36,6 +40,10 @@ namespace Game.Hot.Buqi.DemoUI
         NextPhase,
         PreviousPhase,
         Restart,
+        SelectOperation,
+        SelectPveDifficulty,
+        SelectTribulationRoute,
+        ResolveTribulationStage,
     }
 
     public sealed class BuqiUIDemoCommand
@@ -108,6 +116,9 @@ namespace Game.Hot.Buqi.DemoUI
         public int Wins;
         public int Lives;
         public int Round;
+        public int DaoSeals;
+        public int TribulationOmen;
+        public int TribulationStage;
         public bool ShopLocked;
         public bool PredictionSubmitted;
         public string SelectedId = string.Empty;

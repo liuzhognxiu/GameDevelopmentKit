@@ -43,6 +43,10 @@ namespace Game.Hot.Editor
             BuildStage<BattleSummaryWidget>("BattleSummaryWidget", "战斗总结", "从真实战斗日志中提取可回溯事实。");
             BuildStage<RoundSettlementWidget>("RoundSettlementWidget", "回合结算", "结算胜场、单局生命与金币变化。");
             BuildStage<RunTerminalWidget>("RunTerminalWidget", "单局结束", "查看本局构筑摘要并重新开始。");
+            BuildStage<OperationChoiceWidget>("OperationChoiceWidget", "经营选择", "选择坊市、机缘或静修；当前周天保持可见。");
+            BuildStage<PveSelectionStageWidget>("PveSelectionStageWidget", "PVE 选关", "选择初阶、进阶或险阶后直接进入战斗。");
+            BuildStage<TribulationRouteWidget>("TribulationRouteWidget", "渡劫路线", "九日夜战后选择一条渡劫路线。");
+            BuildStage<TribulationStageWidget>("TribulationStageWidget", "三阶段天劫", "应劫并推进当前阶段。");
             BuildShell();
             BuildBattleFormIntegration();
             AssetDatabase.SaveAssets();
@@ -98,8 +102,8 @@ namespace Game.Hot.Editor
             GameObject phasePrefab = LoadPrefab(WidgetFolder + "/PhaseStepWidget.prefab");
             string[] stageNames =
             {
-                "StarterSelectionWidget", "OpponentIntelWidget", "PreparationChoiceWidget", "ShopWidget", "EventWidget", "ModificationWidget",
-                "BoardEditorWidget", "PredictionWidget", "BattleSummaryWidget", "RoundSettlementWidget", "RunTerminalWidget",
+                "ShopWidget", "EventWidget", "BattleSummaryWidget", "RoundSettlementWidget", "RunTerminalWidget",
+                "OperationChoiceWidget", "PveSelectionStageWidget", "TribulationRouteWidget", "TribulationStageWidget",
             };
 
             GameObject root = CreateRoot("BuqiRunShellForm", new Vector2(1920f, 1080f));
@@ -177,6 +181,7 @@ namespace Game.Hot.Editor
             Assign(form, "m_PrimaryLabel", primaryLabel);
             AssignArray(form, "m_ResourceChips", chips);
             AssignArray(form, "m_PhaseSteps", phaseSteps);
+            Assign(form, "m_PhaseRail", phaseRail);
             AssignArray(form, "m_StageComponents", stages);
             Assign(form, "m_BackButton", back);
             Assign(form, "m_PrimaryButton", primary);
@@ -325,12 +330,17 @@ namespace Game.Hot.Editor
                 if (form == null)
                     throw new InvalidOperationException("BattleForm component is missing from " + BattleFormPath);
 
-                var leftFloats = new List<MonoBehaviour>(8);
-                var rightFloats = new List<MonoBehaviour>(8);
-                for (int slot = 1; slot <= 8; slot++)
+                List<Transform> leftCards = ReadComponentTransforms(form, "m_LeftCards");
+                List<Transform> rightCards = ReadComponentTransforms(form, "m_RightCards");
+                if (leftCards.Count != 8 || rightCards.Count != 8)
+                    throw new InvalidOperationException("BattleForm must expose eight serialized item cards per side.");
+
+                var leftFloats = new List<MonoBehaviour>(leftCards.Count);
+                var rightFloats = new List<MonoBehaviour>(rightCards.Count);
+                for (int slot = 0; slot < leftCards.Count; slot++)
                 {
-                    leftFloats.Add(PrepareBattleFloat(root, "Slot" + slot.ToString("00") + "_Left", floatWidgetType));
-                    rightFloats.Add(PrepareBattleFloat(root, "Slot" + slot.ToString("00") + "_Right", floatWidgetType));
+                    leftFloats.Add(PrepareBattleFloat(leftCards[slot], floatWidgetType));
+                    rightFloats.Add(PrepareBattleFloat(rightCards[slot], floatWidgetType));
                 }
 
                 DisableLegacyBattleControls(root);
@@ -345,11 +355,10 @@ namespace Game.Hot.Editor
             }
         }
 
-        private static MonoBehaviour PrepareBattleFloat(GameObject root, string cardName, Type floatWidgetType)
+        private static MonoBehaviour PrepareBattleFloat(Transform card, Type floatWidgetType)
         {
-            Transform card = FindDescendant(root.transform, cardName);
             if (card == null)
-                throw new InvalidOperationException("BattleForm is missing item card " + cardName);
+                throw new InvalidOperationException("BattleForm contains a missing item card reference.");
 
             Transform anchor = card.Find("BattleFloatAnchor");
             if (anchor == null)
@@ -370,6 +379,21 @@ namespace Game.Hot.Editor
                 widget = anchor.gameObject.AddComponent(floatWidgetType) as MonoBehaviour;
             AssignFirstExisting(widget, value, "m_Text", "m_ValueText", "m_LabelText");
             return widget;
+        }
+
+        private static List<Transform> ReadComponentTransforms(MonoBehaviour target, string propertyName)
+        {
+            var result = new List<Transform>();
+            SerializedProperty property = new SerializedObject(target).FindProperty(propertyName);
+            if (property == null || !property.isArray)
+                return result;
+
+            for (int index = 0; index < property.arraySize; index++)
+            {
+                Component component = property.GetArrayElementAtIndex(index).objectReferenceValue as Component;
+                result.Add(component == null ? null : component.transform);
+            }
+            return result;
         }
 
         private static GameObject CreateBattleFloatAnchor(Transform card, Type floatWidgetType)

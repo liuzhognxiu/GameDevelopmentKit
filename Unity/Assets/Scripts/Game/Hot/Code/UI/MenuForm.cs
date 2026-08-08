@@ -19,7 +19,7 @@ namespace Game.Hot
 
         public void OnStartButtonClick()
         {
-            GameEntry.UI.OpenUIForm(UIFormId.BattleForm);
+            GameEntry.UI.OpenUIForm(UIFormId.BuqiRunShellForm);
         }
 
         public void OnSettingButtonClick()

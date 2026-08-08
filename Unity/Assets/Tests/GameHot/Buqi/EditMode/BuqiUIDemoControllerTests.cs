@@ -13,11 +13,12 @@ namespace Game.Hot.Buqi.Tests
     public sealed class BuqiUIDemoControllerTests
     {
         [Test]
-        public void Create_StartsInEncounterWithoutLegacyTopLevelPhases()
+        public void Create_StartsInOperationChoiceWithoutLegacyTopLevelPhases()
         {
             BuqiUIDemoController controller = CreateController(new MemoryRunStore());
 
-            Assert.That(controller.View.Phase, Is.AnyOf(BuqiUIDemoPhase.Shop, BuqiUIDemoPhase.Event));
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(controller.View.Choices.Count, Is.EqualTo(3));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.StarterSelection));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.OpponentIntel));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.Prediction));
@@ -26,7 +27,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void OpenDragDeploy_IsAcceptedInEncounterAndRejectedDuringBattleReplay()
+        public void OpenDragDeploy_IsRejectedBecauseFinalFlowKeepsTheBoardReadOnly()
         {
             BuqiUIDemoController controller = CreateController(new MemoryRunStore());
 
@@ -35,7 +36,7 @@ namespace Game.Hot.Buqi.Tests
                 Type = BuqiUIDemoCommandType.OpenDragDeploy,
             });
 
-            Assert.That(accepted.Accepted, Is.True, accepted.Reason);
+            Assert.That(accepted.Accepted, Is.False);
 
             AdvanceUntil(controller, BuqiUIDemoPhase.BattleReplay);
             BuqiUIDemoCommandResult rejected = controller.Execute(new BuqiUIDemoCommand
@@ -47,7 +48,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void ApplyDeployment_PersistsAnchorOnlyBoardSlots()
+        public void ApplyDeployment_IsRejectedBecauseFinalFlowKeepsTheBoardReadOnly()
         {
             var store = new MemoryRunStore();
             BuqiUIDemoController controller = CreateController(store);
@@ -55,7 +56,6 @@ namespace Game.Hot.Buqi.Tests
             var board = EmptySlots(8);
             var storage = EmptySlots(8);
             board[3] = instanceId;
-            board[4] = instanceId;
 
             BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
             {
@@ -63,12 +63,7 @@ namespace Game.Hot.Buqi.Tests
                 Deployment = new BuqiDeploymentSnapshot(board, storage),
             });
 
-            Assert.That(result.Accepted, Is.True, result.Reason);
-            Assert.That(BuqiRunSaveCodec.TryFromJson(store.CurrentJson, out BuqiRunSaveData saveData, out string error), Is.True, error);
-            Assert.That(saveData.BoardInstanceIds[3], Is.EqualTo(instanceId));
-            Assert.That(saveData.BoardInstanceIds[4], Is.Empty);
-            Assert.That(controller.View.BoardSlots[3].Id, Is.EqualTo(instanceId));
-            Assert.That(controller.View.BoardSlots[4].Id, Is.EqualTo(instanceId));
+            Assert.That(result.Accepted, Is.False);
         }
 
         [Test]
@@ -84,10 +79,28 @@ namespace Game.Hot.Buqi.Tests
                 seenPhases.Add(controller.View.Phase);
             }
 
-            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.StarterSelection));
-            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.OpponentIntel));
-            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.Prediction));
-            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.BoardEditor));
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.StarterSelection), Is.False);
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.OpponentIntel), Is.False);
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.Prediction), Is.False);
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.BoardEditor), Is.False);
+        }
+
+        [Test]
+        public void TryCreate_NullOpponentIdsUseDefaultOpponentPool()
+        {
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    CreateDemoCatalog(),
+                    new BuqiUIDemoControllerOptions
+                    {
+                        Store = new MemoryRunStore(),
+                        RunSeed = 1L,
+                    },
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
         }
 
         private static BuqiUIDemoController CreateController(MemoryRunStore store)
@@ -99,7 +112,7 @@ namespace Game.Hot.Buqi.Tests
                     {
                         Store = store,
                         RunSeed = 1L,
-                        PveOpponentIds = new[] { "pve-a", "pve-b" },
+                        PveOpponentIds = new[] { "pve-a", "pve-b", "pve-c" },
                         PvpOpponentIds = new[] { "pvp-a", "pvp-b" },
                     },
                     out BuqiUIDemoController controller,
@@ -123,6 +136,14 @@ namespace Game.Hot.Buqi.Tests
 
         private static BuqiUIDemoCommand SelectProgressCommand(BuqiUIDemoView view)
         {
+            if (view.Phase == BuqiUIDemoPhase.OperationChoice)
+                return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.SelectOperation, PrimaryId = "meditate" };
+            if (view.Phase == BuqiUIDemoPhase.PveSelection)
+                return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.SelectPveDifficulty, PrimaryId = view.Choices[0].Id };
+            if (view.Phase == BuqiUIDemoPhase.TribulationRoute)
+                return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.SelectTribulationRoute, PrimaryId = "face-thunder" };
+            if (view.Phase == BuqiUIDemoPhase.TribulationStage)
+                return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.ResolveTribulationStage };
             if (view.Phase == BuqiUIDemoPhase.Event)
             {
                 return new BuqiUIDemoCommand
@@ -184,8 +205,29 @@ namespace Game.Hot.Buqi.Tests
 
             catalog.Echoes.Add(CreateEcho("pve-a", "PVE A", "item-02", "item-03"));
             catalog.Echoes.Add(CreateEcho("pve-b", "PVE B", "item-03", "item-04"));
+            catalog.Echoes.Add(CreateEcho("pve-c", "PVE C", "item-04", "item-05"));
             catalog.Echoes.Add(CreateEcho("pvp-a", "PVP A", "item-05", "item-06"));
             catalog.Echoes.Add(CreateEcho("pvp-b", "PVP B", "item-07", "item-08"));
+            string[] defaultArchetypes =
+            {
+                "fast", "buffer", "chain", "heal", "poison", "burn", "freeze", "overload",
+            };
+            for (int index = 0; index < defaultArchetypes.Length; index++)
+            {
+                string archetype = defaultArchetypes[index];
+                string firstItem = $"item-{index % 8 + 1:00}";
+                string secondItem = $"item-{(index + 2) % 8 + 1:00}";
+                catalog.Echoes.Add(CreateEcho(
+                    $"echo-{archetype}-lesson",
+                    $"{archetype} lesson",
+                    firstItem,
+                    secondItem));
+                catalog.Echoes.Add(CreateEcho(
+                    $"echo-{archetype}-early",
+                    $"{archetype} early",
+                    firstItem,
+                    secondItem));
+            }
             return catalog;
         }
 

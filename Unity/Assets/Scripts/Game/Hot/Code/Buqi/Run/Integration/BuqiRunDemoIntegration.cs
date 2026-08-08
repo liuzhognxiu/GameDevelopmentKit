@@ -35,6 +35,8 @@ namespace Game.Hot.Buqi.Run.Integration
         RunTerminal = 4,
         TribulationRoute = 5,
         TribulationStage = 6,
+        OperationChoice = 7,
+        PveSelection = 8,
     }
 
     internal sealed class BuqiRunDemoState
@@ -42,6 +44,7 @@ namespace Game.Hot.Buqi.Run.Integration
         public BuqiRunEconomySnapshot Economy = null!;
         public BuqiRunEncounterState Encounter;
         public BuqiRunBattleSession Battle;
+        public BuqiPveSelection PveSelection;
         public BuqiRunBattleSummary BattleSummary = new BuqiRunBattleSummary();
         public BuqiRunRawBattleOutcome LastRawOutcome;
         public BuqiRunDemoPresentation Presentation;
@@ -55,6 +58,7 @@ namespace Game.Hot.Buqi.Run.Integration
                 Economy = Economy.Clone(),
                 Encounter = Encounter?.Clone(),
                 Battle = Battle == null ? null : BuqiRunDemoCodec.CloneBattleSession(Battle),
+                PveSelection = PveSelection?.Clone(),
                 BattleSummary = BuqiRunDemoCodec.CloneSummary(BattleSummary),
                 LastRawOutcome = LastRawOutcome,
                 Presentation = Presentation,
@@ -272,32 +276,8 @@ namespace Game.Hot.Buqi.Run.Integration
 
         public bool TryApplyDeployment(BuqiDeploymentSnapshot deployment, out string error)
         {
-            if (deployment == null)
-            {
-                error = "Deployment snapshot is unavailable.";
-                return false;
-            }
-
-            if (m_State.Economy.Run.Phase != BuqiRunPhase.Encounter &&
-                m_State.Economy.Run.Phase != BuqiRunPhase.DaySettlement)
-            {
-                error = "Deployment is not available in the current phase.";
-                return false;
-            }
-
-            string[] board = deployment.BoardSlots.ToArray();
-            string[] storage = deployment.StorageSlots.ToArray();
-            if (!TryValidateDeployment(board, storage, m_State.Economy, out List<BoardPlacement> placements, out error))
-                return false;
-
-            string[] normalizedBoard = CreateEmptyBoardSlots();
-            foreach (BoardPlacement placement in placements)
-                normalizedBoard[placement.AnchorSlot] = placement.Item.InstanceId;
-
-            BuqiRunDemoState working = m_State.Clone();
-            working.Economy.Run.BoardInstanceIds = new List<string>(normalizedBoard);
-            working.Economy.Run.StorageInstanceIds = new List<string>(storage);
-            return TryCommitState(working, out error);
+            error = "Deployment editing is disabled in the final demo flow.";
+            return false;
         }
 
         public bool TryAdvance(out string error)
@@ -308,6 +288,14 @@ namespace Game.Hot.Buqi.Run.Integration
                     if (IsEncounterShop(m_State))
                         return TrySkipShopEncounter(out error);
                     error = "Current event requires an explicit choice.";
+                    return false;
+
+                case BuqiRunDemoPresentation.OperationChoice:
+                    error = "Operation requires an explicit choice.";
+                    return false;
+
+                case BuqiRunDemoPresentation.PveSelection:
+                    error = "PVE difficulty requires an explicit choice.";
                     return false;
 
                 case BuqiRunDemoPresentation.BattleReplay:
@@ -335,6 +323,91 @@ namespace Game.Hot.Buqi.Run.Integration
                     error = "Unknown presentation state.";
                     return false;
             }
+        }
+
+        public bool TrySelectOperation(string operationId, out string error)
+        {
+            if (m_State.Presentation != BuqiRunDemoPresentation.OperationChoice ||
+                m_State.Economy.Run.Phase != BuqiRunPhase.Encounter ||
+                m_State.Encounter != null)
+            {
+                error = "Current phase is not operation selection.";
+                return false;
+            }
+
+            if (string.Equals(operationId, "meditate", StringComparison.Ordinal))
+            {
+                return TryResolveEncounterCommand(
+                    m_State.Clone(),
+                    CreateCommandId(m_State.Economy.Run, "operation-meditate"),
+                    "meditate",
+                    out error);
+            }
+
+            BuqiRunEncounterKind kind;
+            if (string.Equals(operationId, "bazaar", StringComparison.Ordinal))
+                kind = BuqiRunEncounterKind.Shop;
+            else if (string.Equals(operationId, "event", StringComparison.Ordinal))
+                kind = BuqiRunEncounterKind.Event;
+            else
+            {
+                error = "Operation choice is invalid.";
+                return false;
+            }
+
+            BuqiRunDemoState working = m_State.Clone();
+            if (!m_EncounterService.TryGetOrCreateForKind(
+                    working.Economy.Run,
+                    null,
+                    kind,
+                    out BuqiRunEncounterState encounter,
+                    out error))
+            {
+                return false;
+            }
+
+            working.Encounter = encounter;
+            working.Presentation = BuqiRunDemoPresentation.Encounter;
+            return TryCommitState(working, out error);
+        }
+
+        public bool TrySelectPveDifficulty(string choiceId, out string error)
+        {
+            if (m_State.Presentation != BuqiRunDemoPresentation.PveSelection ||
+                m_State.PveSelection == null || m_State.Battle != null)
+            {
+                error = "Current phase is not PVE selection.";
+                return false;
+            }
+
+            BuqiPveChoiceCard card = m_State.PveSelection.Cards.Find(
+                candidate => string.Equals(candidate.ChoiceId, choiceId, StringComparison.Ordinal));
+            if (card == null)
+            {
+                error = "PVE difficulty is unavailable.";
+                return false;
+            }
+
+            BuqiRunDemoState working = m_State.Clone();
+            if (!TryBuildPlayerSnapshot(working.Economy, out BuildSnapshot playerBuild, out error))
+                return false;
+            if (!m_BattleService.TrySelectPveDifficultyAndSimulate(
+                    working.Economy.Run,
+                    working.PveSelection,
+                    card.Difficulty,
+                    playerBuild,
+                    m_Definitions,
+                    out BuqiRunBattleSession battle,
+                    out error))
+            {
+                return false;
+            }
+
+            working.Economy.Run.RngCursor = battle.NextRngCursor;
+            working.Battle = battle;
+            working.PveSelection = null;
+            working.Presentation = BuqiRunDemoPresentation.BattleReplay;
+            return TryCommitState(working, out error);
         }
 
         public bool TrySelectTribulationRoute(
@@ -389,6 +462,11 @@ namespace Game.Hot.Buqi.Run.Integration
             return TryCommitState(working, out error);
         }
 
+        public bool TryResolveCurrentTribulationStage(out string error)
+        {
+            return TryResolveTribulationStage(true, out error);
+        }
+
         public BattleReplayData BuildReplayData()
         {
             if (m_State.Battle == null)
@@ -422,7 +500,7 @@ namespace Game.Hot.Buqi.Run.Integration
                 Battle = null,
                 BattleSummary = new BuqiRunBattleSummary(),
                 LastRawOutcome = default,
-                Presentation = BuqiRunDemoPresentation.Encounter,
+                Presentation = BuqiRunDemoPresentation.OperationChoice,
             };
             if (!EnsureCurrentContent(working, true, out error))
                 return false;
@@ -448,6 +526,7 @@ namespace Game.Hot.Buqi.Run.Integration
                 Economy = economy,
                 Encounter = encounter,
                 Battle = battle,
+                PveSelection = null,
                 Presentation = presentation,
                 BattleSummary = battle == null
                     ? new BuqiRunBattleSummary()
@@ -474,18 +553,19 @@ namespace Game.Hot.Buqi.Run.Integration
             switch (runState.Phase)
             {
                 case BuqiRunPhase.Encounter:
-                    if (encounter == null)
-                    {
-                        presentation = default;
-                        error = "Encounter payload is required for the encounter phase.";
-                        return false;
-                    }
-
-                    presentation = BuqiRunDemoPresentation.Encounter;
+                    presentation = encounter == null
+                        ? BuqiRunDemoPresentation.OperationChoice
+                        : BuqiRunDemoPresentation.Encounter;
                     error = string.Empty;
                     return true;
 
                 case BuqiRunPhase.PveBattle:
+                    presentation = battle == null
+                        ? BuqiRunDemoPresentation.PveSelection
+                        : BuqiRunDemoPresentation.BattleReplay;
+                    error = string.Empty;
+                    return true;
+
                 case BuqiRunPhase.PvpBattle:
                     if (battle == null)
                     {
@@ -555,46 +635,37 @@ namespace Game.Hot.Buqi.Run.Integration
             {
                 case BuqiRunPhase.Encounter:
                     state.Battle = null;
-                    state.Presentation = BuqiRunDemoPresentation.Encounter;
-                    if (state.Encounter == null)
-                    {
-                        if (!allowGeneration)
-                        {
-                            error = "Encounter payload is missing for the encounter phase.";
-                            return false;
-                        }
-
-                        if (!m_EncounterService.TryGetOrCreate(
-                                state.Economy.Run,
-                                null,
-                                out BuqiRunEncounterState createdEncounter,
-                                out error))
-                        {
-                            return false;
-                        }
-
-                        state.Encounter = createdEncounter;
-                    }
+                    state.PveSelection = null;
+                    state.Presentation = state.Encounter == null
+                        ? BuqiRunDemoPresentation.OperationChoice
+                        : BuqiRunDemoPresentation.Encounter;
                     break;
 
                 case BuqiRunPhase.PveBattle:
                     state.Encounter = null;
-                    state.Presentation = BuqiRunDemoPresentation.BattleReplay;
+                    state.Presentation = state.Battle == null
+                        ? BuqiRunDemoPresentation.PveSelection
+                        : BuqiRunDemoPresentation.BattleReplay;
                     if (state.Battle == null)
                     {
-                        if (!allowGeneration)
+                        if (!TryBuildPlayerSnapshot(state.Economy, out BuildSnapshot playerBuild, out error))
+                            return false;
+                        if (!m_BattleService.TryGetOrCreatePveSelection(
+                                state.Economy.Run,
+                                state.PveSelection,
+                                playerBuild,
+                                out BuqiPveSelection selection,
+                                out error))
                         {
-                            error = "Battle payload is missing for the PVE phase.";
                             return false;
                         }
-
-                        if (!TryGenerateBattle(state, BuqiRunBattleKind.Pve, out error))
-                            return false;
+                        state.PveSelection = selection;
                     }
                     break;
 
                 case BuqiRunPhase.PvpBattle:
                     state.Encounter = null;
+                    state.PveSelection = null;
                     state.Presentation = state.Battle != null &&
                                          state.Battle.Kind == BuqiRunBattleKind.Pve &&
                                          BuqiRunDemoCodec.IsSettledBattle(
@@ -1168,14 +1239,22 @@ namespace Game.Hot.Buqi.Run.Integration
         {
             switch (state.Presentation)
             {
+                case BuqiRunDemoPresentation.OperationChoice:
+                    return BuqiUIDemoPhase.OperationChoice;
                 case BuqiRunDemoPresentation.Encounter:
                     return IsEncounterEvent(state) ? BuqiUIDemoPhase.Event : BuqiUIDemoPhase.Shop;
+                case BuqiRunDemoPresentation.PveSelection:
+                    return BuqiUIDemoPhase.PveSelection;
                 case BuqiRunDemoPresentation.BattleReplay:
                     return BuqiUIDemoPhase.BattleReplay;
                 case BuqiRunDemoPresentation.BattleSummary:
                     return BuqiUIDemoPhase.BattleSummary;
                 case BuqiRunDemoPresentation.DaySettlement:
                     return BuqiUIDemoPhase.RoundSettlement;
+                case BuqiRunDemoPresentation.TribulationRoute:
+                    return BuqiUIDemoPhase.TribulationRoute;
+                case BuqiRunDemoPresentation.TribulationStage:
+                    return BuqiUIDemoPhase.TribulationStage;
                 case BuqiRunDemoPresentation.RunTerminal:
                 default:
                     return BuqiUIDemoPhase.RunTerminal;
@@ -1366,15 +1445,7 @@ namespace Game.Hot.Buqi.Run.Integration
             }
 
             if (string.IsNullOrWhiteSpace(json))
-            {
-                if (run.Phase == BuqiRunPhase.Encounter)
-                {
-                    error = "Encounter payload is required for the encounter phase.";
-                    return false;
-                }
-
                 return true;
-            }
 
             EncounterPayload payload;
             try
@@ -1467,6 +1538,8 @@ namespace Game.Hot.Buqi.Run.Integration
                 OpponentId = session.OpponentId ?? string.Empty,
                 NextRngCursor = session.NextRngCursor,
                 RawOutcome = (int)session.RawOutcome,
+                HasPveDifficulty = session.PveDifficulty.HasValue,
+                PveDifficulty = session.PveDifficulty.HasValue ? (int)session.PveDifficulty.Value : 0,
                 ReplayTitle = session.Replay?.Title ?? BuqiText.Format("{0} Battle", session.Kind),
                 ReplayLeftName = session.Replay?.LeftName ?? "Player",
                 ReplayRightName = session.Replay?.RightName ?? session.OpponentId ?? string.Empty,
@@ -1495,7 +1568,7 @@ namespace Game.Hot.Buqi.Run.Integration
 
             if (string.IsNullOrWhiteSpace(json))
             {
-                if (run.Phase == BuqiRunPhase.PveBattle || run.Phase == BuqiRunPhase.PvpBattle)
+                if (run.Phase == BuqiRunPhase.PvpBattle)
                 {
                     error = "Battle payload is required for the active battle phase.";
                     return false;
@@ -1528,6 +1601,11 @@ namespace Game.Hot.Buqi.Run.Integration
             if (!Enum.IsDefined(typeof(BuqiRunRawBattleOutcome), payload.RawOutcome))
             {
                 error = "Battle payload raw outcome is invalid.";
+                return false;
+            }
+            if (payload.HasPveDifficulty && !Enum.IsDefined(typeof(BuqiPveDifficulty), payload.PveDifficulty))
+            {
+                error = "Battle payload PVE difficulty is invalid.";
                 return false;
             }
             if (payload.Log == null)
@@ -1600,6 +1678,9 @@ namespace Game.Hot.Buqi.Run.Integration
             {
                 BattleId = payload.BattleId,
                 Kind = kind,
+                PveDifficulty = payload.HasPveDifficulty
+                    ? (BuqiPveDifficulty?)payload.PveDifficulty
+                    : null,
                 OpponentId = payload.OpponentId ?? string.Empty,
                 NextRngCursor = payload.NextRngCursor,
                 Request = request,
@@ -1732,6 +1813,7 @@ namespace Game.Hot.Buqi.Run.Integration
             {
                 BattleId = source.BattleId,
                 Kind = source.Kind,
+                PveDifficulty = source.PveDifficulty,
                 OpponentId = source.OpponentId,
                 NextRngCursor = source.NextRngCursor,
                 Request = ReadRequestPayload(BuildRequestPayload(source.Request)),
@@ -2051,6 +2133,8 @@ namespace Game.Hot.Buqi.Run.Integration
             public string OpponentId = string.Empty;
             public int NextRngCursor;
             public int RawOutcome;
+            public bool HasPveDifficulty;
+            public int PveDifficulty;
             public string ReplayTitle = string.Empty;
             public string ReplayLeftName = string.Empty;
             public string ReplayRightName = string.Empty;

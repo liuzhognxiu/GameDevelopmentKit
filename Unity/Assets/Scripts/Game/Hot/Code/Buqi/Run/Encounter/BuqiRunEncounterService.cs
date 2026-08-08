@@ -29,6 +29,33 @@ namespace Game.Hot.Buqi.Run.Encounter
             out BuqiRunEncounterState encounter,
             out string error)
         {
+            return TryGetOrCreateInternal(run, current, null, out encounter, out error);
+        }
+
+        public bool TryGetOrCreateForKind(
+            BuqiRunState run,
+            BuqiRunEncounterState current,
+            BuqiRunEncounterKind kind,
+            out BuqiRunEncounterState encounter,
+            out string error)
+        {
+            if (!System.Enum.IsDefined(typeof(BuqiRunEncounterKind), kind))
+            {
+                encounter = null;
+                error = "Encounter kind is invalid.";
+                return false;
+            }
+
+            return TryGetOrCreateInternal(run, current, kind, out encounter, out error);
+        }
+
+        private bool TryGetOrCreateInternal(
+            BuqiRunState run,
+            BuqiRunEncounterState current,
+            BuqiRunEncounterKind? requestedKind,
+            out BuqiRunEncounterState encounter,
+            out string error)
+        {
             if (run == null)
             {
                 throw new ArgumentNullException(nameof(run));
@@ -86,9 +113,10 @@ namespace Game.Hot.Buqi.Run.Encounter
             }
 
             int cursor = run.RngCursor;
-            BuqiRunEncounterKind kind = BuqiRunRandom.Next(run.RunSeed, ref cursor, EncounterKindCount) == 0
-                ? BuqiRunEncounterKind.Shop
-                : BuqiRunEncounterKind.Event;
+            BuqiRunEncounterKind kind = requestedKind ??
+                (BuqiRunRandom.Next(run.RunSeed, ref cursor, EncounterKindCount) == 0
+                    ? BuqiRunEncounterKind.Shop
+                    : BuqiRunEncounterKind.Event);
 
             IReadOnlyList<string> pool = kind == BuqiRunEncounterKind.Shop
                 ? shopPool

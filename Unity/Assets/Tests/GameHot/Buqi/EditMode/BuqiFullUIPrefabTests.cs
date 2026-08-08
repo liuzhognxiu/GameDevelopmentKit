@@ -67,6 +67,50 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void RunShell_HasDedicatedLocalizedDeploymentEntry()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ShellPath);
+            Transform buttonTransform = prefab.transform.Find("CommandBar/ConfigureBoard");
+
+            Assert.That(buttonTransform, Is.Not.Null);
+            Button button = buttonTransform.GetComponent<Button>();
+            Assert.That(button, Is.Not.Null);
+            Assert.That(button.GetComponentInChildren<Text>(true).text, Is.EqualTo("Buqi.Deploy.Title"));
+
+            MonoBehaviour form = prefab.GetComponents<MonoBehaviour>().Single(component =>
+                component.GetType().FullName == "Game.Hot.Buqi.UI.BuqiRunShellForm");
+            SerializedProperty serializedButton = new SerializedObject(form).FindProperty("m_DeployButton");
+            Assert.That(serializedButton, Is.Not.Null);
+            Assert.That(serializedButton.objectReferenceValue, Is.SameAs(button));
+        }
+
+        [Test]
+        public void RunShell_DeploymentEntryIsLimitedToOperationContent()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ShellPath);
+            MonoBehaviour form = prefab.GetComponents<MonoBehaviour>().Single(component =>
+                component.GetType().FullName == "Game.Hot.Buqi.UI.BuqiRunShellForm");
+            MethodInfo canConfigure = form.GetType().GetMethod(
+                "CanConfigureDeployment",
+                BindingFlags.NonPublic | BindingFlags.Static);
+
+            Assert.That(canConfigure, Is.Not.Null);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.OperationChoice), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.Shop), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.Event), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.PveSelection), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.BattleReplay), Is.False);
+
+            bool CanConfigure(BuqiUIDemoPhase phase)
+            {
+                return (bool)canConfigure.Invoke(null, new object[]
+                {
+                    new BuqiUIDemoView { Phase = phase },
+                });
+            }
+        }
+
+        [Test]
         public void StageWithoutReadOnlyBoard_CanClear()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(StageFolder + "ShopWidget.prefab");

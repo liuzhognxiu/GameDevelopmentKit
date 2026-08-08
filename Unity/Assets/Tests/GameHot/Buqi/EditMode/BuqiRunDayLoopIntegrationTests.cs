@@ -226,10 +226,11 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void DeploymentCommand_IsDisabledAndLeavesStateUnchanged()
+        public void DeploymentCommand_DuringPveSelectionIsRejectedAndLeavesStateUnchanged()
         {
             var store = new MemoryRunStore();
-            BuqiUIDemoController controller = CreateControllerOnPhase(store, BuqiUIDemoPhase.Shop);
+            BuqiUIDemoController controller = CreateController(store);
+            AdvanceUntilPhase(controller, BuqiUIDemoPhase.PveSelection);
             RunFingerprint before = CaptureRuntime(controller);
             string jsonBefore = store.CurrentJson;
             BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
@@ -239,7 +240,7 @@ namespace Game.Hot.Buqi.Tests
             });
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Does.Contain("disabled").IgnoreCase);
+            Assert.That(result.Reason, Does.Contain("current phase").IgnoreCase);
             Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
             Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
         }

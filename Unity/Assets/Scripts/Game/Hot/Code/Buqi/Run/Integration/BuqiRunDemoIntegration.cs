@@ -276,8 +276,31 @@ namespace Game.Hot.Buqi.Run.Integration
 
         public bool TryApplyDeployment(BuqiDeploymentSnapshot deployment, out string error)
         {
-            error = "Deployment editing is disabled in the final demo flow.";
-            return false;
+            if (deployment == null)
+            {
+                error = "Deployment snapshot is unavailable.";
+                return false;
+            }
+
+            if (m_State.Economy.Run.Phase != BuqiRunPhase.Encounter)
+            {
+                error = "Deployment is not available in the current phase.";
+                return false;
+            }
+
+            string[] board = deployment.BoardSlots.ToArray();
+            string[] storage = deployment.StorageSlots.ToArray();
+            if (!TryValidateDeployment(board, storage, m_State.Economy, out List<BoardPlacement> placements, out error))
+                return false;
+
+            string[] normalizedBoard = CreateEmptyBoardSlots();
+            foreach (BoardPlacement placement in placements)
+                normalizedBoard[placement.AnchorSlot] = placement.Item.InstanceId;
+
+            BuqiRunDemoState working = m_State.Clone();
+            working.Economy.Run.BoardInstanceIds = new List<string>(normalizedBoard);
+            working.Economy.Run.StorageInstanceIds = new List<string>(storage);
+            return TryCommitState(working, out error);
         }
 
         public bool TryAdvance(out string error)

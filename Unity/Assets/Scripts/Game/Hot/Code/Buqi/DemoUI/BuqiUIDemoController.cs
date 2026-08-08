@@ -142,7 +142,9 @@ namespace Game.Hot.Buqi.DemoUI
 
         private bool CanOpenDeploy()
         {
-            return false;
+            return View.Phase == BuqiUIDemoPhase.OperationChoice
+                || View.Phase == BuqiUIDemoPhase.Shop
+                || View.Phase == BuqiUIDemoPhase.Event;
         }
 
         private void RefreshView()

@@ -60,6 +60,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(DirectChildNames(screen), Does.Contain("Board"));
             Assert.That(DirectChildren(screen, "OperationChoice_").Count(), Is.EqualTo(3));
             Assert.That(screen.Find("Board").gameObject.activeSelf, Is.True);
+            Assert.That(screen.Find("ConfigureBoardButton"), Is.Not.Null);
         }
 
         [Test]

@@ -63,6 +63,9 @@ namespace Game.Hot.Buqi.UI
         private Button m_PrimaryButton = null;
 
         [SerializeField]
+        private Button m_DeployButton = null;
+
+        [SerializeField]
         private Button m_RestartButton = null;
 
         [SerializeField]
@@ -86,6 +89,7 @@ namespace Game.Hot.Buqi.UI
             base.OnInit(userData);
             m_BackButton?.onClick.AddListener(GoBack);
             m_PrimaryButton?.onClick.AddListener(Advance);
+            m_DeployButton?.onClick.AddListener(OpenDeployment);
             m_RestartButton?.onClick.AddListener(Restart);
             m_Registry = new BuqiStageWidgetRegistry(m_StageComponents);
         }
@@ -149,6 +153,7 @@ namespace Game.Hot.Buqi.UI
         {
             m_BackButton?.onClick.RemoveListener(GoBack);
             m_PrimaryButton?.onClick.RemoveListener(Advance);
+            m_DeployButton?.onClick.RemoveListener(OpenDeployment);
             m_RestartButton?.onClick.RemoveListener(Restart);
             base.OnDestroy();
         }
@@ -247,6 +252,11 @@ namespace Game.Hot.Buqi.UI
             });
         }
 
+        private void OpenDeployment()
+        {
+            Submit(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.OpenDragDeploy });
+        }
+
         private void GoBack()
         {
             Close();
@@ -283,6 +293,8 @@ namespace Game.Hot.Buqi.UI
             SetText(m_PrimaryLabel, view.PrimaryCommandLabel);
             if (m_PrimaryButton != null)
                 m_PrimaryButton.gameObject.SetActive(!string.IsNullOrEmpty(view.PrimaryCommandLabel));
+            if (m_DeployButton != null)
+                m_DeployButton.gameObject.SetActive(CanConfigureDeployment(view));
             m_PhaseRail?.SetActive(view.Phase != BuqiUIDemoPhase.PveSelection);
             RenderResources(view);
             RenderPhaseRail(view);
@@ -290,6 +302,14 @@ namespace Game.Hot.Buqi.UI
             {
                 ShowError(GameFramework.Utility.Text.Format("Missing stage widget for {0}.", view.Phase));
             }
+        }
+
+        private static bool CanConfigureDeployment(BuqiUIDemoView view)
+        {
+            return view != null &&
+                (view.Phase == BuqiUIDemoPhase.OperationChoice
+                    || view.Phase == BuqiUIDemoPhase.Shop
+                    || view.Phase == BuqiUIDemoPhase.Event);
         }
 
         private void RenderResources(BuqiUIDemoView view)

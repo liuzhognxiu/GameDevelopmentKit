@@ -27,7 +27,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void OpenDragDeploy_IsRejectedBecauseFinalFlowKeepsTheBoardReadOnly()
+        public void OpenDragDeploy_IsAcceptedDuringOperationAndRejectedDuringBattleReplay()
         {
             BuqiUIDemoController controller = CreateController(new MemoryRunStore());
 
@@ -36,7 +36,7 @@ namespace Game.Hot.Buqi.Tests
                 Type = BuqiUIDemoCommandType.OpenDragDeploy,
             });
 
-            Assert.That(accepted.Accepted, Is.False);
+            Assert.That(accepted.Accepted, Is.True, accepted.Reason);
 
             AdvanceUntil(controller, BuqiUIDemoPhase.BattleReplay);
             BuqiUIDemoCommandResult rejected = controller.Execute(new BuqiUIDemoCommand
@@ -48,14 +48,17 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void ApplyDeployment_IsRejectedBecauseFinalFlowKeepsTheBoardReadOnly()
+        public void ApplyDeployment_PersistsAnchorOnlyBoardSlotsDuringOperation()
         {
             var store = new MemoryRunStore();
             BuqiUIDemoController controller = CreateController(store);
-            string instanceId = controller.View.BoardSlots.First(slot => !slot.Empty).Id;
+            BuqiDemoItemView source = controller.View.BoardSlots.First(slot => !slot.Empty);
+            string instanceId = source.Id;
             var board = EmptySlots(8);
             var storage = EmptySlots(8);
             board[3] = instanceId;
+            for (int offset = 1; offset < source.Size; offset++)
+                board[3 + offset] = instanceId;
 
             BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
             {
@@ -63,7 +66,12 @@ namespace Game.Hot.Buqi.Tests
                 Deployment = new BuqiDeploymentSnapshot(board, storage),
             });
 
-            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Accepted, Is.True, result.Reason);
+            Assert.That(BuqiRunSaveCodec.TryFromJson(store.CurrentJson, out BuqiRunSaveData saveData, out string error), Is.True, error);
+            Assert.That(saveData.BoardInstanceIds[3], Is.EqualTo(instanceId));
+            Assert.That(saveData.BoardInstanceIds[4], Is.Empty);
+            for (int offset = 0; offset < source.Size; offset++)
+                Assert.That(controller.View.BoardSlots[3 + offset].Id, Is.EqualTo(instanceId));
         }
 
         [Test]

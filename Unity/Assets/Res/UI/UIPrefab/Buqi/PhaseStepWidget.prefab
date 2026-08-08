@@ -221,7 +221,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u8D77\u59CB\u9009\u62E9"
+  m_Text: Buqi.Phase.StartingChoice
 --- !u!1 &3358668810854914720
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,7 +300,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 01
+  m_Text: Buqi.Phase.IndexLabel
 --- !u!1 &5134026521029119061
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,4 +454,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: '>'
+  m_Text: Buqi.Phase.Next

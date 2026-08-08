@@ -374,7 +374,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: COST 0
+  m_Text: Buqi.Choice.Cost0
 --- !u!1 &6538211930012057127
 GameObject:
   m_ObjectHideFlags: 0
@@ -453,7 +453,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: UNAVAILABLE
+  m_Text: Buqi.Choice.Unavailable
 --- !u!1 &8365541726034787875
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,7 +532,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: CHOICE
+  m_Text: Buqi.Choice.Title
 --- !u!1 &8744534517553798295
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,4 +611,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Choice description
+  m_Text: Buqi.Choice.Description

@@ -229,7 +229,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: LOCKED
+  m_Text: Buqi.BoardSlot.Locked
 --- !u!1 &5001328702206788258
 GameObject:
   m_ObjectHideFlags: 0
@@ -308,7 +308,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SIZE 1
+  m_Text: Buqi.BoardSlot.Size1
 --- !u!1 &6613063964909642298
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,7 +532,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: ITEM
+  m_Text: Buqi.BoardSlot.Item
 --- !u!1 &7165630531449234381
 GameObject:
   m_ObjectHideFlags: 0
@@ -611,4 +611,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SLOT 01
+  m_Text: Buqi.BoardSlot.SlotLabel

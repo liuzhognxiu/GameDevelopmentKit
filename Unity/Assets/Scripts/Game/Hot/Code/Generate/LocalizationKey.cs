@@ -151,7 +151,7 @@ namespace Game.Hot
         /// <summary>
         /// SLOT 01
         /// </summary>
-        public const string Key_Buqi_BoardSlot_Slot01 = "Buqi.BoardSlot.Slot01";
+        public const string Key_Buqi_BoardSlot_SlotLabel = "Buqi.BoardSlot.SlotLabel";
 
         /// <summary>
         /// COST 0
@@ -172,6 +172,16 @@ namespace Game.Hot
         /// UNAVAILABLE
         /// </summary>
         public const string Key_Buqi_Choice_Unavailable = "Buqi.Choice.Unavailable";
+
+        /// <summary>
+        /// DEMO
+        /// </summary>
+        public const string Key_Buqi_Common_DemoTag = "Buqi.Common.DemoTag";
+
+        /// <summary>
+        /// --
+        /// </summary>
+        public const string Key_Buqi_Common_Placeholder = "Buqi.Common.Placeholder";
 
         /// <summary>
         /// 取消
@@ -204,7 +214,7 @@ namespace Game.Hot
         public const string Key_Buqi_Deploy_ConfirmDeploy = "Buqi.Deploy.ConfirmDeploy";
 
         /// <summary>
-        /// 第 3 回合  |  金币 12  |  胜场 4  |  生命
+        /// 第 3 回合  |  金币 12  |  胜场 4  |  生命 2  |  对手 清虚真人
         /// </summary>
         public const string Key_Buqi_Deploy_Context = "Buqi.Deploy.Context";
 
@@ -219,7 +229,7 @@ namespace Game.Hot
         public const string Key_Buqi_Deploy_DragHint = "Buqi.Deploy.DragHint";
 
         /// <summary>
-        /// 仓库  >  阵列  |  拖动调整位置
+        /// 仓库  >  阵列  |  拖动调整位置  |  拖回仓库撤下
         /// </summary>
         public const string Key_Buqi_Deploy_Header = "Buqi.Deploy.Header";
 
@@ -401,7 +411,7 @@ namespace Game.Hot
         /// <summary>
         /// 01
         /// </summary>
-        public const string Key_Buqi_Phase_Index01 = "Buqi.Phase.Index01";
+        public const string Key_Buqi_Phase_IndexLabel = "Buqi.Phase.IndexLabel";
 
         /// <summary>
         /// >
@@ -431,7 +441,7 @@ namespace Game.Hot
         /// <summary>
         /// 06
         /// </summary>
-        public const string Key_Buqi_Resource_Value06 = "Buqi.Resource.Value06";
+        public const string Key_Buqi_Resource_ValueLabel = "Buqi.Resource.ValueLabel";
 
         /// <summary>
         /// <
@@ -474,6 +484,106 @@ namespace Game.Hot
         public const string Key_Buqi_Slot_Number = "Buqi.Slot.Number";
 
         /// <summary>
+        /// 从真实战斗日志中提取可回溯事实。
+        /// </summary>
+        public const string Key_Buqi_Stage_BattleSummary_Description = "Buqi.Stage.BattleSummary.Description";
+
+        /// <summary>
+        /// 战斗总结
+        /// </summary>
+        public const string Key_Buqi_Stage_BattleSummary_Title = "Buqi.Stage.BattleSummary.Title";
+
+        /// <summary>
+        /// 点选装备，再选择 8 格棋盘中的目标位。
+        /// </summary>
+        public const string Key_Buqi_Stage_BoardEditor_Description = "Buqi.Stage.BoardEditor.Description";
+
+        /// <summary>
+        /// 棋盘编辑
+        /// </summary>
+        public const string Key_Buqi_Stage_BoardEditor_Title = "Buqi.Stage.BoardEditor.Title";
+
+        /// <summary>
+        /// 在收益与风险之间做出选择。
+        /// </summary>
+        public const string Key_Buqi_Stage_Event_Description = "Buqi.Stage.Event.Description";
+
+        /// <summary>
+        /// 事件
+        /// </summary>
+        public const string Key_Buqi_Stage_Event_Title = "Buqi.Stage.Event.Title";
+
+        /// <summary>
+        /// 为装备添加收益与代价并存的改造。
+        /// </summary>
+        public const string Key_Buqi_Stage_Modification_Description = "Buqi.Stage.Modification.Description";
+
+        /// <summary>
+        /// 改造
+        /// </summary>
+        public const string Key_Buqi_Stage_Modification_Title = "Buqi.Stage.Modification.Title";
+
+        /// <summary>
+        /// 只展示公开的棋盘和构筑信息。
+        /// </summary>
+        public const string Key_Buqi_Stage_OpponentIntel_Description = "Buqi.Stage.OpponentIntel.Description";
+
+        /// <summary>
+        /// 战斗前记录你对结果的判断。
+        /// </summary>
+        public const string Key_Buqi_Stage_Prediction_Description = "Buqi.Stage.Prediction.Description";
+
+        /// <summary>
+        /// 胜负预测
+        /// </summary>
+        public const string Key_Buqi_Stage_Prediction_Title = "Buqi.Stage.Prediction.Title";
+
+        /// <summary>
+        /// 选择本回合的准备收益。
+        /// </summary>
+        public const string Key_Buqi_Stage_PreparationChoice_Description = "Buqi.Stage.PreparationChoice.Description";
+
+        /// <summary>
+        /// 战前准备
+        /// </summary>
+        public const string Key_Buqi_Stage_PreparationChoice_Title = "Buqi.Stage.PreparationChoice.Title";
+
+        /// <summary>
+        /// 结算胜场、单局生命与金币变化。
+        /// </summary>
+        public const string Key_Buqi_Stage_RoundSettlement_Description = "Buqi.Stage.RoundSettlement.Description";
+
+        /// <summary>
+        /// 回合结算
+        /// </summary>
+        public const string Key_Buqi_Stage_RoundSettlement_Title = "Buqi.Stage.RoundSettlement.Title";
+
+        /// <summary>
+        /// 查看本局构筑摘要并重新开始。
+        /// </summary>
+        public const string Key_Buqi_Stage_RunTerminal_Description = "Buqi.Stage.RunTerminal.Description";
+
+        /// <summary>
+        /// 单局结束
+        /// </summary>
+        public const string Key_Buqi_Stage_RunTerminal_Title = "Buqi.Stage.RunTerminal.Title";
+
+        /// <summary>
+        /// 购买装备、刷新或锁定当前报价。
+        /// </summary>
+        public const string Key_Buqi_Stage_Shop_Description = "Buqi.Stage.Shop.Description";
+
+        /// <summary>
+        /// 商店
+        /// </summary>
+        public const string Key_Buqi_Stage_Shop_Title = "Buqi.Stage.Shop.Title";
+
+        /// <summary>
+        /// 选择本局的第一件装备。
+        /// </summary>
+        public const string Key_Buqi_Stage_StarterSelection_Description = "Buqi.Stage.StarterSelection.Description";
+
+        /// <summary>
         /// 取消
         /// </summary>
         public const string Key_Dialog_CancelButton = "Dialog.CancelButton";
@@ -484,7 +594,7 @@ namespace Game.Hot
         public const string Key_Dialog_ConfirmButton = "Dialog.ConfirmButton";
 
         /// <summary>
-        /// 
+        /// 其他
         /// </summary>
         public const string Key_Dialog_OtherButton = "Dialog.OtherButton";
 
@@ -602,8 +712,6 @@ namespace Game.Hot
             }
         }
 
-
-
         public static string Get_Buqi_Choice_Cost(int order)
         {
             switch (order)
@@ -622,7 +730,6 @@ namespace Game.Hot
             }
         }
 
-  
         public static string Get_test(int order)
         {
             switch (order)

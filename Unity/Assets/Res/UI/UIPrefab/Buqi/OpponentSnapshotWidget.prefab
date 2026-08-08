@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u7A7A\u7F6E"
+  m_Text: Buqi.Opponent.Empty
 --- !u!1 &2244253522973390231
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u4E3B\u8981\u5A01\u80C1\uFF1A\u516C\u5F00\u88C5\u5907\u89E6\u53D1\u5173\u7CFB"
+  m_Text: Buqi.Opponent.Threat
 --- !u!1 &3193023874804997845
 GameObject:
   m_ObjectHideFlags: 0
@@ -543,7 +543,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u7A7A\u7F6E"
+  m_Text: Buqi.Opponent.Empty
 --- !u!1 &4823307996772924752
 GameObject:
   m_ObjectHideFlags: 0
@@ -622,7 +622,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u8FDE\u7EED 8 \u683C\u6784\u7B51  \xB7  \u516C\u5F00\u60C5\u62A5"
+  m_Text: Buqi.Opponent.Intel
 --- !u!1 &4835157940401162990
 GameObject:
   m_ObjectHideFlags: 0
@@ -701,7 +701,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5DF2\u77E5\u98CE\u9669\uFF1A\u672A\u516C\u5F00\u6539\u9020"
+  m_Text: Buqi.Opponent.Risk
 --- !u!1 &5050099363564231892
 GameObject:
   m_ObjectHideFlags: 0
@@ -901,7 +901,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u65B9\u5411  \u9AD8\u901F\u6784\u7B51"
+  m_Text: Buqi.Opponent.Direction
 --- !u!1 &5526214159448995244
 GameObject:
   m_ObjectHideFlags: 0
@@ -980,7 +980,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5BF9\u624B\u5FEB\u7167"
+  m_Text: Buqi.Opponent.Title
 --- !u!1 &6800410408537147306
 GameObject:
   m_ObjectHideFlags: 0
@@ -1059,7 +1059,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u7A7A\u7F6E"
+  m_Text: Buqi.Opponent.Empty
 --- !u!1 &7913451656163399373
 GameObject:
   m_ObjectHideFlags: 0

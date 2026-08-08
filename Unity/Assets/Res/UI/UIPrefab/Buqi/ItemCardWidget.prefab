@@ -153,7 +153,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: W8-000
+  m_Text: Buqi.Item.SampleId
 --- !u!1 &2572085796256252170
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,7 +483,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Damage
+  m_Text: Buqi.ItemDetail.DamageTag
 --- !u!1 &6494400711243270473
 GameObject:
   m_ObjectHideFlags: 0
@@ -562,7 +562,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u51BB"
+  m_Text: Buqi.Item.Frozen
 --- !u!1 &8181653055082142532
 GameObject:
   m_ObjectHideFlags: 0
@@ -641,4 +641,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "1\u683C  \u5145\u80FD 0  \u51BB\u7ED3 0"
+  m_Text: Buqi.Item.StatsPlaceholder

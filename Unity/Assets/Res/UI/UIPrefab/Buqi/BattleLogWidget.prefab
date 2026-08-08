@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: T000  --  0
+  m_Text: Buqi.Log.Placeholder
 --- !u!1 &5597852182754536637
 GameObject:
   m_ObjectHideFlags: 0

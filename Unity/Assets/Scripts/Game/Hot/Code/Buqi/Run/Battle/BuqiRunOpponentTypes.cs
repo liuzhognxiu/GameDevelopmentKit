@@ -76,7 +76,7 @@ namespace Game.Hot.Buqi.Run.Battle
             {
                 SnapshotId = string.IsNullOrEmpty(snapshotPrefix)
                     ? source.SnapshotId
-                    : snapshotPrefix + source.SnapshotId,
+                    : BuqiText.Format("{0}{1}", snapshotPrefix, source.SnapshotId),
                 ContentVersion = contentVersion ?? string.Empty,
                 ArchetypeId = source.ArchetypeId,
                 InitialExecution = source.InitialExecution,
@@ -96,7 +96,7 @@ namespace Game.Hot.Buqi.Run.Battle
                 {
                     InstanceId = string.IsNullOrEmpty(itemPrefix)
                         ? item.InstanceId
-                        : itemPrefix + item.InstanceId,
+                        : BuqiText.Format("{0}{1}", itemPrefix, item.InstanceId),
                     DefinitionId = item.DefinitionId,
                     Quality = (int)item.Quality,
                     AnchorSlot = item.AnchorSlot,

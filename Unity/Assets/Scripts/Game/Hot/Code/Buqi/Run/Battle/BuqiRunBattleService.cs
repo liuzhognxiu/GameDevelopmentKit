@@ -65,13 +65,13 @@ namespace Game.Hot.Buqi.Run.Battle
 
             if (!BuqiBoardValidator.Validate(playerBuild, definitions, out List<string> playerErrors))
             {
-                error = "player build invalid: " + string.Join("; ", playerErrors);
+                error = BuqiText.Format("player build invalid: {0}", string.Join("; ", playerErrors));
                 return false;
             }
 
             if (!BuqiBoardValidator.Validate(opponent.Build, definitions, out List<string> opponentErrors))
             {
-                error = "opponent build invalid: " + string.Join("; ", opponentErrors);
+                error = BuqiText.Format("opponent build invalid: {0}", string.Join("; ", opponentErrors));
                 return false;
             }
 
@@ -124,7 +124,7 @@ namespace Game.Hot.Buqi.Run.Battle
 
             var replay = new BattleReplayData
             {
-                Title = kind + " Battle",
+                Title = BuqiText.Format("{0} Battle", kind),
                 LeftName = ResolvePlayerName(playerBuild),
                 RightName = ResolveOpponentName(opponent),
                 LeftBuild = playerBuild,

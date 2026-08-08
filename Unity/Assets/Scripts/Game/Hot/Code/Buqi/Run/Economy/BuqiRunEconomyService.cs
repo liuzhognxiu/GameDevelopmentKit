@@ -134,7 +134,7 @@ namespace Game.Hot.Buqi.Run.Economy
         private bool TryResolveDefinition(string definitionId, out BuqiRunItemDefinition definition)
         {
             if (!string.IsNullOrWhiteSpace(definitionId)
-                && m_Catalog.TryGet(definitionId, out BuqiRunItemDefinition? resolved)
+                && m_Catalog.TryGet(definitionId, out BuqiRunItemDefinition resolved)
                 && resolved != null)
             {
                 definition = resolved;
@@ -152,7 +152,7 @@ namespace Game.Hot.Buqi.Run.Economy
             out BuqiRunItemDefinition definition)
         {
             if (!string.IsNullOrWhiteSpace(instanceId)
-                && snapshot.Items.TryGetValue(instanceId, out BuqiRunItemInstance? resolvedItem)
+                && snapshot.Items.TryGetValue(instanceId, out BuqiRunItemInstance resolvedItem)
                 && resolvedItem != null)
             {
                 item = resolvedItem;
@@ -174,7 +174,7 @@ namespace Game.Hot.Buqi.Run.Economy
                 string instanceId = snapshot.Run.BoardInstanceIds[index];
                 if (string.IsNullOrEmpty(instanceId))
                     continue;
-                if (snapshot.Items.TryGetValue(instanceId, out BuqiRunItemInstance? item)
+                if (snapshot.Items.TryGetValue(instanceId, out BuqiRunItemInstance item)
                     && item != null
                     && item.DefinitionId == definitionId
                     && item.Quality == quality
@@ -189,7 +189,7 @@ namespace Game.Hot.Buqi.Run.Economy
                 string instanceId = snapshot.Run.StorageInstanceIds[index];
                 if (string.IsNullOrEmpty(instanceId))
                     continue;
-                if (snapshot.Items.TryGetValue(instanceId, out BuqiRunItemInstance? item)
+                if (snapshot.Items.TryGetValue(instanceId, out BuqiRunItemInstance item)
                     && item != null
                     && item.DefinitionId == definitionId
                     && item.Quality == quality

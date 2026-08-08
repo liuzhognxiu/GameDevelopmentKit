@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 
 namespace Game.Hot.Buqi.Run.Economy
@@ -19,11 +20,17 @@ namespace Game.Hot.Buqi.Run.Economy
                 if (row == null || string.IsNullOrWhiteSpace(row.DefinitionId))
                     throw new ArgumentException("Item definition id is required.", nameof(catalog));
                 if (m_Definitions.ContainsKey(row.DefinitionId))
-                    throw new ArgumentException("Duplicate item definition id: " + row.DefinitionId, nameof(catalog));
+                    throw new ArgumentException(
+                        BuqiText.Format("Duplicate item definition id: {0}", row.DefinitionId),
+                        nameof(catalog));
                 if ((int)row.Size < 1 || (int)row.Size > 3)
-                    throw new ArgumentException("Item size must be positive: " + row.DefinitionId, nameof(catalog));
+                    throw new ArgumentException(
+                        BuqiText.Format("Item size must be positive: {0}", row.DefinitionId),
+                        nameof(catalog));
                 if (row.BasePrice < 0)
-                    throw new ArgumentException("Item base price must be non-negative: " + row.DefinitionId, nameof(catalog));
+                    throw new ArgumentException(
+                        BuqiText.Format("Item base price must be non-negative: {0}", row.DefinitionId),
+                        nameof(catalog));
 
                 m_Definitions.Add(row.DefinitionId, CreateDefinition(row));
             }
@@ -32,7 +39,7 @@ namespace Game.Hot.Buqi.Run.Economy
         public bool TryGet(string definitionId, out BuqiRunItemDefinition definition)
         {
             if (!string.IsNullOrWhiteSpace(definitionId)
-                && m_Definitions.TryGetValue(definitionId, out BuqiRunItemDefinition? existing)
+                && m_Definitions.TryGetValue(definitionId, out BuqiRunItemDefinition existing)
                 && existing != null)
             {
                 definition = CloneDefinition(existing);

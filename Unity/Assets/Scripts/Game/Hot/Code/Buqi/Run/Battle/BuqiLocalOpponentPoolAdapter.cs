@@ -43,7 +43,7 @@ namespace Game.Hot.Buqi.Run.Battle
 
                     if (echoesById.ContainsKey(echo.EchoId))
                     {
-                        errors.Add("duplicate catalog echo id: " + echo.EchoId);
+                        errors.Add(BuqiText.Format("duplicate catalog echo id: {0}", echo.EchoId));
                         continue;
                     }
 
@@ -102,24 +102,27 @@ namespace Game.Hot.Buqi.Run.Battle
 
                 if (!assignedIds.Add(opponentId))
                 {
-                    errors.Add("duplicate opponent assignment: " + opponentId);
+                    errors.Add(BuqiText.Format("duplicate opponent assignment: {0}", opponentId));
                     continue;
                 }
 
                 if (!echoesById.TryGetValue(opponentId, out BuqiEchoConfigRow echo))
                 {
-                    errors.Add("missing configured opponent: " + opponentId);
+                    errors.Add(BuqiText.Format("missing configured opponent: {0}", opponentId));
                     continue;
                 }
 
                 BuildSnapshot build = BuqiRunBattleSnapshotUtility.CreateBuildSnapshot(
                     echo.Snapshot,
                     contentVersion,
-                    opponentId + ":",
-                    opponentId + ":");
+                    BuqiText.Format("{0}:", opponentId),
+                    BuqiText.Format("{0}:", opponentId));
                 if (!BuqiBoardValidator.Validate(build, definitions, out List<string> buildErrors))
                 {
-                    errors.Add("illegal opponent assignment: " + opponentId + " -> " + string.Join("; ", buildErrors));
+                    errors.Add(BuqiText.Format(
+                        "illegal opponent assignment: {0} -> {1}",
+                        opponentId,
+                        string.Join("; ", buildErrors)));
                     continue;
                 }
 

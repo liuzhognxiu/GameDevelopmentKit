@@ -750,7 +750,7 @@ namespace Game.Hot.Buqi.Tests
                     return true;
                 }
 
-                if (m_Definitions.TryGetValue(definitionId, out BuqiRunItemDefinition? existing)
+                if (m_Definitions.TryGetValue(definitionId, out BuqiRunItemDefinition existing)
                     && existing != null)
                 {
                     definition = CloneDefinition(existing);

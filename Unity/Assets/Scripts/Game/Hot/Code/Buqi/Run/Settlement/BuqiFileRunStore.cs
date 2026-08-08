@@ -1,12 +1,13 @@
 using System;
 using System.IO;
 using System.Text;
+using Game.Hot.Buqi.Battle;
 
 namespace Game.Hot.Buqi.Run.Settlement
 {
     public sealed class BuqiFileRunStore : IBuqiRunStore
     {
-        private static readonly UTF8Encoding Utf8NoBom = new UTF8Encoding(false);
+        private static readonly UTF8Encoding s_Utf8NoBom = new UTF8Encoding(false);
 
         private readonly string m_Path;
 
@@ -36,7 +37,7 @@ namespace Game.Hot.Buqi.Run.Settlement
                     return false;
                 }
 
-                json = File.ReadAllText(m_Path, Utf8NoBom);
+                json = File.ReadAllText(m_Path, s_Utf8NoBom);
                 error = string.Empty;
                 return true;
             }
@@ -50,7 +51,7 @@ namespace Game.Hot.Buqi.Run.Settlement
 
         public bool TryWrite(string json, out string error)
         {
-            string tmpPath = m_Path + ".tmp";
+            string tmpPath = BuqiText.Format("{0}.tmp", m_Path);
             try
             {
                 using (var stream = new FileStream(
@@ -58,7 +59,7 @@ namespace Game.Hot.Buqi.Run.Settlement
                            FileMode.Create,
                            FileAccess.Write,
                            FileShare.None))
-                using (var writer = new StreamWriter(stream, Utf8NoBom))
+                using (var writer = new StreamWriter(stream, s_Utf8NoBom))
                 {
                     writer.Write(json ?? string.Empty);
                     writer.Flush();
@@ -90,7 +91,7 @@ namespace Game.Hot.Buqi.Run.Settlement
             try
             {
                 TryDeleteFile(m_Path);
-                TryDeleteFile(m_Path + ".tmp");
+                TryDeleteFile(BuqiText.Format("{0}.tmp", m_Path));
                 error = string.Empty;
                 return true;
             }

@@ -52,6 +52,7 @@ namespace Game.Hot.Buqi.Run.Settlement
                 EconomyPayload = Normalize(economyPayload),
                 EncounterPayload = Normalize(encounterPayload),
                 BattlePayload = Normalize(battlePayload),
+                HasPendingSettlement = pendingSettlement != null,
                 PendingSettlement = ClonePendingSettlement(pendingSettlement),
             };
         }
@@ -255,8 +256,17 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
-            if (!TryValidatePendingSettlement(
+            if (!TryNormalizePendingSettlement(
+                    saveData.HasPendingSettlement,
                     saveData.PendingSettlement,
+                    out BuqiRunPendingSettlement pendingSettlement,
+                    out error))
+            {
+                return false;
+            }
+
+            if (!TryValidatePendingSettlement(
+                    pendingSettlement,
                     saveData.Revision,
                     phase,
                     outcome,
@@ -265,6 +275,8 @@ namespace Game.Hot.Buqi.Run.Settlement
             {
                 return false;
             }
+
+            saveData.PendingSettlement = pendingSettlement;
 
             state = new BuqiRunState
             {
@@ -531,6 +543,57 @@ namespace Game.Hot.Buqi.Run.Settlement
             }
 
             return true;
+        }
+
+        private static bool TryNormalizePendingSettlement(
+            bool hasPendingSettlement,
+            BuqiRunPendingSettlement pendingSettlement,
+            out BuqiRunPendingSettlement normalized,
+            out string error)
+        {
+            normalized = pendingSettlement;
+            error = string.Empty;
+            if (hasPendingSettlement)
+            {
+                if (pendingSettlement != null)
+                    return true;
+
+                error = "Pending settlement payload is missing.";
+                return false;
+            }
+
+            if (pendingSettlement != null && !IsEmptyPendingSettlementPlaceholder(pendingSettlement))
+            {
+                error = BuqiText.Format(
+                    "Pending settlement presence flag does not match its payload: {0}",
+                    JsonUtility.ToJson(pendingSettlement));
+                return false;
+            }
+
+            normalized = null;
+            return true;
+        }
+
+        private static bool IsEmptyPendingSettlementPlaceholder(BuqiRunPendingSettlement pendingSettlement)
+        {
+            if (!string.IsNullOrEmpty(pendingSettlement.SettlementId) ||
+                pendingSettlement.ExpectedRevision != 0 ||
+                pendingSettlement.BattleKind != 0 ||
+                pendingSettlement.RawOutcome != 0 ||
+                !string.IsNullOrEmpty(pendingSettlement.BattleLogHash))
+            {
+                return false;
+            }
+
+            BuqiRunBattleSummary summary = pendingSettlement.Summary;
+            return summary == null ||
+                   (summary.RawOutcome == BattleOutcome.Draw &&
+                    string.IsNullOrEmpty(summary.BattleLogHash) &&
+                    string.IsNullOrEmpty(summary.TopSourceInstanceId) &&
+                    summary.TopContribution == 0 &&
+                    string.IsNullOrEmpty(summary.KeyInterruptionReason) &&
+                    summary.OverloadLoss == 0 &&
+                    (summary.FactLines == null || summary.FactLines.Count == 0));
         }
 
         private static bool TryValidateSummaryOutcomeConsistency(

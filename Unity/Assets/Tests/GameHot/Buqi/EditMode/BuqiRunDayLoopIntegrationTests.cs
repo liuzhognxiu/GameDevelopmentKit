@@ -31,7 +31,9 @@ namespace Game.Hot.Buqi.Tests
                 Is.True,
                 error);
 
-            Assert.That(controller.View.Phase, Is.AnyOf(BuqiUIDemoPhase.Shop, BuqiUIDemoPhase.Event));
+            Assert.That(
+                controller.View.Phase == BuqiUIDemoPhase.Shop || controller.View.Phase == BuqiUIDemoPhase.Event,
+                Is.True);
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.StarterSelection));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.OpponentIntel));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.Prediction));
@@ -62,17 +64,18 @@ namespace Game.Hot.Buqi.Tests
                 BuqiUIDemoCommand command = SelectProgressCommand(controller.View);
                 BuqiUIDemoCommandResult result = controller.Execute(command);
                 Assert.That(result.Accepted, Is.True, result.Reason);
-                seenPhases.Add(controller.View.Phase);
+                if (controller.View.Round == 1)
+                    seenPhases.Add(controller.View.Phase);
             }
 
             Assert.That(controller.View.Round, Is.EqualTo(2));
             Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.Shop || phase == BuqiUIDemoPhase.Event), Is.EqualTo(3));
-            Assert.That(seenPhases, Does.Contain(BuqiUIDemoPhase.BattleReplay));
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.BattleReplay), Is.True);
             Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.BattleSummary), Is.EqualTo(2));
-            Assert.That(seenPhases, Does.Contain(BuqiUIDemoPhase.RoundSettlement));
-            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.StarterSelection));
-            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.OpponentIntel));
-            Assert.That(seenPhases, Does.Not.Contain(BuqiUIDemoPhase.Prediction));
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.RoundSettlement), Is.True);
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.StarterSelection), Is.False);
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.OpponentIntel), Is.False);
+            Assert.That(seenPhases.Contains(BuqiUIDemoPhase.Prediction), Is.False);
         }
 
         [Test]
@@ -111,15 +114,20 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Event));
             int coinsBefore = controller.View.Coins;
 
+            Assert.That(controller.View.Choices.Any(choice => choice.Id == "event-item"), Is.True);
             BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.SelectChoice,
-                PrimaryId = controller.View.Choices[0].Id,
+                PrimaryId = "event-item",
             });
 
             Assert.That(result.Accepted, Is.True, result.Reason);
             Assert.That(controller.View.Coins, Is.EqualTo(coinsBefore));
-            Assert.That(controller.View.Phase, Is.AnyOf(BuqiUIDemoPhase.Shop, BuqiUIDemoPhase.Event, BuqiUIDemoPhase.BattleReplay));
+            Assert.That(
+                controller.View.Phase == BuqiUIDemoPhase.Shop ||
+                controller.View.Phase == BuqiUIDemoPhase.Event ||
+                controller.View.Phase == BuqiUIDemoPhase.BattleReplay,
+                Is.True);
         }
 
         [Test]
@@ -279,6 +287,7 @@ namespace Game.Hot.Buqi.Tests
             BuqiRunBattleSummary summary = BuildSummary(controller);
             save.ContentVersion = "mismatched-content-version";
             save.PendingSettlement = CreatePendingSettlement(summary, save.Revision, BuqiRunBattleKind.Pve, controller.CurrentReplay.Result.Outcome);
+            save.HasPendingSettlement = true;
             store.SetJson(BuqiRunSaveCodec.ToJson(save));
             string originalJson = store.CurrentJson;
 
@@ -394,6 +403,45 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(reloaded, Is.Null);
             Assert.That(error, Does.Contain("Battle").IgnoreCase);
             Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
+        }
+
+        [Test]
+        public void ReloadAfterSettledPve_ReturnsToBattleSummaryBeforePvpWithoutResimulation()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+
+            AdvanceUntilPhase(controller, BuqiUIDemoPhase.BattleSummary);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleSummary));
+            string persistedJson = store.CurrentJson;
+            string titleBefore = controller.View.ContextTitle;
+            string bodyBefore = controller.View.ContextBody;
+            string[] factsBefore = controller.View.Facts.Select(fact => fact.Body).ToArray();
+            string opponentBefore = controller.CurrentReplay.RightName;
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out error),
+                Is.True,
+                error);
+
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleSummary));
+            Assert.That(reloaded.View.ContextTitle, Is.EqualTo(titleBefore));
+            Assert.That(reloaded.View.ContextBody, Is.EqualTo(bodyBefore));
+            Assert.That(reloaded.View.Facts.Select(fact => fact.Body), Is.EqualTo(factsBefore));
+            Assert.That(reloaded.CurrentReplay.RightName, Is.EqualTo(opponentBefore));
+            Assert.That(store.CurrentJson, Is.EqualTo(persistedJson));
         }
 
         [Test]
@@ -553,13 +601,26 @@ namespace Game.Hot.Buqi.Tests
             return new BuqiDeploymentSnapshot(board, storage);
         }
 
+        private static BuqiUIDemoController CreateController(MemoryRunStore store)
+        {
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    CreateCatalog(),
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.True,
+                error);
+            return controller;
+        }
+
         private static BuqiUIDemoController CreateControllerOnPhase(MemoryRunStore store, BuqiUIDemoPhase phase)
         {
             for (int seed = 1; seed <= 64; seed++)
             {
                 store.Reset();
                 if (!BuqiUIDemoController.TryCreate(
-                        CreateDemoCatalog(),
+                        CreateCatalog(),
                         CreateOptions(store, seed),
                         out BuqiUIDemoController controller,
                         out string error))
@@ -833,18 +894,21 @@ namespace Game.Hot.Buqi.Tests
 
             public override int GetHashCode()
             {
-                return HashCode.Combine(
-                    (int)Phase,
-                    Day,
-                    EncounterIndex,
-                    RngCursor,
-                    Revision,
-                    Coins,
-                    Wins,
-                    Lives,
-                    Board,
-                    Storage,
-                    (int)ViewPhase);
+                unchecked
+                {
+                    int hashCode = (int)Phase;
+                    hashCode = (hashCode * 397) ^ Day;
+                    hashCode = (hashCode * 397) ^ EncounterIndex;
+                    hashCode = (hashCode * 397) ^ RngCursor;
+                    hashCode = (hashCode * 397) ^ Revision;
+                    hashCode = (hashCode * 397) ^ Coins;
+                    hashCode = (hashCode * 397) ^ Wins;
+                    hashCode = (hashCode * 397) ^ Lives;
+                    hashCode = (hashCode * 397) ^ StringComparer.Ordinal.GetHashCode(Board);
+                    hashCode = (hashCode * 397) ^ StringComparer.Ordinal.GetHashCode(Storage);
+                    hashCode = (hashCode * 397) ^ (int)ViewPhase;
+                    return hashCode;
+                }
             }
         }
     }

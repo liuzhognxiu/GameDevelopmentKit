@@ -118,10 +118,24 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(parsed.EconomyPayload, Is.EqualTo("economy-json"));
             Assert.That(parsed.EncounterPayload, Is.EqualTo("encounter-json"));
             Assert.That(parsed.BattlePayload, Is.EqualTo("battle-json"));
+            Assert.That(parsed.HasPendingSettlement, Is.True);
             Assert.That(parsed.PendingSettlement, Is.Not.Null);
             Assert.That(parsed.PendingSettlement!.SettlementId, Is.EqualTo("settle-pending"));
             Assert.That(parsed.PendingSettlement.Summary.BattleLogHash, Is.EqualTo("pending-hash"));
             Assert.That(parsed.PendingSettlement.Summary.FactLines, Is.EqualTo(new[] { "主要贡献：source-x 累计 9" }));
+        }
+
+        [Test]
+        public void SaveCodec_RoundTripsWithoutPendingSettlement()
+        {
+            BuqiRunState state = CreateBattleState(BuqiRunPhase.PveBattle, revision: 2, wins: 1, lives: 3);
+            BuqiRunSaveData save = BuqiRunSaveCodec.FromState(state);
+
+            string json = BuqiRunSaveCodec.ToJson(save);
+
+            Assert.That(BuqiRunSaveCodec.TryFromJson(json, out BuqiRunSaveData parsed, out string error), Is.True, error);
+            Assert.That(parsed.HasPendingSettlement, Is.False);
+            Assert.That(parsed.PendingSettlement, Is.Null);
         }
 
         [Test]
@@ -161,6 +175,10 @@ namespace Game.Hot.Buqi.Tests
             terminalMismatch.Phase = (int)BuqiRunPhase.RunTerminal;
             terminalMismatch.Outcome = (int)BuqiRunOutcome.None;
             AssertRejected(terminalMismatch);
+
+            BuqiRunSaveData hiddenPendingSettlement = CreateValidSaveData();
+            hiddenPendingSettlement.HasPendingSettlement = false;
+            AssertRejected(hiddenPendingSettlement);
         }
 
         [Test]

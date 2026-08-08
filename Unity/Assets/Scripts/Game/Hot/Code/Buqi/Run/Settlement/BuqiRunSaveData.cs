@@ -6,7 +6,7 @@ namespace Game.Hot.Buqi.Run.Settlement
     [Serializable]
     public sealed class BuqiRunSaveData
     {
-        public const string CurrentSaveVersion = "buqi-run-save-v1";
+        public const string CurrentSaveVersion = "buqi-run-save-v2";
 
         public string SaveVersion = CurrentSaveVersion;
         public string ContentVersion = string.Empty;
@@ -28,6 +28,7 @@ namespace Game.Hot.Buqi.Run.Settlement
         public string EconomyPayload = string.Empty;
         public string EncounterPayload = string.Empty;
         public string BattlePayload = string.Empty;
+        public bool HasPendingSettlement;
         public BuqiRunPendingSettlement PendingSettlement;
     }
 }

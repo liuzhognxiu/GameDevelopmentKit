@@ -5,6 +5,7 @@ using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.DemoUI.Deployment;
 using Game.Hot.Buqi.Run.Battle;
 using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Economy;
@@ -112,8 +113,8 @@ namespace Game.Hot.Buqi.Run.Integration
             m_EconomyService = new BuqiRunEconomyService(m_ItemCatalog);
             m_EncounterService = new BuqiRunEncounterService(catalog);
             m_EventResolver = new BuqiRunEventResolver(catalog);
-            m_BattleService = new BuqiRunBattleService(CreateBattleProvider(catalog, options));
-            m_Store = options.Store ?? CreateDefaultStore();
+            m_BattleService = new BuqiRunBattleService(CreateBattleProvider(catalog, m_Options));
+            m_Store = m_Options.Store ?? CreateDefaultStore();
             m_SettlementCoordinator = new BuqiRunSettlementCoordinator(m_Store);
         }
 
@@ -177,7 +178,7 @@ namespace Game.Hot.Buqi.Run.Integration
             return TryResolveEncounterCommand(
                 m_State.Clone(),
                 CreateCommandId(m_State.Economy.Run, "shop-skip"),
-                m_State.Encounter.EncounterId + ":skip",
+                BuqiText.Format("{0}:skip", m_State.Encounter.EncounterId),
                 out error);
         }
 
@@ -333,7 +334,7 @@ namespace Game.Hot.Buqi.Run.Integration
 
             return new BattleReplayData
             {
-                Title = m_State.Battle.Replay?.Title ?? (m_State.Battle.Kind + " Battle"),
+                Title = m_State.Battle.Replay?.Title ?? BuqiText.Format("{0} Battle", m_State.Battle.Kind),
                 LeftName = m_State.Battle.Replay?.LeftName ?? "Player",
                 RightName = m_State.Battle.Replay?.RightName ?? m_State.Battle.OpponentId,
                 LeftBuild = BuqiRunDemoCodec.CloneBuildSnapshot(m_State.Battle.Request.Left),
@@ -431,7 +432,11 @@ namespace Game.Hot.Buqi.Run.Integration
                         return false;
                     }
 
-                    presentation = BuqiRunDemoPresentation.BattleReplay;
+                    presentation = runState.Phase == BuqiRunPhase.PvpBattle &&
+                                   battle.Kind == BuqiRunBattleKind.Pve &&
+                                   BuqiRunDemoCodec.IsSettledBattle(runState, battle.BattleId)
+                        ? BuqiRunDemoPresentation.BattleSummary
+                        : BuqiRunDemoPresentation.BattleReplay;
                     error = string.Empty;
                     return true;
 
@@ -657,10 +662,10 @@ namespace Game.Hot.Buqi.Run.Integration
                 BuqiRunEncounterState resolved = working.Encounter.Clone();
                 resolved.Resolved = true;
                 resolved.ResolutionId = string.IsNullOrEmpty(resolutionId)
-                    ? resolved.EncounterId + ":resolve"
+                    ? BuqiText.Format("{0}:resolve", resolved.EncounterId)
                     : resolutionId;
                 working.Economy.Run.RngCursor = resolved.NextRngCursor;
-                working.Encounter = resolved;
+                working.Encounter = null;
             }
 
             working.LastResolutionId = resolutionId ?? string.Empty;
@@ -886,15 +891,9 @@ namespace Game.Hot.Buqi.Run.Integration
                     return false;
                 }
 
-                bool isContinuation = slot > 0 && string.Equals(board[slot - 1], instanceId, StringComparison.Ordinal);
-                if (isContinuation)
-                {
-                    continue;
-                }
-
                 if (!seen.Add(instanceId))
                 {
-                    error = "Board cannot place the same item more than once.";
+                    error = "Board cannot place the same item instance more than once.";
                     return false;
                 }
 
@@ -914,6 +913,7 @@ namespace Game.Hot.Buqi.Run.Integration
                 }
 
                 placements.Add(new BoardPlacement(item, slot));
+                slot += definition.Size - 1;
             }
 
             return true;
@@ -1091,7 +1091,7 @@ namespace Game.Hot.Buqi.Run.Integration
 
         private static string CreateSettlementId(BuqiRunBattleSession session)
         {
-            return "settlement:" + session.BattleId;
+            return BuqiText.Format("settlement:{0}", session.BattleId);
         }
 
         private static string[] CreateEmptyBoardSlots()
@@ -1355,6 +1355,9 @@ namespace Game.Hot.Buqi.Run.Integration
                 OpponentId = session.OpponentId ?? string.Empty,
                 NextRngCursor = session.NextRngCursor,
                 RawOutcome = (int)session.RawOutcome,
+                ReplayTitle = session.Replay?.Title ?? BuqiText.Format("{0} Battle", session.Kind),
+                ReplayLeftName = session.Replay?.LeftName ?? "Player",
+                ReplayRightName = session.Replay?.RightName ?? session.OpponentId ?? string.Empty,
                 Request = BuildRequestPayload(session.Request),
                 Result = BuildResultPayload(session.Result),
             };
@@ -1422,12 +1425,15 @@ namespace Game.Hot.Buqi.Run.Integration
             }
 
             BuqiRunBattleKind kind = (BuqiRunBattleKind)payload.Kind;
+            bool settled = IsSettledBattle(run, payload.BattleId);
             if (run.Phase == BuqiRunPhase.PveBattle && kind != BuqiRunBattleKind.Pve)
             {
                 error = "Battle payload kind does not match the active PVE phase.";
                 return false;
             }
-            if (run.Phase == BuqiRunPhase.PvpBattle && kind != BuqiRunBattleKind.Pvp)
+            if (run.Phase == BuqiRunPhase.PvpBattle &&
+                kind != BuqiRunBattleKind.Pvp &&
+                !(kind == BuqiRunBattleKind.Pve && settled))
             {
                 error = "Battle payload kind does not match the active PVP phase.";
                 return false;
@@ -1435,6 +1441,17 @@ namespace Game.Hot.Buqi.Run.Integration
             if (run.Phase == BuqiRunPhase.Encounter)
             {
                 error = "Battle payload is not valid during the encounter phase.";
+                return false;
+            }
+            if (run.Phase == BuqiRunPhase.DaySettlement &&
+                (kind != BuqiRunBattleKind.Pvp || !settled))
+            {
+                error = "Only a settled PVP battle payload is valid during day settlement.";
+                return false;
+            }
+            if (run.Phase == BuqiRunPhase.RunTerminal && !settled)
+            {
+                error = "An unsettled battle payload is not valid after the run has ended.";
                 return false;
             }
 
@@ -1460,9 +1477,15 @@ namespace Game.Hot.Buqi.Run.Integration
                 Log = log,
                 Replay = new BattleReplayData
                 {
-                    Title = ((BuqiRunBattleKind)payload.Kind) + " Battle",
-                    LeftName = string.IsNullOrEmpty(request.Left?.SnapshotId) ? "Player" : request.Left.SnapshotId,
-                    RightName = payload.OpponentId ?? string.Empty,
+                    Title = string.IsNullOrEmpty(payload.ReplayTitle)
+                        ? BuqiText.Format("{0} Battle", (BuqiRunBattleKind)payload.Kind)
+                        : payload.ReplayTitle,
+                    LeftName = string.IsNullOrEmpty(payload.ReplayLeftName)
+                        ? "Player"
+                        : payload.ReplayLeftName,
+                    RightName = string.IsNullOrEmpty(payload.ReplayRightName)
+                        ? payload.OpponentId ?? string.Empty
+                        : payload.ReplayRightName,
                     LeftBuild = CloneBuildSnapshot(request.Left),
                     RightBuild = CloneBuildSnapshot(request.Right),
                     Result = CloneBattleResult(result),
@@ -1472,6 +1495,13 @@ namespace Game.Hot.Buqi.Run.Integration
                 RawOutcome = (BuqiRunRawBattleOutcome)payload.RawOutcome,
             };
             return true;
+        }
+
+        internal static bool IsSettledBattle(BuqiRunState run, string battleId)
+        {
+            return run != null &&
+                   !string.IsNullOrWhiteSpace(battleId) &&
+                   run.AppliedSettlementIds.Contains(BuqiText.Format("settlement:{0}", battleId));
         }
 
         private static bool TryValidateBattleRequest(RequestPayload payload, out string error)
@@ -1632,7 +1662,9 @@ namespace Game.Hot.Buqi.Run.Integration
                 TopContribution = source.TopContribution,
                 KeyInterruptionReason = source.KeyInterruptionReason,
                 OverloadLoss = source.OverloadLoss,
-                FactLines = source.FactLines == null ? Array.Empty<string>() : source.FactLines.ToArray(),
+                FactLines = source.FactLines == null
+                    ? new List<string>()
+                    : new List<string>(source.FactLines),
             };
         }
 
@@ -1752,7 +1784,7 @@ namespace Game.Hot.Buqi.Run.Integration
         {
             return new TemporaryModifier
             {
-                Effect = (BuqiEffect)payload.Effect,
+                Effect = (Game.Hot.Buqi.Battle.BuqiEffect)payload.Effect,
                 SourceInstanceId = payload.SourceInstanceId ?? string.Empty,
                 RemainingTicks = payload.RemainingTicks,
                 Bps = payload.Bps,
@@ -1889,6 +1921,9 @@ namespace Game.Hot.Buqi.Run.Integration
             public string OpponentId = string.Empty;
             public int NextRngCursor;
             public int RawOutcome;
+            public string ReplayTitle = string.Empty;
+            public string ReplayLeftName = string.Empty;
+            public string ReplayRightName = string.Empty;
             public RequestPayload Request = null!;
             public ResultPayload Result = null!;
             public List<EventPayload> Log = new List<EventPayload>();

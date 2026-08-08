@@ -41,16 +41,23 @@ namespace Game.Hot.Buqi.Tests
         {
             Type gameHotAssemblyAnchor = typeof(BuqiRunState);
 
-            Assert.Multiple(() =>
-            {
-                Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterKind"), Is.Not.Null);
-                Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterState"), Is.Not.Null);
-                Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterDelta"), Is.Not.Null);
-                Assert.That(FindEncounterType(gameHotAssemblyAnchor, "IBuqiRunEncounterCatalog"), Is.Not.Null);
-                Assert.That(FindEncounterType(gameHotAssemblyAnchor, "IBuqiRunEventCatalog"), Is.Not.Null);
-                Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterService"), Is.Not.Null);
-                Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEventResolver"), Is.Not.Null);
-            });
+            // Assert.Multiple(() =>
+            // {
+            //     Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterKind"), Is.Not.Null);
+            //     Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterState"), Is.Not.Null);
+            //     Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterDelta"), Is.Not.Null);
+            //     Assert.That(FindEncounterType(gameHotAssemblyAnchor, "IBuqiRunEncounterCatalog"), Is.Not.Null);
+            //     Assert.That(FindEncounterType(gameHotAssemblyAnchor, "IBuqiRunEventCatalog"), Is.Not.Null);
+            //     Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterService"), Is.Not.Null);
+            //     Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEventResolver"), Is.Not.Null);
+            // });
+            Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterKind"), Is.Not.Null);
+            Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterState"), Is.Not.Null);
+            Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterDelta"), Is.Not.Null);
+            Assert.That(FindEncounterType(gameHotAssemblyAnchor, "IBuqiRunEncounterCatalog"), Is.Not.Null);
+            Assert.That(FindEncounterType(gameHotAssemblyAnchor, "IBuqiRunEventCatalog"), Is.Not.Null);
+            Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEncounterService"), Is.Not.Null);
+            Assert.That(FindEncounterType(gameHotAssemblyAnchor, "BuqiRunEventResolver"), Is.Not.Null);
         }
 
         [Test]
@@ -94,6 +101,26 @@ namespace Game.Hot.Buqi.Tests
             AssertEncounterState(replayed, snapshot);
             AssertEncounterState(created, snapshot);
             Assert.That(run.RngCursor, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TryGetOrCreate_RejectsResolvedOrStaleCurrentWithoutAdvancingCursor()
+        {
+            var service = new BuqiRunEncounterService(CreateEncounterCatalog());
+            BuqiRunState run = BuqiRunState.CreateInitial(812345L);
+            run.RngCursor = 6;
+            BuqiRunEncounterState current = CreateFrozenEventEncounter();
+            current.Day = run.Day;
+            current.EncounterIndex = run.EncounterIndex;
+            current.Resolved = true;
+
+            Assert.That(service.TryGetOrCreate(run, current, out _, out _), Is.False);
+            Assert.That(run.RngCursor, Is.EqualTo(6));
+
+            current.Resolved = false;
+            current.Day++;
+            Assert.That(service.TryGetOrCreate(run, current, out _, out _), Is.False);
+            Assert.That(run.RngCursor, Is.EqualTo(6));
         }
 
         [Test]
@@ -184,6 +211,37 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(encounter, Is.Null);
             Assert.That(error, Is.Not.Empty);
             Assert.That(run.RngCursor, Is.EqualTo(5));
+        }
+
+        [Test]
+        public void TryGetOrCreate_RejectsInvalidPhaseAndEncounterIndexWithoutAdvancingCursor()
+        {
+            var service = new BuqiRunEncounterService(CreateEncounterCatalog());
+            BuqiRunState run = BuqiRunState.CreateInitial(99L);
+            run.RngCursor = 8;
+            run.Phase = BuqiRunPhase.PveBattle;
+
+            Assert.That(service.TryGetOrCreate(run, null, out _, out _), Is.False);
+            Assert.That(run.RngCursor, Is.EqualTo(8));
+
+            run.Phase = BuqiRunPhase.Encounter;
+            run.EncounterIndex = BuqiRunRules.EncountersPerDay;
+            Assert.That(service.TryGetOrCreate(run, null, out _, out _), Is.False);
+            Assert.That(run.RngCursor, Is.EqualTo(8));
+        }
+
+        [Test]
+        public void TryGetOrCreate_DeduplicatesAndDropsBlankCandidateIds()
+        {
+            long seed = FindSeedForFirstEncounter(BuqiRunEncounterKind.Shop);
+            var service = new BuqiRunEncounterService(new TestEncounterCatalog(
+                new[] { "shop-a", "", " ", "shop-a", "shop-b", "shop-c", "shop-b", "shop-d" },
+                new[] { "event-a", "event-b", "event-c" }));
+
+            Assert.That(service.TryGetOrCreate(BuqiRunState.CreateInitial(seed), null,
+                out BuqiRunEncounterState encounter, out string error), Is.True, error);
+            Assert.That(encounter.CandidateIds, Is.EqualTo(new[] { "shop-a", "shop-b", "shop-c", "shop-d" }).AsCollection);
+            Assert.That(encounter.CandidateIds.Any(string.IsNullOrWhiteSpace), Is.False);
         }
 
         [TestCase("event-coins", 5, 0, "", "")]
@@ -292,6 +350,21 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(duplicateDelta, Is.Null);
             Assert.That(duplicateError, Is.Not.Empty);
             AssertEncounterState(resolved, resolvedSnapshot);
+        }
+
+        [Test]
+        public void TryResolve_RejectsNullDeltaWithoutMutatingSource()
+        {
+            var resolver = new BuqiRunEventResolver(new NullDeltaEventCatalog("event-item"));
+            BuqiRunEncounterState encounter = CreateFrozenEventEncounter();
+            BuqiRunEncounterState snapshot = encounter.Clone();
+
+            Assert.That(resolver.TryResolve(encounter, "event-item", out BuqiRunEncounterState resolved,
+                out BuqiRunEncounterDelta delta, out string error), Is.False);
+            Assert.That(resolved, Is.Null);
+            Assert.That(delta, Is.Null);
+            Assert.That(error, Is.Not.Empty);
+            AssertEncounterState(encounter, snapshot);
         }
 
         private static Type FindEncounterType(Type assemblyAnchor, string shortName)
@@ -419,6 +492,22 @@ namespace Game.Hot.Buqi.Tests
 
                 delta = null;
                 return false;
+            }
+        }
+
+        private sealed class NullDeltaEventCatalog : IBuqiRunEventCatalog
+        {
+            private readonly string m_EventId;
+
+            public NullDeltaEventCatalog(string eventId)
+            {
+                m_EventId = eventId;
+            }
+
+            public bool TryGet(string eventId, out BuqiRunEncounterDelta delta)
+            {
+                delta = null;
+                return eventId == m_EventId;
             }
         }
     }

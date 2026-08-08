@@ -12,6 +12,7 @@ namespace Game.Hot.Buqi.Run.Encounter
         private const string EncounterAlreadyResolved = "Encounter is already resolved.";
         private const string EventChoiceUnavailable = "Event id is not available in the frozen candidate list.";
         private const string EventChoiceMissing = "Event id was not found in the event catalog.";
+        private const string EventDeltaMissing = "Event catalog returned a null delta.";
 
         private readonly IBuqiRunEventCatalog m_Catalog;
 
@@ -68,6 +69,12 @@ namespace Game.Hot.Buqi.Run.Encounter
             if (!m_Catalog.TryGet(eventId, out BuqiRunEncounterDelta selectedDelta))
             {
                 error = EventChoiceMissing;
+                return false;
+            }
+
+            if (selectedDelta == null)
+            {
+                error = EventDeltaMissing;
                 return false;
             }
 

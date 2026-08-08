@@ -9,6 +9,10 @@ namespace Game.Hot.Buqi.Run.Encounter
         private const int EncounterKindCount = 2;
         private const int ShopCandidateCount = 4;
         private const int EventCandidateCount = 3;
+        private const string InvalidPhase = "Run phase must be Encounter.";
+        private const string InvalidEncounterIndex = "Encounter index is out of range.";
+        private const string ResolvedCurrentEncounter = "Current encounter has already been resolved.";
+        private const string CurrentEncounterMismatch = "Current encounter does not match the active day or encounter index.";
         private const string EmptyShopPool = "Shop offer pool is empty.";
         private const string EmptyEventPool = "Event pool is empty.";
 
@@ -30,21 +34,51 @@ namespace Game.Hot.Buqi.Run.Encounter
                 throw new ArgumentNullException(nameof(run));
             }
 
+            if (run.Phase != BuqiRunPhase.Encounter)
+            {
+                encounter = null!;
+                error = InvalidPhase;
+                return false;
+            }
+
+            if (run.EncounterIndex < 0 || run.EncounterIndex >= BuqiRunRules.EncountersPerDay)
+            {
+                encounter = null!;
+                error = InvalidEncounterIndex;
+                return false;
+            }
+
             if (current != null && !string.IsNullOrEmpty(current.EncounterId))
             {
+                if (current.Resolved)
+                {
+                    encounter = null!;
+                    error = ResolvedCurrentEncounter;
+                    return false;
+                }
+
+                if (current.Day != run.Day || current.EncounterIndex != run.EncounterIndex)
+                {
+                    encounter = null!;
+                    error = CurrentEncounterMismatch;
+                    return false;
+                }
+
                 encounter = current.Clone();
                 error = string.Empty;
                 return true;
             }
 
-            if (m_Catalog.ShopOfferIds == null || m_Catalog.ShopOfferIds.Count == 0)
+            List<string> shopPool = SanitizePool(m_Catalog.ShopOfferIds);
+            if (shopPool.Count == 0)
             {
                 encounter = null!;
                 error = EmptyShopPool;
                 return false;
             }
 
-            if (m_Catalog.EventIds == null || m_Catalog.EventIds.Count == 0)
+            List<string> eventPool = SanitizePool(m_Catalog.EventIds);
+            if (eventPool.Count == 0)
             {
                 encounter = null!;
                 error = EmptyEventPool;
@@ -57,8 +91,8 @@ namespace Game.Hot.Buqi.Run.Encounter
                 : BuqiRunEncounterKind.Event;
 
             IReadOnlyList<string> pool = kind == BuqiRunEncounterKind.Shop
-                ? m_Catalog.ShopOfferIds
-                : m_Catalog.EventIds;
+                ? shopPool
+                : eventPool;
             int candidateCount = kind == BuqiRunEncounterKind.Shop ? ShopCandidateCount : EventCandidateCount;
 
             encounter = new BuqiRunEncounterState
@@ -74,6 +108,32 @@ namespace Game.Hot.Buqi.Run.Encounter
             encounter.NextRngCursor = cursor;
             error = string.Empty;
             return true;
+        }
+
+        private static List<string> SanitizePool(IReadOnlyList<string> source)
+        {
+            var result = new List<string>();
+            if (source == null)
+            {
+                return result;
+            }
+
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            for (int index = 0; index < source.Count; index++)
+            {
+                string candidateId = source[index];
+                if (string.IsNullOrWhiteSpace(candidateId))
+                {
+                    continue;
+                }
+
+                if (seen.Add(candidateId))
+                {
+                    result.Add(candidateId);
+                }
+            }
+
+            return result;
         }
 
         private static string CreateEncounterId(int day, int encounterIndex, BuqiRunEncounterKind kind)

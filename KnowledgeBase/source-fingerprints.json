@@ -10,7 +10,7 @@
                     {
                         "id":  "ARCH-02",
                         "fileCount":  18,
-                        "fingerprint":  "44318960c50bb1549505ac7f907aba842e72a936fcb8f40833d71dbe27806956"
+                        "fingerprint":  "cd9df6f31d518fd940ca2e9fdaec339e6897111e3be442342fdca43f5d88c06a"
                     },
                     {
                         "id":  "AI-01",
@@ -40,7 +40,7 @@
                     {
                         "id":  "BUQI-01",
                         "fileCount":  643,
-                        "fingerprint":  "6b660ec9dfe195d8b94a69b26bcd81957d8f70962945db4eee86433a56cc2849"
+                        "fingerprint":  "d9ff331e703c1228b45f355800675a8344d96a0492f8132f5912699ab3e3b9a4"
                     },
                     {
                         "id":  "BUQI-02",
@@ -225,7 +225,7 @@
                     {
                         "id":  "CODE-01",
                         "fileCount":  11,
-                        "fingerprint":  "88bceea56b603bd9f24656d74c2ff58e84cae42f89b50af3d0a9c930179b8374"
+                        "fingerprint":  "e805391e89cab5000766eccdcfa54ccf9be6d8bc47c21102fe6bf455fb39da72"
                     },
                     {
                         "id":  "CODE-02",

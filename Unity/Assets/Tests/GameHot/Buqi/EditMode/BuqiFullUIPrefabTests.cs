@@ -99,7 +99,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void RunShell_ClickAndRUseOneGuardedRestartPath()
+        public void RunShell_UsesButtonOnlyGuardedRestartPath()
         {
             string shellFormPath = Path.Combine(
                 Application.dataPath,
@@ -110,10 +110,10 @@ namespace Game.Hot.Buqi.Tests
                 "Scripts/Game/Hot/Code/Game.Hot.Code.asmdef"));
 
             Assert.That(source, Does.Contain("m_RestartButton?.onClick.AddListener(Restart)"));
-            Assert.That(source, Does.Contain("using UnityEngine.InputSystem;"));
-            Assert.That(source, Does.Contain("Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame"));
-            Assert.That(source, Does.Not.Contain("Input.GetKeyDown(KeyCode.R)"));
-            Assert.That(assemblyDefinition, Does.Contain("\"Unity.InputSystem\""));
+            Assert.That(source, Does.Not.Contain("Input.GetKeyDown"));
+            Assert.That(source, Does.Not.Contain("Keyboard.current"));
+            Assert.That(source, Does.Not.Contain("UnityEngine.InputSystem"));
+            Assert.That(assemblyDefinition, Does.Not.Contain("\"Unity.InputSystem\""));
             Assert.That(source, Does.Contain("BuqiRestartPolicy.TryDispatch"));
             Assert.That(source, Does.Contain("RestartCore"));
             Assert.That(source, Does.Contain("HideError();"));

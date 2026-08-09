@@ -103,10 +103,17 @@ namespace Game.Hot.Buqi.DemoUI
 
     public sealed class BuqiBazaarSupplyView
     {
+        public string MerchantId = string.Empty;
         public string MerchantName = string.Empty;
         public string MerchantSpecialty = string.Empty;
+        public string PreferredArchetypeId = string.Empty;
+        public int Balance;
+        public int RefreshCount;
+        public bool CanRefresh;
         public int RefreshPrice;
         public string RefreshPriceLabel = string.Empty;
+        public IReadOnlyList<string> OfferIds = Array.Empty<string>();
+        public IReadOnlyList<string> PurchasedOfferIds = Array.Empty<string>();
         public IReadOnlyDictionary<string, string> OfferRoles =
             new Dictionary<string, string>(StringComparer.Ordinal);
 

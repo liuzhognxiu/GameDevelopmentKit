@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Economy;
 using Game.Hot.Buqi.Run.Training;
@@ -171,7 +171,7 @@ namespace Game.Hot.Buqi.Run.Encounter
         {
             ValidateState(source);
             if (IsOperationConsumed(source))
-                return Failure(source, "The current operation slot has already been consumed.");
+                return Failure(source, "当前经营时段已完成。");
 
             BuqiRunEventSelectionResult selected = m_Selector.Select(source);
             return selected.Success
@@ -201,7 +201,7 @@ namespace Game.Hot.Buqi.Run.Encounter
         {
             ValidateState(source);
             if (source.PendingEvent != null && source.PendingEvent.IsActive)
-                return Failure(source, "A frozen event must be resolved before training.");
+                return Failure(source, "请先完成当前事件，再进行训练。");
             if (request == null)
                 throw new ArgumentNullException(nameof(request));
 
@@ -229,17 +229,17 @@ namespace Game.Hot.Buqi.Run.Encounter
             if (economy == null)
                 throw new ArgumentNullException(nameof(economy));
             if (!EconomiesEqual(source.Economy, expectedBase))
-                return Failure(source, "Economy base does not match the current operation state.");
+                return Failure(source, "当前资源状态已变化，请重新操作。");
             if (!MatchesRunIdentity(expectedBase, economy))
-                return Failure(source.Clone(), "Economy snapshot belongs to another run or content version.");
+                return Failure(source.Clone(), "资源数据与当前游戏进度不匹配。");
             if (economy.Run.Revision < expectedBase.Run.Revision)
-                return Failure(source.Clone(), "Economy snapshot revision is older than the operation state.");
+                return Failure(source.Clone(), "资源数据已过期，请重新操作。");
 
             BuqiRunPendingEvent pending = source.PendingEvent;
             if (pending != null && pending.IsActive &&
                 (pending.Day != economy.Run.Day || pending.Period != economy.Run.Period))
             {
-                return Failure(source.Clone(), "A frozen event must be resolved before changing day or period.");
+                return Failure(source.Clone(), "请先完成当前事件，再进入下一时段。");
             }
 
             BuqiRunEventRuntimeState working = source.Clone();
@@ -466,8 +466,7 @@ namespace Game.Hot.Buqi.Run.Encounter
 
         private static string CreateOperationId(BuqiRunEventRuntimeState source)
         {
-            return string.Format(
-                CultureInfo.InvariantCulture,
+            return BuqiText.Format(
                 "operation:{0}:{1}:{2}:{3}",
                 source.Economy.Run.RunSeed,
                 source.Economy.Run.Day,
@@ -479,15 +478,14 @@ namespace Game.Hot.Buqi.Run.Encounter
             BuqiRunEventRuntimeState source,
             string trainingId)
         {
-            string prefix = string.Format(
-                CultureInfo.InvariantCulture,
+            string prefix = BuqiText.Format(
                 "__operation_preflight__:{0}:{1}",
                 CreateOperationId(source),
                 trainingId);
             string candidate = prefix;
             int suffix = 0;
             while (HasResolution(source, candidate))
-                candidate = prefix + ":" + (++suffix).ToString(CultureInfo.InvariantCulture);
+                candidate = BuqiText.Format("{0}:{1}", prefix, ++suffix);
             return candidate;
         }
 
@@ -790,7 +788,7 @@ namespace Game.Hot.Buqi.Run.Encounter
             if (source == null)
                 throw new ArgumentNullException(nameof(source));
             if (source.Economy == null || source.Economy.Run == null)
-                throw new ArgumentException("Operation state requires an economy snapshot.", nameof(source));
+                throw new ArgumentException("经营状态缺少资源数据。", nameof(source));
 
             BuqiRunPendingEvent pending = source.PendingEvent;
             if (pending != null && pending.IsActive &&
@@ -800,7 +798,7 @@ namespace Game.Hot.Buqi.Run.Encounter
                  pending.RandomResults == null))
             {
                 throw new ArgumentException(
-                    "Frozen event does not match the current operation slot.",
+                    "当前事件与经营时段不匹配。",
                     nameof(source));
             }
         }

@@ -306,8 +306,13 @@ namespace Game.Hot.Buqi.UI
                 return;
             }
 
-            if (m_DemoCatalog == null ||
-                !BuqiUIDemoController.TryCreateNewRun(
+            if (m_DemoCatalog == null)
+            {
+                ShowError("重新开始失败，请检查配置表。");
+                return;
+            }
+
+            if (!BuqiUIDemoController.TryCreateNewRun(
                     m_DemoCatalog,
                     null,
                     out BuqiUIDemoController controller,

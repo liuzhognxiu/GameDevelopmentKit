@@ -436,7 +436,7 @@ namespace Game.Hot.Buqi.Tests
                     };
                     Require(service.TryGenerate(request, state, 0,
                         out BuqiSupplyShelf shelf, out string error), error);
-                    BuqiSupplyDefinition? picked = PickMissing(route, shelf.Offers, owned);
+                    BuqiSupplyDefinition picked = PickMissing(route, shelf.Offers, owned);
                     sawCore |= shelf.Offers.Any(item => item.DefinitionId == $"{route}-core");
 
                     if (picked == null && day >= 4)
@@ -483,7 +483,7 @@ namespace Game.Hot.Buqi.Tests
                 ToRates(exactEcho));
         }
 
-        private static BuqiSupplyDefinition? PickMissing(
+        private static BuqiSupplyDefinition PickMissing(
             string route,
             IReadOnlyList<BuqiSupplyDefinition> offers,
             IReadOnlyList<BuqiSupplyDefinition> owned)

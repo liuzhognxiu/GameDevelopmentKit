@@ -604,7 +604,10 @@ namespace Game.Hot.Buqi.DemoUI
         private static string BuildBattleItemDescription(ItemInstance item, BuqiUIDemoItemDefinition definition)
         {
             string baseText = definition == null ? "装备说明不可用" : definition.Description;
-            return BuqiPlayerText.Format("{0} | {1}", baseText, BuqiBattleText.Quality(item.Quality));
+            return BuqiPlayerText.Format(
+                "{0} | {1}",
+                baseText,
+                BuqiBattleText.Quality((Game.Hot.Buqi.Battle.BuqiQuality)item.Quality));
         }
 
         private BuqiUIDemoCommandResult Accepted()

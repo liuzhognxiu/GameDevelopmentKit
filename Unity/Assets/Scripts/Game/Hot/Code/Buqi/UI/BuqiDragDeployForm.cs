@@ -30,8 +30,6 @@ namespace Game.Hot.Buqi.UI
         private const float SlotGap = 8f;
         private const float StorageSlotHeight = 92f;
         private const float StorageGap = 12f;
-        private const string MissingLocalizationPrefix = "<NoKey>";
-
         [SerializeField]
         private Text m_TitleText = null;
 
@@ -90,7 +88,6 @@ namespace Game.Hot.Buqi.UI
 #endif
         {
             base.OnInit(userData);
-            RestoreStaticLabels();
             m_ResetButton?.onClick.AddListener(ResetDeployment);
             m_CancelButton?.onClick.AddListener(OnCancelButtonClick);
             m_ConfirmButton?.onClick.AddListener(OnConfirmButtonClick);
@@ -583,16 +580,6 @@ namespace Game.Hot.Buqi.UI
         {
             foreach (BuqiDraggableItemWidget widget in m_ItemWidgets)
                 widget?.SetRaycastEnabled(enabled);
-        }
-
-        private void RestoreStaticLabels()
-        {
-            Text[] labels = GetComponentsInChildren<Text>(true);
-            foreach (Text label in labels)
-            {
-                if (label != null && label.text.StartsWith(MissingLocalizationPrefix, StringComparison.Ordinal))
-                    label.text = label.text.Substring(MissingLocalizationPrefix.Length);
-            }
         }
 
         private static List<string> ToIds(IReadOnlyList<BuqiDemoItemView> views)

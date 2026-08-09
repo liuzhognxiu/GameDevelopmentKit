@@ -1,7 +1,7 @@
 [
   {
     "EventId": "event-trial-stele",
-    "DisplayName": "试锋碑",
+    "DisplayName": "攻击测试碑 · 试锋",
     "LocalizationKey": "Buqi.Content.Event.event_trial_stele.Name",
     "MinDay": 1,
     "MaxDay": 3,
@@ -19,7 +19,7 @@
   },
   {
     "EventId": "event-herb-stall",
-    "DisplayName": "旧城药摊",
+    "DisplayName": "恢复药摊 · 旧城",
     "LocalizationKey": "Buqi.Content.Event.event_herb_stall.Name",
     "MinDay": 1,
     "MaxDay": 3,
@@ -37,7 +37,7 @@
   },
   {
     "EventId": "event-broken-armor",
-    "DisplayName": "山门残甲",
+    "DisplayName": "护盾装备 · 山门残甲",
     "LocalizationKey": "Buqi.Content.Event.event_broken_armor.Name",
     "MinDay": 1,
     "MaxDay": 3,
@@ -55,7 +55,7 @@
   },
   {
     "EventId": "event-cloud-peddler",
-    "DisplayName": "云脚行商",
+    "DisplayName": "旅行商人 · 云脚",
     "LocalizationKey": "Buqi.Content.Event.event_cloud_peddler.Name",
     "MinDay": 1,
     "MaxDay": 3,
@@ -73,7 +73,7 @@
   },
   {
     "EventId": "event-borrowed-flame",
-    "DisplayName": "借火炼器",
+    "DisplayName": "强化炉 · 借火",
     "LocalizationKey": "Buqi.Content.Event.event_borrowed_flame.Name",
     "MinDay": 1,
     "MaxDay": 3,
@@ -93,7 +93,7 @@
   },
   {
     "EventId": "event-broken-mechanism",
-    "DisplayName": "断弦机括",
+    "DisplayName": "损坏机关 · 断弦",
     "LocalizationKey": "Buqi.Content.Event.event_broken_mechanism.Name",
     "MinDay": 1,
     "MaxDay": 3,
@@ -111,7 +111,7 @@
   },
   {
     "EventId": "event-nameless-ledger",
-    "DisplayName": "无名账册",
+    "DisplayName": "金币账册 · 无名",
     "LocalizationKey": "Buqi.Content.Event.event_nameless_ledger.Name",
     "MinDay": 1,
     "MaxDay": 3,
@@ -132,7 +132,7 @@
   },
   {
     "EventId": "event-rain-umbrella",
-    "DisplayName": "雨夜借伞",
+    "DisplayName": "护盾雨伞 · 雨夜",
     "LocalizationKey": "Buqi.Content.Event.event_rain_umbrella.Name",
     "MinDay": 1,
     "MaxDay": 3,
@@ -153,7 +153,7 @@
   },
   {
     "EventId": "event-sword-echo",
-    "DisplayName": "剑痕回声",
+    "DisplayName": "攻击记录 · 剑痕",
     "LocalizationKey": "Buqi.Content.Event.event_sword_echo.Name",
     "MinDay": 4,
     "MaxDay": 6,
@@ -171,7 +171,7 @@
   },
   {
     "EventId": "event-wall-fissure",
-    "DisplayName": "城墙裂隙",
+    "DisplayName": "护盾挑战 · 城墙裂隙",
     "LocalizationKey": "Buqi.Content.Event.event_wall_fissure.Name",
     "MinDay": 4,
     "MaxDay": 6,
@@ -189,7 +189,7 @@
   },
   {
     "EventId": "event-herb-water",
-    "DisplayName": "药田争水",
+    "DisplayName": "恢复训练 · 药田争水",
     "LocalizationKey": "Buqi.Content.Event.event_herb_water.Name",
     "MinDay": 4,
     "MaxDay": 6,
@@ -207,7 +207,7 @@
   },
   {
     "EventId": "event-roving-furnace",
-    "DisplayName": "游炉换火",
+    "DisplayName": "强化炉 · 换火",
     "LocalizationKey": "Buqi.Content.Event.event_roving_furnace.Name",
     "MinDay": 4,
     "MaxDay": 6,
@@ -227,7 +227,7 @@
   },
   {
     "EventId": "event-ledger-collector",
-    "DisplayName": "欠账来客",
+    "DisplayName": "欠款结算 · 来客",
     "LocalizationKey": "Buqi.Content.Event.event_ledger_collector.Name",
     "MinDay": 4,
     "MaxDay": 6,
@@ -247,7 +247,7 @@
   },
   {
     "EventId": "event-umbrella-return",
-    "DisplayName": "归伞人",
+    "DisplayName": "护盾雨伞 · 归还",
     "LocalizationKey": "Buqi.Content.Event.event_umbrella_return.Name",
     "MinDay": 4,
     "MaxDay": 6,
@@ -267,7 +267,7 @@
   },
   {
     "EventId": "event-headwind-array",
-    "DisplayName": "逆风试阵",
+    "DisplayName": "加速挑战 · 逆风",
     "LocalizationKey": "Buqi.Content.Event.event_headwind_array.Name",
     "MinDay": 4,
     "MaxDay": 6,
@@ -285,7 +285,7 @@
   },
   {
     "EventId": "event-three-bidders",
-    "DisplayName": "三家竞价",
+    "DisplayName": "装备竞价 · 三家",
     "LocalizationKey": "Buqi.Content.Event.event_three_bidders.Name",
     "MinDay": 4,
     "MaxDay": 6,
@@ -305,7 +305,7 @@
   },
   {
     "EventId": "event-heaven-gate",
-    "DisplayName": "天门校器",
+    "DisplayName": "攻击校准 · 天门",
     "LocalizationKey": "Buqi.Content.Event.event_heaven_gate.Name",
     "MinDay": 7,
     "MaxDay": 9,
@@ -323,7 +323,7 @@
   },
   {
     "EventId": "event-mountain-eye",
-    "DisplayName": "护山阵眼",
+    "DisplayName": "护盾核心 · 护山",
     "LocalizationKey": "Buqi.Content.Event.event_mountain_eye.Name",
     "MinDay": 7,
     "MaxDay": 9,
@@ -341,7 +341,7 @@
   },
   {
     "EventId": "event-herbs-return",
-    "DisplayName": "百草归元",
+    "DisplayName": "恢复强化 · 百草",
     "LocalizationKey": "Buqi.Content.Event.event_herbs_return.Name",
     "MinDay": 7,
     "MaxDay": 9,
@@ -359,7 +359,7 @@
   },
   {
     "EventId": "event-old-pacts",
-    "DisplayName": "旧约清算",
+    "DisplayName": "欠款清算 · 旧约",
     "LocalizationKey": "Buqi.Content.Event.event_old_pacts.Name",
     "MinDay": 7,
     "MaxDay": 9,
@@ -377,7 +377,7 @@
   },
   {
     "EventId": "event-scrap-recovery",
-    "DisplayName": "回收残器",
+    "DisplayName": "装备回收 · 残件",
     "LocalizationKey": "Buqi.Content.Event.event_scrap_recovery.Name",
     "MinDay": 7,
     "MaxDay": 9,
@@ -395,7 +395,7 @@
   },
   {
     "EventId": "event-calming-chime",
-    "DisplayName": "镇心钟鸣",
+    "DisplayName": "状态调整 · 钟鸣",
     "LocalizationKey": "Buqi.Content.Event.event_calming_chime.Name",
     "MinDay": 7,
     "MaxDay": 9,
@@ -413,7 +413,7 @@
   },
   {
     "EventId": "event-day-nine-ledger",
-    "DisplayName": "九日归账",
+    "DisplayName": "第九日结算 · 账单",
     "LocalizationKey": "Buqi.Content.Event.event_day_nine_ledger.Name",
     "MinDay": 9,
     "MaxDay": 9,
@@ -433,7 +433,7 @@
   },
   {
     "EventId": "event-return-furnace",
-    "DisplayName": "不器归炉",
+    "DisplayName": "最终强化 · 不器归炉",
     "LocalizationKey": "Buqi.Content.Event.event_return_furnace.Name",
     "MinDay": 9,
     "MaxDay": 9,

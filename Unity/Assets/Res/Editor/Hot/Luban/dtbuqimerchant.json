@@ -1,7 +1,7 @@
 [
   {
     "MerchantId": "merchant-edge",
-    "DisplayName": "砺锋散人·陆铮",
+    "DisplayName": "攻击装备商人 · 陆铮",
     "LocalizationKey": "Buqi.Content.Merchant.merchant_edge.Name",
     "MinDay": 1,
     "MaxDay": 9,
@@ -74,7 +74,7 @@
   },
   {
     "MerchantId": "merchant-bastion",
-    "DisplayName": "叠岳炉主·石岑",
+    "DisplayName": "护盾装备商人 · 石岑",
     "LocalizationKey": "Buqi.Content.Merchant.merchant_bastion.Name",
     "MinDay": 1,
     "MaxDay": 9,
@@ -146,7 +146,7 @@
   },
   {
     "MerchantId": "merchant-spring",
-    "DisplayName": "听泉药师·蘅青",
+    "DisplayName": "恢复装备商人 · 蘅青",
     "LocalizationKey": "Buqi.Content.Merchant.merchant_spring.Name",
     "MinDay": 1,
     "MaxDay": 9,
@@ -217,7 +217,7 @@
   },
   {
     "MerchantId": "merchant-measure",
-    "DisplayName": "量位行者·尺素",
+    "DisplayName": "小型装备商人 · 尺素",
     "LocalizationKey": "Buqi.Content.Merchant.merchant_measure.Name",
     "MinDay": 1,
     "MaxDay": 9,
@@ -286,7 +286,7 @@
   },
   {
     "MerchantId": "merchant-gap",
-    "DisplayName": "照隙道人·闻缺",
+    "DisplayName": "反制装备商人 · 闻缺",
     "LocalizationKey": "Buqi.Content.Merchant.merchant_gap.Name",
     "MinDay": 4,
     "MaxDay": 9,
@@ -354,7 +354,7 @@
   },
   {
     "MerchantId": "merchant-ledger",
-    "DisplayName": "行筹客·金复",
+    "DisplayName": "经济装备商人 · 金复",
     "LocalizationKey": "Buqi.Content.Merchant.merchant_ledger.Name",
     "MinDay": 4,
     "MaxDay": 9,
@@ -422,7 +422,7 @@
   },
   {
     "MerchantId": "merchant-grades",
-    "DisplayName": "三品鉴主·陶然",
+    "DisplayName": "品质装备商人 · 陶然",
     "LocalizationKey": "Buqi.Content.Merchant.merchant_grades.Name",
     "MinDay": 4,
     "MaxDay": 9,
@@ -494,7 +494,7 @@
   },
   {
     "MerchantId": "merchant-summit",
-    "DisplayName": "收山器君·莫停云",
+    "DisplayName": "高级装备商人 · 莫停云",
     "LocalizationKey": "Buqi.Content.Merchant.merchant_summit.Name",
     "MinDay": 7,
     "MaxDay": 9,

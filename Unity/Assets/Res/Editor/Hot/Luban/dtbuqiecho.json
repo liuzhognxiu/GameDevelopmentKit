@@ -1,7 +1,7 @@
 [
   {
     "EchoId": "echo-fast-lesson",
-    "DisplayName": "攻击试影",
+    "DisplayName": "攻击训练对手",
     "Tier": "lesson",
     "Build": 1,
     "Snapshot": {
@@ -44,7 +44,7 @@
   },
   {
     "EchoId": "echo-fast-early",
-    "DisplayName": "冲锋试影",
+    "DisplayName": "冲锋训练对手",
     "Tier": "early",
     "Build": 1,
     "Snapshot": {
@@ -87,7 +87,7 @@
   },
   {
     "EchoId": "echo-buffer-lesson",
-    "DisplayName": "护盾试影",
+    "DisplayName": "护盾训练对手",
     "Tier": "lesson",
     "Build": 2,
     "Snapshot": {
@@ -130,7 +130,7 @@
   },
   {
     "EchoId": "echo-buffer-early",
-    "DisplayName": "堡垒试影",
+    "DisplayName": "堡垒训练对手",
     "Tier": "early",
     "Build": 2,
     "Snapshot": {
@@ -173,7 +173,7 @@
   },
   {
     "EchoId": "echo-chain-lesson",
-    "DisplayName": "连锁试影",
+    "DisplayName": "连锁训练对手",
     "Tier": "lesson",
     "Build": 3,
     "Snapshot": {
@@ -209,7 +209,7 @@
   },
   {
     "EchoId": "echo-chain-early",
-    "DisplayName": "充能试影",
+    "DisplayName": "充能训练对手",
     "Tier": "early",
     "Build": 3,
     "Snapshot": {
@@ -245,7 +245,7 @@
   },
   {
     "EchoId": "echo-heal-lesson",
-    "DisplayName": "治疗试影",
+    "DisplayName": "治疗训练对手",
     "Tier": "lesson",
     "Build": 4,
     "Snapshot": {
@@ -288,7 +288,7 @@
   },
   {
     "EchoId": "echo-heal-early",
-    "DisplayName": "回春试影",
+    "DisplayName": "恢复训练对手",
     "Tier": "early",
     "Build": 4,
     "Snapshot": {
@@ -331,7 +331,7 @@
   },
   {
     "EchoId": "echo-poison-lesson",
-    "DisplayName": "中毒试影",
+    "DisplayName": "中毒训练对手",
     "Tier": "lesson",
     "Build": 5,
     "Snapshot": {
@@ -367,7 +367,7 @@
   },
   {
     "EchoId": "echo-poison-early",
-    "DisplayName": "腐蚀试影",
+    "DisplayName": "腐蚀训练对手",
     "Tier": "early",
     "Build": 5,
     "Snapshot": {
@@ -403,7 +403,7 @@
   },
   {
     "EchoId": "echo-burn-lesson",
-    "DisplayName": "灼烧试影",
+    "DisplayName": "灼烧训练对手",
     "Tier": "lesson",
     "Build": 6,
     "Snapshot": {
@@ -439,7 +439,7 @@
   },
   {
     "EchoId": "echo-burn-early",
-    "DisplayName": "烈焰试影",
+    "DisplayName": "烈焰训练对手",
     "Tier": "early",
     "Build": 6,
     "Snapshot": {
@@ -475,7 +475,7 @@
   },
   {
     "EchoId": "echo-freeze-lesson",
-    "DisplayName": "冰冻试影",
+    "DisplayName": "冰冻训练对手",
     "Tier": "lesson",
     "Build": 7,
     "Snapshot": {
@@ -511,7 +511,7 @@
   },
   {
     "EchoId": "echo-freeze-early",
-    "DisplayName": "霜锁试影",
+    "DisplayName": "冻结训练对手",
     "Tier": "early",
     "Build": 7,
     "Snapshot": {
@@ -547,7 +547,7 @@
   },
   {
     "EchoId": "echo-overload-lesson",
-    "DisplayName": "过载试影",
+    "DisplayName": "过载训练对手",
     "Tier": "lesson",
     "Build": 8,
     "Snapshot": {
@@ -590,7 +590,7 @@
   },
   {
     "EchoId": "echo-overload-early",
-    "DisplayName": "泄压试影",
+    "DisplayName": "减载训练对手",
     "Tier": "early",
     "Build": 8,
     "Snapshot": {

@@ -60,9 +60,9 @@ namespace Game.Hot.Buqi.DemoUI.Interaction
             if (current == null)
                 throw new ArgumentNullException(nameof(current));
             if (!Accepted)
-                return Reject(current, m_Cancelled ? "Sell drag was cancelled." : m_Quote.FailureReason);
+                return Reject(current, m_Cancelled ? "出售操作已取消。" : m_Quote.FailureReason);
             if (!m_OverSellZone)
-                return Reject(current, "Item was not dropped over the sell zone.");
+                return Reject(current, "装备未拖到出售区域。"  );
 
             m_Completed = true;
             m_OverSellZone = false;
@@ -74,7 +74,7 @@ namespace Game.Hot.Buqi.DemoUI.Interaction
             return new BuqiRunEconomyResult
             {
                 Success = false,
-                FailureReason = string.IsNullOrEmpty(reason) ? "Sell drag was rejected." : reason,
+                FailureReason = string.IsNullOrEmpty(reason) ? "出售操作未完成。" : reason,
                 Snapshot = source.Clone(),
             };
         }

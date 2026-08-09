@@ -52,7 +52,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_003.Upgrade",
     "LinkIds": [
       "W8-031",
@@ -113,7 +113,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_005.Upgrade",
     "LinkIds": [
       "W8-032",
@@ -191,7 +191,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_006.Upgrade",
     "LinkIds": [
       "W8-003",
@@ -236,7 +236,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_007.Upgrade",
     "LinkIds": [
       "W8-036",
@@ -297,7 +297,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_008.Upgrade",
     "LinkIds": [
       "W8-037",
@@ -359,7 +359,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_012.Upgrade",
     "LinkIds": [
       "W8-007",
@@ -435,7 +435,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_013.Upgrade",
     "LinkIds": [
       "W8-014",
@@ -496,7 +496,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_014.Upgrade",
     "LinkIds": [
       "W8-013",
@@ -557,7 +557,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_015.Upgrade",
     "LinkIds": [
       "W8-013",
@@ -602,7 +602,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_016.Upgrade",
     "LinkIds": [
       "W8-041",
@@ -664,7 +664,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_017.Upgrade",
     "LinkIds": [
       "W8-041",
@@ -743,7 +743,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_018.Upgrade",
     "LinkIds": [
       "W8-016",
@@ -788,7 +788,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_019.Upgrade",
     "LinkIds": [
       "W8-020",
@@ -849,7 +849,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_020.Upgrade",
     "LinkIds": [
       "W8-019",
@@ -911,7 +911,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_021.Upgrade",
     "LinkIds": [
       "W8-019",
@@ -956,7 +956,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_022.Upgrade",
     "LinkIds": [
       "W8-023",
@@ -1017,7 +1017,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_023.Upgrade",
     "LinkIds": [
       "W8-022",
@@ -1079,7 +1079,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_024.Upgrade",
     "LinkIds": [
       "W8-022",
@@ -1124,7 +1124,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_025.Upgrade",
     "LinkIds": [
       "W8-026",
@@ -1185,7 +1185,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_026.Upgrade",
     "LinkIds": [
       "W8-025",
@@ -1247,7 +1247,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_027.Upgrade",
     "LinkIds": [
       "W8-025",
@@ -1308,7 +1308,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_028.Upgrade",
     "LinkIds": [
       "W8-029",
@@ -1369,7 +1369,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_029.Upgrade",
     "LinkIds": [
       "W8-028",
@@ -1448,7 +1448,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_030.Upgrade",
     "LinkIds": [
       "W8-028",
@@ -1494,7 +1494,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_031.Upgrade",
     "LinkIds": [
       "W8-003",
@@ -1555,7 +1555,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_032.Upgrade",
     "LinkIds": [
       "W8-005",
@@ -1632,7 +1632,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_033.Upgrade",
     "LinkIds": [
       "W8-003",
@@ -1693,7 +1693,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_034.Upgrade",
     "LinkIds": [
       "W8-022",
@@ -1747,7 +1747,7 @@
         "ReasonCode": "W8-035-damage-dividend"
       }
     ],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_035.Upgrade",
     "LinkIds": [
       "W8-003",
@@ -1808,7 +1808,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_036.Upgrade",
     "LinkIds": [
       "W8-007",
@@ -1869,7 +1869,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_037.Upgrade",
     "LinkIds": [
       "W8-008",
@@ -1930,7 +1930,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_038.Upgrade",
     "LinkIds": [
       "W8-007",
@@ -1991,7 +1991,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_039.Upgrade",
     "LinkIds": [
       "W8-008",
@@ -2045,7 +2045,7 @@
         "ReasonCode": "W8-040-buffer-dividend"
       }
     ],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_040.Upgrade",
     "LinkIds": [
       "W8-007",
@@ -2107,7 +2107,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_041.Upgrade",
     "LinkIds": [
       "W8-017",
@@ -2168,7 +2168,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_042.Upgrade",
     "LinkIds": [
       "W8-016",
@@ -2229,7 +2229,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_043.Upgrade",
     "LinkIds": [
       "W8-016",
@@ -2306,7 +2306,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_044.Upgrade",
     "LinkIds": [
       "W8-018",
@@ -2360,7 +2360,7 @@
         "ReasonCode": "W8-045-heal-dividend"
       }
     ],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_045.Upgrade",
     "LinkIds": [
       "W8-016",
@@ -2406,7 +2406,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_046.Upgrade",
     "LinkIds": [
       "W8-031",
@@ -2460,7 +2460,7 @@
         "ReasonCode": "W8-047-first-discount"
       }
     ],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_047.Upgrade",
     "LinkIds": [
       "W8-035",
@@ -2537,7 +2537,7 @@
       }
     ],
     "RunEffects": [],
-    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeSummary": "强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。",
     "UpgradeLocalizationKey": "Buqi.Content.Item.W8_048.Upgrade",
     "LinkIds": [
       "W8-033",

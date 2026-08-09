@@ -654,11 +654,9 @@ namespace Game.Hot.Buqi.Battle
         private static string FormatEvent(BattleEvent battleEvent)
         {
             return BuqiText.Format(
-                "tick {0} | {1} -> {2} | {3} {4}",
+                "第 {0} 时刻 | {1} {2}",
                 battleEvent.Tick,
-                battleEvent.SourceInstanceId,
-                battleEvent.TargetInstanceId,
-                battleEvent.ReasonCode,
+                BuqiBattleText.EventReason(battleEvent.ReasonCode),
                 battleEvent.Amount);
         }
 
@@ -730,8 +728,11 @@ namespace Game.Hot.Buqi.Battle
             return new BattleReplayFact
             {
                 Kind = kind,
-                Summary = BuqiText.Format("{0}: tick {1}, {2} {3}",
-                    label, battleEvent.Tick, battleEvent.ReasonCode, battleEvent.Amount),
+                Summary = BuqiText.Format("{0}：第 {1} 时刻，{2} {3}",
+                    label,
+                    battleEvent.Tick,
+                    BuqiBattleText.EventReason(battleEvent.ReasonCode),
+                    battleEvent.Amount),
                 EventSequences = new List<int> { battleEvent.Sequence },
             };
         }
@@ -757,13 +758,13 @@ namespace Game.Hot.Buqi.Battle
         private static void ValidateData(BattleReplayData data)
         {
             if (data.LeftBuild == null || data.RightBuild == null)
-                throw new ArgumentException("Replay build snapshot is missing.");
+                throw new ArgumentException("战斗回放缺少装备栏快照。"  );
             if (data.Result == null)
-                throw new ArgumentException("Replay battle result is missing.");
+                throw new ArgumentException("战斗回放缺少战斗结果。"  );
             if (data.Log == null)
-                throw new ArgumentException("Replay battle log is missing.");
+                throw new ArgumentException("战斗回放缺少战斗记录。"  );
             if (data.Definitions == null)
-                throw new ArgumentException("Replay item definitions are missing.");
+                throw new ArgumentException("战斗回放缺少装备定义。"  );
 
             int previousTick = -1;
             for (int index = 0; index < data.Log.Count; index++)

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Game.Hot.Buqi.Battle;
+using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI.Deployment;
 using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Battle;
@@ -43,7 +44,7 @@ namespace Game.Hot.Buqi.DemoUI
             controller = null;
             if (catalog == null)
             {
-                error = "Demo catalog is unavailable.";
+                error = "试玩配置不可用。";
                 return false;
             }
 
@@ -59,7 +60,7 @@ namespace Game.Hot.Buqi.DemoUI
             }
             catch (Exception exception)
             {
-                error = exception.Message;
+                error = BuqiPlayerText.Error(exception.Message);
                 return false;
             }
         }
@@ -67,17 +68,17 @@ namespace Game.Hot.Buqi.DemoUI
         public BuqiUIDemoCommandResult Execute(BuqiUIDemoCommand command)
         {
             if (command == null)
-                return Rejected("Command is null.");
+                return Rejected("操作指令不可用。"  );
 
             switch (command.Type)
             {
                 case BuqiUIDemoCommandType.OpenDragDeploy:
                     return CanConfigureDeployment(View.Phase)
                         ? AcceptedWithoutMutation()
-                        : Rejected("Current phase cannot open deployment.");
+                        : Rejected("当前阶段不能调整装备栏。"  );
 
                 case BuqiUIDemoCommandType.PreviousPhase:
-                    return Rejected("Current phase does not support going back.");
+                    return Rejected("当前阶段不能返回。"  );
 
                 case BuqiUIDemoCommandType.Restart:
                     if (!m_Orchestrator.Restart(out string restartError))
@@ -117,7 +118,7 @@ namespace Game.Hot.Buqi.DemoUI
 
                 case BuqiUIDemoCommandType.SelectTribulationRoute:
                     if (!TryParseTribulationRoute(command.PrimaryId, out BuqiTribulationRoute route))
-                        return Rejected("Tribulation route is invalid.");
+                        return Rejected("最终挑战路线无效。"  );
                     if (!m_Orchestrator.TrySelectTribulationRoute(route, Math.Max(0, command.Slot), out string routeError))
                         return Rejected(routeError);
                     RefreshView();
@@ -142,7 +143,7 @@ namespace Game.Hot.Buqi.DemoUI
                     return Accepted();
 
                 default:
-                    return Rejected("Unsupported runtime command.");
+                    return Rejected("暂不支持此操作。"  );
             }
         }
 
@@ -217,7 +218,7 @@ namespace Game.Hot.Buqi.DemoUI
                     result[slot + offset] = new BuqiDemoItemView
                     {
                         Id = instanceId,
-                        Name = definition?.Name ?? item.DefinitionId,
+                        Name = definition?.Name ?? "未命名装备",
                         Description = BuildItemDescription(item, definition),
                         Size = size,
                         Price = definition?.Price ?? 0,
@@ -259,7 +260,7 @@ namespace Game.Hot.Buqi.DemoUI
                 result.Add(new BuqiDemoItemView
                 {
                     Id = instanceId,
-                    Name = definition?.Name ?? item.DefinitionId,
+                    Name = definition?.Name ?? "未命名装备",
                     Description = BuildItemDescription(item, definition),
                     Size = definition?.Size ?? 1,
                     Price = definition?.Price ?? 0,
@@ -276,9 +277,9 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 return new[]
                 {
-                    new BuqiDemoChoiceView { Id = "bazaar", Title = "坊市", Description = "查看商品并可明确离开。" },
-                    new BuqiDemoChoiceView { Id = "event", Title = "机缘", Description = "从三项事件中选择结果。" },
-                    new BuqiDemoChoiceView { Id = "meditate", Title = "静修", Description = "保留当前周天并进入下一时段。" },
+                    new BuqiDemoChoiceView { Id = "bazaar", Title = "商店", Description = "查看并购买装备，也可直接离开。" },
+                    new BuqiDemoChoiceView { Id = "event", Title = "事件", Description = "从三项事件中选择一个结果。" },
+                    new BuqiDemoChoiceView { Id = "meditate", Title = "训练", Description = "保留当前装备栏并进入下一阶段。" },
                 };
             }
 
@@ -289,7 +290,7 @@ namespace Game.Hot.Buqi.DemoUI
                     Id = card.ChoiceId,
                     Title = DifficultyTitle(card.Difficulty),
                     Description = BuqiText.Format(
-                        "威胁 {0} · 器物 {1} · 胜利进度 +{2}",
+                        "威胁 {0} · 装备 {1} · 胜利进度 +{2}",
                         card.Threat.Rank,
                         card.Threat.EquippedItemCount,
                         card.Reward.VictoryProgress),
@@ -300,9 +301,9 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 return new[]
                 {
-                    new BuqiDemoChoiceView { Id = "face-thunder", Title = "迎雷证道", Description = "正面承受当前劫兆。" },
-                    new BuqiDemoChoiceView { Id = "shatter-artifact", Title = "碎器化劫", Description = "以器物之道化解天雷。" },
-                    new BuqiDemoChoiceView { Id = "question-heart", Title = "问心借劫", Description = "消耗道印调整当前劫兆。" },
+                    new BuqiDemoChoiceView { Id = "face-thunder", Title = "直接挑战 · 迎雷", Description = "不消耗资源，按当前难度进入挑战。" },
+                    new BuqiDemoChoiceView { Id = "shatter-artifact", Title = "装备挑战 · 化劫", Description = "利用当前装备降低挑战压力。" },
+                    new BuqiDemoChoiceView { Id = "question-heart", Title = "资源调整 · 问心", Description = "消耗结算点数降低当前挑战强度。" },
                 };
             }
 
@@ -310,7 +311,7 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 return new[]
                 {
-                    new BuqiDemoChoiceView { Id = "resolve", Title = "应劫", Description = $"推进第 {state.Economy.Run.TribulationStage}/3 阶天劫。" },
+                    new BuqiDemoChoiceView { Id = "resolve", Title = "开始挑战 · 应劫", Description = $"推进第 {state.Economy.Run.TribulationStage}/3 阶挑战。" },
                 };
             }
 
@@ -325,8 +326,8 @@ namespace Game.Hot.Buqi.DemoUI
                 result.Add(new BuqiDemoChoiceView
                 {
                     Id = eventId,
-                    Title = source?.Title ?? eventId,
-                    Description = source?.Description ?? string.Empty,
+                    Title = BuqiPlayerText.Sanitize(source?.Title, "事件选项"),
+                    Description = BuqiPlayerText.Sanitize(source?.Description, "选择后立即结算。"),
                 });
             }
 
@@ -369,7 +370,7 @@ namespace Game.Hot.Buqi.DemoUI
                 items.Add(new BuqiDemoItemView
                 {
                     Id = item.InstanceId,
-                    Name = definition?.Name ?? item.DefinitionId,
+                    Name = definition?.Name ?? "未命名装备",
                     Description = BuildBattleItemDescription(item, definition),
                     Size = definition?.Size ?? 1,
                     Slot = item.AnchorSlot,
@@ -379,8 +380,8 @@ namespace Game.Hot.Buqi.DemoUI
             return new BuqiDemoOpponentView
             {
                 Id = state.Battle.OpponentId,
-                Name = state.Battle.Replay?.RightName ?? state.Battle.OpponentId,
-                Build = state.Battle.Request.Right.SnapshotId,
+                Name = BuqiPlayerText.Sanitize(state.Battle.Replay?.RightName, "未知对手"),
+                Build = "公开装备栏",
                 Items = items,
             };
         }
@@ -395,8 +396,8 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 facts.Add(new BuqiDemoFactView
                 {
-                    Title = index == 0 ? OutcomeTitle(state) : $"Fact {index + 1}",
-                    Body = state.BattleSummary.FactLines[index],
+                    Title = index == 0 ? OutcomeTitle(state) : BuqiPlayerText.Format("战斗记录 {0}", index + 1),
+                    Body = BuqiPlayerText.Sanitize(state.BattleSummary.FactLines[index], "战斗记录已生成。"),
                     Tick = index,
                 });
             }
@@ -406,7 +407,7 @@ namespace Game.Hot.Buqi.DemoUI
                 facts.Add(new BuqiDemoFactView
                 {
                     Title = OutcomeTitle(state),
-                    Body = state.Battle.Result?.TerminationReason ?? string.Empty,
+                    Body = BuqiBattleText.Termination(state.Battle.Result?.TerminationReason),
                     Tick = 0,
                 });
             }
@@ -417,8 +418,8 @@ namespace Game.Hot.Buqi.DemoUI
         private static string OutcomeTitle(BuqiRunDemoState state)
         {
             if (state.LastRawOutcome == BuqiRunRawBattleOutcome.Draw)
-                return "Draw";
-            return state.LastRawOutcome == BuqiRunRawBattleOutcome.OpponentWin ? "Defeat" : "Victory";
+                return "平局";
+            return state.LastRawOutcome == BuqiRunRawBattleOutcome.OpponentWin ? "失败" : "胜利";
         }
 
         private static BuqiUIDemoPhase ResolvePhase(BuqiRunDemoState state)
@@ -454,29 +455,30 @@ namespace Game.Hot.Buqi.DemoUI
             switch (phase)
             {
                 case BuqiUIDemoPhase.OperationChoice:
-                    return $"第 {state.Economy.Run.Day} 日 · {(state.Economy.Run.Period == BuqiRunPeriod.MorningOperation ? "晨" : "昼")} · 经营";
+                    string period = state.Economy.Run.Period == BuqiRunPeriod.MorningOperation ? "晨" : "昼";
+                    return BuqiPlayerText.Format("第 {0} 日 · {1} · 经营", state.Economy.Run.Day, period);
                 case BuqiUIDemoPhase.PveSelection:
-                    return $"第 {state.Economy.Run.Day} 日 · 昏 · PVE 选关";
+                    return $"第 {state.Economy.Run.Day} 日 · 昏 · 电脑对战选择";
                 case BuqiUIDemoPhase.TribulationRoute:
-                    return "渡劫路线";
+                    return "最终挑战路线 · 九日试炼";
                 case BuqiUIDemoPhase.TribulationStage:
-                    return $"天劫第 {state.Economy.Run.TribulationStage}/3 阶";
+                    return $"最终挑战 · 天劫 {state.Economy.Run.TribulationStage}/3";
                 case BuqiUIDemoPhase.Shop:
                 case BuqiUIDemoPhase.Event:
-                    return $"Day {state.Economy.Run.Day} Encounter {state.Economy.Run.EncounterIndex + 1}/{BuqiRunRules.EncountersPerDay}";
+                    return $"第 {state.Economy.Run.Day} 日 · 经营 {state.Economy.Run.EncounterIndex + 1}/{BuqiRunRules.EncountersPerDay}";
                 case BuqiUIDemoPhase.BattleReplay:
-                    return state.Economy.Run.Phase == BuqiRunPhase.PveBattle ? "PVE Battle" : "PVP Battle";
+                    return state.Economy.Run.Phase == BuqiRunPhase.PveBattle ? "电脑对战" : "异步对战";
                 case BuqiUIDemoPhase.BattleSummary:
                     string summaryKind = state.Battle == null
-                        ? "Battle"
-                        : state.Battle.Kind == Game.Hot.Buqi.Run.Core.BuqiRunBattleKind.Pve ? "PVE" : "PVP";
+                        ? "战斗"
+                        : state.Battle.Kind == Game.Hot.Buqi.Run.Core.BuqiRunBattleKind.Pve ? "电脑对战" : "异步对战";
                     return state.LastRawOutcome == BuqiRunRawBattleOutcome.Draw
-                        ? $"{summaryKind} Summary (Draw counts as player win)"
-                        : $"{summaryKind} Summary";
+                        ? $"{summaryKind}总结 · 平局按玩家胜利结算"
+                        : $"{summaryKind}总结";
                 case BuqiUIDemoPhase.RoundSettlement:
-                    return $"Day {state.Economy.Run.Day} Settlement";
+                    return $"第 {state.Economy.Run.Day} 日结算";
                 case BuqiUIDemoPhase.RunTerminal:
-                    return state.Economy.Run.Outcome == BuqiRunOutcome.Victory ? "Run Victory" : "Run Defeat";
+                    return state.Economy.Run.Outcome == BuqiRunOutcome.Victory ? "本局胜利" : "本局失败";
                 default:
                     return string.Empty;
             }
@@ -487,32 +489,32 @@ namespace Game.Hot.Buqi.DemoUI
             switch (phase)
             {
                 case BuqiUIDemoPhase.OperationChoice:
-                    return "选择本时段的经营行动；当前周天保持可见。";
+                    return "选择本阶段的经营行动；当前装备栏保持可见。";
                 case BuqiUIDemoPhase.PveSelection:
-                    return "选择初阶、进阶或险阶；点击后直接进入战斗，当前周天只读。";
+                    return "选择初级、中级或高难挑战；点击后直接进入战斗，当前装备栏只读。";
                 case BuqiUIDemoPhase.TribulationRoute:
-                    return $"九日夜战已完成。当前道印 {state.Economy.Run.DaoSeals}，劫兆 {state.Economy.Run.CurrentOmen}。";
+                    return $"九日试炼已完成。当前结算点数 {state.Economy.Run.DaoSeals}，挑战强度 {state.Economy.Run.CurrentOmen}。";
                 case BuqiUIDemoPhase.TribulationStage:
-                    return "确认应劫后推进当前阶段。";
+                    return "确认后开始当前阶段挑战。";
                 case BuqiUIDemoPhase.Shop:
-                    return "Choose an offer, then confirm purchase and leave, or leave without buying.";
+                    return "选择商品并确认购买，或直接离开商店。";
                 case BuqiUIDemoPhase.Event:
-                    return "Choose one explicit event result.";
+                    return "选择一个事件结果，选择后立即结算。";
                 case BuqiUIDemoPhase.BattleReplay:
                     return state.Economy.Run.Phase == BuqiRunPhase.PveBattle
-                        ? "Player build is on the left; local preset PVE opponent is on the right."
-                        : "Player build is on the left; local preset player PVP opponent is on the right.";
+                        ? "左侧为玩家装备栏，右侧为电脑对手。"
+                        : "左侧为玩家装备栏，右侧为异步对手记录。";
                 case BuqiUIDemoPhase.BattleSummary:
                     return state.Battle == null || state.Battle.Kind == Game.Hot.Buqi.Run.Core.BuqiRunBattleKind.Pve
                         ? (state.LastRawOutcome == BuqiRunRawBattleOutcome.Draw
-                            ? "Raw PVE result is Draw, but run settlement counts it as a player win."
-                            : "PVE replay/log summary from the generated battle payload.")
+                            ? "电脑对战结果为平局，本局按玩家胜利结算。"
+                            : "电脑对战回放与战斗记录总结。")
                         : (state.LastRawOutcome == BuqiRunRawBattleOutcome.Draw
-                            ? "Raw PVP result is Draw, but run settlement counts it as a player win."
-                            : "PVP replay/log summary from the generated battle payload.");
+                            ? "异步对战结果为平局，本局按玩家胜利结算。"
+                            : "异步对战回放与战斗记录总结。");
                 case BuqiUIDemoPhase.RoundSettlement:
                     return BuqiText.Format(
-                        "Day {0} complete: {1} coins, {2}/{3} wins, {4}/{5} lives. Continue to the next day.",
+                        "第 {0} 日结束：金币 {1}，胜场 {2}/{3}，生命 {4}/{5}。继续进入下一日。",
                         state.Economy.Run.Day,
                         state.Economy.Run.Coins,
                         state.Economy.Run.Wins,
@@ -521,8 +523,8 @@ namespace Game.Hot.Buqi.DemoUI
                         BuqiRunRules.StartingLives);
                 case BuqiUIDemoPhase.RunTerminal:
                     return state.Economy.Run.Outcome == BuqiRunOutcome.Victory
-                        ? "Nine wins reached immediately."
-                        : "Run lives reached zero immediately.";
+                        ? "已达到目标胜场。"
+                        : "本局生命已归零。";
                 default:
                     return string.Empty;
             }
@@ -538,13 +540,13 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoPhase.TribulationStage:
                     return string.Empty;
                 case BuqiUIDemoPhase.Shop:
-                    return "Leave Shop";
+                    return "离开商店";
                 case BuqiUIDemoPhase.Event:
                     return string.Empty;
                 case BuqiUIDemoPhase.RunTerminal:
-                    return "Restart";
+                    return "重新开始";
                 default:
-                    return "Continue";
+                    return "继续";
             }
         }
 
@@ -569,18 +571,18 @@ namespace Game.Hot.Buqi.DemoUI
             }
         }
 
-        private static string BuildItemDescription(BuqiRunItemInstance item, BuqiUIDemoItemDefinition definition)
+        private string BuildItemDescription(BuqiRunItemInstance item, BuqiUIDemoItemDefinition definition)
         {
-            string quality = item.Quality.ToString();
-            string refinement = string.IsNullOrEmpty(item.RefinementId) ? "none" : item.RefinementId;
-            string baseText = definition == null ? item.DefinitionId : definition.Description;
-            return $"{baseText} | {quality} | refine {refinement}";
+            string quality = QualityName(item.Quality);
+            string refinement = RefinementName(item.RefinementId);
+            string baseText = definition == null ? "装备说明不可用" : definition.Description;
+            return BuqiPlayerText.Format("{0} | {1} | 改造：{2}", baseText, quality, refinement);
         }
 
         private static string BuildBattleItemDescription(ItemInstance item, BuqiUIDemoItemDefinition definition)
         {
-            string baseText = definition == null ? item.DefinitionId : definition.Description;
-            return $"{baseText} | quality {item.Quality}";
+            string baseText = definition == null ? "装备说明不可用" : definition.Description;
+            return BuqiPlayerText.Format("{0} | {1}", baseText, BuqiBattleText.Quality(item.Quality));
         }
 
         private BuqiUIDemoCommandResult Accepted()
@@ -595,7 +597,27 @@ namespace Game.Hot.Buqi.DemoUI
 
         private BuqiUIDemoCommandResult Rejected(string reason)
         {
-            return new BuqiUIDemoCommandResult { Accepted = false, Reason = reason, View = View };
+            return new BuqiUIDemoCommandResult { Accepted = false, Reason = BuqiPlayerText.Error(reason), View = View };
+        }
+
+        private static string QualityName(BuqiRunItemQuality quality)
+        {
+            switch (quality)
+            {
+                case BuqiRunItemQuality.Common: return "普通";
+                case BuqiRunItemQuality.Improved: return "强化";
+                case BuqiRunItemQuality.Finalized: return "高级";
+                default: return "未知品质";
+            }
+        }
+
+        private string RefinementName(string refinementId)
+        {
+            if (string.IsNullOrEmpty(refinementId))
+                return "无";
+            BuqiRefinementConfigRow row = m_Catalog.SourceCatalog?.Refinements?
+                .FirstOrDefault(value => string.Equals(value.RefinementId, refinementId, StringComparison.Ordinal));
+            return BuqiPlayerText.Sanitize(row?.DisplayName, "未知改造");
         }
     }
 }

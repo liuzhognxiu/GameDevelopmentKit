@@ -45,14 +45,14 @@ namespace Game.Hot.Buqi.DemoUI.Interaction
             foreach (BuqiOperationChoice choice in choices)
             {
                 if (choice == null || string.IsNullOrWhiteSpace(choice.Id))
-                    throw new ArgumentException("Operation choice id is required.", nameof(choices));
+                    throw new ArgumentException("经营选项必须具有有效标识。", nameof(choices));
                 if (!choiceIds.Add(choice.Id))
-                    throw new ArgumentException("Operation choice ids must be unique.", nameof(choices));
+                    throw new ArgumentException("经营选项不能重复。", nameof(choices));
                 copiedChoices.Add(choice.Clone());
             }
 
             if (copiedChoices.Count != RequiredChoiceCount)
-                throw new ArgumentException("Operation screen requires exactly three choices.", nameof(choices));
+                throw new ArgumentException("经营界面必须提供三个选项。", nameof(choices));
 
             var copiedBoard = new List<string>();
             foreach (string instanceId in boardInstanceIds)
@@ -94,7 +94,7 @@ namespace Game.Hot.Buqi.DemoUI.Interaction
             return new BuqiOperationSelectionResult
             {
                 Accepted = false,
-                FailureReason = "Operation choice was not found.",
+                FailureReason = "未找到经营选项。",
             };
         }
     }

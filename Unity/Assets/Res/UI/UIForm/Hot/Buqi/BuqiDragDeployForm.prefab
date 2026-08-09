@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u653E\u7F6E\u6821\u9A8C"
+  m_Text: Buqi.Deploy.PlacementCheck
 --- !u!1 &1033994231891755452
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u786E\u8BA4\u4E0A\u9635"
+  m_Text: Buqi.Deploy.ConfirmDeploy
 --- !u!1 &1104355159338133344
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,7 +357,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u9053\u5177\u8BE6\u60C5"
+  m_Text: Buqi.Deploy.ItemDetail
 --- !u!1 &2619071603316828424
 GameObject:
   m_ObjectHideFlags: 0
@@ -560,7 +560,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u5F85\u4E0A\u9635\u9053\u5177"
+  m_Text: Buqi.Deploy.PendingItems
 --- !u!1 &3023426723258851311
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,7 +718,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u91CD\u7F6E"
+  m_Text: Buqi.Deploy.Reset
 --- !u!1 &3252072711827574023
 GameObject:
   m_ObjectHideFlags: 0
@@ -918,8 +918,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u4ED3\u5E93  >  \u9635\u5217  |  \u62D6\u52A8\u8C03\u6574\u4F4D\u7F6E 
-    |  \u62D6\u56DE\u4ED3\u5E93\u64A4\u4E0B"
+  m_Text: Buqi.Deploy.Header
 --- !u!1 &3690034577306018780
 GameObject:
   m_ObjectHideFlags: 0
@@ -998,7 +997,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u4E0D\u5668\u9635\u5217"
+  m_Text: Buqi.Deploy.Title
 --- !u!1 &4049153432867870073
 GameObject:
   m_ObjectHideFlags: 0
@@ -1077,7 +1076,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u62D6\u62FD\u4E0A\u9635"
+  m_Text: Buqi.Deploy.DragHint
 --- !u!1 &4499874425721874469
 GameObject:
   m_ObjectHideFlags: 0
@@ -1615,7 +1614,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u9635\u5BB9\u7F16\u8F91"
+  m_Text: Buqi.Deploy.DeckEdit
 --- !u!1 &6835367623725780343
 GameObject:
   m_ObjectHideFlags: 0
@@ -1694,7 +1693,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u9009\u62E9\u4E00\u4EF6\u88C5\u5907\u67E5\u770B\u8BE6\u60C5"
+  m_Text: Buqi.Deploy.SelectHint
 --- !u!1 &6870993340288998886
 GameObject:
   m_ObjectHideFlags: 0
@@ -1773,7 +1772,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u53D6\u6D88"
+  m_Text: Buqi.Deploy.Cancel
 --- !u!1 &7088507081820523468
 GameObject:
   m_ObjectHideFlags: 0
@@ -1852,7 +1851,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 01  02  03  04  05  06  07  08
+  m_Text: Buqi.Deploy.SlotNumbers
 --- !u!1 &7125485715344878719
 GameObject:
   m_ObjectHideFlags: 0
@@ -1931,7 +1930,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u9635\u5217\u53D8\u66F4\u4EC5\u5728\u786E\u8BA4\u540E\u751F\u6548"
+  m_Text: Buqi.Deploy.ApplyHint
 --- !u!1 &8128330179478706718
 GameObject:
   m_ObjectHideFlags: 0
@@ -2168,8 +2167,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u7B2C 3 \u56DE\u5408  |  \u91D1\u5E01 12  |  \u80DC\u573A 4  |  \u751F\u547D
-    2  |  \u5BF9\u624B \u6E05\u865A\u771F\u4EBA"
+  m_Text: Buqi.Deploy.Context
 --- !u!1 &8728305167146665398
 GameObject:
   m_ObjectHideFlags: 0

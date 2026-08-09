@@ -1,32 +1,32 @@
 [
   {
     "RefinementId": "A-01",
-    "DisplayName": "加急",
-    "Summary": "冷却缩短 15%；每次主动使用增加 1 点失衡。"
+    "DisplayName": "快速改造",
+    "Summary": "冷却缩短 15%；每次主动使用增加 1 点过载。"
   },
   {
     "RefinementId": "A-02",
-    "DisplayName": "激化",
-    "Summary": "冷却延长 20%；非开战效果提高 30%。"
+    "DisplayName": "强效改造",
+    "Summary": "冷却延长 20%；非开场效果提高 30%。"
   },
   {
     "RefinementId": "A-03",
-    "DisplayName": "复写",
+    "DisplayName": "首次重复触发",
     "Summary": "每场战斗首次主动使用时，以 50% 效果额外结算一次。"
   },
   {
     "RefinementId": "A-04",
-    "DisplayName": "可靠",
+    "DisplayName": "稳定改造",
     "Summary": "免疫敌方减速，但不受友方加速。"
   },
   {
     "RefinementId": "A-05",
-    "DisplayName": "稳流",
-    "Summary": "伤害与护体降低 15%；本器物造成的失衡减少 1 点。"
+    "DisplayName": "低负载改造",
+    "Summary": "伤害与护盾降低 15%；本装备造成的过载减少 1 点。"
   },
   {
     "RefinementId": "A-06",
-    "DisplayName": "超载",
-    "Summary": "开战增加 3 点失衡；伤害与护体提高 35%。"
+    "DisplayName": "高风险强化",
+    "Summary": "开场增加 3 点过载；伤害与护盾提高 35%。"
   }
 ]

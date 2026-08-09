@@ -29,7 +29,7 @@ namespace Game.Hot.Buqi.Battle
             if (tickCount >= m_Limits.MaxTriggersPerTick)
                 return Reject("TickCapReached", out reasonCode);
 
-            string activeUseKey = GameFramework.Utility.Text.Format(
+            string activeUseKey = BuqiText.Format(
                 "{0}|{1}",
                 attempt.RootEventId,
                 attempt.ActiveUseId);
@@ -37,7 +37,7 @@ namespace Game.Hot.Buqi.Battle
             if (activeUseCount >= m_Limits.MaxTriggersPerActiveUse)
                 return Reject("ActiveUseCapReached", out reasonCode);
 
-            string abilityKey = GameFramework.Utility.Text.Format(
+            string abilityKey = BuqiText.Format(
                 "{0}|{1}|{2}",
                 attempt.RootEventId,
                 attempt.SourceInstanceId,
@@ -46,7 +46,7 @@ namespace Game.Hot.Buqi.Battle
             if (abilityCount >= m_Limits.MaxAbilityFiresPerRoot)
                 return Reject("AbilityRootCapReached", out reasonCode);
 
-            string signature = GameFramework.Utility.Text.Format(
+            string signature = BuqiText.Format(
                 "{0}|{1}|{2}",
                 abilityKey,
                 attempt.TargetInstanceId,
@@ -55,7 +55,7 @@ namespace Game.Hot.Buqi.Battle
             if (signatureCount >= m_Limits.MaxSignatureRepeats)
                 return Reject("CycleSignatureCapReached", out reasonCode);
 
-            string ruleTickKey = GameFramework.Utility.Text.Format(
+            string ruleTickKey = BuqiText.Format(
                 "{0}|{1}",
                 attempt.Tick,
                 attempt.RuleId);
@@ -63,7 +63,7 @@ namespace Game.Hot.Buqi.Battle
             if (attempt.RuleMaxTriggersPerTick > 0 && ruleTickCount >= attempt.RuleMaxTriggersPerTick)
                 return Reject("RuleTickCapReached", out reasonCode);
 
-            string ruleUseKey = GameFramework.Utility.Text.Format(
+            string ruleUseKey = BuqiText.Format(
                 "{0}|{1}",
                 activeUseKey,
                 attempt.RuleId);

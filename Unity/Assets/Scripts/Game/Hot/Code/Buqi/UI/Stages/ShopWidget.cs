@@ -52,11 +52,11 @@ namespace Game.Hot.Buqi.UI.Stages
             {
                 if (offer.Sold)
                     continue;
-                string name = offer.Item == null ? offer.Id : offer.Item.Name;
+                string name = offer.Item == null ? "未命名装备" : offer.Item.Name;
                 string role = m_Supply?.FindOfferRole(offer.Id) ?? string.Empty;
                 string label = string.IsNullOrEmpty(role)
-                    ? $"{name}  {offer.Price} coins"
-                    : $"{role} · {name}  {offer.Price} coins";
+                    ? $"{name}  {offer.Price} 金币"
+                    : $"{role} · {name}  {offer.Price} 金币";
                 AddAction(label, BuqiUIDemoCommandType.BuyOffer, offer.Id);
             }
         }

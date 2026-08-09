@@ -117,7 +117,7 @@ namespace Game.Hot.Buqi.UI.Widgets
             SetText(
                 m_RefundText,
                 visible
-                    ? GameFramework.Utility.Text.Format("Refund {0}", refund)
+                    ? GameFramework.Utility.Text.Format("获得 {0} 金币", refund)
                     : string.Empty);
         }
 

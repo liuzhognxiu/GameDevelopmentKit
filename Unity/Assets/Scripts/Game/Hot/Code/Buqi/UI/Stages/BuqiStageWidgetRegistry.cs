@@ -18,11 +18,11 @@ namespace Game.Hot.Buqi.UI.Stages
             foreach (MonoBehaviour component in components)
             {
                 if (!(component is IBuqiStageWidget stage))
-                    throw new ArgumentException("Every stage component must implement IBuqiStageWidget.");
+                    throw new ArgumentException("所有阶段组件都必须实现阶段界面接口。"  );
                 if (stage.Phase == BuqiUIDemoPhase.BattleReplay)
-                    throw new ArgumentException("BattleReplay is rendered by BattleForm.");
+                    throw new ArgumentException("战斗回放由战斗界面负责显示。"  );
                 if (m_Stages.ContainsKey(stage.Phase))
-                    throw new ArgumentException(GameFramework.Utility.Text.Format("Duplicate Buqi UI stage: {0}", stage.Phase));
+                    throw new ArgumentException("阶段界面配置重复。"  );
                 m_Stages.Add(stage.Phase, stage);
                 stage.Clear();
             }

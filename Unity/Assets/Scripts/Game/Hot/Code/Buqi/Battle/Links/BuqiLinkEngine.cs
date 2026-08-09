@@ -198,7 +198,7 @@ namespace Game.Hot.Buqi.Battle
                     if (count < requirement.MinimumCount)
                     {
                         fact.MissingRequirements.Add(
-                            GameFramework.Utility.Text.Format(
+                            BuqiText.Format(
                                 "{0}:{1}/{2}",
                                 requirement.RequirementId,
                                 count,
@@ -230,14 +230,14 @@ namespace Game.Hot.Buqi.Battle
             {
                 if (!expectedAnchors.Add(expected.AnchorSlot))
                 {
-                    fact.Mismatches.Add(GameFramework.Utility.Text.Format(
+                    fact.Mismatches.Add(BuqiText.Format(
                         "slot-{0}:DuplicateBlueprint",
                         expected.AnchorSlot));
                     continue;
                 }
                 if (expected.AnchorSlot < 0 || expected.AnchorSlot >= BuqiLinkBoard.SlotCount)
                 {
-                    fact.Mismatches.Add(GameFramework.Utility.Text.Format(
+                    fact.Mismatches.Add(BuqiText.Format(
                         "slot-{0}:OutOfRange",
                         expected.AnchorSlot));
                     continue;
@@ -245,29 +245,29 @@ namespace Game.Hot.Buqi.Battle
                 BuqiLinkItem actual = FindAtAnchor(board, expected.AnchorSlot);
                 if (actual == null)
                 {
-                    fact.Mismatches.Add(GameFramework.Utility.Text.Format(
+                    fact.Mismatches.Add(BuqiText.Format(
                         "slot-{0}:Missing",
                         expected.AnchorSlot));
                     continue;
                 }
                 matchedInstances.Add(actual.InstanceId);
                 if (actual.DefinitionId != expected.DefinitionId)
-                    fact.Mismatches.Add(GameFramework.Utility.Text.Format(
+                    fact.Mismatches.Add(BuqiText.Format(
                         "{0}:DefinitionId",
                         actual.InstanceId));
                 if (actual.Quality != expected.Quality)
-                    fact.Mismatches.Add(GameFramework.Utility.Text.Format(
+                    fact.Mismatches.Add(BuqiText.Format(
                         "{0}:Quality",
                         actual.InstanceId));
                 if (actual.AnnotationId != expected.AnnotationId)
-                    fact.Mismatches.Add(GameFramework.Utility.Text.Format(
+                    fact.Mismatches.Add(BuqiText.Format(
                         "{0}:AnnotationId",
                         actual.InstanceId));
             }
             foreach (BuqiLinkItem actual in board.Items)
             {
                 if (!matchedInstances.Contains(actual.InstanceId))
-                    fact.Mismatches.Add(GameFramework.Utility.Text.Format(
+                    fact.Mismatches.Add(BuqiText.Format(
                         "{0}:Unexpected",
                         actual.InstanceId));
             }
@@ -336,7 +336,7 @@ namespace Game.Hot.Buqi.Battle
             {
                 if (!fact.IsTriggered || string.IsNullOrEmpty(fact.Rule.ExclusiveGroup))
                     continue;
-                string key = GameFramework.Utility.Text.Format(
+                string key = BuqiText.Format(
                     "{0}|{1}",
                     fact.TargetInstanceId,
                     fact.Rule.ExclusiveGroup);
@@ -354,7 +354,7 @@ namespace Game.Hot.Buqi.Battle
             {
                 if (!fact.IsTriggered || string.IsNullOrEmpty(fact.Rule.StackGroup))
                     continue;
-                string key = GameFramework.Utility.Text.Format(
+                string key = BuqiText.Format(
                     "{0}|{1}",
                     fact.TargetInstanceId,
                     fact.Rule.StackGroup);

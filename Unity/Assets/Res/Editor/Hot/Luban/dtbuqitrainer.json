@@ -1,7 +1,7 @@
 [
   {
     "TrainerId": "trainer-wind",
-    "DisplayName": "踏风教习·简行",
+    "DisplayName": "加速训练师 · 简行",
     "LocalizationKey": "Buqi.Content.Trainer.trainer_wind.Name",
     "MinDay": 1,
     "MaxDay": 9,
@@ -14,7 +14,7 @@
   },
   {
     "TrainerId": "trainer-ward",
-    "DisplayName": "垒山教习·岳定",
+    "DisplayName": "护盾训练师 · 岳定",
     "LocalizationKey": "Buqi.Content.Trainer.trainer_ward.Name",
     "MinDay": 1,
     "MaxDay": 9,
@@ -27,7 +27,7 @@
   },
   {
     "TrainerId": "trainer-pulse",
-    "DisplayName": "归脉教习·苏衡",
+    "DisplayName": "恢复训练师 · 苏衡",
     "LocalizationKey": "Buqi.Content.Trainer.trainer_pulse.Name",
     "MinDay": 1,
     "MaxDay": 9,
@@ -40,7 +40,7 @@
   },
   {
     "TrainerId": "trainer-craft",
-    "DisplayName": "百工教习·鲁知微",
+    "DisplayName": "强化训练师 · 鲁知微",
     "LocalizationKey": "Buqi.Content.Trainer.trainer_craft.Name",
     "MinDay": 4,
     "MaxDay": 9,

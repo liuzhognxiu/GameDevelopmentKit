@@ -23,12 +23,16 @@ namespace Game.Hot.Buqi.Config
             "W8-022", "W8-023", "W8-024",
             "W8-025", "W8-026", "W8-027",
             "W8-028", "W8-029", "W8-030",
+            "W8-031", "W8-032", "W8-033", "W8-034", "W8-035",
+            "W8-036", "W8-037", "W8-038", "W8-039", "W8-040",
+            "W8-041", "W8-042", "W8-043", "W8-044", "W8-045",
+            "W8-046", "W8-047", "W8-048",
         };
 
         private static readonly string[] s_EnabledBuildIds =
         {
             "fast", "buffer", "chain", "heal",
-            "poison", "burn", "freeze", "overload",
+            "poison", "burn", "freeze", "overload", "shared",
         };
 
         private static readonly string[] s_EnabledRefinementIds =
@@ -46,9 +50,11 @@ namespace Game.Hot.Buqi.Config
             }
 
             ValidateGlobal(catalog.Global, errors);
+            ValidateContentSafetyCaps(catalog.Global, errors);
             Dictionary<string, BuqiItemConfigRow> items = ValidateItems(catalog.Items, errors);
             HashSet<string> refinements = ValidateRefinements(catalog.Refinements, errors);
             ValidateEchoes(catalog, items, refinements, errors);
+            BuqiContentConfigValidator.Validate(catalog, items, errors);
             return errors;
         }
 
@@ -82,6 +88,21 @@ namespace Game.Hot.Buqi.Config
                 errors.Add("全局每时刻事件上限必须与战斗模拟器一致");
             if (global.MaxItemEventsPerTick != BuqiBattleSimulator.MaxEventsPerItemPerTick)
                 errors.Add("全局每件装备每时刻事件上限必须与战斗模拟器一致");
+        }
+
+        private static void ValidateContentSafetyCaps(BuqiGlobalConfigRow global, List<string> errors)
+        {
+            if (global == null)
+                return;
+            if (global.MaxChainDepth <= 0)
+                errors.Add("Global MaxChainDepth must be positive");
+            if (global.MaxRepeatedReasonPerTick <= 0 ||
+                global.MaxRepeatedReasonPerTick > global.MaxItemEventsPerTick)
+            {
+                errors.Add("Global MaxRepeatedReasonPerTick must be within the per-item event cap");
+            }
+            if (global.DailyEconomyProcCap != 1)
+                errors.Add("Global DailyEconomyProcCap must be 1 for the Demo");
         }
 
         private static Dictionary<string, BuqiItemConfigRow> ValidateItems(

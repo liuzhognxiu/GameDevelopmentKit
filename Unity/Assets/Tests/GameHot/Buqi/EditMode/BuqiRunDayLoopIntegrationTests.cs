@@ -127,6 +127,7 @@ namespace Game.Hot.Buqi.Tests
             }
 
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.RunTerminal));
+            Assert.That(controller.View.PrimaryCommandLabel, Is.EqualTo("重新开始"));
             Assert.That(ReadSave(store).Phase, Is.EqualTo((int)BuqiRunPhase.RunTerminal));
 
             BuqiUIDemoController restored = CreateController(store);
@@ -321,7 +322,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void TryCreate_ContentVersionMismatchFailsBeforePendingSettlementResume()
+        public void TryCreate_ContentVersionMismatchStartsFreshRunAndSkipsPendingSettlement()
         {
             BuqiUIDemoCatalog catalog = CreateCatalog();
             var store = new MemoryRunStore();
@@ -341,18 +342,205 @@ namespace Game.Hot.Buqi.Tests
             save.PendingSettlement = CreatePendingSettlement(summary, save.Revision, BuqiRunBattleKind.Pve, controller.CurrentReplay.Result.Outcome);
             save.HasPendingSettlement = true;
             store.SetJson(BuqiRunSaveCodec.ToJson(save));
-            string originalJson = store.CurrentJson;
-
             Assert.That(
                 BuqiUIDemoController.TryCreate(
                     catalog,
                     CreateOptions(store),
                     out BuqiUIDemoController reloaded,
                     out error),
+                Is.True,
+                error);
+
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            BuqiRunSaveData freshSave = ReadSave(store);
+            Assert.That(freshSave.ContentVersion, Is.EqualTo("test-content-v1"));
+            Assert.That(freshSave.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
+            Assert.That(freshSave.PendingSettlement, Is.Null);
+            Assert.That(store.Deletes, Is.EqualTo(0));
+            Assert.That(reloaded.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectOperation,
+                PrimaryId = "meditate",
+            }).Accepted, Is.True);
+        }
+
+        [TestCase("buqi-run-save-v1")]
+        [TestCase("buqi-run-save-v99")]
+        public void TryCreate_UnsupportedSaveSchemaStartsFreshRunAndWritesCurrentSchema(string unsupportedVersion)
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            CreateController(store);
+            BuqiRunSaveData save = ReadSave(store);
+            save.SaveVersion = unsupportedVersion;
+            store.SetJson(BuqiRunSaveCodec.ToJson(save));
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out string error),
+                Is.True,
+                error);
+
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(ReadSave(store).SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
+            Assert.That(ReadSave(store).RunSeed, Is.EqualTo(1L));
+            Assert.That(store.Deletes, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TryCreate_MissingSaveSchemaFailsClosedAndPreservesStoredBytes()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            CreateController(store);
+            BuqiRunSaveData save = ReadSave(store);
+            save.SaveVersion = string.Empty;
+            string originalJson = BuqiRunSaveCodec.ToJson(save);
+            store.SetJson(originalJson);
+            int writesBeforeReload = store.Writes;
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out string error),
                 Is.False);
 
             Assert.That(reloaded, Is.Null);
-            Assert.That(error, Does.Contain("Content version"));
+            Assert.That(error, Does.Contain("存档校验失败"));
+            Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
+            Assert.That(store.Writes, Is.EqualTo(writesBeforeReload));
+            Assert.That(store.Deletes, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TryCreate_SupportedV3SaveMigratesAndKeepsRunIdentity()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            CreateController(store);
+            BuqiRunSaveData save = ReadSave(store);
+            long runSeed = save.RunSeed;
+            string starterId = save.BoardInstanceIds.Single(id => !string.IsNullOrEmpty(id));
+            save.SaveVersion = BuqiRunSaveData.PreviousSaveVersion;
+            save.RuleVersion = BuqiRunState.PreviousRuleVersion;
+            store.SetJson(BuqiRunSaveCodec.ToJson(save));
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out string error),
+                Is.True,
+                error);
+
+            BuqiRunSaveData migrated = ReadSave(store);
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(migrated.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
+            Assert.That(migrated.RunSeed, Is.EqualTo(runSeed));
+            Assert.That(migrated.BoardInstanceIds, Does.Contain(starterId));
+        }
+
+        [Test]
+        public void TryCreate_CurrentValidSaveRestoresProgressWithoutRewriting()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store);
+            SelectOperation(controller, "meditate");
+            int writesBeforeReload = store.Writes;
+            string jsonBeforeReload = store.CurrentJson;
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out string error),
+                Is.True,
+                error);
+
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(store.Writes, Is.EqualTo(writesBeforeReload));
+            Assert.That(store.CurrentJson, Is.EqualTo(jsonBeforeReload));
+        }
+
+        [Test]
+        public void TryCreate_ContentReplacementWriteFailurePreservesOldSave()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            CreateController(store);
+            BuqiRunSaveData save = ReadSave(store);
+            save.ContentVersion = "buqi-effects-cv1";
+            string originalJson = BuqiRunSaveCodec.ToJson(save);
+            store.SetJson(originalJson);
+            store.FailNextWrite("disk is full");
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out string error),
+                Is.False);
+
+            Assert.That(reloaded, Is.Null);
+            Assert.That(error, Does.Contain("旧存档"));
+            Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
+        }
+
+        [Test]
+        public void TryCreate_ReadIoFailurePreservesExistingSaveAndDoesNotWrite()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            store.FailNextRead("permission denied");
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController controller,
+                    out string error),
+                Is.False);
+
+            Assert.That(controller, Is.Null);
+            Assert.That(error, Does.Contain("读取存档失败"));
+            Assert.That(store.Writes, Is.EqualTo(0));
+        }
+
+        [Test]
+        public void TryCreate_PendingSettlementReadFailurePreservesPendingSave()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store);
+            AdvanceUntilPhase(controller, BuqiUIDemoPhase.BattleReplay);
+            BuqiRunSaveData save = ReadSave(store);
+            BuqiRunBattleSummary summary = BuildSummary(controller);
+            save.PendingSettlement = CreatePendingSettlement(summary, save.Revision, BuqiRunBattleKind.Pve,
+                controller.CurrentReplay.Result.Outcome);
+            save.HasPendingSettlement = true;
+            store.SetJson(BuqiRunSaveCodec.ToJson(save));
+            string originalJson = store.CurrentJson;
+            store.FailReadOnAttempt(2, "temporary read failure");
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController reloaded,
+                    out string error),
+                Is.False);
+
+            Assert.That(reloaded, Is.Null);
+            Assert.That(error, Does.Contain("待结算"));
             Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
         }
 
@@ -387,8 +575,41 @@ namespace Game.Hot.Buqi.Tests
                 Is.False);
 
             Assert.That(reloaded, Is.Null);
-            Assert.That(error, Does.Contain("quality").IgnoreCase);
+            Assert.That(error, Does.Contain("存档校验失败"));
             Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
+        }
+
+        [Test]
+        public void TryCreateNewRun_ExplicitErrorRestartOverwritesInvalidPayload()
+        {
+            BuqiUIDemoCatalog catalog = CreateCatalog();
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store);
+            BuqiRunSaveData save = ReadSave(store);
+            save.EconomyPayload = "{invalid-economy";
+            string invalidJson = BuqiRunSaveCodec.ToJson(save);
+            store.SetJson(invalidJson);
+
+            Assert.That(
+                BuqiUIDemoController.TryCreate(
+                    catalog,
+                    CreateOptions(store),
+                    out _,
+                    out _),
+                Is.False);
+
+            Assert.That(
+                BuqiUIDemoController.TryCreateNewRun(
+                    catalog,
+                    CreateOptions(store),
+                    out BuqiUIDemoController restarted,
+                    out string restartError),
+                Is.True,
+                restartError);
+
+            Assert.That(restarted.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(store.CurrentJson, Is.Not.EqualTo(invalidJson));
+            Assert.That(ReadSave(store).ContentVersion, Is.EqualTo("test-content-v1"));
         }
 
         [Test]
@@ -420,7 +641,7 @@ namespace Game.Hot.Buqi.Tests
                 Is.False);
 
             Assert.That(reloaded, Is.Null);
-            Assert.That(error, Does.Contain("Encounter").IgnoreCase);
+            Assert.That(error, Does.Contain("存档校验失败"));
             Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
         }
 
@@ -453,7 +674,7 @@ namespace Game.Hot.Buqi.Tests
                 Is.False);
 
             Assert.That(reloaded, Is.Null);
-            Assert.That(error, Does.Contain("Battle").IgnoreCase);
+            Assert.That(error, Does.Contain("存档校验失败"));
             Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
         }
 
@@ -906,10 +1127,33 @@ namespace Game.Hot.Buqi.Tests
             }
 
             public string CurrentJson { get; private set; }
+            public int Writes { get; private set; }
+            public int Deletes { get; private set; }
             private string NextWriteError { get; set; }
+            private string NextReadError { get; set; }
+            private int m_ReadAttempt;
+            private int m_FailReadAttempt = -1;
+            private string m_FailReadAttemptError;
 
             public bool TryRead(out string json, out string error)
             {
+                m_ReadAttempt++;
+                if (!string.IsNullOrEmpty(NextReadError))
+                {
+                    json = string.Empty;
+                    error = NextReadError;
+                    NextReadError = null;
+                    return false;
+                }
+
+                if (m_ReadAttempt == m_FailReadAttempt)
+                {
+                    json = string.Empty;
+                    error = m_FailReadAttemptError;
+                    m_FailReadAttempt = -1;
+                    return false;
+                }
+
                 if (CurrentJson == null)
                 {
                     json = string.Empty;
@@ -932,12 +1176,14 @@ namespace Game.Hot.Buqi.Tests
                 }
 
                 CurrentJson = json;
+                Writes++;
                 error = string.Empty;
                 return true;
             }
 
             public bool TryDelete(out string error)
             {
+                Deletes++;
                 CurrentJson = null;
                 error = string.Empty;
                 return true;
@@ -946,6 +1192,17 @@ namespace Game.Hot.Buqi.Tests
             public void FailNextWrite(string error)
             {
                 NextWriteError = error;
+            }
+
+            public void FailNextRead(string error)
+            {
+                NextReadError = error;
+            }
+
+            public void FailReadOnAttempt(int attempt, string error)
+            {
+                m_FailReadAttempt = m_ReadAttempt + attempt;
+                m_FailReadAttemptError = error;
             }
 
             public void SetJson(string json)
@@ -957,6 +1214,12 @@ namespace Game.Hot.Buqi.Tests
             {
                 CurrentJson = null;
                 NextWriteError = null;
+                NextReadError = null;
+                m_ReadAttempt = 0;
+                m_FailReadAttempt = -1;
+                m_FailReadAttemptError = null;
+                Writes = 0;
+                Deletes = 0;
             }
         }
 

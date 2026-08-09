@@ -40,6 +40,7 @@ namespace Game.Hot.Buqi.UI.Stages
         {
             ClearActions();
             gameObject.SetActive(true);
+            Prepare(view);
             SetText(m_TitleText, ResolveTitle(view));
             SetText(m_BodyText, ResolveBody(view));
             SetText(m_MetaText, ResolveMeta(view));
@@ -62,6 +63,8 @@ namespace Game.Hot.Buqi.UI.Stages
                 Action<BuqiUIDemoCommand> callback = submit;
                 button.onClick.AddListener(() => callback?.Invoke(command));
             }
+
+            CompleteRender(view, submit);
         }
 
         public void Clear()
@@ -71,10 +74,23 @@ namespace Game.Hot.Buqi.UI.Stages
             SetText(m_BodyText, string.Empty);
             SetText(m_MetaText, string.Empty);
             ClearBoard();
+            OnCleared();
             gameObject.SetActive(false);
         }
 
         protected abstract void ConfigureActions(BuqiUIDemoView view);
+
+        protected virtual void Prepare(BuqiUIDemoView view)
+        {
+        }
+
+        protected virtual void CompleteRender(BuqiUIDemoView view, Action<BuqiUIDemoCommand> submit)
+        {
+        }
+
+        protected virtual void OnCleared()
+        {
+        }
 
         protected void AddAction(string label, BuqiUIDemoCommandType type, string primaryId = "", int slot = -1)
         {

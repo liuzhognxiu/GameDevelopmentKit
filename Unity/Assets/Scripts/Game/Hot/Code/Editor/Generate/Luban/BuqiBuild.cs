@@ -47,6 +47,10 @@ namespace Game.Hot.Editor
         /// overload engine
         /// </summary>
         overload = 8,
+        /// <summary>
+        /// shared utility
+        /// </summary>
+        shared = 9,
     }
 
     public static class BuqiBuild_Metadata
@@ -59,6 +63,7 @@ namespace Game.Hot.Editor
         public static readonly Luban.EditorEnumItemInfo burn = new Luban.EditorEnumItemInfo("burn", "Burn", 6, "burn pressure");
         public static readonly Luban.EditorEnumItemInfo freeze = new Luban.EditorEnumItemInfo("freeze", "Freeze", 7, "freeze control");
         public static readonly Luban.EditorEnumItemInfo overload = new Luban.EditorEnumItemInfo("overload", "Overload", 8, "overload engine");
+        public static readonly Luban.EditorEnumItemInfo shared = new Luban.EditorEnumItemInfo("shared", "Shared", 9, "shared utility");
 
         private static readonly System.Collections.Generic.List<Luban.EditorEnumItemInfo> __items = new System.Collections.Generic.List<Luban.EditorEnumItemInfo>
         {
@@ -70,6 +75,7 @@ namespace Game.Hot.Editor
             burn,
             freeze,
             overload,
+            shared,
         };
 
         public static System.Collections.Generic.List<Luban.EditorEnumItemInfo> GetItems() => __items;

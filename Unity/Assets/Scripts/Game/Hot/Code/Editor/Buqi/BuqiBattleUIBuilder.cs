@@ -93,7 +93,7 @@ namespace Game.Hot.Editor
 
             Image marker = CreateImage(root.transform, "Marker_Image", accentColor);
             SetRect(marker.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(4f, 0f), new Vector2(8f, 23f));
-            Text content = CreateText(root.transform, "Content_Text", "第 000 tick  --  0", 14, TextAnchor.MiddleLeft, inkColor);
+            Text content = CreateText(root.transform, "Content_Text", "Buqi.Log.Placeholder", 14, TextAnchor.MiddleLeft, inkColor);
             Stretch(content.rectTransform, new Vector2(18f, 1f), new Vector2(-8f, -1f));
 
             Assign(widget, "m_Marker", marker);
@@ -118,7 +118,7 @@ namespace Game.Hot.Editor
             Stretch(title.rectTransform, new Vector2(180f, 12f), new Vector2(-180f, -12f));
             title.fontStyle = FontStyle.Bold;
 
-            Text tick = CreateText(header.transform, "Tick_Text", "第 000 tick / 000", 18, TextAnchor.MiddleRight, mutedColor);
+            Text tick = CreateText(header.transform, "Tick_Text", "Buqi.Battle.TickPlaceholder", 18, TextAnchor.MiddleRight, mutedColor);
             SetRect(tick.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-150f, 0f), new Vector2(260f, 42f));
             Text outcome = CreateText(header.transform, "Outcome_Text", "战斗推演中", 18, TextAnchor.MiddleLeft, accentColor);
             SetRect(outcome.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(150f, 0f), new Vector2(260f, 42f));

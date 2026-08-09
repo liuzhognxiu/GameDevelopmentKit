@@ -42,7 +42,11 @@ namespace Game.Hot.Buqi.Tests
         [Test]
         public void ConfigValidator_AcceptsExpandedCatalog()
         {
-            BuqiConfigCatalog catalog = BuqiConfigTestData.CreateValidCatalog();
+            GeneratedBuqiTables tables = GeneratedBuqiTables.LoadFromProject();
+            Assert.That(BuqiGeneratedConfigAdapter.TryReadFromTables(
+                tables, out BuqiConfigCatalog catalog, out List<string> adapterErrors),
+                Is.True,
+                string.Join("\n", adapterErrors));
 
             List<string> errors = BuqiConfigValidator.Validate(catalog);
 
@@ -63,6 +67,11 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(generated.Items.Count, Is.EqualTo(300));
             Assert.That(generated.Refinements.Count, Is.EqualTo(6));
             Assert.That(generated.Echoes.Count, Is.EqualTo(16));
+            Assert.That(generated.Merchants.Count, Is.EqualTo(8));
+            Assert.That(generated.Trainers.Count, Is.EqualTo(4));
+            Assert.That(generated.TrainingProjects.Count, Is.EqualTo(12));
+            Assert.That(generated.Events.Count, Is.EqualTo(24));
+            Assert.That(generated.EventOptions.Count, Is.EqualTo(72));
 
             BuqiConfigCatalog fixture = BuqiConfigTestData.CreateValidCatalog();
             AssertGlobalEquivalent(generated.Global, fixture.Global);
@@ -292,6 +301,11 @@ namespace Game.Hot.Buqi.Tests
             public DTBuqiItem DTBuqiItem { get; private set; }
             public DTBuqiRefinement DTBuqiRefinement { get; private set; }
             public DTBuqiEcho DTBuqiEcho { get; private set; }
+            public DTBuqiMerchant DTBuqiMerchant { get; private set; }
+            public DTBuqiTrainer DTBuqiTrainer { get; private set; }
+            public DTBuqiTrainingProject DTBuqiTrainingProject { get; private set; }
+            public DTBuqiEvent DTBuqiEvent { get; private set; }
+            public DTBuqiEventOption DTBuqiEventOption { get; private set; }
 
             public static GeneratedBuqiTables LoadFromProject()
             {
@@ -301,11 +315,21 @@ namespace Game.Hot.Buqi.Tests
                     DTBuqiItem = new DTBuqiItem(() => LoadBytes("dtbuqiitem")),
                     DTBuqiRefinement = new DTBuqiRefinement(() => LoadBytes("dtbuqirefinement")),
                     DTBuqiEcho = new DTBuqiEcho(() => LoadBytes("dtbuqiecho")),
+                    DTBuqiMerchant = new DTBuqiMerchant(() => LoadBytes("dtbuqimerchant")),
+                    DTBuqiTrainer = new DTBuqiTrainer(() => LoadBytes("dtbuqitrainer")),
+                    DTBuqiTrainingProject = new DTBuqiTrainingProject(() => LoadBytes("dtbuqitrainingproject")),
+                    DTBuqiEvent = new DTBuqiEvent(() => LoadBytes("dtbuqievent")),
+                    DTBuqiEventOption = new DTBuqiEventOption(() => LoadBytes("dtbuqieventoption")),
                 };
                 tables.DTBuqiGlobal.LoadAsync().GetAwaiter().GetResult();
                 tables.DTBuqiItem.LoadAsync().GetAwaiter().GetResult();
                 tables.DTBuqiRefinement.LoadAsync().GetAwaiter().GetResult();
                 tables.DTBuqiEcho.LoadAsync().GetAwaiter().GetResult();
+                tables.DTBuqiMerchant.LoadAsync().GetAwaiter().GetResult();
+                tables.DTBuqiTrainer.LoadAsync().GetAwaiter().GetResult();
+                tables.DTBuqiTrainingProject.LoadAsync().GetAwaiter().GetResult();
+                tables.DTBuqiEvent.LoadAsync().GetAwaiter().GetResult();
+                tables.DTBuqiEventOption.LoadAsync().GetAwaiter().GetResult();
                 return tables;
             }
 
@@ -412,21 +436,21 @@ namespace Game.Hot.Buqi.Tests
                     Effect(BattleTrigger.OnUse, BattleEffect.Charge, BattleTarget.RightAdjacentItem, 2, "W8-030-pass-charge"),
                     Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, -3, "W8-030-vent")));
 
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-01", DisplayName = "加急", Summary = "cooldown -15%; each active use creates 1 overload." });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-02", DisplayName = "激化", Summary = "cooldown +20%; non-opening effects +30%." });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-03", DisplayName = "复写", Summary = "first active use repeats at 50% effect once per battle." });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-04", DisplayName = "可靠", Summary = "immune to enemy slow and ignores friendly haste." });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-05", DisplayName = "稳流", Summary = "attack/shield -15%; overload gained by this item -1." });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-06", DisplayName = "超载", Summary = "battle start gains 3 overload; attack/shield +35%." });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-01", DisplayName = "加急", Summary = "冷却缩短 15%；每次主动使用增加 1 点失衡。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-02", DisplayName = "激化", Summary = "冷却延长 20%；非开战效果提高 30%。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-03", DisplayName = "复写", Summary = "每场战斗首次主动使用时，以 50% 效果额外结算一次。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-04", DisplayName = "可靠", Summary = "免疫敌方减速，但不受友方加速。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-05", DisplayName = "稳流", Summary = "伤害与护体降低 15%；本器物造成的失衡减少 1 点。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-06", DisplayName = "超载", Summary = "开战增加 3 点失衡；伤害与护体提高 35%。" });
 
-                catalog.Echoes.Add(Echo("echo-fast-lesson", "fast", Instance("e1-deadline", "W8-006", BattleQuality.Normal, 0), Instance("e1-board", "W8-005", BattleQuality.Normal, 3), Instance("e1-urgent", "W8-003", BattleQuality.Normal, 5, "A-01")));
-                catalog.Echoes.Add(Echo("echo-fast-early", "fast", Instance("e2-board", "W8-005", BattleQuality.Improved, 0), Instance("e2-urgent", "W8-003", BattleQuality.Normal, 2), Instance("e2-buffer", "W8-007", BattleQuality.Normal, 3)));
-                catalog.Echoes.Add(Echo("echo-buffer-lesson", "buffer", Instance("e3-buffer", "W8-007", BattleQuality.Normal, 0), Instance("e3-risk", "W8-008", BattleQuality.Normal, 1, "A-04"), Instance("e3-center", "W8-012", BattleQuality.Normal, 2)));
-                catalog.Echoes.Add(Echo("echo-buffer-early", "buffer", Instance("e4-center", "W8-012", BattleQuality.Normal, 0), Instance("e4-buffer", "W8-007", BattleQuality.Improved, 3)));
+                catalog.Echoes.Add(Echo("echo-fast-lesson", "fast", Instance("efl-deadline", "W8-006", BattleQuality.Fixed, 0, "A-06"), Instance("efl-board-a", "W8-005", BattleQuality.Fixed, 3, "A-06"), Instance("efl-board-b", "W8-005", BattleQuality.Improved, 5, "A-02"), Instance("efl-urgent", "W8-003", BattleQuality.Fixed, 7, "A-01")));
+                catalog.Echoes.Add(Echo("echo-fast-early", "fast", Instance("efe-deadline", "W8-006", BattleQuality.Fixed, 0, "A-06"), Instance("efe-board-a", "W8-005", BattleQuality.Fixed, 3, "A-06"), Instance("efe-board-b", "W8-005", BattleQuality.Improved, 5, "A-02"), Instance("efe-urgent", "W8-003", BattleQuality.Fixed, 7, "A-01")));
+                catalog.Echoes.Add(Echo("echo-buffer-lesson", "buffer", Instance("ebl-core-a", "W8-012", BattleQuality.Fixed, 0, "A-06"), Instance("ebl-core-b", "W8-012", BattleQuality.Fixed, 3, "A-06"), Instance("ebl-list", "W8-008", BattleQuality.Fixed, 6, "A-04"), Instance("ebl-shield", "W8-007", BattleQuality.Fixed, 7, "A-01")));
+                catalog.Echoes.Add(Echo("echo-buffer-early", "buffer", Instance("ebe-core-a", "W8-012", BattleQuality.Fixed, 0, "A-06"), Instance("ebe-core-b", "W8-012", BattleQuality.Fixed, 3, "A-06"), Instance("ebe-list", "W8-008", BattleQuality.Fixed, 6, "A-04"), Instance("ebe-shield", "W8-007", BattleQuality.Fixed, 7, "A-01")));
                 catalog.Echoes.Add(Echo("echo-chain-lesson", "chain", Instance("e5-hand", "W8-013", BattleQuality.Normal, 0), Instance("e5-sign", "W8-014", BattleQuality.Normal, 1, "A-03"), Instance("e5-node", "W8-015", BattleQuality.Normal, 2)));
                 catalog.Echoes.Add(Echo("echo-chain-early", "chain", Instance("e6-hand", "W8-013", BattleQuality.Improved, 0), Instance("e6-sign", "W8-014", BattleQuality.Normal, 1), Instance("e6-node", "W8-015", BattleQuality.Normal, 2)));
-                catalog.Echoes.Add(Echo("echo-heal-lesson", "heal", Instance("e7-pack", "W8-016", BattleQuality.Normal, 0), Instance("e7-spring", "W8-017", BattleQuality.Normal, 1), Instance("e7-flag", "W8-018", BattleQuality.Normal, 3)));
-                catalog.Echoes.Add(Echo("echo-heal-early", "heal", Instance("e8-pack", "W8-016", BattleQuality.Improved, 0), Instance("e8-spring", "W8-017", BattleQuality.Normal, 1), Instance("e8-shield", "W8-007", BattleQuality.Normal, 3)));
+                catalog.Echoes.Add(Echo("echo-heal-lesson", "heal", Instance("ehl-flag", "W8-018", BattleQuality.Normal, 0), Instance("ehl-spring-a", "W8-017", BattleQuality.Normal, 3), Instance("ehl-spring-b", "W8-017", BattleQuality.Normal, 5), Instance("ehl-pack", "W8-016", BattleQuality.Normal, 7, "A-01")));
+                catalog.Echoes.Add(Echo("echo-heal-early", "heal", Instance("ehe-flag", "W8-018", BattleQuality.Normal, 0), Instance("ehe-spring-a", "W8-017", BattleQuality.Normal, 3), Instance("ehe-spring-b", "W8-017", BattleQuality.Normal, 5), Instance("ehe-pack", "W8-016", BattleQuality.Normal, 7, "A-01")));
                 catalog.Echoes.Add(Echo("echo-poison-lesson", "poison", Instance("e9-needle", "W8-019", BattleQuality.Normal, 0), Instance("e9-bottle", "W8-020", BattleQuality.Normal, 1), Instance("e9-fog", "W8-021", BattleQuality.Normal, 3)));
                 catalog.Echoes.Add(Echo("echo-poison-early", "poison", Instance("e10-needle", "W8-019", BattleQuality.Improved, 0), Instance("e10-bottle", "W8-020", BattleQuality.Normal, 1), Instance("e10-mirror", "W8-025", BattleQuality.Normal, 3)));
                 catalog.Echoes.Add(Echo("echo-burn-lesson", "burn", Instance("e11-spark", "W8-022", BattleQuality.Normal, 0), Instance("e11-furnace", "W8-023", BattleQuality.Normal, 1), Instance("e11-array", "W8-024", BattleQuality.Normal, 3)));

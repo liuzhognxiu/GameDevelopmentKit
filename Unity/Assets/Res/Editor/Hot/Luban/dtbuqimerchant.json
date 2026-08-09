@@ -1,0 +1,565 @@
+[
+  {
+    "MerchantId": "merchant-edge",
+    "DisplayName": "攻击装备商人 · 陆铮",
+    "LocalizationKey": "Buqi.Content.Merchant.merchant_edge.Name",
+    "MinDay": 1,
+    "MaxDay": 9,
+    "Weight": 110,
+    "PoolItemIds": [
+      "W8-003",
+      "W8-005",
+      "W8-006",
+      "W8-013",
+      "W8-015",
+      "W8-022",
+      "W8-023",
+      "W8-031",
+      "W8-032",
+      "W8-033",
+      "W8-034",
+      "W8-035",
+      "W8-046"
+    ],
+    "Slots": [
+      {
+        "SlotId": "edge-a",
+        "SlotKind": 0,
+        "BuildFilter": "fast",
+        "SizeFilter": "S+M",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "attack",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 9,
+        "Weight": 100,
+        "Count": 2
+      },
+      {
+        "SlotId": "edge-b",
+        "SlotKind": 4,
+        "BuildFilter": "fast+chain",
+        "SizeFilter": "S",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "bridge",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 6,
+        "Weight": 90,
+        "Count": 1
+      },
+      {
+        "SlotId": "edge-c",
+        "SlotKind": 2,
+        "BuildFilter": "fast",
+        "SizeFilter": "M+L",
+        "QualityFilter": "Improved+Fixed",
+        "RequiredTag": "core",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 70,
+        "Count": 1
+      },
+      {
+        "SlotId": "edge-d",
+        "SlotKind": 5,
+        "BuildFilter": "fast+burn",
+        "SizeFilter": "M",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "counter",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 60,
+        "Count": 1
+      }
+    ]
+  },
+  {
+    "MerchantId": "merchant-bastion",
+    "DisplayName": "护盾装备商人 · 石岑",
+    "LocalizationKey": "Buqi.Content.Merchant.merchant_bastion.Name",
+    "MinDay": 1,
+    "MaxDay": 9,
+    "Weight": 110,
+    "PoolItemIds": [
+      "W8-007",
+      "W8-008",
+      "W8-012",
+      "W8-017",
+      "W8-025",
+      "W8-029",
+      "W8-036",
+      "W8-037",
+      "W8-038",
+      "W8-039",
+      "W8-040",
+      "W8-048"
+    ],
+    "Slots": [
+      {
+        "SlotId": "bastion-a",
+        "SlotKind": 0,
+        "BuildFilter": "buffer",
+        "SizeFilter": "S+M",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "shield",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 9,
+        "Weight": 100,
+        "Count": 2
+      },
+      {
+        "SlotId": "bastion-b",
+        "SlotKind": 4,
+        "BuildFilter": "buffer",
+        "SizeFilter": "S",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "bridge",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 6,
+        "Weight": 90,
+        "Count": 1
+      },
+      {
+        "SlotId": "bastion-c",
+        "SlotKind": 3,
+        "BuildFilter": "buffer",
+        "SizeFilter": "L",
+        "QualityFilter": "Improved+Fixed",
+        "RequiredTag": "finisher",
+        "MinUnlockDay": 7,
+        "MaxUnlockDay": 9,
+        "Weight": 70,
+        "Count": 1
+      },
+      {
+        "SlotId": "bastion-d",
+        "SlotKind": 5,
+        "BuildFilter": "buffer+heal",
+        "SizeFilter": "M",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "counter",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 60,
+        "Count": 1
+      }
+    ]
+  },
+  {
+    "MerchantId": "merchant-spring",
+    "DisplayName": "恢复装备商人 · 蘅青",
+    "LocalizationKey": "Buqi.Content.Merchant.merchant_spring.Name",
+    "MinDay": 1,
+    "MaxDay": 9,
+    "Weight": 110,
+    "PoolItemIds": [
+      "W8-016",
+      "W8-017",
+      "W8-018",
+      "W8-038",
+      "W8-039",
+      "W8-041",
+      "W8-042",
+      "W8-043",
+      "W8-044",
+      "W8-045",
+      "W8-048"
+    ],
+    "Slots": [
+      {
+        "SlotId": "spring-a",
+        "SlotKind": 0,
+        "BuildFilter": "heal",
+        "SizeFilter": "S+M",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "heal",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 9,
+        "Weight": 100,
+        "Count": 2
+      },
+      {
+        "SlotId": "spring-b",
+        "SlotKind": 4,
+        "BuildFilter": "heal",
+        "SizeFilter": "S",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "bridge",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 6,
+        "Weight": 90,
+        "Count": 1
+      },
+      {
+        "SlotId": "spring-c",
+        "SlotKind": 2,
+        "BuildFilter": "heal",
+        "SizeFilter": "M+L",
+        "QualityFilter": "Improved+Fixed",
+        "RequiredTag": "regen",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 70,
+        "Count": 1
+      },
+      {
+        "SlotId": "spring-d",
+        "SlotKind": 5,
+        "BuildFilter": "heal+buffer",
+        "SizeFilter": "M",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "counter",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 60,
+        "Count": 1
+      }
+    ]
+  },
+  {
+    "MerchantId": "merchant-measure",
+    "DisplayName": "小型装备商人 · 尺素",
+    "LocalizationKey": "Buqi.Content.Merchant.merchant_measure.Name",
+    "MinDay": 1,
+    "MaxDay": 9,
+    "Weight": 85,
+    "PoolItemIds": [
+      "W8-013",
+      "W8-032",
+      "W8-037",
+      "W8-042",
+      "W8-046",
+      "W8-003",
+      "W8-007",
+      "W8-016",
+      "W8-028"
+    ],
+    "Slots": [
+      {
+        "SlotId": "measure-a",
+        "SlotKind": 1,
+        "BuildFilter": "fast+buffer+heal+chain",
+        "SizeFilter": "S",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "bridge",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 9,
+        "Weight": 100,
+        "Count": 2
+      },
+      {
+        "SlotId": "measure-b",
+        "SlotKind": 4,
+        "BuildFilter": "fast+buffer+heal",
+        "SizeFilter": "S",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "bridge",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 9,
+        "Weight": 100,
+        "Count": 1
+      },
+      {
+        "SlotId": "measure-c",
+        "SlotKind": 3,
+        "BuildFilter": "shared",
+        "SizeFilter": "S",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "shared",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 6,
+        "Weight": 70,
+        "Count": 1
+      },
+      {
+        "SlotId": "measure-d",
+        "SlotKind": 2,
+        "BuildFilter": "fast+buffer+heal",
+        "SizeFilter": "S",
+        "QualityFilter": "Improved",
+        "RequiredTag": "starter",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 6,
+        "Weight": 60,
+        "Count": 1
+      }
+    ]
+  },
+  {
+    "MerchantId": "merchant-gap",
+    "DisplayName": "反制装备商人 · 闻缺",
+    "LocalizationKey": "Buqi.Content.Merchant.merchant_gap.Name",
+    "MinDay": 4,
+    "MaxDay": 9,
+    "Weight": 80,
+    "PoolItemIds": [
+      "W8-020",
+      "W8-025",
+      "W8-029",
+      "W8-033",
+      "W8-034",
+      "W8-039",
+      "W8-044",
+      "W8-048"
+    ],
+    "Slots": [
+      {
+        "SlotId": "gap-a",
+        "SlotKind": 5,
+        "BuildFilter": "fast+buffer+heal",
+        "SizeFilter": "M",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "counter",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 110,
+        "Count": 2
+      },
+      {
+        "SlotId": "gap-b",
+        "SlotKind": 5,
+        "BuildFilter": "poison+freeze+overload",
+        "SizeFilter": "S+M",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "counter",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 9,
+        "Weight": 90,
+        "Count": 1
+      },
+      {
+        "SlotId": "gap-c",
+        "SlotKind": 2,
+        "BuildFilter": "shared",
+        "SizeFilter": "M",
+        "QualityFilter": "Improved+Fixed",
+        "RequiredTag": "counter",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 70,
+        "Count": 1
+      },
+      {
+        "SlotId": "gap-d",
+        "SlotKind": 3,
+        "BuildFilter": "fast+buffer+heal",
+        "SizeFilter": "M",
+        "QualityFilter": "Improved",
+        "RequiredTag": "pivot",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 60,
+        "Count": 1
+      }
+    ]
+  },
+  {
+    "MerchantId": "merchant-ledger",
+    "DisplayName": "经济装备商人 · 金复",
+    "LocalizationKey": "Buqi.Content.Merchant.merchant_ledger.Name",
+    "MinDay": 4,
+    "MaxDay": 9,
+    "Weight": 70,
+    "PoolItemIds": [
+      "W8-035",
+      "W8-040",
+      "W8-045",
+      "W8-047",
+      "W8-029",
+      "W8-003",
+      "W8-007",
+      "W8-016"
+    ],
+    "Slots": [
+      {
+        "SlotId": "ledger-a",
+        "SlotKind": 6,
+        "BuildFilter": "fast+buffer+heal+shared",
+        "SizeFilter": "S",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "economy",
+        "MinUnlockDay": 7,
+        "MaxUnlockDay": 9,
+        "Weight": 120,
+        "Count": 2
+      },
+      {
+        "SlotId": "ledger-b",
+        "SlotKind": 1,
+        "BuildFilter": "fast+buffer+heal",
+        "SizeFilter": "S",
+        "QualityFilter": "Normal",
+        "RequiredTag": "starter",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 9,
+        "Weight": 80,
+        "Count": 1
+      },
+      {
+        "SlotId": "ledger-c",
+        "SlotKind": 2,
+        "BuildFilter": "shared",
+        "SizeFilter": "S",
+        "QualityFilter": "Improved+Fixed",
+        "RequiredTag": "economy",
+        "MinUnlockDay": 7,
+        "MaxUnlockDay": 9,
+        "Weight": 70,
+        "Count": 1
+      },
+      {
+        "SlotId": "ledger-d",
+        "SlotKind": 5,
+        "BuildFilter": "overload",
+        "SizeFilter": "S",
+        "QualityFilter": "Normal+Improved",
+        "RequiredTag": "counter",
+        "MinUnlockDay": 1,
+        "MaxUnlockDay": 9,
+        "Weight": 50,
+        "Count": 1
+      }
+    ]
+  },
+  {
+    "MerchantId": "merchant-grades",
+    "DisplayName": "品质装备商人 · 陶然",
+    "LocalizationKey": "Buqi.Content.Merchant.merchant_grades.Name",
+    "MinDay": 4,
+    "MaxDay": 9,
+    "Weight": 65,
+    "PoolItemIds": [
+      "W8-005",
+      "W8-008",
+      "W8-015",
+      "W8-017",
+      "W8-020",
+      "W8-023",
+      "W8-026",
+      "W8-030",
+      "W8-033",
+      "W8-038",
+      "W8-043",
+      "W8-048"
+    ],
+    "Slots": [
+      {
+        "SlotId": "grades-a",
+        "SlotKind": 2,
+        "BuildFilter": "fast+buffer+heal",
+        "SizeFilter": "M",
+        "QualityFilter": "Improved",
+        "RequiredTag": "core",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 100,
+        "Count": 2
+      },
+      {
+        "SlotId": "grades-b",
+        "SlotKind": 2,
+        "BuildFilter": "chain+poison+burn+freeze+overload",
+        "SizeFilter": "M",
+        "QualityFilter": "Improved",
+        "RequiredTag": "core",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 80,
+        "Count": 1
+      },
+      {
+        "SlotId": "grades-c",
+        "SlotKind": 3,
+        "BuildFilter": "fast+buffer+heal",
+        "SizeFilter": "M",
+        "QualityFilter": "Fixed",
+        "RequiredTag": "pivot",
+        "MinUnlockDay": 7,
+        "MaxUnlockDay": 9,
+        "Weight": 60,
+        "Count": 1
+      },
+      {
+        "SlotId": "grades-d",
+        "SlotKind": 1,
+        "BuildFilter": "shared",
+        "SizeFilter": "M",
+        "QualityFilter": "Improved+Fixed",
+        "RequiredTag": "counter",
+        "MinUnlockDay": 4,
+        "MaxUnlockDay": 9,
+        "Weight": 50,
+        "Count": 1
+      }
+    ]
+  },
+  {
+    "MerchantId": "merchant-summit",
+    "DisplayName": "高级装备商人 · 莫停云",
+    "LocalizationKey": "Buqi.Content.Merchant.merchant_summit.Name",
+    "MinDay": 7,
+    "MaxDay": 9,
+    "Weight": 55,
+    "PoolItemIds": [
+      "W8-006",
+      "W8-012",
+      "W8-018",
+      "W8-021",
+      "W8-024",
+      "W8-027",
+      "W8-035",
+      "W8-040",
+      "W8-045",
+      "W8-047"
+    ],
+    "Slots": [
+      {
+        "SlotId": "summit-a",
+        "SlotKind": 3,
+        "BuildFilter": "fast+buffer+heal",
+        "SizeFilter": "L",
+        "QualityFilter": "Improved+Fixed",
+        "RequiredTag": "finisher",
+        "MinUnlockDay": 7,
+        "MaxUnlockDay": 9,
+        "Weight": 120,
+        "Count": 2
+      },
+      {
+        "SlotId": "summit-b",
+        "SlotKind": 1,
+        "BuildFilter": "poison+burn+freeze",
+        "SizeFilter": "L",
+        "QualityFilter": "Improved+Fixed",
+        "RequiredTag": "finisher",
+        "MinUnlockDay": 7,
+        "MaxUnlockDay": 9,
+        "Weight": 90,
+        "Count": 1
+      },
+      {
+        "SlotId": "summit-c",
+        "SlotKind": 6,
+        "BuildFilter": "fast+buffer+heal+shared",
+        "SizeFilter": "S",
+        "QualityFilter": "Improved+Fixed",
+        "RequiredTag": "economy",
+        "MinUnlockDay": 7,
+        "MaxUnlockDay": 9,
+        "Weight": 70,
+        "Count": 1
+      },
+      {
+        "SlotId": "summit-d",
+        "SlotKind": 2,
+        "BuildFilter": "fast+buffer+heal",
+        "SizeFilter": "L",
+        "QualityFilter": "Fixed",
+        "RequiredTag": "finisher",
+        "MinUnlockDay": 7,
+        "MaxUnlockDay": 9,
+        "Weight": 50,
+        "Count": 1
+      }
+    ]
+  }
+]

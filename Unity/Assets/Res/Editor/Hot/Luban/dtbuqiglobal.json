@@ -1,6 +1,6 @@
 [
   {
-    "ContentVersion": "buqi-effects-cv1",
+    "ContentVersion": "buqi-content-cv2",
     "InitialExecution": 100,
     "BufferCap": 60,
     "NoiseThreshold": 10,
@@ -10,6 +10,9 @@
     "HardCapTicks": 600,
     "OvertimeStartTicks": 450,
     "MaxTickEvents": 64,
-    "MaxItemEventsPerTick": 4
+    "MaxItemEventsPerTick": 4,
+    "MaxChainDepth": 8,
+    "MaxRepeatedReasonPerTick": 4,
+    "DailyEconomyProcCap": 1
   }
 ]

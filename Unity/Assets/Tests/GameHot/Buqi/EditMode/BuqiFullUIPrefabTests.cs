@@ -85,12 +85,42 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void RunShell_DeploymentEntryIsLimitedToOperationContent()
+        public void RunShell_RestartButtonIsExplicitAndHiddenUntilAllowed()
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ShellPath);
-            MonoBehaviour form = prefab.GetComponents<MonoBehaviour>().Single(component =>
-                component.GetType().FullName == "Game.Hot.Buqi.UI.BuqiRunShellForm");
-            MethodInfo canConfigure = form.GetType().GetMethod(
+            Transform restartTransform = prefab.transform.Find("CommandBar/Restart");
+
+            Assert.That(restartTransform, Is.Not.Null);
+            Assert.That(restartTransform.gameObject.activeSelf, Is.False);
+            Assert.That(restartTransform.GetComponent<RectTransform>().sizeDelta.x, Is.GreaterThanOrEqualTo(120f));
+            Assert.That(
+                restartTransform.GetComponentInChildren<Text>(true).text,
+                Is.EqualTo("Buqi.RunShell.RestartTag"));
+        }
+
+        [Test]
+        public void RunShell_ClickAndRUseOneGuardedRestartPath()
+        {
+            string shellFormPath = Path.Combine(
+                Application.dataPath,
+                "Scripts/Game/Hot/Code/Buqi/UI/BuqiRunShellForm.cs");
+            string source = File.ReadAllText(shellFormPath);
+
+            Assert.That(source, Does.Contain("m_RestartButton?.onClick.AddListener(Restart)"));
+            Assert.That(source, Does.Contain("Input.GetKeyDown(KeyCode.R)"));
+            Assert.That(source, Does.Contain("BuqiRestartPolicy.TryDispatch"));
+            Assert.That(source, Does.Contain("RestartCore"));
+            Assert.That(source, Does.Contain("HideError();"));
+            Assert.That(source, Does.Contain("Render();"));
+        }
+
+        [Test]
+        public void RunShell_DeploymentEntryIsAvailableOutsideBattleAndSettlementLocks()
+        {
+            System.Type shellType = typeof(BuqiUIDemoController).Assembly.GetType(
+                "Game.Hot.Buqi.UI.BuqiRunShellForm",
+                true);
+            MethodInfo canConfigure = shellType.GetMethod(
                 "CanConfigureDeployment",
                 BindingFlags.NonPublic | BindingFlags.Static);
 
@@ -98,8 +128,13 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(CanConfigure(BuqiUIDemoPhase.OperationChoice), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.Shop), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.Event), Is.True);
-            Assert.That(CanConfigure(BuqiUIDemoPhase.PveSelection), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.PveSelection), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.TribulationRoute), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.TribulationStage), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.BattleReplay), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.BattleSummary), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.RoundSettlement), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.RunTerminal), Is.False);
 
             bool CanConfigure(BuqiUIDemoPhase phase)
             {

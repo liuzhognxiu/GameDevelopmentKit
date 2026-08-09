@@ -3,7 +3,9 @@ namespace Game.Hot.Buqi.Run.Core
     public static class BuqiRunRules
     {
         public const int RunDayCount = 9;
-        public const int OperationsPerDay = 2;
+        public const int OperationsBeforePve = 2;
+        public const int OperationsAfterPve = 2;
+        public const int OperationsPerDay = OperationsBeforePve + OperationsAfterPve;
         public const int TribulationStageCount = 3;
         public const int MaxBattleWins = RunDayCount * 2;
         public const int MaxDaoSeals = MaxBattleWins;

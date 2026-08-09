@@ -35,7 +35,7 @@ namespace Game.Hot.Editor
             BuildStage<StarterSelectionWidget>("StarterSelectionWidget", "起始选择", "选择本局的第一件装备。");
             BuildStage<OpponentIntelWidget>("OpponentIntelWidget", "对手快照", "只展示公开的棋盘和构筑信息。");
             BuildStage<PreparationChoiceWidget>("PreparationChoiceWidget", "战前准备", "选择本回合的准备收益。");
-            BuildStage<ShopWidget>("ShopWidget", "商店", "购买装备、刷新或锁定当前报价。");
+            BuildStage<ShopWidget>("ShopWidget", "商店", "购买装备、刷新或锁定当前报价。", BuildShopContent);
             BuildStage<EventWidget>("EventWidget", "事件", "在收益与风险之间做出选择。");
             BuildStage<ModificationWidget>("ModificationWidget", "改造", "为装备添加收益与代价并存的改造。");
             BuildStage<BoardEditorWidget>("BoardEditorWidget", "棋盘编辑", "点选装备，再选择 8 格棋盘中的目标位。");
@@ -54,7 +54,11 @@ namespace Game.Hot.Editor
             Debug.Log("不器完整界面演示已重建。");
         }
 
-        private static void BuildStage<T>(string name, string titleValue, string bodyValue)
+        private static void BuildStage<T>(
+            string name,
+            string titleValue,
+            string bodyValue,
+            Action<Transform, T> buildContent = null)
             where T : BuqiStageWidgetBase
         {
             GameObject root = CreateRoot(name, new Vector2(1112f, 824f));
@@ -100,7 +104,82 @@ namespace Game.Hot.Editor
             Assign(widget, "m_MetaText", meta);
             AssignArray(widget, "m_ActionButtons", buttons);
             AssignArray(widget, "m_ActionLabels", labels);
+            buildContent?.Invoke(root.transform, widget);
             SavePrefab(root, StageFolder + "/" + name + ".prefab");
+        }
+
+        private static void BuildShopContent(Transform parent, ShopWidget widget)
+        {
+            GameObject offerPrefab = LoadPrefab(WidgetFolder + "/OfferCardWidget.prefab");
+            GameObject itemPrefab = LoadPrefab(WidgetFolder + "/BuqiDraggableItemWidget.prefab");
+
+            GameObject sellZoneObject = CreatePanel(
+                parent,
+                "SellDropZone",
+                new Vector2(0f, 184f),
+                new Vector2(1024f, 64f),
+                new Color32(62, 67, 72, 255));
+            BuqiSellZoneWidget sellZone = sellZoneObject.AddComponent<BuqiSellZoneWidget>();
+            Text sellLabel = CreateText(
+                sellZoneObject.transform,
+                "SellLabel_Text",
+                string.Empty,
+                17,
+                TextAnchor.MiddleLeft,
+                inkColor);
+            Stretch(sellLabel.rectTransform, new Vector2(20f, 8f), new Vector2(-240f, -8f));
+            Text refund = CreateText(
+                sellZoneObject.transform,
+                "RefundPreview_Text",
+                string.Empty,
+                17,
+                TextAnchor.MiddleRight,
+                accentColor);
+            Stretch(refund.rectTransform, new Vector2(240f, 8f), new Vector2(-20f, -8f));
+            refund.gameObject.SetActive(false);
+            Assign(sellZone, "m_Background", sellZoneObject.GetComponent<Image>());
+            Assign(sellZone, "m_LabelText", sellLabel);
+            Assign(sellZone, "m_RefundPreview", refund.gameObject);
+            Assign(sellZone, "m_RefundText", refund);
+
+            var offerCards = new List<OfferCardWidget>(4);
+            for (int index = 0; index < 4; index++)
+            {
+                GameObject cardObject = Instantiate(
+                    offerPrefab,
+                    parent,
+                    "OfferCard" + (index + 1).ToString("00"));
+                SetRect(
+                    cardObject.GetComponent<RectTransform>(),
+                    new Vector2(0.5f, 0.5f),
+                    new Vector2(0.5f, 0.5f),
+                    new Vector2(-390f + index * 260f, 57f),
+                    new Vector2(244f, 188f));
+                offerCards.Add(cardObject.GetComponent<OfferCardWidget>());
+            }
+
+            var boardItems = new List<BuqiDraggableItemWidget>(8);
+            for (int index = 0; index < 8; index++)
+            {
+                int row = index / 4;
+                int column = index % 4;
+                GameObject itemObject = Instantiate(
+                    itemPrefab,
+                    parent,
+                    "BoardItem" + (index + 1).ToString("00"));
+                SetRect(
+                    itemObject.GetComponent<RectTransform>(),
+                    new Vector2(0.5f, 0.5f),
+                    new Vector2(0.5f, 0.5f),
+                    new Vector2(-390f + column * 260f, -142f - row * 96f),
+                    new Vector2(244f, 82f));
+                itemObject.SetActive(false);
+                boardItems.Add(itemObject.GetComponent<BuqiDraggableItemWidget>());
+            }
+
+            AssignArray(widget, "m_OfferCards", offerCards);
+            Assign(widget, "m_SellZone", sellZone);
+            AssignArray(widget, "m_BoardItems", boardItems);
         }
 
         private static void BuildReadOnlyBoard(Transform parent, MonoBehaviour widget)
@@ -198,8 +277,9 @@ namespace Game.Hot.Editor
 
             GameObject commands = CreatePanel(root.transform, "CommandBar", new Vector2(0f, -472f), new Vector2(1856f, 88f), surfaceColor);
             Button back = CreateButton(commands.transform, "Back", "<", new Vector2(-850f, 0f), new Vector2(64f, 52f), raisedColor, out _);
-            Button deploy = CreateButton(commands.transform, "ConfigureBoard", "Buqi.Deploy.Title", new Vector2(560f, 0f), new Vector2(196f, 52f), raisedColor, out _);
-            Button restart = CreateButton(commands.transform, "Restart", "重启", new Vector2(730f, 0f), new Vector2(64f, 52f), raisedColor, out _);
+            Button deploy = CreateButton(commands.transform, "ConfigureBoard", "Buqi.Deploy.Title", new Vector2(550f, 0f), new Vector2(180f, 52f), raisedColor, out _);
+            Button restart = CreateButton(commands.transform, "Restart", "Buqi.RunShell.RestartTag", new Vector2(706f, 0f), new Vector2(124f, 52f), raisedColor, out _);
+            restart.gameObject.SetActive(false);
             Button primary = CreateButton(commands.transform, "Primary", "继续", new Vector2(840f, 0f), new Vector2(132f, 52f), jadeColor, out Text primaryLabel);
 
             GameObject errorPanel = CreatePanel(root.transform, "ErrorPanel", Vector2.zero, new Vector2(760f, 240f), new Color32(88, 39, 39, 250));

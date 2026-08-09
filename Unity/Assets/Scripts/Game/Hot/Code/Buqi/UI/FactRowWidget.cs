@@ -37,7 +37,7 @@ namespace Game.Hot.Buqi.UI
             m_Tick = view.Tick;
             SetText(m_TitleText, string.IsNullOrEmpty(view.Title) ? "终局事实" : view.Title);
             SetText(m_BodyText, view.Body);
-            SetText(m_TickText, GameFramework.Utility.Text.Format("跳到 T{0:000}", view.Tick));
+            SetText(m_TickText, GameFramework.Utility.Text.Format("跳到时刻 {0:000}", view.Tick));
             if (m_Marker != null)
                 m_Marker.color = new Color32(229, 176, 71, 255);
 

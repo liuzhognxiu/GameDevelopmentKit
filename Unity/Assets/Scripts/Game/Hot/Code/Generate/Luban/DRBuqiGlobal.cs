@@ -26,6 +26,9 @@ public sealed partial class DRBuqiGlobal : Luban.BeanBase
         OvertimeStartTicks = _buf.ReadInt();
         MaxTickEvents = _buf.ReadInt();
         MaxItemEventsPerTick = _buf.ReadInt();
+        MaxChainDepth = _buf.ReadInt();
+        MaxRepeatedReasonPerTick = _buf.ReadInt();
+        DailyEconomyProcCap = _buf.ReadInt();
         PostInit();
     }
 
@@ -78,6 +81,18 @@ public sealed partial class DRBuqiGlobal : Luban.BeanBase
     /// max item events per tick
     /// </summary>
     public readonly int MaxItemEventsPerTick;
+    /// <summary>
+    /// maximum trigger chain depth
+    /// </summary>
+    public readonly int MaxChainDepth;
+    /// <summary>
+    /// maximum repeated reason code per tick
+    /// </summary>
+    public readonly int MaxRepeatedReasonPerTick;
+    /// <summary>
+    /// maximum economy item proc per day
+    /// </summary>
+    public readonly int DailyEconomyProcCap;
     public const int __ID__ = -2033704868;
     public override int GetTypeId() => __ID__;
 
@@ -100,6 +115,9 @@ public sealed partial class DRBuqiGlobal : Luban.BeanBase
         + "OvertimeStartTicks:" + OvertimeStartTicks + ","
         + "MaxTickEvents:" + MaxTickEvents + ","
         + "MaxItemEventsPerTick:" + MaxItemEventsPerTick + ","
+        + "MaxChainDepth:" + MaxChainDepth + ","
+        + "MaxRepeatedReasonPerTick:" + MaxRepeatedReasonPerTick + ","
+        + "DailyEconomyProcCap:" + DailyEconomyProcCap + ","
         + "}";
     }
 

@@ -198,7 +198,7 @@ namespace Game.Hot.Editor
             SetRect(storageTitle.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(16f, -32f), new Vector2(-32f, 40f));
             Transform storageItemLayer = CreateLayer(storagePanel.transform, "StorageItemLayer", Vector2.zero, new Vector2(300f, 508f));
             var storageSlots = new List<BuqiDeploySlotWidget>();
-            for (int index = 0; index < 5; index++)
+            for (int index = 0; index < BuqiDragDeployController.StorageSlotCount; index++)
             {
                 GameObject slot = InstantiatePrefab(slotPrefab, storagePanel.transform, "StorageSlot_" + (index + 1).ToString("00"));
                 SetRect(slot.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),

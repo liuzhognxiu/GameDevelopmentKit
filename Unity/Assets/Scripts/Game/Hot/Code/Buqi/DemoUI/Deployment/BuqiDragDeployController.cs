@@ -59,12 +59,12 @@ namespace Game.Hot.Buqi.DemoUI.Deployment
 
         public BuqiDeploymentTargetPreview Preview(BuqiDeploymentSlotRef source, BuqiDeploymentSlotRef target)
         {
-            ResolveMove(source, target, out BuqiDeploymentPlacement placement, out int span, out string itemId,
-                out List<BuqiDeploymentPlacement> remaining, out string reason);
+            TryPlanMove(source, target, out _, out BuqiDeploymentSlotRef destination, out int span,
+                out string itemId, out string reason);
             var boardSlots = new List<int>();
-            if (target.Area == BuqiDeploymentArea.Board && span > 0)
+            if (destination.Area == BuqiDeploymentArea.Board && span > 0)
             {
-                for (int slot = target.Index; slot < target.Index + span; slot++)
+                for (int slot = destination.Index; slot < destination.Index + span && slot < BoardSlotCount; slot++)
                     boardSlots.Add(slot);
             }
 
@@ -80,25 +80,7 @@ namespace Game.Hot.Buqi.DemoUI.Deployment
 
         public BuqiDeploymentCommandResult TryMove(BuqiDeploymentSlotRef source, BuqiDeploymentSlotRef target)
         {
-            ResolveMove(source, target, out BuqiDeploymentPlacement placement, out int span, out string itemId,
-                out List<BuqiDeploymentPlacement> remaining, out string reason);
-            if (!string.IsNullOrEmpty(reason))
-                return Rejected(reason);
-
-            string[] boardSlots = CopySlots(View.BoardSlots);
-            string[] storageSlots = CopySlots(View.StorageSlots);
-            RemoveSource(boardSlots, storageSlots, source, placement);
-            if (target.Area == BuqiDeploymentArea.Board)
-            {
-                for (int slot = target.Index; slot < target.Index + span; slot++)
-                    boardSlots[slot] = itemId;
-            }
-            else
-            {
-                storageSlots[target.Index] = itemId;
-            }
-
-            if (!TryBuildSnapshot(m_Catalog, boardSlots, storageSlots, out BuqiDeploymentSnapshot next, out reason))
+            if (!TryPlanMove(source, target, out BuqiDeploymentSnapshot next, out _, out _, out _, out string reason))
                 return Rejected(reason);
 
             View = next;
@@ -111,88 +93,120 @@ namespace Game.Hot.Buqi.DemoUI.Deployment
             return new BuqiDeploymentCommandResult(true, string.Empty, View);
         }
 
-        private void ResolveMove(
+        private bool TryPlanMove(
             BuqiDeploymentSlotRef source,
             BuqiDeploymentSlotRef target,
-            out BuqiDeploymentPlacement placement,
+            out BuqiDeploymentSnapshot next,
+            out BuqiDeploymentSlotRef sourceDestination,
             out int span,
             out string itemId,
-            out List<BuqiDeploymentPlacement> remaining,
             out string reason)
         {
-            placement = null;
+            next = null;
+            sourceDestination = target;
             span = 0;
             itemId = string.Empty;
-            remaining = new List<BuqiDeploymentPlacement>();
             reason = string.Empty;
 
             if (!IsValidSlot(source))
             {
                 reason = "来源位置无效";
-                return;
+                return false;
             }
             if (!IsValidSlot(target))
             {
                 reason = "目标位置无效";
-                return;
+                return false;
             }
 
-            if (source.Area == BuqiDeploymentArea.Storage)
+            if (!TryResolveItem(source, out ResolvedItem sourceItem, out reason))
+                return false;
+
+            itemId = sourceItem.ItemId;
+            span = sourceItem.Span;
+            if (!TryResolveOptionalItem(target, out ResolvedItem targetItem, out reason))
+                return false;
+
+            if (targetItem != null)
+                sourceDestination = targetItem.Location;
+
+            if (targetItem != null && string.Equals(targetItem.ItemId, sourceItem.ItemId, StringComparison.Ordinal))
             {
-                itemId = View.StorageSlots[source.Index];
-                if (string.IsNullOrEmpty(itemId))
-                {
-                    reason = "来源位置没有装备";
-                    return;
-                }
-                BuqiUIDemoItemDefinition item = m_Catalog.FindItem(itemId);
-                if (item == null)
-                {
-                    reason = "装备已不存在";
-                    return;
-                }
-                span = item.Size;
+                next = View;
+                return true;
             }
-            else
+
+            bool isSwap = targetItem != null;
+            string[] boardSlots = CopySlots(View.BoardSlots);
+            string[] storageSlots = CopySlots(View.StorageSlots);
+            RemoveItem(boardSlots, storageSlots, sourceItem.ItemId);
+            if (targetItem != null)
+                RemoveItem(boardSlots, storageSlots, targetItem.ItemId);
+
+            if (!TryPlaceItem(boardSlots, storageSlots, sourceItem, sourceDestination, isSwap, out reason))
+                return false;
+            if (targetItem != null &&
+                !TryPlaceItem(boardSlots, storageSlots, targetItem, sourceItem.Location, true, out reason))
             {
-                placement = FindPlacement(source.Index);
+                return false;
+            }
+
+            if (!TryBuildSnapshot(m_Catalog, boardSlots, storageSlots, out next, out reason))
+            {
+                if (isSwap && reason.Contains("超出棋盘"))
+                    reason = "交换后装备超出棋盘范围";
+                else if (isSwap && reason.Contains("重叠"))
+                    reason = "交换后位置与其他装备重叠";
+                return false;
+            }
+
+            return true;
+        }
+
+        private bool TryResolveItem(
+            BuqiDeploymentSlotRef slot,
+            out ResolvedItem item,
+            out string reason)
+        {
+            if (!TryResolveOptionalItem(slot, out item, out reason))
+                return false;
+            if (item != null)
+                return true;
+
+            reason = "来源位置没有装备";
+            return false;
+        }
+
+        private bool TryResolveOptionalItem(
+            BuqiDeploymentSlotRef slot,
+            out ResolvedItem item,
+            out string reason)
+        {
+            item = null;
+            reason = string.Empty;
+            if (slot.Area == BuqiDeploymentArea.Board)
+            {
+                BuqiDeploymentPlacement placement = FindPlacement(slot.Index);
                 if (placement == null)
-                {
-                    reason = "来源位置没有装备";
-                    return;
-                }
-                itemId = placement.ItemId;
-                span = placement.Span;
+                    return true;
+                item = new ResolvedItem(
+                    placement.ItemId,
+                    placement.Span,
+                    BuqiDeploymentSlotRef.Board(placement.AnchorSlot));
+                return true;
             }
 
-            foreach (BuqiDeploymentPlacement candidate in View.Placements)
+            string itemId = View.StorageSlots[slot.Index];
+            if (string.IsNullOrEmpty(itemId))
+                return true;
+            BuqiUIDemoItemDefinition definition = m_Catalog.FindItem(itemId);
+            if (definition == null)
             {
-                if (placement != null && candidate.ItemId == placement.ItemId && candidate.AnchorSlot == placement.AnchorSlot)
-                    continue;
-                remaining.Add(candidate);
+                reason = "装备已不存在";
+                return false;
             }
-
-            if (target.Area == BuqiDeploymentArea.Board)
-            {
-                if (target.Index + span > BoardSlotCount)
-                {
-                    reason = "装备超出棋盘范围";
-                    return;
-                }
-                for (int slot = target.Index; slot < target.Index + span; slot++)
-                {
-                    if (IsOccupiedByRemaining(slot, remaining))
-                    {
-                        reason = "目标位置与其他装备重叠";
-                        return;
-                    }
-                }
-            }
-            else if (!string.IsNullOrEmpty(View.StorageSlots[target.Index]) && source != target)
-            {
-                reason = "目标仓库位置已占用";
-                return;
-            }
+            item = new ResolvedItem(itemId, definition.Size, slot);
+            return true;
         }
 
         private BuqiDeploymentPlacement FindPlacement(int boardSlot)
@@ -205,30 +219,74 @@ namespace Game.Hot.Buqi.DemoUI.Deployment
             return null;
         }
 
-        private static bool IsOccupiedByRemaining(int slot, List<BuqiDeploymentPlacement> placements)
-        {
-            foreach (BuqiDeploymentPlacement placement in placements)
-            {
-                if (slot >= placement.AnchorSlot && slot < placement.AnchorSlot + placement.Span)
-                    return true;
-            }
-            return false;
-        }
-
-        private static void RemoveSource(
+        private static bool TryPlaceItem(
             string[] boardSlots,
             string[] storageSlots,
-            BuqiDeploymentSlotRef source,
-            BuqiDeploymentPlacement placement)
+            ResolvedItem item,
+            BuqiDeploymentSlotRef destination,
+            bool isSwap,
+            out string reason)
         {
-            if (source.Area == BuqiDeploymentArea.Storage)
+            reason = string.Empty;
+            if (destination.Area == BuqiDeploymentArea.Storage)
             {
-                storageSlots[source.Index] = string.Empty;
-                return;
+                if (!string.IsNullOrEmpty(storageSlots[destination.Index]))
+                {
+                    reason = isSwap ? "交换后仓库位置已占用" : "目标仓库位置已占用";
+                    return false;
+                }
+
+                storageSlots[destination.Index] = item.ItemId;
+                return true;
             }
 
-            for (int slot = placement.AnchorSlot; slot < placement.AnchorSlot + placement.Span; slot++)
-                boardSlots[slot] = string.Empty;
+            if (destination.Index + item.Span > BoardSlotCount)
+            {
+                reason = isSwap ? "交换后装备超出棋盘范围" : "装备超出棋盘范围";
+                return false;
+            }
+
+            for (int slot = destination.Index; slot < destination.Index + item.Span; slot++)
+            {
+                if (!string.IsNullOrEmpty(boardSlots[slot]))
+                {
+                    reason = isSwap ? "交换后位置与其他装备重叠" : "目标位置与其他装备重叠";
+                    return false;
+                }
+            }
+            for (int slot = destination.Index; slot < destination.Index + item.Span; slot++)
+                boardSlots[slot] = item.ItemId;
+            return true;
+        }
+
+        private static void RemoveItem(string[] boardSlots, string[] storageSlots, string itemId)
+        {
+            for (int slot = 0; slot < boardSlots.Length; slot++)
+            {
+                if (string.Equals(boardSlots[slot], itemId, StringComparison.Ordinal))
+                    boardSlots[slot] = string.Empty;
+            }
+            for (int slot = 0; slot < storageSlots.Length; slot++)
+            {
+                if (string.Equals(storageSlots[slot], itemId, StringComparison.Ordinal))
+                    storageSlots[slot] = string.Empty;
+            }
+        }
+
+        private sealed class ResolvedItem
+        {
+            public ResolvedItem(string itemId, int span, BuqiDeploymentSlotRef location)
+            {
+                ItemId = itemId;
+                Span = span;
+                Location = location;
+            }
+
+            public string ItemId { get; }
+
+            public int Span { get; }
+
+            public BuqiDeploymentSlotRef Location { get; }
         }
 
         private static bool TryBuildSnapshot(

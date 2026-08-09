@@ -4,7 +4,8 @@ namespace Game.Hot.Buqi.Run.Core
 {
     public sealed class BuqiRunState
     {
-        public const string CurrentRuleVersion = "buqi-nine-day-run-rule-v2";
+        public const string PreviousRuleVersion = "buqi-nine-day-run-rule-v2";
+        public const string CurrentRuleVersion = "buqi-nine-day-run-rule-v3";
 
         public string ContentVersion = string.Empty;
         public string RuleVersion = CurrentRuleVersion;
@@ -38,7 +39,7 @@ namespace Game.Hot.Buqi.Run.Core
                 RunSeed = runSeed,
                 Day = 1,
                 EncounterIndex = 0,
-                Period = BuqiRunPeriod.MorningOperation,
+                Period = BuqiRunPeriod.Hour1Operation,
                 Phase = BuqiRunPhase.Encounter,
                 Outcome = BuqiRunOutcome.None,
                 Coins = BuqiRunRules.StartingCoins,

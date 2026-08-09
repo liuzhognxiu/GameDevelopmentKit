@@ -5,6 +5,8 @@ using System.Reflection;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.Run.Economy;
 using Game.Hot.Buqi.UI;
+using Game.Hot.Buqi.UI.Stages;
+using Game.Hot.Buqi.UI.Widgets;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -53,6 +55,158 @@ namespace Game.Hot.Buqi.Tests
                 Assert.That(buyCount, Is.EqualTo(1));
                 Assert.That(detailsCount, Is.EqualTo(0), "Details must not open from a click.");
                 Assert.That(detailsButton.enabled, Is.False, "The obsolete button must not intercept long press input.");
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
+        [Test]
+        public void ShopWidget_RendersInjectedConstrainedSupplyMetadata()
+        {
+            var owner = new GameObject("Shop", typeof(RectTransform));
+            var widget = owner.AddComponent<ShopWidget>();
+            Text title = CreateText(owner.transform, "Title");
+            Text body = CreateText(owner.transform, "Body");
+            Text meta = CreateText(owner.transform, "Meta");
+            Button action = CreateButton(owner.transform, "Action");
+            Text actionLabel = CreateText(action.transform, "Label");
+            var source = new StubSupplyViewSource
+            {
+                Supply = new BuqiBazaarSupplyView
+                {
+                    MerchantName = "青篆客",
+                    MerchantSpecialty = "阵器",
+                    RefreshPrice = 7,
+                    OfferRoles = new Dictionary<string, string>
+                    {
+                        ["blade"] = "破阵",
+                    },
+                },
+            };
+
+            try
+            {
+                SetPrivate(widget, "m_TitleText", title);
+                SetPrivate(widget, "m_BodyText", body);
+                SetPrivate(widget, "m_MetaText", meta);
+                SetPrivate(widget, "m_ActionButtons", new[] { action });
+                SetPrivate(widget, "m_ActionLabels", new[] { actionLabel });
+                widget.BindSupplySource(source);
+
+                widget.Render(new BuqiUIDemoView
+                {
+                    Phase = BuqiUIDemoPhase.Shop,
+                    Coins = 19,
+                    ShopOffers = new[]
+                    {
+                        new BuqiDemoOfferView
+                        {
+                            Id = "blade",
+                            Item = new BuqiDemoItemView { Id = "blade", Name = "短刃" },
+                            Price = 4,
+                        },
+                    },
+                }, _ => { });
+
+                Assert.That(source.ReadCount, Is.EqualTo(1));
+                Assert.That(title.text, Does.Contain("青篆客"));
+                Assert.That(body.text, Does.Contain("阵器"));
+                Assert.That(meta.text, Does.Contain("刷新 7"));
+                Assert.That(meta.text, Does.Contain("余额 19"));
+                Assert.That(actionLabel.text, Does.Contain("破阵"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
+        [Test]
+        public void BazaarWidgets_ExposeCommandDropBindingsForPersistentSale()
+        {
+            MethodInfo bindCommand = typeof(BuqiSellZoneWidget).GetMethod(
+                "BindCommand",
+                new[] { typeof(string), typeof(int), typeof(Action<string>) });
+            FieldInfo sellZone = typeof(ShopWidget).GetField(
+                "m_SellZone",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo boardItems = typeof(ShopWidget).GetField(
+                "m_BoardItems",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
+            Assert.That(bindCommand, Is.Not.Null);
+            Assert.That(sellZone?.FieldType, Is.EqualTo(typeof(BuqiSellZoneWidget)));
+            Assert.That(boardItems?.FieldType, Is.EqualTo(typeof(BuqiDraggableItemWidget[])));
+        }
+
+        [Test]
+        public void CommandSellZoneDropsOnlyOnceAndCancelDoesNotSubmit()
+        {
+            var owner = new GameObject("CommandSellZone", typeof(RectTransform));
+            var sellZone = owner.AddComponent<BuqiSellZoneWidget>();
+            var droppedIds = new List<string>();
+            try
+            {
+                sellZone.BindCommand("board-blade", 3, droppedIds.Add);
+                sellZone.OnPointerEnter(null);
+                sellZone.OnDrop(null);
+                sellZone.OnDrop(null);
+
+                sellZone.BindCommand("board-shield", 2, droppedIds.Add);
+                sellZone.Cancel();
+                sellZone.OnPointerEnter(null);
+                sellZone.OnDrop(null);
+
+                Assert.That(droppedIds, Is.EqualTo(new[] { "board-blade" }));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
+        [Test]
+        public void ShopBoardDragDropsSellItemCommandWithInstanceId()
+        {
+            var owner = new GameObject("ShopSell", typeof(RectTransform));
+            var widget = owner.AddComponent<ShopWidget>();
+            var sellZoneOwner = new GameObject("SellZone", typeof(RectTransform));
+            sellZoneOwner.transform.SetParent(owner.transform, false);
+            var sellZone = sellZoneOwner.AddComponent<BuqiSellZoneWidget>();
+            var itemOwner = new GameObject("BoardItem", typeof(RectTransform));
+            itemOwner.transform.SetParent(owner.transform, false);
+            var itemWidget = itemOwner.AddComponent<BuqiDraggableItemWidget>();
+            BuqiUIDemoCommand submitted = null;
+            try
+            {
+                SetPrivate(widget, "m_SellZone", sellZone);
+                SetPrivate(widget, "m_BoardItems", new[] { itemWidget });
+                widget.Render(new BuqiUIDemoView
+                {
+                    Phase = BuqiUIDemoPhase.Shop,
+                    ShopOffers = Array.Empty<BuqiDemoOfferView>(),
+                    BoardSlots = new[]
+                    {
+                        new BuqiDemoItemView
+                        {
+                            Id = "board-blade",
+                            Name = "Blade",
+                            Size = 1,
+                            Price = 6,
+                            Slot = 0,
+                        },
+                    },
+                }, command => submitted = command);
+
+                itemWidget.OnBeginDrag(null);
+                sellZone.OnPointerEnter(null);
+                sellZone.OnDrop(null);
+
+                Assert.That(submitted, Is.Not.Null);
+                Assert.That(submitted.Type, Is.EqualTo(BuqiUIDemoCommandType.SellItem));
+                Assert.That(submitted.PrimaryId, Is.EqualTo("board-blade"));
             }
             finally
             {
@@ -293,13 +447,37 @@ namespace Game.Hot.Buqi.Tests
             return owner.GetComponent<Button>();
         }
 
+        private static Text CreateText(Transform parent, string name)
+        {
+            var owner = new GameObject(name, typeof(RectTransform), typeof(Text));
+            owner.transform.SetParent(parent, false);
+            return owner.GetComponent<Text>();
+        }
+
         private static void SetPrivate(object target, string fieldName, object value)
         {
-            FieldInfo field = target.GetType().GetField(
-                fieldName,
-                BindingFlags.Instance | BindingFlags.NonPublic);
+            Type type = target.GetType();
+            FieldInfo field = null;
+            while (type != null && field == null)
+            {
+                field = type.GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+                type = type.BaseType;
+            }
             Assert.That(field, Is.Not.Null, fieldName);
             field.SetValue(target, value);
+        }
+
+        private sealed class StubSupplyViewSource : IBuqiBazaarSupplyViewSource
+        {
+            public BuqiBazaarSupplyView Supply;
+            public int ReadCount;
+
+            public bool TryGetCurrentSupply(out BuqiBazaarSupplyView supply)
+            {
+                ReadCount++;
+                supply = Supply;
+                return supply != null;
+            }
         }
 
         private sealed class TestCatalog : IBuqiRunItemCatalog

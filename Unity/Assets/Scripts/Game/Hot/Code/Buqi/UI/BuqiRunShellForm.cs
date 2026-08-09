@@ -4,6 +4,7 @@ using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.DemoUI.Deployment;
+using Game.Hot.Buqi.DemoUI.Interaction;
 using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
@@ -16,6 +17,7 @@ namespace Game.Hot.Buqi.UI
     public sealed class BuqiRunShellOpenData
     {
         public BuqiConfigCatalog Catalog;
+        public IBuqiBazaarSupplyViewSource BazaarSupplySource;
     }
 
     [DisallowMultipleComponent]
@@ -77,8 +79,10 @@ namespace Game.Hot.Buqi.UI
         private BuqiConfigCatalog m_Catalog;
         private BuqiUIDemoCatalog m_DemoCatalog;
         private BuqiUIDemoController m_Controller;
+        private IBuqiBazaarSupplyRuntime m_BazaarSupplyRuntime;
         private BuqiStageWidgetRegistry m_Registry;
         private bool m_OpeningBattle;
+        private int? m_ItemDetailSerialId;
 
 #if UNITY_2017_3_OR_NEWER
         protected override void OnInit(object userData)
@@ -102,7 +106,13 @@ namespace Game.Hot.Buqi.UI
         {
             base.OnOpen(userData);
             m_OpeningBattle = false;
+            m_ItemDetailSerialId = null;
             m_DemoCatalog = null;
+            IBuqiBazaarSupplyViewSource supplySource =
+                (userData as BuqiRunShellOpenData)?.BazaarSupplySource;
+            m_BazaarSupplyRuntime = supplySource as IBuqiBazaarSupplyRuntime;
+            BindBazaarSupplySource(supplySource);
+            BindShopItemDetails(ShowItemDetails, HideItemDetails);
             if (!TryResolveCatalog(userData, out m_Catalog, out string error))
             {
                 m_Controller = null;
@@ -117,14 +127,34 @@ namespace Game.Hot.Buqi.UI
                 return;
             }
 
-            if (!BuqiUIDemoController.TryCreate(demoCatalog, null, out BuqiUIDemoController controller, out error))
+            m_DemoCatalog = demoCatalog;
+
+            if (supplySource == null)
+            {
+                if (!BuqiBazaarSupplyViewSource.TryCreate(
+                        m_Catalog,
+                        out BuqiBazaarSupplyViewSource productionSupply,
+                        out error))
+                {
+                    m_Controller = null;
+                    ShowError(error);
+                    return;
+                }
+                m_BazaarSupplyRuntime = productionSupply;
+                BindBazaarSupplySource(productionSupply);
+            }
+
+            if (!BuqiUIDemoController.TryCreate(
+                    demoCatalog,
+                    CreateControllerOptions(),
+                    out BuqiUIDemoController controller,
+                    out error))
             {
                 m_Controller = null;
                 ShowError(error);
                 return;
             }
 
-            m_DemoCatalog = demoCatalog;
             m_Controller = controller;
             HideError();
             Render();
@@ -136,6 +166,7 @@ namespace Game.Hot.Buqi.UI
         protected internal override void OnClose(bool isShutdown, object userData)
 #endif
         {
+            HideItemDetails();
             m_Registry?.Clear();
             foreach (ResourceChipWidget chip in m_ResourceChips)
                 chip?.Clear();
@@ -144,6 +175,9 @@ namespace Game.Hot.Buqi.UI
             m_Controller = null;
             m_DemoCatalog = null;
             m_Catalog = null;
+            m_BazaarSupplyRuntime = null;
+            BindBazaarSupplySource(null);
+            BindShopItemDetails(null, null);
             m_OpeningBattle = false;
             SetText(m_StatusText, string.Empty);
             base.OnClose(isShutdown, userData);
@@ -156,6 +190,12 @@ namespace Game.Hot.Buqi.UI
             m_DeployButton?.onClick.RemoveListener(OpenDeployment);
             m_RestartButton?.onClick.RemoveListener(Restart);
             base.OnDestroy();
+        }
+
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+                Restart();
         }
 
         private void Submit(BuqiUIDemoCommand command)
@@ -182,6 +222,9 @@ namespace Game.Hot.Buqi.UI
             if (!result.Accepted)
                 return;
 
+            if (command.Type == BuqiUIDemoCommandType.Restart)
+                HideError();
+
             if (command.Type == BuqiUIDemoCommandType.OpenDragDeploy)
             {
                 OpenDragDeploy();
@@ -205,20 +248,20 @@ namespace Game.Hot.Buqi.UI
 
             if (selectedOffer == null)
             {
-                ShowError("Selected shop offer is unavailable.");
+                ShowError("所选商品当前不可购买。"  );
                 return;
             }
 
             string itemName = selectedOffer.Item?.Name ?? selectedOffer.Id;
             GameEntry.UI.OpenUIForm(UIFormId.BuqiConfirmForm, new BuqiConfirmOpenData
             {
-                Title = "Confirm Purchase",
+                Title = "确认购买",
                 Message = GameFramework.Utility.Text.Format(
-                    "Buy {0} for {1} coins and leave this shop?",
+                    "花费 {1} 金币购买“{0}”？",
                     itemName,
                     selectedOffer.Price),
-                ConfirmLabel = "Buy and Leave",
-                CancelLabel = "Keep Shopping",
+                ConfirmLabel = "购买",
+                CancelLabel = "继续购物",
                 Confirm = () => ExecuteCommand(command),
             });
         }
@@ -272,7 +315,52 @@ namespace Game.Hot.Buqi.UI
 
         private void Restart()
         {
-            Submit(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.Restart });
+            BuqiUIDemoPhase? phase = m_Controller == null ? (BuqiUIDemoPhase?)null : m_Controller.View.Phase;
+            BuqiRestartPolicy.TryDispatch(
+                m_ErrorPanel != null && m_ErrorPanel.activeSelf,
+                phase,
+                RestartCore);
+        }
+
+        private void RestartCore()
+        {
+            if (m_Controller != null)
+            {
+                Submit(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.Restart });
+                return;
+            }
+
+            if (m_DemoCatalog == null)
+            {
+                ShowError("重新开始失败，请检查配置表。");
+                return;
+            }
+
+            if (!BuqiUIDemoController.TryCreateNewRun(
+                    m_DemoCatalog,
+                    CreateControllerOptions(),
+                    out BuqiUIDemoController controller,
+                    out string error))
+            {
+                ShowError(string.IsNullOrEmpty(error)
+                    ? "重新开始失败，请检查存档文件和磁盘空间。"
+                    : error);
+                return;
+            }
+
+            m_Controller = controller;
+            HideError();
+            Render();
+        }
+
+        private BuqiUIDemoControllerOptions CreateControllerOptions()
+        {
+            return m_BazaarSupplyRuntime == null
+                ? null
+                : new BuqiUIDemoControllerOptions
+                {
+                    BazaarSupplyRuntime = m_BazaarSupplyRuntime,
+                };
         }
 
         private void Render()
@@ -287,10 +375,12 @@ namespace Game.Hot.Buqi.UI
                 return;
             }
 
-            SetText(m_TitleText, "Buqi Demo Run");
+            SetText(m_TitleText, "不器 · 九日试炼");
             SetText(m_ContextTitleText, view.ContextTitle);
             SetText(m_ContextBodyText, view.ContextBody);
             SetText(m_PrimaryLabel, view.PrimaryCommandLabel);
+            SetText(m_RestartButton?.GetComponentInChildren<Text>(), "↻");
+            m_RestartButton?.gameObject.SetActive(BuqiRestartPolicy.CanRestart(false, view.Phase));
             if (m_PrimaryButton != null)
                 m_PrimaryButton.gameObject.SetActive(!string.IsNullOrEmpty(view.PrimaryCommandLabel));
             if (m_DeployButton != null)
@@ -300,24 +390,61 @@ namespace Game.Hot.Buqi.UI
             RenderPhaseRail(view);
             if (!m_Registry.Show(view, Submit))
             {
-                ShowError(GameFramework.Utility.Text.Format("Missing stage widget for {0}.", view.Phase));
+                ShowError("当前阶段界面不可用。"  );
             }
         }
 
         private static bool CanConfigureDeployment(BuqiUIDemoView view)
         {
-            return view != null &&
-                (view.Phase == BuqiUIDemoPhase.OperationChoice
-                    || view.Phase == BuqiUIDemoPhase.Shop
-                    || view.Phase == BuqiUIDemoPhase.Event);
+            return view != null && BuqiUIDemoController.CanConfigureDeployment(view.Phase);
+        }
+
+        private void BindBazaarSupplySource(IBuqiBazaarSupplyViewSource supplySource)
+        {
+            foreach (MonoBehaviour component in m_StageComponents)
+            {
+                if (component is ShopWidget shop)
+                    shop.BindSupplySource(supplySource);
+            }
+        }
+
+        private void BindShopItemDetails(Action<BuqiDemoItemView> show, Action hide)
+        {
+            foreach (MonoBehaviour component in m_StageComponents)
+            {
+                if (component is ShopWidget shop)
+                    shop.BindItemDetails(show, hide);
+            }
+        }
+
+        private void ShowItemDetails(BuqiDemoItemView item)
+        {
+            if (item == null)
+                return;
+
+            HideItemDetails();
+            m_ItemDetailSerialId = GameEntry.UI.OpenUIForm(UIFormId.BuqiItemDetailForm, new BuqiItemDetailOpenData
+            {
+                Item = item,
+                FullEffectText = item.Description,
+            });
+        }
+
+        private void HideItemDetails()
+        {
+            if (!m_ItemDetailSerialId.HasValue)
+                return;
+
+            GameEntry.UI.TryCloseUIForm(m_ItemDetailSerialId.Value);
+            m_ItemDetailSerialId = null;
         }
 
         private void RenderResources(BuqiUIDemoView view)
         {
-            RenderChip(0, "Coins", view.Coins.ToString(), "+", ResourceChipState.Normal);
-            RenderChip(1, "Day", GameFramework.Utility.Text.Format("{0}/9", view.Round), "D", ResourceChipState.Normal);
-            RenderChip(2, "Lives", GameFramework.Utility.Text.Format("{0}/3", view.Lives), "L", view.Lives <= 1 ? ResourceChipState.Warning : ResourceChipState.Normal);
-            RenderChip(3, "Dao/Omen", GameFramework.Utility.Text.Format("{0}/{1}", view.DaoSeals, view.TribulationOmen), "T", ResourceChipState.Normal);
+            RenderChip(0, "金币", view.Coins.ToString(), "+", ResourceChipState.Normal);
+            RenderChip(1, "回合", GameFramework.Utility.Text.Format("{0}/9", view.Round), "日", ResourceChipState.Normal);
+            RenderChip(2, "生命", GameFramework.Utility.Text.Format("{0}/3", view.Lives), "命", view.Lives <= 1 ? ResourceChipState.Warning : ResourceChipState.Normal);
+            RenderChip(3, "结算点/强度", GameFramework.Utility.Text.Format("{0}/{1}", view.DaoSeals, view.TribulationOmen), "点", ResourceChipState.Normal);
         }
 
         private void RenderChip(int index, string label, string value, string icon, ResourceChipState state)
@@ -360,7 +487,7 @@ namespace Game.Hot.Buqi.UI
             BattleReplayData replay = m_Controller.CurrentReplay;
             if (replay == null)
             {
-                ShowError("Battle replay is unavailable.");
+                ShowError("战斗回放不可用。"  );
                 return;
             }
 
@@ -424,7 +551,7 @@ namespace Game.Hot.Buqi.UI
             if (HotEntry.Tables == null)
             {
                 catalog = null;
-                error = "Buqi tables are not initialized.";
+                error = "不器配置表尚未初始化。";
                 return false;
             }
 
@@ -441,12 +568,15 @@ namespace Game.Hot.Buqi.UI
         private void ShowError(string error)
         {
             m_ErrorPanel?.SetActive(true);
-            SetText(m_ErrorText, error);
+            SetText(m_RestartButton?.GetComponentInChildren<Text>(), "↻");
+            m_RestartButton?.gameObject.SetActive(true);
+            SetText(m_ErrorText, BuqiPlayerText.Error(error));
         }
 
         private void HideError()
         {
             m_ErrorPanel?.SetActive(false);
+            m_RestartButton?.gameObject.SetActive(false);
             SetText(m_ErrorText, string.Empty);
         }
 

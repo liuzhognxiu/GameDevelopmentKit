@@ -1,7 +1,7 @@
 [
   {
     "EchoId": "echo-fast-lesson",
-    "DisplayName": "攻击试影",
+    "DisplayName": "攻击训练对手",
     "Tier": "lesson",
     "Build": 1,
     "Snapshot": {
@@ -14,22 +14,29 @@
         {
           "InstanceId": "efl-deadline",
           "DefinitionId": "W8-006",
-          "Quality": 1,
+          "Quality": 3,
           "AnchorSlot": 0,
-          "RefinementId": "None"
+          "RefinementId": "A-06"
         },
         {
-          "InstanceId": "efl-board",
+          "InstanceId": "efl-board-a",
           "DefinitionId": "W8-005",
-          "Quality": 1,
+          "Quality": 3,
           "AnchorSlot": 3,
-          "RefinementId": "None"
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "efl-board-b",
+          "DefinitionId": "W8-005",
+          "Quality": 2,
+          "AnchorSlot": 5,
+          "RefinementId": "A-02"
         },
         {
           "InstanceId": "efl-urgent",
           "DefinitionId": "W8-003",
-          "Quality": 1,
-          "AnchorSlot": 5,
+          "Quality": 3,
+          "AnchorSlot": 7,
           "RefinementId": "A-01"
         }
       ]
@@ -37,7 +44,7 @@
   },
   {
     "EchoId": "echo-fast-early",
-    "DisplayName": "冲锋试影",
+    "DisplayName": "冲锋训练对手",
     "Tier": "early",
     "Build": 1,
     "Snapshot": {
@@ -48,32 +55,39 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "efe-board",
+          "InstanceId": "efe-deadline",
+          "DefinitionId": "W8-006",
+          "Quality": 3,
+          "AnchorSlot": 0,
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "efe-board-a",
+          "DefinitionId": "W8-005",
+          "Quality": 3,
+          "AnchorSlot": 3,
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "efe-board-b",
           "DefinitionId": "W8-005",
           "Quality": 2,
-          "AnchorSlot": 0,
-          "RefinementId": "None"
+          "AnchorSlot": 5,
+          "RefinementId": "A-02"
         },
         {
           "InstanceId": "efe-urgent",
           "DefinitionId": "W8-003",
-          "Quality": 1,
-          "AnchorSlot": 2,
-          "RefinementId": "None"
-        },
-        {
-          "InstanceId": "efe-shield",
-          "DefinitionId": "W8-007",
-          "Quality": 1,
-          "AnchorSlot": 3,
-          "RefinementId": "None"
+          "Quality": 3,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }
   },
   {
     "EchoId": "echo-buffer-lesson",
-    "DisplayName": "护盾试影",
+    "DisplayName": "护盾训练对手",
     "Tier": "lesson",
     "Build": 2,
     "Snapshot": {
@@ -84,32 +98,39 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ebl-shield",
-          "DefinitionId": "W8-007",
-          "Quality": 1,
+          "InstanceId": "ebl-core-a",
+          "DefinitionId": "W8-012",
+          "Quality": 3,
           "AnchorSlot": 0,
-          "RefinementId": "None"
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "ebl-core-b",
+          "DefinitionId": "W8-012",
+          "Quality": 3,
+          "AnchorSlot": 3,
+          "RefinementId": "A-06"
         },
         {
           "InstanceId": "ebl-list",
           "DefinitionId": "W8-008",
-          "Quality": 1,
-          "AnchorSlot": 1,
+          "Quality": 3,
+          "AnchorSlot": 6,
           "RefinementId": "A-04"
         },
         {
-          "InstanceId": "ebl-core",
-          "DefinitionId": "W8-012",
-          "Quality": 1,
-          "AnchorSlot": 2,
-          "RefinementId": "None"
+          "InstanceId": "ebl-shield",
+          "DefinitionId": "W8-007",
+          "Quality": 3,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }
   },
   {
     "EchoId": "echo-buffer-early",
-    "DisplayName": "堡垒试影",
+    "DisplayName": "堡垒训练对手",
     "Tier": "early",
     "Build": 2,
     "Snapshot": {
@@ -120,25 +141,39 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ebe-core",
+          "InstanceId": "ebe-core-a",
           "DefinitionId": "W8-012",
-          "Quality": 1,
+          "Quality": 3,
           "AnchorSlot": 0,
-          "RefinementId": "None"
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "ebe-core-b",
+          "DefinitionId": "W8-012",
+          "Quality": 3,
+          "AnchorSlot": 3,
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "ebe-list",
+          "DefinitionId": "W8-008",
+          "Quality": 3,
+          "AnchorSlot": 6,
+          "RefinementId": "A-04"
         },
         {
           "InstanceId": "ebe-shield",
           "DefinitionId": "W8-007",
-          "Quality": 2,
-          "AnchorSlot": 3,
-          "RefinementId": "None"
+          "Quality": 3,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }
   },
   {
     "EchoId": "echo-chain-lesson",
-    "DisplayName": "连锁试影",
+    "DisplayName": "连锁训练对手",
     "Tier": "lesson",
     "Build": 3,
     "Snapshot": {
@@ -174,7 +209,7 @@
   },
   {
     "EchoId": "echo-chain-early",
-    "DisplayName": "充能试影",
+    "DisplayName": "充能训练对手",
     "Tier": "early",
     "Build": 3,
     "Snapshot": {
@@ -210,7 +245,7 @@
   },
   {
     "EchoId": "echo-heal-lesson",
-    "DisplayName": "治疗试影",
+    "DisplayName": "治疗训练对手",
     "Tier": "lesson",
     "Build": 4,
     "Snapshot": {
@@ -221,32 +256,39 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ehl-pack",
-          "DefinitionId": "W8-016",
+          "InstanceId": "ehl-flag",
+          "DefinitionId": "W8-018",
           "Quality": 1,
           "AnchorSlot": 0,
           "RefinementId": "None"
         },
         {
-          "InstanceId": "ehl-spring",
+          "InstanceId": "ehl-spring-a",
           "DefinitionId": "W8-017",
-          "Quality": 1,
-          "AnchorSlot": 1,
-          "RefinementId": "None"
-        },
-        {
-          "InstanceId": "ehl-flag",
-          "DefinitionId": "W8-018",
           "Quality": 1,
           "AnchorSlot": 3,
           "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehl-spring-b",
+          "DefinitionId": "W8-017",
+          "Quality": 1,
+          "AnchorSlot": 5,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehl-pack",
+          "DefinitionId": "W8-016",
+          "Quality": 1,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }
   },
   {
     "EchoId": "echo-heal-early",
-    "DisplayName": "回春试影",
+    "DisplayName": "恢复训练对手",
     "Tier": "early",
     "Build": 4,
     "Snapshot": {
@@ -257,32 +299,39 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ehe-pack",
-          "DefinitionId": "W8-016",
-          "Quality": 2,
+          "InstanceId": "ehe-flag",
+          "DefinitionId": "W8-018",
+          "Quality": 1,
           "AnchorSlot": 0,
           "RefinementId": "None"
         },
         {
-          "InstanceId": "ehe-spring",
+          "InstanceId": "ehe-spring-a",
           "DefinitionId": "W8-017",
-          "Quality": 1,
-          "AnchorSlot": 1,
-          "RefinementId": "None"
-        },
-        {
-          "InstanceId": "ehe-shield",
-          "DefinitionId": "W8-007",
           "Quality": 1,
           "AnchorSlot": 3,
           "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehe-spring-b",
+          "DefinitionId": "W8-017",
+          "Quality": 1,
+          "AnchorSlot": 5,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehe-pack",
+          "DefinitionId": "W8-016",
+          "Quality": 1,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }
   },
   {
     "EchoId": "echo-poison-lesson",
-    "DisplayName": "中毒试影",
+    "DisplayName": "中毒训练对手",
     "Tier": "lesson",
     "Build": 5,
     "Snapshot": {
@@ -318,7 +367,7 @@
   },
   {
     "EchoId": "echo-poison-early",
-    "DisplayName": "腐蚀试影",
+    "DisplayName": "腐蚀训练对手",
     "Tier": "early",
     "Build": 5,
     "Snapshot": {
@@ -354,7 +403,7 @@
   },
   {
     "EchoId": "echo-burn-lesson",
-    "DisplayName": "灼烧试影",
+    "DisplayName": "灼烧训练对手",
     "Tier": "lesson",
     "Build": 6,
     "Snapshot": {
@@ -390,7 +439,7 @@
   },
   {
     "EchoId": "echo-burn-early",
-    "DisplayName": "烈焰试影",
+    "DisplayName": "烈焰训练对手",
     "Tier": "early",
     "Build": 6,
     "Snapshot": {
@@ -426,7 +475,7 @@
   },
   {
     "EchoId": "echo-freeze-lesson",
-    "DisplayName": "冰冻试影",
+    "DisplayName": "冰冻训练对手",
     "Tier": "lesson",
     "Build": 7,
     "Snapshot": {
@@ -462,7 +511,7 @@
   },
   {
     "EchoId": "echo-freeze-early",
-    "DisplayName": "霜锁试影",
+    "DisplayName": "冻结训练对手",
     "Tier": "early",
     "Build": 7,
     "Snapshot": {
@@ -498,7 +547,7 @@
   },
   {
     "EchoId": "echo-overload-lesson",
-    "DisplayName": "过载试影",
+    "DisplayName": "过载训练对手",
     "Tier": "lesson",
     "Build": 8,
     "Snapshot": {
@@ -541,7 +590,7 @@
   },
   {
     "EchoId": "echo-overload-early",
-    "DisplayName": "泄压试影",
+    "DisplayName": "减载训练对手",
     "Tier": "early",
     "Build": 8,
     "Snapshot": {

@@ -10,12 +10,12 @@
                     {
                         "id":  "ARCH-02",
                         "fileCount":  18,
-                        "fingerprint":  "05fefa3ad6dbb630918d7450e4dca0a64e7b6cd9bd7ac79def39c355744fc41d"
+                        "fingerprint":  "aec1cf58d8ed5adc164558f04d6cb6f8b98cd1573e293c0984b2bb85b0e0599e"
                     },
                     {
                         "id":  "AI-01",
                         "fileCount":  4,
-                        "fingerprint":  "b322c88a393eea897f95feac11a8fd6f57acb4a9215167750c4183fc02dc463b"
+                        "fingerprint":  "5b80ec8b0927e5e22ddfd45b9e2db3d9daddd9a41c794673167a9495c9fdd64d"
                     },
                     {
                         "id":  "AI-02",
@@ -39,13 +39,18 @@
                     },
                     {
                         "id":  "BUQI-01",
-                        "fileCount":  83,
-                        "fingerprint":  "488e1cce716c189b6dcb4c8aa2182383b5ec4839799643bb35ae1fd2707a207f"
+                        "fileCount":  641,
+                        "fingerprint":  "7c633392cafcd82190351c77ce1c4e37b4ff2fbea0cf7e08afb2c2ecf6a8b2b5"
+                    },
+                    {
+                        "id":  "BUQI-02",
+                        "fileCount":  3,
+                        "fingerprint":  "7a85453c5a0d0189e4faa5e422590b78c6666d718d5e6622c7b8ce3f593314cb"
                     },
                     {
                         "id":  "UNITY-04",
-                        "fileCount":  121,
-                        "fingerprint":  "22a684bb56b35b123fdf689a596703727eef07174faeeec134ea61e59e918cae"
+                        "fileCount":  134,
+                        "fingerprint":  "16374f74e8217743f0328c699dba3ca735d8562079246129957e2f1be2efa2dc"
                     },
                     {
                         "id":  "UNITY-05",
@@ -70,12 +75,12 @@
                     {
                         "id":  "UNITY-09",
                         "fileCount":  34,
-                        "fingerprint":  "fd0c83649cf20dc70df04568a8928a0dcfa28ee73cc5523831f1a4761f684d36"
+                        "fingerprint":  "5b107049be1fb5e83ae33973319c9d1183a7399f4c5aaa76272c05c5036f3120"
                     },
                     {
                         "id":  "UNITY-10",
                         "fileCount":  42,
-                        "fingerprint":  "259b6884f3916018b46edb23b14f726f25aacdd05171401d717c0bc9c00dfe5b"
+                        "fingerprint":  "40054a9291ba93964cebec2c00e19e6445f9b3aa176d7a120e736f71476fcac4"
                     },
                     {
                         "id":  "UNITY-11",
@@ -100,7 +105,7 @@
                     {
                         "id":  "UNITY-15",
                         "fileCount":  23,
-                        "fingerprint":  "d7de6262e9e0f59711e25cebbca40128cbdae6e1065e35bc5c635b03435d82f9"
+                        "fingerprint":  "545f7eaa29daf815c46cf1d69776918715fb7cc34ee8f27bdd27bee610e54ae3"
                     },
                     {
                         "id":  "UNITY-16",
@@ -135,12 +140,12 @@
                     {
                         "id":  "ET-03",
                         "fileCount":  1024,
-                        "fingerprint":  "68e5d342d5a6f164692fbf7d12db6a91fa254f95c9ec6c3ef547da91fd19519c"
+                        "fingerprint":  "76df49bd18722ce8748fec77718e20d34cb03e30afe00accb36e9c9d82a393f3"
                     },
                     {
                         "id":  "ET-04",
                         "fileCount":  237,
-                        "fingerprint":  "8fdcaade590537e70a0ec6fb9cfc944b41d051373aaf75266172823ff6f2f990"
+                        "fingerprint":  "e435a20de65f15989fbb2eec3460b5009863678b609abd49f3bc670ec917a07f"
                     },
                     {
                         "id":  "ET-05",
@@ -156,6 +161,11 @@
                         "id":  "ET-07",
                         "fileCount":  543,
                         "fingerprint":  "4b98da326c94fec919aaf3d1b5f768341ccc48040a1c4277748e970c3d51757e"
+                    },
+                    {
+                        "id":  "ET-08",
+                        "fileCount":  13,
+                        "fingerprint":  "52fdf3b2dcbe134dc8cabd35a2c8364e9abf90622dcafb5e92355dbb96d1f29f"
                     },
                     {
                         "id":  "SERVER-01",
@@ -185,12 +195,12 @@
                     {
                         "id":  "DATA-01",
                         "fileCount":  26,
-                        "fingerprint":  "ac595bf079af6ed810b82ce76bcb0f6dda1b93d882b6350a92e0fe6f4b7615bf"
+                        "fingerprint":  "68a3b6b34f2be6e53b08c23a0e0abf6836d102f48ded073097ee6703f905c3ff"
                     },
                     {
                         "id":  "DATA-02",
                         "fileCount":  129,
-                        "fingerprint":  "893691c63c2ce3982644bacc4910c64dcdcc915bb0737d70658a2d754eebf236"
+                        "fingerprint":  "22bcf1a3c2437d90b58ca585daa235d1b0ef7af818dddf1ea31cc7ebfa49bbd6"
                     },
                     {
                         "id":  "TOOLS-01",
@@ -215,7 +225,7 @@
                     {
                         "id":  "CODE-01",
                         "fileCount":  11,
-                        "fingerprint":  "78afd45e5004658a3625145b68b98a799c564fa8f70ad1e5e20b011da36ab2c6"
+                        "fingerprint":  "31d8218f67448a778e14c0b693f72cb1371d20708c42f77b4971bd48dcbea07e"
                     },
                     {
                         "id":  "CODE-02",
@@ -225,7 +235,7 @@
                     {
                         "id":  "CODE-03",
                         "fileCount":  11,
-                        "fingerprint":  "19d4859ab398a6d891438fc158ee09b9cb306ea0823a8331cbf4390c3ad5fb95"
+                        "fingerprint":  "40b7f14c9f41bb58d2e9195497dac07e141c84621afcb48ca9627c29d87110c8"
                     },
                     {
                         "id":  "LIB-01",
@@ -250,7 +260,7 @@
                     {
                         "id":  "LIB-05",
                         "fileCount":  44,
-                        "fingerprint":  "0c3f2381969b39dd3751bbe0f5b8b218bcc8835dc433db3a081172c2a5d19e01"
+                        "fingerprint":  "ffd9a78b1cd02ac7cacf7e2de109da925acd40365d6f99670b238f48dc4d1beb"
                     },
                     {
                         "id":  "LIB-06",
@@ -274,8 +284,8 @@
                     },
                     {
                         "id":  "PACKAGE-01",
-                        "fileCount":  1397,
-                        "fingerprint":  "142ad5c04ebac4dcf5d15cbd7138b37aa2c194821d204afb896bfe4774c25f91"
+                        "fileCount":  1398,
+                        "fingerprint":  "d2c0b1d197d80adaab0ed2274c725a5e8981473aba171320b39f4d0e7a65adf0"
                     }
                 ]
 }

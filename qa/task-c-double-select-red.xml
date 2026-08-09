@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Failed(Child)" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.0871365">
+  <test-suite type="TestSuite" id="1000" name="GameDevelopmentKit" fullname="GameDevelopmentKit" runstate="Runnable" testcasecount="284" result="Failed" site="Child" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.087137" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1327" name="Game.Hot.Buqi.Tests.dll" fullname="E:/Project/GameDevelopmentKit/Unity/Library/ScriptAssemblies/Game.Hot.Buqi.Tests.dll" runstate="Runnable" testcasecount="284" result="Failed" site="Child" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.076766" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="17220" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1328" name="Game" fullname="Game" runstate="Runnable" testcasecount="284" result="Failed" site="Child" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.074927" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1329" name="Hot" fullname="Game.Hot" runstate="Runnable" testcasecount="284" result="Failed" site="Child" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.073358" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1330" name="Buqi" fullname="Game.Hot.Buqi" runstate="Runnable" testcasecount="284" result="Failed" site="Child" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.071558" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestSuite" id="1331" name="Tests" fullname="Game.Hot.Buqi.Tests" runstate="Runnable" testcasecount="284" result="Failed" site="Child" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.069823" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="TestFixture" id="1156" name="BuqiPveDifficultySelectionTests" fullname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests" classname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests" runstate="Runnable" testcasecount="5" result="Failed" site="Child" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.064658" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1159" name="InvalidSelection_DoesNotAdvanceRngOrPhase" fullname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests.InvalidSelection_DoesNotAdvanceRngOrPhase" methodname="InvalidSelection_DoesNotAdvanceRngOrPhase" classname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests" runstate="Runnable" seed="1099626009" result="Passed" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.024082" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1158" name="SelectDifficulty_DirectlyCreatesTheChosenPveBattle" fullname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests.SelectDifficulty_DirectlyCreatesTheChosenPveBattle" methodname="SelectDifficulty_DirectlyCreatesTheChosenPveBattle" classname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests" runstate="Runnable" seed="1424504778" result="Passed" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.014870" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1160" name="TamperedFrozenCard_DoesNotCreateBattleOrAdvanceRun" fullname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests.TamperedFrozenCard_DoesNotCreateBattleOrAdvanceRun" methodname="TamperedFrozenCard_DoesNotCreateBattleOrAdvanceRun" classname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests" runstate="Runnable" seed="435362315" result="Passed" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.000528" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1157" name="TryGetOrCreate_FreezesThreeDeterministicDifficultyCards" fullname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests.TryGetOrCreate_FreezesThreeDeterministicDifficultyCards" methodname="TryGetOrCreate_FreezesThreeDeterministicDifficultyCards" classname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests" runstate="Runnable" seed="1087498493" result="Passed" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.006269" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1161" name="Widget_ExposesCardsAndBoardWithoutStorageAndSelectsOncePerClick" fullname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests.Widget_ExposesCardsAndBoardWithoutStorageAndSelectsOncePerClick" methodname="Widget_ExposesCardsAndBoardWithoutStorageAndSelectsOncePerClick" classname="Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests" runstate="Runnable" seed="174893714" result="Failed" start-time="2026-08-08 09:10:08Z" end-time="2026-08-08 09:10:08Z" duration="0.006901" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[  Expected: False
+  But was:  True
+]]></message>
+                    <stack-trace><![CDATA[at Game.Hot.Buqi.Tests.BuqiPveDifficultySelectionTests.Widget_ExposesCardsAndBoardWithoutStorageAndSelectsOncePerClick () [0x00113] in E:\Project\GameDevelopmentKit\Unity\Assets\Tests\GameHot\Buqi\EditMode\BuqiPveDifficultySelectionTests.cs:187
+]]></stack-trace>
+                  </failure>
+                  <output><![CDATA[Saving results to: C:/Users/123/AppData/LocalLow/GDK/GameDevelopmentKit\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

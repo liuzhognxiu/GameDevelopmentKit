@@ -25,9 +25,12 @@ namespace Buqi.Simulation.Headless
                 return 2;
             }
 
+            if (mode == "localization-audit")
+                return BuqiLocalizationAudit.Run();
+
             if (mode != "verify" && mode != "stress" && mode != "all" && mode != "update-hashes")
             {
-                Console.Error.WriteLine("usage: verify | stress [count] | all [count] | update-hashes");
+                Console.Error.WriteLine("usage: verify | stress [count] | all [count] | update-hashes | localization-audit");
                 return 2;
             }
 

@@ -7,7 +7,7 @@ namespace Game.Hot.Buqi.UI.Stages
         public override BuqiUIDemoPhase Phase => BuqiUIDemoPhase.TribulationStage;
         protected override void ConfigureActions(BuqiUIDemoView view)
         {
-            AddAction("应劫", BuqiUIDemoCommandType.ResolveTribulationStage, "resolve");
+            AddAction("开始挑战", BuqiUIDemoCommandType.ResolveTribulationStage, "resolve");
         }
     }
 }

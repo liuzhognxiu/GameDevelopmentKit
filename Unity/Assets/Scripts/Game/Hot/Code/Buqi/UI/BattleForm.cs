@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.Demo;
+using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.UI.Widgets;
 using UnityEngine;
 using UnityEngine.UI;
@@ -269,12 +270,12 @@ namespace Game.Hot.Buqi.UI
         {
             BattleReplayFrame frame = m_Controller.Frame;
             BattleReplayData data = m_Controller.Data;
-            SetText(m_TitleText, data.Title);
-            SetText(m_LeftNameText, data.LeftName);
-            SetText(m_RightNameText, data.RightName);
+            SetText(m_TitleText, BuqiPlayerText.Sanitize(data.Title, "战斗回放"));
+            SetText(m_LeftNameText, BuqiPlayerText.Sanitize(data.LeftName, "玩家"));
+            SetText(m_RightNameText, BuqiPlayerText.Sanitize(data.RightName, "未知对手"));
             SetText(m_LeftStatsText, FormatStats(frame.Left));
             SetText(m_RightStatsText, FormatStats(frame.Right));
-            SetText(m_TickText, BuqiText.Format("第 {0:000} tick / {1:000}", frame.Tick, data.Result.DurationTicks));
+            SetText(m_TickText, BuqiText.Format("进度 {0:000} / {1:000}", frame.Tick, data.Result.DurationTicks));
             SetText(m_OutcomeText, frame.IsFinished ? FormatOutcome(data.Result) : "战斗推演中");
 
             if (m_TimelineFill != null)
@@ -473,18 +474,21 @@ namespace Game.Hot.Buqi.UI
         {
             return battleEvent == null
                 ? "尚无事件"
-                : BuqiText.Format("第 {0} tick  {1}  {2}", battleEvent.Tick, BattleLogWidget.FormatReason(battleEvent.ReasonCode), battleEvent.Amount);
+                : BuqiText.Format("第 {0} 时刻  {1}  {2}", battleEvent.Tick, BattleLogWidget.FormatReason(battleEvent.ReasonCode), battleEvent.Amount);
         }
 
         private static string FormatOutcome(BattleResult result)
         {
-            return BuqiText.Format("{0}  |  {1}", result.Outcome, result.TerminationReason);
+            return BuqiText.Format(
+                "{0}  |  {1}",
+                BuqiBattleText.Outcome(result.Outcome),
+                BuqiBattleText.Termination(result.TerminationReason));
         }
 
         private void ShowError(string error)
         {
             m_ErrorPanel?.SetActive(true);
-            SetText(m_ErrorText, string.IsNullOrEmpty(error) ? "未知的战斗回放错误。" : error);
+            SetText(m_ErrorText, BuqiPlayerText.Sanitize(error, "未知的战斗回放错误。"));
         }
 
         private void HideError()
@@ -495,7 +499,7 @@ namespace Game.Hot.Buqi.UI
         private static void SetText(Text text, string value)
         {
             if (text != null)
-                text.text = value ?? string.Empty;
+                text.text = BuqiPlayerText.Sanitize(value, string.Empty);
         }
 
         private static void SetButtonColor(Button button, Color color)

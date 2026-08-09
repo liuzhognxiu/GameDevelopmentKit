@@ -94,7 +94,7 @@ namespace Game.Hot.Buqi.UI.Widgets
                 case BattleReplayFeedbackKind.Damage:
                     return BuqiText.Format("-{0}", feedback.Value);
                 case BattleReplayFeedbackKind.Guard:
-                    return BuqiText.Format("护体 +{0}", feedback.Value);
+                    return BuqiText.Format("护盾 +{0}", feedback.Value);
                 case BattleReplayFeedbackKind.Heal:
                     return BuqiText.Format("治疗 +{0}", feedback.Value);
                 default:

@@ -114,6 +114,12 @@ namespace Game.Hot.Buqi.DemoUI
                     RefreshView();
                     return Accepted();
 
+                case BuqiUIDemoCommandType.RefreshShop:
+                    if (!m_Orchestrator.TryRefreshShop(out string refreshError))
+                        return Rejected(refreshError);
+                    RefreshView();
+                    return Accepted();
+
                 case BuqiUIDemoCommandType.SellItem:
                     if (!m_Orchestrator.TrySellBoardItem(command.PrimaryId, out string sellError))
                         return Rejected(sellError);

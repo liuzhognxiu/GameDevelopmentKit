@@ -80,12 +80,12 @@ namespace Game.Hot.Buqi.DemoUI
             source = null;
             if (catalog?.Items == null || catalog.Merchants == null)
             {
-                error = "Buqi item and merchant configuration is required.";
+                error = "装备与商人配置不可用。";
                 return false;
             }
             if (catalog.Items.Count == 0 || catalog.Merchants.Count != 8)
             {
-                error = "Production bazaar supply requires items and exactly eight merchants.";
+                error = "商店供应需要装备配置和 8 名商人。";
                 return false;
             }
 
@@ -97,7 +97,7 @@ namespace Game.Hot.Buqi.DemoUI
                     row.UnlockDay < 1 || row.UnlockDay > BuqiRunRules.RunDayCount ||
                     !items.TryAdd(row.DefinitionId, new ItemProfile(row)))
                 {
-                    error = "Buqi supply item ids, archetypes, and unlock days must be valid and unique.";
+                    error = "装备编号、流派和解锁日期必须有效且不能重复。";
                     return false;
                 }
             }
@@ -151,7 +151,7 @@ namespace Game.Hot.Buqi.DemoUI
             }
             if (definitions.Count == 0)
             {
-                error = "Merchant pools do not contain any supply definitions.";
+                error = "商人货池中没有可用装备。";
                 return false;
             }
 
@@ -182,7 +182,7 @@ namespace Game.Hot.Buqi.DemoUI
             m_CurrentMerchant = SelectMerchant(context, m_PreferredArchetypeId);
             if (m_CurrentMerchant == null)
             {
-                error = "No configured merchant is available for the current Day.";
+                error = "当前日期没有可用商人。";
                 return false;
             }
 
@@ -222,9 +222,10 @@ namespace Game.Hot.Buqi.DemoUI
         {
             if (offerDefinitionIds == null || offerDefinitionIds.Count != BuqiSupplyService.MerchantSlotCount)
             {
-                error = "A restored merchant shelf must contain four offers.";
+                error = "恢复的货架必须包含 4 件商品。";
                 return false;
             }
+            ResetEncounter();
             if (!TryOpen(context, out IReadOnlyList<string> current, out error))
                 return false;
             if (current.SequenceEqual(offerDefinitionIds, StringComparer.Ordinal))
@@ -242,8 +243,19 @@ namespace Game.Hot.Buqi.DemoUI
                 }
             }
 
-            error = "Saved merchant offers do not match the deterministic supply sequence.";
+            error = "存档中的货架与当前供应序列不一致。";
             return false;
+        }
+
+        private void ResetEncounter()
+        {
+            m_EncounterKey = string.Empty;
+            m_CurrentMerchant = null;
+            m_CurrentShelf = null;
+            m_PreferredArchetypeId = string.Empty;
+            m_Balance = 0;
+            m_PurchasedOfferIds.Clear();
+            m_OfferRoles.Clear();
         }
 
         public bool TryRefresh(
@@ -258,19 +270,19 @@ namespace Game.Hot.Buqi.DemoUI
                 !string.Equals(m_EncounterKey, CreateEncounterKey(context), StringComparison.Ordinal))
             {
                 error = string.IsNullOrEmpty(error)
-                    ? "The current merchant shelf is not open."
+                    ? "当前商人货架尚未打开。"
                     : error;
                 return false;
             }
             if (m_CurrentShelf.NextRefreshPrice < 0)
             {
-                error = "Merchant refresh limit has been reached.";
+                error = "本次商店的刷新次数已用尽。";
                 return false;
             }
             cost = m_CurrentShelf.NextRefreshPrice;
             if (context.Balance < cost)
             {
-                error = "Not enough coins to refresh the merchant shelf.";
+                error = "金币不足，无法刷新货架。";
                 cost = 0;
                 return false;
             }
@@ -304,18 +316,18 @@ namespace Game.Hot.Buqi.DemoUI
             if (m_CurrentShelf == null || string.IsNullOrWhiteSpace(offerDefinitionId) ||
                 !GetOfferIds(m_CurrentShelf).Contains(offerDefinitionId, StringComparer.Ordinal))
             {
-                error = "Purchased offer is not on the current merchant shelf.";
+                error = "所购商品不在当前货架上。";
                 return false;
             }
             if (!m_PurchasedOfferIds.Add(offerDefinitionId))
             {
-                error = "Purchased offer has already been recorded.";
+                error = "该商品已记录为已购买。";
                 return false;
             }
             if (balance < 0)
             {
                 m_PurchasedOfferIds.Remove(offerDefinitionId);
-                error = "Purchase balance cannot be negative.";
+                error = "购买后的金币不能为负数。";
                 return false;
             }
 
@@ -374,7 +386,7 @@ namespace Game.Hot.Buqi.DemoUI
                 .ToList();
             if (activeSlots.Count == 0)
             {
-                error = "Merchant has no active constrained slot for the current Day.";
+                error = "当前日期没有可用的商人货位。";
                 return false;
             }
 
@@ -406,7 +418,7 @@ namespace Game.Hot.Buqi.DemoUI
                 }
                 if (candidates.Count == 0)
                 {
-                    error = "Merchant constrained slots cannot produce four distinct offers.";
+                    error = "商人货位无法生成 4 件不同商品。";
                     return false;
                 }
 
@@ -576,7 +588,7 @@ namespace Game.Hot.Buqi.DemoUI
                 row.PoolItemIds == null || row.PoolItemIds.Count < 4 ||
                 row.Slots == null || row.Slots.Count != BuqiSupplyService.MerchantSlotCount)
             {
-                error = "Merchant identity, Day range, weight, pool, and four slots must be valid.";
+                error = "商人的编号、日期、权重、货池和 4 个货位必须有效。";
                 return false;
             }
 
@@ -585,7 +597,7 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 if (!items.ContainsKey(definitionId) || !pool.Add(definitionId))
                 {
-                    error = $"Merchant '{row.MerchantId}' contains an unknown or duplicate pool item.";
+                    error = $"商人“{row.MerchantId}”的货池包含未知或重复装备。";
                     return false;
                 }
             }
@@ -620,7 +632,7 @@ namespace Game.Hot.Buqi.DemoUI
                 row.MinUnlockDay < 1 || row.MinUnlockDay > row.MaxUnlockDay ||
                 row.MaxUnlockDay > BuqiRunRules.RunDayCount || row.Weight <= 0 || row.Count <= 0)
             {
-                error = $"Merchant '{merchantId}' contains an invalid constrained slot.";
+                error = $"商人“{merchantId}”包含无效货位。";
                 return false;
             }
             slot = new SlotProfile(row, builds, sizes, qualities);
@@ -656,7 +668,7 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 if (!GetOfferIds(m_CurrentShelf).Contains(purchased, StringComparer.Ordinal))
                 {
-                    error = "Saved purchase does not belong to the restored merchant shelf.";
+                    error = "存档中的已购商品不属于恢复后的货架。";
                     return false;
                 }
                 m_PurchasedOfferIds.Add(purchased);
@@ -684,7 +696,7 @@ namespace Game.Hot.Buqi.DemoUI
                 context.EncounterIndex < 0 || context.EncounterIndex >= BuqiRunRules.EncountersPerDay ||
                 context.Balance < 0)
             {
-                error = "Bazaar supply context Day, encounter index, and balance are invalid.";
+                error = "商店供应的日期、经营序号或金币无效。";
                 return false;
             }
             error = string.Empty;
@@ -774,7 +786,7 @@ namespace Game.Hot.Buqi.DemoUI
                 case "poison": return "毒蚀";
                 case "burn": return "灼烧";
                 case "freeze": return "冻结";
-                case "overload": return "失衡";
+                case "overload": return "过载";
                 default: return "均衡";
             }
         }

@@ -175,6 +175,57 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void BazaarSupplyRuntime_OpensPurchasesRefreshesAndRestoresAuthoritativeShelf()
+        {
+            var store = new MemoryRunStore();
+            var supply = new FakeBazaarSupplyRuntime();
+            BuqiUIDemoController controller = CreateController(store, supply);
+
+            SelectOperation(controller, "bazaar");
+
+            Assert.That(supply.OpenCount, Is.EqualTo(1));
+            Assert.That(controller.View.ShopOffers.Select(offer => offer.Id),
+                Is.EqualTo(supply.InitialOffers));
+            int openingCoins = controller.View.Coins;
+
+            BuqiUIDemoCommandResult purchased = Buy(controller, supply.InitialOffers[0]);
+            Assert.That(purchased.Accepted, Is.True, purchased.Reason);
+            Assert.That(supply.PurchasedOfferIds, Is.EqualTo(new[] { supply.InitialOffers[0] }));
+            Assert.That(supply.Balance, Is.EqualTo(controller.View.Coins));
+
+            BuqiUIDemoCommandResult refreshed = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.RefreshShop,
+            });
+            Assert.That(refreshed.Accepted, Is.True, refreshed.Reason);
+            Assert.That(controller.View.Coins, Is.EqualTo(openingCoins - 2 - 2));
+            Assert.That(controller.View.ShopOffers.Select(offer => offer.Id),
+                Is.EqualTo(supply.RefreshedOffers));
+
+            var restoredSupply = new FakeBazaarSupplyRuntime();
+            controller = CreateController(store, restoredSupply);
+            Assert.That(restoredSupply.RestoreCount, Is.EqualTo(1));
+            Assert.That(controller.View.ShopOffers.Select(offer => offer.Id),
+                Is.EqualTo(restoredSupply.RefreshedOffers));
+            Assert.That(restoredSupply.Balance, Is.EqualTo(controller.View.Coins));
+        }
+
+        [Test]
+        public void BazaarSupplyRuntime_DiscardsIncompatibleLegacyShopSave()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController legacy = CreateController(store);
+            SelectOperation(legacy, "bazaar");
+
+            var productionSupply = new FakeBazaarSupplyRuntime { RejectRestore = true };
+            BuqiUIDemoController recovered = CreateController(store, productionSupply);
+
+            Assert.That(productionSupply.RestoreCount, Is.EqualTo(1));
+            Assert.That(recovered.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(recovered.View.Round, Is.EqualTo(1));
+        }
+
+        [Test]
         public void Bazaar_SaleRefreshesBoardAndCoinBalanceWithoutLeavingShop()
         {
             var store = new MemoryRunStore();
@@ -265,7 +316,9 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
         }
 
-        private static BuqiUIDemoController CreateController(MemoryRunStore store)
+        private static BuqiUIDemoController CreateController(
+            MemoryRunStore store,
+            IBuqiBazaarSupplyRuntime supplyRuntime = null)
         {
             Assert.That(
                 BuqiUIDemoController.TryCreate(
@@ -276,6 +329,7 @@ namespace Game.Hot.Buqi.Tests
                         RunSeed = 1L,
                         PveOpponentIds = new[] { "pve-a", "pve-b", "pve-c" },
                         PvpOpponentIds = new[] { "pvp-a", "pvp-b" },
+                        BazaarSupplyRuntime = supplyRuntime,
                     },
                     out BuqiUIDemoController controller,
                     out string error),
@@ -497,6 +551,91 @@ namespace Game.Hot.Buqi.Tests
                 CurrentJson = null;
                 error = string.Empty;
                 return true;
+            }
+        }
+
+        private sealed class FakeBazaarSupplyRuntime : IBuqiBazaarSupplyRuntime
+        {
+            public readonly string[] InitialOffers =
+                { "item-01", "item-02", "item-03", "item-04" };
+            public readonly string[] RefreshedOffers =
+                { "item-05", "item-06", "item-07", "item-08" };
+
+            public int OpenCount { get; private set; }
+            public int RestoreCount { get; private set; }
+            public int Balance { get; private set; }
+            public bool RejectRestore { get; set; }
+            public List<string> PurchasedOfferIds { get; } = new List<string>();
+
+            private IReadOnlyList<string> m_Offers;
+
+            public bool TryOpen(
+                BuqiBazaarSupplyContext context,
+                out IReadOnlyList<string> offerDefinitionIds,
+                out string error)
+            {
+                OpenCount++;
+                Balance = context.Balance;
+                m_Offers = InitialOffers;
+                offerDefinitionIds = m_Offers;
+                error = string.Empty;
+                return true;
+            }
+
+            public bool TryRestore(
+                BuqiBazaarSupplyContext context,
+                IReadOnlyList<string> offerDefinitionIds,
+                out string error)
+            {
+                RestoreCount++;
+                if (RejectRestore)
+                {
+                    error = "旧商店货架无法恢复。";
+                    return false;
+                }
+                Balance = context.Balance;
+                PurchasedOfferIds.Clear();
+                PurchasedOfferIds.AddRange(context.PurchasedOfferIds);
+                m_Offers = offerDefinitionIds.ToArray();
+                error = string.Empty;
+                return true;
+            }
+
+            public bool TryRefresh(
+                BuqiBazaarSupplyContext context,
+                out IReadOnlyList<string> offerDefinitionIds,
+                out int cost,
+                out string error)
+            {
+                cost = 2;
+                Balance = context.Balance - cost;
+                PurchasedOfferIds.Clear();
+                m_Offers = RefreshedOffers;
+                offerDefinitionIds = m_Offers;
+                error = string.Empty;
+                return true;
+            }
+
+            public bool RecordPurchase(string offerDefinitionId, int balance, out string error)
+            {
+                Balance = balance;
+                PurchasedOfferIds.Add(offerDefinitionId);
+                error = string.Empty;
+                return true;
+            }
+
+            public bool TryGetCurrentSupply(out BuqiBazaarSupplyView supply)
+            {
+                supply = new BuqiBazaarSupplyView
+                {
+                    Balance = Balance,
+                    CanRefresh = true,
+                    RefreshPrice = 2,
+                    RefreshPriceLabel = "刷新 2 金币",
+                    OfferIds = m_Offers ?? Array.Empty<string>(),
+                    PurchasedOfferIds = PurchasedOfferIds.ToArray(),
+                };
+                return m_Offers != null;
             }
         }
     }

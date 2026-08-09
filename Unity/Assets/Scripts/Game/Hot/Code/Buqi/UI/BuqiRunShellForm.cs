@@ -79,6 +79,7 @@ namespace Game.Hot.Buqi.UI
         private BuqiConfigCatalog m_Catalog;
         private BuqiUIDemoCatalog m_DemoCatalog;
         private BuqiUIDemoController m_Controller;
+        private IBuqiBazaarSupplyRuntime m_BazaarSupplyRuntime;
         private BuqiStageWidgetRegistry m_Registry;
         private bool m_OpeningBattle;
         private int? m_ItemDetailSerialId;
@@ -107,7 +108,10 @@ namespace Game.Hot.Buqi.UI
             m_OpeningBattle = false;
             m_ItemDetailSerialId = null;
             m_DemoCatalog = null;
-            BindBazaarSupplySource((userData as BuqiRunShellOpenData)?.BazaarSupplySource);
+            IBuqiBazaarSupplyViewSource supplySource =
+                (userData as BuqiRunShellOpenData)?.BazaarSupplySource;
+            m_BazaarSupplyRuntime = supplySource as IBuqiBazaarSupplyRuntime;
+            BindBazaarSupplySource(supplySource);
             BindShopItemDetails(ShowItemDetails, HideItemDetails);
             if (!TryResolveCatalog(userData, out m_Catalog, out string error))
             {
@@ -125,7 +129,26 @@ namespace Game.Hot.Buqi.UI
 
             m_DemoCatalog = demoCatalog;
 
-            if (!BuqiUIDemoController.TryCreate(demoCatalog, null, out BuqiUIDemoController controller, out error))
+            if (supplySource == null)
+            {
+                if (!BuqiBazaarSupplyViewSource.TryCreate(
+                        m_Catalog,
+                        out BuqiBazaarSupplyViewSource productionSupply,
+                        out error))
+                {
+                    m_Controller = null;
+                    ShowError(error);
+                    return;
+                }
+                m_BazaarSupplyRuntime = productionSupply;
+                BindBazaarSupplySource(productionSupply);
+            }
+
+            if (!BuqiUIDemoController.TryCreate(
+                    demoCatalog,
+                    CreateControllerOptions(),
+                    out BuqiUIDemoController controller,
+                    out error))
             {
                 m_Controller = null;
                 ShowError(error);
@@ -152,6 +175,7 @@ namespace Game.Hot.Buqi.UI
             m_Controller = null;
             m_DemoCatalog = null;
             m_Catalog = null;
+            m_BazaarSupplyRuntime = null;
             BindBazaarSupplySource(null);
             BindShopItemDetails(null, null);
             m_OpeningBattle = false;
@@ -314,7 +338,7 @@ namespace Game.Hot.Buqi.UI
 
             if (!BuqiUIDemoController.TryCreateNewRun(
                     m_DemoCatalog,
-                    null,
+                    CreateControllerOptions(),
                     out BuqiUIDemoController controller,
                     out string error))
             {
@@ -327,6 +351,16 @@ namespace Game.Hot.Buqi.UI
             m_Controller = controller;
             HideError();
             Render();
+        }
+
+        private BuqiUIDemoControllerOptions CreateControllerOptions()
+        {
+            return m_BazaarSupplyRuntime == null
+                ? null
+                : new BuqiUIDemoControllerOptions
+                {
+                    BazaarSupplyRuntime = m_BazaarSupplyRuntime,
+                };
         }
 
         private void Render()

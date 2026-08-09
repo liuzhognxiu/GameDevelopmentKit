@@ -9,7 +9,7 @@ namespace Game.Hot.Buqi.Tests
 {
     public static class BuqiBazaarSupplyViewSourceTestSuite
     {
-        private const int ContractCount = 5;
+        private const int ContractCount = 6;
 
         public static List<string> RunAll()
         {
@@ -19,6 +19,7 @@ namespace Game.Hot.Buqi.Tests
             Run("preference-contract", PreferenceContract, failures);
             Run("refresh-contract", RefreshContract, failures);
             Run("purchase-view-contract", PurchaseViewContract, failures);
+            Run("restore-rollback-contract", RestoreRollbackContract, failures);
             return failures;
         }
 
@@ -162,6 +163,24 @@ namespace Game.Hot.Buqi.Tests
                 "Demo supply data must expose the authoritative balance and purchased offer ids.");
             Require(!source.RecordPurchase(purchased, 12, out _),
                 "The same frozen offer cannot be recorded twice.");
+        }
+
+        private static void RestoreRollbackContract()
+        {
+            Require(BuqiBazaarSupplyViewSource.TryCreate(
+                CreateCatalog(), out BuqiBazaarSupplyViewSource source, out string error), error);
+            BuqiBazaarSupplyContext context = Context(7119, 6, 0, 30, "heal-13", "heal-14");
+            Require(source.TryOpen(context, out IReadOnlyList<string> initial, out error), error);
+            Require(source.TryRefresh(context, out IReadOnlyList<string> refreshed, out _, out error), error);
+            Require(!refreshed.SequenceEqual(initial), "Fixture must reach a different refreshed shelf.");
+
+            Require(source.TryRestore(context, initial, out error), error);
+            Require(source.TryGetCurrentSupply(out BuqiBazaarSupplyView restored),
+                "Restored supply metadata must remain available.");
+            Require(restored.OfferIds.SequenceEqual(initial),
+                "Restore must return to the authoritative frozen shelf.");
+            Require(restored.RefreshCount == 0,
+                "Restoring the opening shelf must reset the refresh count.");
         }
 
         private static BuqiBazaarSupplyContext Context(

@@ -11,6 +11,7 @@ using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Economy;
 using Game.Hot.Buqi.Run.Encounter;
 using Game.Hot.Buqi.Run.Settlement;
+using Game.Hot.Buqi.Run.Supply;
 using UnityEngine;
 
 namespace Game.Hot.Buqi.DemoUI
@@ -21,6 +22,7 @@ namespace Game.Hot.Buqi.DemoUI
         public IBuqiRunStore Store;
         public IReadOnlyList<string> PveOpponentIds;
         public IReadOnlyList<string> PvpOpponentIds;
+        public IBuqiBazaarSupplyRuntime BazaarSupplyRuntime;
     }
 }
 
@@ -104,6 +106,7 @@ namespace Game.Hot.Buqi.Run.Integration
         private readonly BuqiRunBattleService m_BattleService;
         private readonly BuqiRunSettlementCoordinator m_SettlementCoordinator;
         private readonly IBuqiRunStore m_Store;
+        private readonly IBuqiBazaarSupplyRuntime m_BazaarSupplyRuntime;
 
         private BuqiRunDemoState m_State = null!;
 
@@ -121,6 +124,7 @@ namespace Game.Hot.Buqi.Run.Integration
             m_EventResolver = new BuqiRunEventResolver(catalog);
             m_BattleService = new BuqiRunBattleService(CreateBattleProvider(catalog, m_Options));
             m_Store = m_Options.Store ?? CreateDefaultStore();
+            m_BazaarSupplyRuntime = m_Options.BazaarSupplyRuntime;
             m_SettlementCoordinator = new BuqiRunSettlementCoordinator(m_Store);
         }
 
@@ -187,6 +191,9 @@ namespace Game.Hot.Buqi.Run.Integration
                 return false;
             }
 
+            if (!TryRestoreBazaarSupply(m_State, out _))
+                return TryRecoverIncompatibleSave(out error);
+
             if (wasMigrated && !m_Store.TryWrite(BuqiRunSaveCodec.ToJson(saveData), out _))
             {
                 error = "更新旧存档失败，为避免丢失进度，原存档已保留。";
@@ -251,7 +258,57 @@ namespace Game.Hot.Buqi.Run.Integration
             working.Economy = purchase.Snapshot;
             working.Encounter.PurchasedCandidateIds.Add(definitionId);
             working.LastResolutionId = definitionId;
-            return TryCommitState(working, out error);
+            if (!TryCommitState(working, out error))
+                return false;
+
+            if (m_BazaarSupplyRuntime != null &&
+                !m_BazaarSupplyRuntime.RecordPurchase(
+                    definitionId,
+                    m_State.Economy.Run.Coins,
+                    out _))
+            {
+                TryRestoreBazaarSupply(m_State, out _);
+            }
+            return true;
+        }
+
+        public bool TryRefreshShop(out string error)
+        {
+            if (!IsEncounterShop(m_State) || m_BazaarSupplyRuntime == null)
+            {
+                error = "Current shop does not support refresh.";
+                return false;
+            }
+
+            BuqiBazaarSupplyContext context = CreateBazaarContext(m_State);
+            if (!m_BazaarSupplyRuntime.TryRefresh(
+                    context,
+                    out IReadOnlyList<string> offers,
+                    out int cost,
+                    out error))
+            {
+                return false;
+            }
+            if (!ValidateBazaarOffers(offers) || cost <= 0 || cost > context.Balance)
+            {
+                TryRestoreBazaarSupply(m_State, out _);
+                error = "Merchant refresh returned invalid offers or cost.";
+                return false;
+            }
+
+            BuqiRunDemoState working = m_State.Clone();
+            working.Economy.Run.Coins -= cost;
+            working.Encounter.CandidateIds = new List<string>(offers);
+            working.Encounter.PurchasedCandidateIds.Clear();
+            working.LastResolutionId = BuqiText.Format(
+                "{0}:refresh:{1}",
+                working.Encounter.EncounterId,
+                working.Economy.Run.Revision);
+            if (TryCommitState(working, out error))
+                return true;
+
+            TryRestoreBazaarSupply(m_State, out _);
+            return false;
         }
 
         public bool TrySellBoardItem(string instanceId, out string error)
@@ -279,7 +336,13 @@ namespace Game.Hot.Buqi.Run.Integration
             BuqiRunDemoState working = m_State.Clone();
             working.Economy = sale.Snapshot;
             working.LastResolutionId = instanceId;
-            return TryCommitState(working, out error);
+            if (!TryCommitState(working, out error))
+                return false;
+            if (!TryRestoreBazaarSupply(m_State, out _))
+            {
+                // The sale is authoritative once persisted; supply metadata can recover on reload.
+            }
+            return true;
         }
 
         public bool TryResolveEvent(string eventId, out string error)
@@ -453,8 +516,60 @@ namespace Game.Hot.Buqi.Run.Integration
             }
 
             working.Encounter = encounter;
+            if (kind == BuqiRunEncounterKind.Shop && m_BazaarSupplyRuntime != null)
+            {
+                BuqiBazaarSupplyContext context = CreateBazaarContext(working);
+                if (!m_BazaarSupplyRuntime.TryOpen(context, out IReadOnlyList<string> offers, out error))
+                    return false;
+                if (!ValidateBazaarOffers(offers))
+                {
+                    error = "Merchant supply returned an invalid frozen shelf.";
+                    return false;
+                }
+                working.Encounter.CandidateIds = new List<string>(offers);
+            }
             working.Presentation = BuqiRunDemoPresentation.Encounter;
             return TryCommitState(working, out error);
+        }
+
+        private BuqiBazaarSupplyContext CreateBazaarContext(BuqiRunDemoState state)
+        {
+            return new BuqiBazaarSupplyContext
+            {
+                RunSeed = state.Economy.Run.RunSeed,
+                Day = state.Economy.Run.Day,
+                EncounterIndex = state.Economy.Run.EncounterIndex,
+                Balance = state.Economy.Run.Coins,
+                OwnedDefinitionIds = state.Economy.Items.Values
+                    .Select(item => item.DefinitionId)
+                    .Where(id => !string.IsNullOrEmpty(id))
+                    .Distinct(StringComparer.Ordinal)
+                    .ToArray(),
+                PurchasedOfferIds = state.Encounter?.PurchasedCandidateIds?.ToArray()
+                    ?? Array.Empty<string>(),
+            };
+        }
+
+        private bool TryRestoreBazaarSupply(BuqiRunDemoState state, out string error)
+        {
+            if (m_BazaarSupplyRuntime == null || !IsEncounterShop(state))
+            {
+                error = string.Empty;
+                return true;
+            }
+
+            return m_BazaarSupplyRuntime.TryRestore(
+                CreateBazaarContext(state),
+                state.Encounter.CandidateIds,
+                out error);
+        }
+
+        private bool ValidateBazaarOffers(IReadOnlyList<string> offers)
+        {
+            return offers != null &&
+                   offers.Count == BuqiSupplyService.MerchantSlotCount &&
+                   offers.Distinct(StringComparer.Ordinal).Count() == offers.Count &&
+                   offers.All(id => m_Catalog.FindItem(id) != null);
         }
 
         public bool TrySelectPveDifficulty(string choiceId, out string error)

@@ -20,6 +20,8 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     {
             DefinitionId = "";
             DisplayName = "";
+            DesignNote = "";
+            EffectDescription = "";
             Size = BuqiSize.S;
             ArchetypeId = BuqiBuild.fast;
             Tags = new System.Collections.Generic.List<string>();
@@ -35,12 +37,28 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  DefinitionId = _fieldJson;
             }
         }
-        
-        { 
+
+        {
             var _fieldJson = _json["DisplayName"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  DisplayName = _fieldJson;
+            }
+        }
+
+        {
+            var _fieldJson = _json["DesignNote"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsString) { throw new SerializationException(); }  DesignNote = _fieldJson;
+            }
+        }
+
+        {
+            var _fieldJson = _json["EffectDescription"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsString) { throw new SerializationException(); }  EffectDescription = _fieldJson;
             }
         }
         
@@ -107,6 +125,16 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
             _json["DisplayName"] = new JSONString(DisplayName);
         }
         {
+
+            if (DesignNote == null) { throw new System.ArgumentNullException(); }
+            _json["DesignNote"] = new JSONString(DesignNote);
+        }
+        {
+
+            if (EffectDescription == null) { throw new System.ArgumentNullException(); }
+            _json["EffectDescription"] = new JSONString(EffectDescription);
+        }
+        {
             _json["Size"] = new JSONNumber((int)Size);
         }
         {
@@ -151,6 +179,16 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     /// display name
     /// </summary>
     public string DisplayName;
+
+    /// <summary>
+    /// planner-only Chinese usage note
+    /// </summary>
+    public string DesignNote;
+
+    /// <summary>
+    /// formal in-game effect description
+    /// </summary>
+    public string EffectDescription;
 
     /// <summary>
     /// size

@@ -17,6 +17,8 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     {
         DefinitionId = _buf.ReadString();
         DisplayName = _buf.ReadString();
+        DesignNote = _buf.ReadString();
+        EffectDescription = _buf.ReadString();
         Size = (BuqiSize)_buf.ReadInt();
         BasePrice = _buf.ReadInt();
         BaseCooldownTicks = _buf.ReadInt();
@@ -39,6 +41,14 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// display name
     /// </summary>
     public readonly string DisplayName;
+    /// <summary>
+    /// planner-only Chinese usage note
+    /// </summary>
+    public readonly string DesignNote;
+    /// <summary>
+    /// formal in-game effect description
+    /// </summary>
+    public readonly string EffectDescription;
     /// <summary>
     /// size
     /// </summary>
@@ -76,6 +86,8 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
         return "{ "
         + "DefinitionId:" + DefinitionId + ","
         + "DisplayName:" + DisplayName + ","
+        + "DesignNote:" + DesignNote + ","
+        + "EffectDescription:" + EffectDescription + ","
         + "Size:" + Size + ","
         + "BasePrice:" + BasePrice + ","
         + "BaseCooldownTicks:" + BaseCooldownTicks + ","

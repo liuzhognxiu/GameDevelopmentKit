@@ -35,6 +35,8 @@ namespace Game.Hot.Buqi.Config
     {
         public string DefinitionId = string.Empty;
         public string DisplayName = string.Empty;
+        public string DesignNote = string.Empty;
+        public string EffectDescription = string.Empty;
         public BattleSize Size = BattleSize.S;
         public int BasePrice;
         public int BaseCooldownTicks;

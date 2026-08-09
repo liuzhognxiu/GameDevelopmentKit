@@ -78,6 +78,8 @@ namespace Game.Hot.Buqi.Config
                 {
                     DefinitionId = ReadString(row, "DefinitionId", errors),
                     DisplayName = ReadString(row, "DisplayName", errors),
+                    DesignNote = ReadString(row, "DesignNote", errors),
+                    EffectDescription = ReadString(row, "EffectDescription", errors),
                     Size = ReadEnum(row, "Size", BattleSize.S, errors),
                     BasePrice = ReadInt(row, "BasePrice", errors),
                     BaseCooldownTicks = ReadInt(row, "BaseCooldownTicks", errors),

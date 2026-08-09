@@ -52,7 +52,7 @@
 - [x] Keep newer main versions where differences are formatting/analyzer or Unity `.meta` adaptations; do not duplicate cherry-picks.
 - [x] Run content counts `42/8/4/12/24/72`, event/training 17 tests, link 12 tests, and 1,000-build link stress.
 
-**Known follow-up:** The rich event/training engines and merchant supply data are present and tested, but the current Demo controller still uses its legacy encounter path. Runtime adapter work is a separate main-flow integration task and must not be represented as complete here.
+**Known follow-up:** The merchant supply source is now connected to the Demo shop and covered by source contracts plus controller contracts. The rich event/training engines remain present and tested, but the Demo controller still uses its legacy event encounter path; runtime event/training adapter work remains separate.
 
 ### Task 5: Export, build, and Unity QA
 

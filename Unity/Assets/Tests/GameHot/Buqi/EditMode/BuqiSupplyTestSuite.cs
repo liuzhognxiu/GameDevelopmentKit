@@ -8,7 +8,7 @@ namespace Game.Hot.Buqi.Tests
 {
     public static class BuqiSupplyTestSuite
     {
-        private const int ContractCount = 8;
+        private const int ContractCount = 10;
         private const int MonteCarloSeedCount = 10000;
         private const int BenchmarkAcquisitionBps = 8000;
 
@@ -16,6 +16,8 @@ namespace Game.Hot.Buqi.Tests
         {
             var failures = new List<string>();
             Run("filter-contract", FilterContract, failures);
+            Run("catalog-projection-contract", CatalogProjectionContract, failures);
+            Run("channel-integration-contract", ChannelIntegrationContract, failures);
             Run("deterministic-four-slot-contract", DeterministicFourSlotContract, failures);
             Run("affinity-memory-contract", AffinityMemoryContract, failures);
             Run("bounded-soft-pity-contract", BoundedSoftPityContract, failures);
@@ -62,6 +64,131 @@ namespace Game.Hot.Buqi.Tests
                 "Merchant pool filter leaked an offer.");
             Require(shelf.Offers.All(item => (item.Sources & BuqiSupplySource.Merchant) != 0),
                 "Source filter leaked an offer.");
+        }
+
+        private static void CatalogProjectionContract()
+        {
+            var item = new BuqiSupplyCatalogItem
+            {
+                DefinitionId = "W8-003",
+                ArchetypeId = "fast",
+                Size = 2,
+            };
+            item.Tags.AddRange(new[] { "damage", "fast", "damage", " " });
+            var rule = new BuqiSupplyAvailabilityRule
+            {
+                Role = BuqiSupplyProductRole.Mainline,
+                MinimumDay = 2,
+                MaximumDay = 7,
+                Quality = BuqiSupplyQuality.Improved,
+                Sources = BuqiSupplySource.Merchant | BuqiSupplySource.Event,
+                BaseWeight = 125,
+                RefinementId = "A-02",
+            };
+            rule.MerchantPoolIds.Add("forge");
+
+            Require(BuqiSupplyIntegration.TryCreateDefinition(
+                item, rule, out BuqiSupplyDefinition definition, out string error), error);
+            Require(definition.DefinitionId == "W8-003" && definition.ArchetypeId == "fast",
+                "Formal item identity was not projected into supply metadata.");
+            Require(definition.Size == 2 && definition.MinimumDay == 2 && definition.MaximumDay == 7,
+                "Size or Day unlock window was not projected.");
+            Require(definition.Role == BuqiSupplyProductRole.Mainline &&
+                    definition.Quality == BuqiSupplyQuality.Improved &&
+                    definition.Sources == (BuqiSupplySource.Merchant | BuqiSupplySource.Event) &&
+                    definition.BaseWeight == 125 && definition.RefinementId == "A-02",
+                "Availability rule was not projected.");
+            Require(definition.Tags.SequenceEqual(new[] { "damage", "fast" }),
+                "Formal tags should be trimmed and de-duplicated in stable order.");
+            Require(definition.MerchantPoolIds.SequenceEqual(new[] { "forge" }),
+                "Merchant pool membership was not projected.");
+
+            item.Size = 0;
+            Require(!BuqiSupplyIntegration.TryCreateDefinition(item, rule, out _, out _),
+                "Invalid formal item metadata must fail closed.");
+        }
+
+        private static void ChannelIntegrationContract()
+        {
+            var profile = new BuqiSupplyChannelProfile
+            {
+                ChannelId = "merchant-forge",
+                Source = BuqiSupplySource.Merchant,
+                MerchantPoolId = "forge",
+                UnlockDay = 2,
+                RetireDay = 7,
+                MinimumQuality = BuqiSupplyQuality.Common,
+                MaximumQuality = BuqiSupplyQuality.Improved,
+                CandidateCount = BuqiSupplyService.MerchantSlotCount,
+            };
+            profile.AllowedSizes.AddRange(new[] { 1, 2 });
+            profile.AllowedArchetypeIds.AddRange(new[] { "fast", "buffer" });
+            profile.AllowedRoles.AddRange(new[]
+            {
+                BuqiSupplyProductRole.Mainline,
+                BuqiSupplyProductRole.Bridge,
+            });
+
+            Require(!BuqiSupplyIntegration.TryCreateRequest(
+                    1, profile, "fast", out _, out _),
+                "A merchant must remain locked before its unlock Day.");
+            Require(!BuqiSupplyIntegration.TryCreateRequest(
+                    8, profile, "fast", out _, out _),
+                "A merchant must remain unavailable after its retire Day.");
+            Require(BuqiSupplyIntegration.TryCreateRequest(
+                4, profile, "fast", out BuqiSupplyRequest request, out string error), error);
+            Require(request.Day == 4 && request.Source == BuqiSupplySource.Merchant &&
+                    request.MerchantPoolId == "forge" && request.PreferredArchetypeId == "fast",
+                "Formal merchant context did not map to the supply request.");
+            Require(request.CandidateCount == 4 &&
+                    request.AllowedSizes.SequenceEqual(new[] { 1, 2 }) &&
+                    request.AllowedArchetypeIds.SequenceEqual(new[] { "fast", "buffer" }) &&
+                    request.AllowedRoles.SequenceEqual(profile.AllowedRoles),
+                "Merchant filters did not cross the narrow integration boundary.");
+            Require(!BuqiSupplyIntegration.TryCreateRequest(
+                    BuqiRunRules.RunDayCount + 1, profile, "fast", out _, out _),
+                "Supply requests outside the nine-Day run must fail closed.");
+
+            profile.Source = BuqiSupplySource.Pve;
+            profile.UnlockDay = 1;
+            profile.RetireDay = BuqiRunRules.RunDayCount;
+            profile.CandidateCount = 2;
+            Require(!BuqiSupplyIntegration.TryCreateRequest(
+                    6, profile, "buffer", out _, out _),
+                "A reward channel must reject merchant-only pool metadata.");
+            profile.MerchantPoolId = string.Empty;
+            Require(BuqiSupplyIntegration.TryCreateRequest(
+                6, profile, "buffer", out BuqiSupplyRequest pveRequest, out string pveError), pveError);
+            Require(pveRequest.Source == BuqiSupplySource.Pve &&
+                    pveRequest.CandidateCount == 2 &&
+                    string.IsNullOrEmpty(pveRequest.MerchantPoolId),
+                "PVE rewards must consume the same channel interface without merchant metadata.");
+
+            var service = new BuqiSupplyService(CreateGeneralCatalog());
+            BuqiSupplyState initial = BuqiSupplyState.CreateInitial(8128L);
+            BuqiSupplyState fast = BuqiSupplyIntegration.ApplyBuildPreference(
+                service, initial, "fast", new[] { "damage", "fast", "damage" });
+            BuqiSupplyState heal = BuqiSupplyIntegration.ApplyBuildPreference(
+                service, fast, "heal", new[] { "sustain" });
+            Require(fast.TagMemory["fast"].PreferenceBps == 2000 &&
+                    fast.TagMemory["damage"].PreferenceBps == 2000,
+                "Archetype and build tags must feed the bounded pity memory exactly once.");
+            Require(heal.TagMemory["fast"].PreferenceBps == 1200 &&
+                    heal.TagMemory["heal"].PreferenceBps == 2000,
+                "A build pivot must decay old affinity and establish the new archetype.");
+            Require(!initial.TagMemory.Any(), "Preference integration must not mutate its source state.");
+
+            var shelf = new BuqiSupplyShelf
+            {
+                Offers = new List<BuqiSupplyDefinition>
+                {
+                    new BuqiSupplyDefinition { DefinitionId = "W8-003" },
+                    new BuqiSupplyDefinition { DefinitionId = "W8-007" },
+                },
+            };
+            Require(BuqiSupplyIntegration.GetOfferDefinitionIds(shelf)
+                    .SequenceEqual(new[] { "W8-003", "W8-007" }),
+                "Supply offers must bridge to formal encounter CandidateIds in order.");
         }
 
         private static void DeterministicFourSlotContract()
@@ -309,7 +436,7 @@ namespace Game.Hot.Buqi.Tests
                     };
                     Require(service.TryGenerate(request, state, 0,
                         out BuqiSupplyShelf shelf, out string error), error);
-                    BuqiSupplyDefinition picked = PickMissing(route, shelf.Offers, owned);
+                    BuqiSupplyDefinition? picked = PickMissing(route, shelf.Offers, owned);
                     sawCore |= shelf.Offers.Any(item => item.DefinitionId == $"{route}-core");
 
                     if (picked == null && day >= 4)
@@ -356,7 +483,7 @@ namespace Game.Hot.Buqi.Tests
                 ToRates(exactEcho));
         }
 
-        private static BuqiSupplyDefinition PickMissing(
+        private static BuqiSupplyDefinition? PickMissing(
             string route,
             IReadOnlyList<BuqiSupplyDefinition> offers,
             IReadOnlyList<BuqiSupplyDefinition> owned)

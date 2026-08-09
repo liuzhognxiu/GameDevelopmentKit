@@ -217,7 +217,7 @@ namespace Game.Hot.Buqi.Tests
                         DisplayName = id,
                         ArchetypeId = build,
                         Role = role,
-                        Size = (BuqiSize)(1 + (ordinal % 3)),
+                        Size = (Game.Hot.Buqi.Battle.BuqiSize)(1 + (ordinal % 3)),
                         UnlockDay = role == "finisher" || role == "economy" ? 7 : role == "core" ? 4 : 1,
                         BasePrice = 2,
                     };

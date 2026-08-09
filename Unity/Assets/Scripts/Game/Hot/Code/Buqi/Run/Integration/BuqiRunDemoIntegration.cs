@@ -132,45 +132,78 @@ namespace Game.Hot.Buqi.Run.Integration
             {
                 if (!string.Equals(readError, "Save file does not exist.", StringComparison.Ordinal))
                 {
-                    error = readError;
+                    error = "读取存档失败，为避免丢失进度，原存档已保留。";
                     return false;
                 }
 
-                return TryStartNewRun(out error);
+                return TryStartNewRunForInitialization(out error);
             }
 
-            if (!BuqiRunSaveCodec.TryFromJson(json, out BuqiRunSaveData saveData, out error))
+            if (!BuqiRunSaveCodec.TryFromJson(
+                    json,
+                    out BuqiRunSaveData saveData,
+                    out _,
+                    out BuqiRunSaveFailureKind failureKind,
+                    out bool wasMigrated))
+            {
+                if (failureKind == BuqiRunSaveFailureKind.UnsupportedVersion)
+                    return TryRecoverIncompatibleSave(out error);
+
+                error = "当前存档校验失败，为避免丢失进度，原存档已保留。";
                 return false;
-            if (!TryValidateContentVersion(saveData.ContentVersion, out error))
-                return false;
+            }
+
+            if (!TryValidateContentVersion(saveData.ContentVersion))
+                return TryRecoverIncompatibleSave(out error);
 
             if (saveData.PendingSettlement != null)
             {
                 BuqiRunSettlementResult resumed = m_SettlementCoordinator.ResumePendingSettlement();
                 if (!resumed.Success)
                 {
-                    error = resumed.FailureReason;
+                    error = "待结算进度暂时无法恢复，原存档已保留，请稍后重试。";
                     return false;
                 }
 
                 if (!m_Store.TryRead(out json, out readError))
                 {
-                    error = readError;
+                    error = "读取存档失败，为避免丢失进度，原存档已保留。";
                     return false;
                 }
 
-                if (!BuqiRunSaveCodec.TryFromJson(json, out saveData, out error))
+                if (!BuqiRunSaveCodec.TryFromJson(json, out saveData, out _, out _, out wasMigrated))
+                {
+                    error = "当前存档校验失败，为避免丢失进度，原存档已保留。";
                     return false;
-                if (!TryValidateContentVersion(saveData.ContentVersion, out error))
-                    return false;
+                }
+
+                if (!TryValidateContentVersion(saveData.ContentVersion))
+                    return TryRecoverIncompatibleSave(out error);
             }
 
-            return TryLoadFromSave(saveData, out error);
+            if (!TryLoadFromSave(saveData, out _))
+            {
+                error = "当前存档校验失败，为避免丢失进度，原存档已保留。";
+                return false;
+            }
+
+            if (wasMigrated && !m_Store.TryWrite(BuqiRunSaveCodec.ToJson(saveData), out _))
+            {
+                error = "更新旧存档失败，为避免丢失进度，原存档已保留。";
+                return false;
+            }
+
+            error = string.Empty;
+            return true;
         }
 
         public bool Restart(out string error)
         {
-            return TryStartNewRun(out error);
+            if (TryStartNewRun(out error))
+                return true;
+
+            error = "重新开始失败，请检查存档文件和磁盘空间。";
+            return false;
         }
 
         public bool TrySkipShopEncounter(out string error)
@@ -1241,15 +1274,26 @@ namespace Game.Hot.Buqi.Run.Integration
             }
         }
 
-        private bool TryValidateContentVersion(string contentVersion, out string error)
+        private bool TryValidateContentVersion(string contentVersion)
         {
-            if (string.Equals(contentVersion, m_Definitions.ContentVersion, StringComparison.Ordinal))
-            {
-                error = string.Empty;
-                return true;
-            }
+            return string.Equals(contentVersion, m_Definitions.ContentVersion, StringComparison.Ordinal);
+        }
 
-            error = $"Content version mismatch. Save has '{contentVersion}', expected '{m_Definitions.ContentVersion}'.";
+        private bool TryStartNewRunForInitialization(out string error)
+        {
+            if (TryStartNewRun(out error))
+                return true;
+
+            error = "创建新游戏失败，请检查存储空间和文件权限。";
+            return false;
+        }
+
+        private bool TryRecoverIncompatibleSave(out string error)
+        {
+            if (TryStartNewRun(out error))
+                return true;
+
+            error = "旧存档与当前版本不兼容，但创建新游戏失败；原存档已保留。";
             return false;
         }
 

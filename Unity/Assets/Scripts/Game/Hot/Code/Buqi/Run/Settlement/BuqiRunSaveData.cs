@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace Game.Hot.Buqi.Run.Settlement
 {
+    public enum BuqiRunSaveFailureKind
+    {
+        InvalidData = 0,
+        UnsupportedVersion = 1,
+    }
+
     [Serializable]
     public sealed class BuqiRunSaveData
     {

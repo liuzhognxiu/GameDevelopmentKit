@@ -13,6 +13,34 @@ namespace Game.Hot.Buqi.Tests
     public sealed class BuqiUIDemoControllerTests
     {
         [Test]
+        public void RestartDispatch_UsesSameCommandForErrorButtonAndTerminalShortcut()
+        {
+            int dispatchCount = 0;
+            Action restart = () => dispatchCount++;
+
+            Assert.That(
+                BuqiRestartPolicy.TryDispatch(true, BuqiUIDemoPhase.OperationChoice, restart),
+                Is.True);
+            Assert.That(
+                BuqiRestartPolicy.TryDispatch(false, BuqiUIDemoPhase.RunTerminal, restart),
+                Is.True);
+
+            Assert.That(dispatchCount, Is.EqualTo(2));
+        }
+
+        [Test]
+        public void RestartDispatch_IgnoresShortcutDuringNormalOperation()
+        {
+            int dispatchCount = 0;
+
+            Assert.That(
+                BuqiRestartPolicy.TryDispatch(false, BuqiUIDemoPhase.OperationChoice, () => dispatchCount++),
+                Is.False);
+
+            Assert.That(dispatchCount, Is.EqualTo(0));
+        }
+
+        [Test]
         public void Create_StartsInOperationChoiceWithoutLegacyTopLevelPhases()
         {
             BuqiUIDemoController controller = CreateController(new MemoryRunStore());

@@ -85,6 +85,36 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void RunShell_RestartButtonIsExplicitAndHiddenUntilAllowed()
+        {
+            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ShellPath);
+            Transform restartTransform = prefab.transform.Find("CommandBar/Restart");
+
+            Assert.That(restartTransform, Is.Not.Null);
+            Assert.That(restartTransform.gameObject.activeSelf, Is.False);
+            Assert.That(restartTransform.GetComponent<RectTransform>().sizeDelta.x, Is.GreaterThanOrEqualTo(120f));
+            Assert.That(
+                restartTransform.GetComponentInChildren<Text>(true).text,
+                Is.EqualTo("Buqi.RunShell.RestartTag"));
+        }
+
+        [Test]
+        public void RunShell_ClickAndRUseOneGuardedRestartPath()
+        {
+            string shellFormPath = Path.Combine(
+                Application.dataPath,
+                "Scripts/Game/Hot/Code/Buqi/UI/BuqiRunShellForm.cs");
+            string source = File.ReadAllText(shellFormPath);
+
+            Assert.That(source, Does.Contain("m_RestartButton?.onClick.AddListener(Restart)"));
+            Assert.That(source, Does.Contain("Input.GetKeyDown(KeyCode.R)"));
+            Assert.That(source, Does.Contain("BuqiRestartPolicy.TryDispatch"));
+            Assert.That(source, Does.Contain("RestartCore"));
+            Assert.That(source, Does.Contain("HideError();"));
+            Assert.That(source, Does.Contain("Render();"));
+        }
+
+        [Test]
         public void RunShell_DeploymentEntryIsAvailableOutsideBattleAndSettlementLocks()
         {
             System.Type shellType = typeof(BuqiUIDemoController).Assembly.GetType(

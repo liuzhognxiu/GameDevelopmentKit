@@ -277,8 +277,9 @@ namespace Game.Hot.Editor
 
             GameObject commands = CreatePanel(root.transform, "CommandBar", new Vector2(0f, -472f), new Vector2(1856f, 88f), surfaceColor);
             Button back = CreateButton(commands.transform, "Back", "<", new Vector2(-850f, 0f), new Vector2(64f, 52f), raisedColor, out _);
-            Button deploy = CreateButton(commands.transform, "ConfigureBoard", "Buqi.Deploy.Title", new Vector2(560f, 0f), new Vector2(196f, 52f), raisedColor, out _);
-            Button restart = CreateButton(commands.transform, "Restart", "重启", new Vector2(730f, 0f), new Vector2(64f, 52f), raisedColor, out _);
+            Button deploy = CreateButton(commands.transform, "ConfigureBoard", "Buqi.Deploy.Title", new Vector2(550f, 0f), new Vector2(180f, 52f), raisedColor, out _);
+            Button restart = CreateButton(commands.transform, "Restart", "Buqi.RunShell.RestartTag", new Vector2(706f, 0f), new Vector2(124f, 52f), raisedColor, out _);
+            restart.gameObject.SetActive(false);
             Button primary = CreateButton(commands.transform, "Primary", "继续", new Vector2(840f, 0f), new Vector2(132f, 52f), jadeColor, out Text primaryLabel);
 
             GameObject errorPanel = CreatePanel(root.transform, "ErrorPanel", Vector2.zero, new Vector2(760f, 240f), new Color32(88, 39, 39, 250));

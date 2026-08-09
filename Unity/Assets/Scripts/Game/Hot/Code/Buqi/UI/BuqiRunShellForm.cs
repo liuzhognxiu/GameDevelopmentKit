@@ -123,6 +123,8 @@ namespace Game.Hot.Buqi.UI
                 return;
             }
 
+            m_DemoCatalog = demoCatalog;
+
             if (!BuqiUIDemoController.TryCreate(demoCatalog, null, out BuqiUIDemoController controller, out error))
             {
                 m_Controller = null;
@@ -130,7 +132,6 @@ namespace Game.Hot.Buqi.UI
                 return;
             }
 
-            m_DemoCatalog = demoCatalog;
             m_Controller = controller;
             HideError();
             Render();
@@ -167,6 +168,12 @@ namespace Game.Hot.Buqi.UI
             base.OnDestroy();
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.R))
+                Restart();
+        }
+
         private void Submit(BuqiUIDemoCommand command)
         {
             if (m_Controller == null)
@@ -190,6 +197,9 @@ namespace Game.Hot.Buqi.UI
             SetText(m_StatusText, result.Accepted ? string.Empty : result.Reason);
             if (!result.Accepted)
                 return;
+
+            if (command.Type == BuqiUIDemoCommandType.Restart)
+                HideError();
 
             if (command.Type == BuqiUIDemoCommandType.OpenDragDeploy)
             {
@@ -281,7 +291,37 @@ namespace Game.Hot.Buqi.UI
 
         private void Restart()
         {
-            Submit(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.Restart });
+            BuqiUIDemoPhase? phase = m_Controller == null ? (BuqiUIDemoPhase?)null : m_Controller.View.Phase;
+            BuqiRestartPolicy.TryDispatch(
+                m_ErrorPanel != null && m_ErrorPanel.activeSelf,
+                phase,
+                RestartCore);
+        }
+
+        private void RestartCore()
+        {
+            if (m_Controller != null)
+            {
+                Submit(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.Restart });
+                return;
+            }
+
+            if (m_DemoCatalog == null ||
+                !BuqiUIDemoController.TryCreateNewRun(
+                    m_DemoCatalog,
+                    null,
+                    out BuqiUIDemoController controller,
+                    out string error))
+            {
+                ShowError(string.IsNullOrEmpty(error)
+                    ? "重新开始失败，请检查存档文件和磁盘空间。"
+                    : error);
+                return;
+            }
+
+            m_Controller = controller;
+            HideError();
+            Render();
         }
 
         private void Render()
@@ -300,6 +340,8 @@ namespace Game.Hot.Buqi.UI
             SetText(m_ContextTitleText, view.ContextTitle);
             SetText(m_ContextBodyText, view.ContextBody);
             SetText(m_PrimaryLabel, view.PrimaryCommandLabel);
+            SetText(m_RestartButton?.GetComponentInChildren<Text>(), "↻");
+            m_RestartButton?.gameObject.SetActive(BuqiRestartPolicy.CanRestart(false, view.Phase));
             if (m_PrimaryButton != null)
                 m_PrimaryButton.gameObject.SetActive(!string.IsNullOrEmpty(view.PrimaryCommandLabel));
             if (m_DeployButton != null)
@@ -487,12 +529,15 @@ namespace Game.Hot.Buqi.UI
         private void ShowError(string error)
         {
             m_ErrorPanel?.SetActive(true);
+            SetText(m_RestartButton?.GetComponentInChildren<Text>(), "↻");
+            m_RestartButton?.gameObject.SetActive(true);
             SetText(m_ErrorText, BuqiPlayerText.Error(error));
         }
 
         private void HideError()
         {
             m_ErrorPanel?.SetActive(false);
+            m_RestartButton?.gameObject.SetActive(false);
             SetText(m_ErrorText, string.Empty);
         }
 

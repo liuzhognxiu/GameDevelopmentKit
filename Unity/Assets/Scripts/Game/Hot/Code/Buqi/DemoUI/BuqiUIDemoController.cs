@@ -41,6 +41,25 @@ namespace Game.Hot.Buqi.DemoUI
             out BuqiUIDemoController controller,
             out string error)
         {
+            return TryCreateCore(catalog, options, false, out controller, out error);
+        }
+
+        public static bool TryCreateNewRun(
+            BuqiUIDemoCatalog catalog,
+            BuqiUIDemoControllerOptions options,
+            out BuqiUIDemoController controller,
+            out string error)
+        {
+            return TryCreateCore(catalog, options, true, out controller, out error);
+        }
+
+        private static bool TryCreateCore(
+            BuqiUIDemoCatalog catalog,
+            BuqiUIDemoControllerOptions options,
+            bool startNewRun,
+            out BuqiUIDemoController controller,
+            out string error)
+        {
             controller = null;
             if (catalog == null)
             {
@@ -51,7 +70,10 @@ namespace Game.Hot.Buqi.DemoUI
             try
             {
                 var orchestrator = new BuqiRunDemoOrchestrator(catalog, options);
-                if (!orchestrator.TryInitialize(out error))
+                bool initialized = startNewRun
+                    ? orchestrator.Restart(out error)
+                    : orchestrator.TryInitialize(out error);
+                if (!initialized)
                     return false;
 
                 controller = new BuqiUIDemoController(catalog, orchestrator);

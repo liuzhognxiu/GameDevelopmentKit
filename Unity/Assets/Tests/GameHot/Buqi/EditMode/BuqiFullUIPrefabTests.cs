@@ -105,9 +105,15 @@ namespace Game.Hot.Buqi.Tests
                 Application.dataPath,
                 "Scripts/Game/Hot/Code/Buqi/UI/BuqiRunShellForm.cs");
             string source = File.ReadAllText(shellFormPath);
+            string assemblyDefinition = File.ReadAllText(Path.Combine(
+                Application.dataPath,
+                "Scripts/Game/Hot/Code/Game.Hot.Code.asmdef"));
 
             Assert.That(source, Does.Contain("m_RestartButton?.onClick.AddListener(Restart)"));
-            Assert.That(source, Does.Contain("Input.GetKeyDown(KeyCode.R)"));
+            Assert.That(source, Does.Contain("using UnityEngine.InputSystem;"));
+            Assert.That(source, Does.Contain("Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame"));
+            Assert.That(source, Does.Not.Contain("Input.GetKeyDown(KeyCode.R)"));
+            Assert.That(assemblyDefinition, Does.Contain("\"Unity.InputSystem\""));
             Assert.That(source, Does.Contain("BuqiRestartPolicy.TryDispatch"));
             Assert.That(source, Does.Contain("RestartCore"));
             Assert.That(source, Does.Contain("HideError();"));

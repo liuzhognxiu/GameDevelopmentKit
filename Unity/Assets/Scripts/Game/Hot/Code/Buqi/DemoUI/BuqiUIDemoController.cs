@@ -75,6 +75,8 @@ namespace Game.Hot.Buqi.DemoUI
                     : orchestrator.TryInitialize(out error);
                 if (!initialized)
                     return false;
+                if (!orchestrator.TrySynchronizeBazaar(out error))
+                    return false;
 
                 controller = new BuqiUIDemoController(catalog, orchestrator);
                 error = string.Empty;

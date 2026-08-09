@@ -9,6 +9,7 @@ using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityGameFramework.Runtime;
 
@@ -194,7 +195,7 @@ namespace Game.Hot.Buqi.UI
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
                 Restart();
         }
 

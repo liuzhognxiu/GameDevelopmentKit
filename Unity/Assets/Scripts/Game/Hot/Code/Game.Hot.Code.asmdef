@@ -25,6 +25,7 @@
         "LitMotion.Extensions",
         "LitMotion.Animation",
         "LoopScrollRect.Runtime",
+        "Unity.InputSystem",
         "Protobuf"
     ],
     "includePlatforms": [],

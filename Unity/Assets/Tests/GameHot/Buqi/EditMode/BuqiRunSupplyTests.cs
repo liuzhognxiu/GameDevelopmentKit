@@ -9,5 +9,17 @@ namespace Game.Hot.Buqi.Tests
         {
             Assert.That(BuqiSupplyTestSuite.RunAll(), Is.Empty);
         }
+
+        [Test]
+        public void ProductionBazaarSupplyContractsPass()
+        {
+            Assert.That(BuqiBazaarSupplyViewSourceTestSuite.RunAll(), Is.Empty);
+        }
+
+        [Test]
+        public void ProductionBazaarRunContractsPass()
+        {
+            Assert.That(BuqiBazaarSupplyRunIntegrationTestSuite.Main(), Is.Zero);
+        }
     }
 }

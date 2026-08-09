@@ -4,12 +4,14 @@ using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.Run.Core;
+using BattleSize = Game.Hot.Buqi.Battle.BuqiSize;
 
 namespace Game.Hot.Buqi.Tests
 {
     public static class BuqiBazaarSupplyViewSourceTestSuite
     {
-        private const int ContractCount = 6;
+        private const int ContractCount = 8;
 
         public static List<string> RunAll()
         {
@@ -18,6 +20,8 @@ namespace Game.Hot.Buqi.Tests
             Run("constrained-shelf-contract", ConstrainedShelfContract, failures);
             Run("preference-contract", PreferenceContract, failures);
             Run("refresh-contract", RefreshContract, failures);
+            Run("restore-contract", RestoreContract, failures);
+            Run("merchant-availability-contract", MerchantAvailabilityContract, failures);
             Run("purchase-view-contract", PurchaseViewContract, failures);
             Run("restore-rollback-contract", RestoreRollbackContract, failures);
             return failures;
@@ -183,6 +187,53 @@ namespace Game.Hot.Buqi.Tests
                 "Restoring the opening shelf must reset the refresh count.");
         }
 
+        private static void RestoreContract()
+        {
+            Require(BuqiBazaarSupplyViewSource.TryCreate(
+                CreateCatalog(), out BuqiBazaarSupplyViewSource source, out string error), error);
+            BuqiBazaarSupplyContext context = Context(8821, 6, 1, 30, "heal-13", "heal-14");
+            Require(source.TryOpen(context, out IReadOnlyList<string> initial, out error), error);
+
+            Require(source.TryRefresh(context, out IReadOnlyList<string> refreshed, out int cost, out error), error);
+            Require(!refreshed.SequenceEqual(initial), "The test seed must produce a different refreshed shelf.");
+            context.Balance -= cost;
+
+            Require(source.TryRestore(context, initial, out error), error);
+            Require(source.TryGetCurrentSupply(out BuqiBazaarSupplyView restored),
+                "A restored shelf must remain visible.");
+            Require(restored.OfferIds.SequenceEqual(initial) && restored.RefreshCount == 0,
+                "Restoring an earlier saved shelf must reset the deterministic refresh sequence.");
+            Require(restored.Balance == context.Balance,
+                "Restoration must preserve the authoritative persisted balance.");
+        }
+
+        private static void MerchantAvailabilityContract()
+        {
+            BuqiConfigCatalog catalog = CreateCatalog();
+            BuqiMerchantConfigRow constrained = catalog.Merchants[0];
+            constrained.Weight = 100000;
+            constrained.PoolItemIds.Clear();
+            constrained.PoolItemIds.AddRange(catalog.Items
+                .Where(item => item.UnlockDay == 1)
+                .Take(3)
+                .Concat(catalog.Items.Where(item => item.UnlockDay == 7).Take(2))
+                .Select(item => item.DefinitionId));
+
+            for (int seed = 1; seed <= 64; seed++)
+            {
+                Require(BuqiBazaarSupplyViewSource.TryCreate(
+                    catalog, out BuqiBazaarSupplyViewSource source, out string error), error);
+                Require(source.TryOpen(
+                    Context(seed, 1, 0, 20), out IReadOnlyList<string> offers, out error), error);
+                Require(offers.Count == 4,
+                    "An eligible early merchant must still provide four distinct offers.");
+                Require(source.TryGetCurrentSupply(out BuqiBazaarSupplyView view),
+                    "The replacement merchant must expose view metadata.");
+                Require(view.MerchantId != constrained.MerchantId,
+                    "A merchant with fewer than four day-unlocked pool items must be ineligible.");
+            }
+        }
+
         private static BuqiBazaarSupplyContext Context(
             long seed,
             int day,
@@ -200,9 +251,16 @@ namespace Game.Hot.Buqi.Tests
             };
         }
 
-        private static BuqiConfigCatalog CreateCatalog()
+        internal static BuqiConfigCatalog CreateCatalog()
         {
-            var catalog = new BuqiConfigCatalog();
+            var catalog = new BuqiConfigCatalog
+            {
+                Global = new BuqiGlobalConfigRow
+                {
+                    ContentVersion = "bazaar-supply-contract-v1",
+                    BoardSlotCount = BuqiRunRules.BoardSlotCount,
+                },
+            };
             string[] builds = { "fast", "buffer", "heal", "chain", "poison", "burn", "shared" };
             string[] roles = { "starter", "core", "bridge", "counter", "economy", "finisher" };
             int ordinal = 1;
@@ -217,9 +275,10 @@ namespace Game.Hot.Buqi.Tests
                         DisplayName = id,
                         ArchetypeId = build,
                         Role = role,
-                        Size = (BuqiSize)(1 + (ordinal % 3)),
+                        Size = (BattleSize)(1 + (ordinal % 3)),
                         UnlockDay = role == "finisher" || role == "economy" ? 7 : role == "core" ? 4 : 1,
                         BasePrice = 2,
+                        BaseCooldownTicks = 20 + ordinal,
                     };
                     item.Tags.Add(build);
                     item.Tags.Add(role);
@@ -235,7 +294,59 @@ namespace Game.Hot.Buqi.Tests
             AddMerchant(catalog, "merchant-ledger", 4, 9, 70, "fast", "buffer", "heal", "shared");
             AddMerchant(catalog, "merchant-grades", 4, 9, 65, "fast", "buffer", "heal", "chain");
             AddMerchant(catalog, "merchant-summit", 7, 9, 55, "fast", "buffer", "heal", "burn");
+
+            for (int index = 1; index <= 3; index++)
+            {
+                catalog.Refinements.Add(new BuqiRefinementConfigRow
+                {
+                    RefinementId = $"refinement-{index}",
+                    DisplayName = $"Refinement {index}",
+                    Summary = $"Refinement summary {index}",
+                });
+            }
+
+            string[] opponentArchetypes =
+            {
+                "fast", "buffer", "chain", "heal", "poison", "burn", "freeze", "overload",
+            };
+            List<BuqiItemConfigRow> opponentItems = catalog.Items
+                .Where(item => item.Size == BattleSize.S)
+                .Take(2)
+                .ToList();
+            foreach (string archetype in opponentArchetypes)
+            {
+                catalog.Echoes.Add(Echo($"echo-{archetype}-lesson", archetype, opponentItems));
+                catalog.Echoes.Add(Echo($"echo-{archetype}-early", archetype, opponentItems));
+            }
             return catalog;
+        }
+
+        private static BuqiEchoConfigRow Echo(
+            string echoId,
+            string archetypeId,
+            IReadOnlyList<BuqiItemConfigRow> items)
+        {
+            var snapshot = new BuqiBuildSnapshotConfigRow
+            {
+                SnapshotId = echoId + "-snapshot",
+                ArchetypeId = archetypeId,
+            };
+            for (int index = 0; index < items.Count; index++)
+            {
+                snapshot.Items.Add(new BuqiItemInstanceConfigRow
+                {
+                    InstanceId = $"{echoId}-item-{index + 1}",
+                    DefinitionId = items[index].DefinitionId,
+                    AnchorSlot = index * 2,
+                });
+            }
+            return new BuqiEchoConfigRow
+            {
+                EchoId = echoId,
+                DisplayName = echoId,
+                Build = archetypeId,
+                Snapshot = snapshot,
+            };
         }
 
         private static void AddMerchant(

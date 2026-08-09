@@ -6,6 +6,7 @@ using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.Run.Economy;
 using Game.Hot.Buqi.UI;
 using Game.Hot.Buqi.UI.Stages;
+using Game.Hot.Buqi.UI.Widgets;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -115,6 +116,97 @@ namespace Game.Hot.Buqi.Tests
                 Assert.That(meta.text, Does.Contain("刷新 7"));
                 Assert.That(meta.text, Does.Contain("余额 19"));
                 Assert.That(actionLabel.text, Does.Contain("破阵"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
+        [Test]
+        public void BazaarWidgets_ExposeCommandDropBindingsForPersistentSale()
+        {
+            MethodInfo bindCommand = typeof(BuqiSellZoneWidget).GetMethod(
+                "BindCommand",
+                new[] { typeof(string), typeof(int), typeof(Action<string>) });
+            FieldInfo sellZone = typeof(ShopWidget).GetField(
+                "m_SellZone",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            FieldInfo boardItems = typeof(ShopWidget).GetField(
+                "m_BoardItems",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+
+            Assert.That(bindCommand, Is.Not.Null);
+            Assert.That(sellZone?.FieldType, Is.EqualTo(typeof(BuqiSellZoneWidget)));
+            Assert.That(boardItems?.FieldType, Is.EqualTo(typeof(BuqiDraggableItemWidget[])));
+        }
+
+        [Test]
+        public void CommandSellZoneDropsOnlyOnceAndCancelDoesNotSubmit()
+        {
+            var owner = new GameObject("CommandSellZone", typeof(RectTransform));
+            var sellZone = owner.AddComponent<BuqiSellZoneWidget>();
+            var droppedIds = new List<string>();
+            try
+            {
+                sellZone.BindCommand("board-blade", 3, droppedIds.Add);
+                sellZone.OnPointerEnter(null);
+                sellZone.OnDrop(null);
+                sellZone.OnDrop(null);
+
+                sellZone.BindCommand("board-shield", 2, droppedIds.Add);
+                sellZone.Cancel();
+                sellZone.OnPointerEnter(null);
+                sellZone.OnDrop(null);
+
+                Assert.That(droppedIds, Is.EqualTo(new[] { "board-blade" }));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
+        [Test]
+        public void ShopBoardDragDropsSellItemCommandWithInstanceId()
+        {
+            var owner = new GameObject("ShopSell", typeof(RectTransform));
+            var widget = owner.AddComponent<ShopWidget>();
+            var sellZoneOwner = new GameObject("SellZone", typeof(RectTransform));
+            sellZoneOwner.transform.SetParent(owner.transform, false);
+            var sellZone = sellZoneOwner.AddComponent<BuqiSellZoneWidget>();
+            var itemOwner = new GameObject("BoardItem", typeof(RectTransform));
+            itemOwner.transform.SetParent(owner.transform, false);
+            var itemWidget = itemOwner.AddComponent<BuqiDraggableItemWidget>();
+            BuqiUIDemoCommand submitted = null;
+            try
+            {
+                SetPrivate(widget, "m_SellZone", sellZone);
+                SetPrivate(widget, "m_BoardItems", new[] { itemWidget });
+                widget.Render(new BuqiUIDemoView
+                {
+                    Phase = BuqiUIDemoPhase.Shop,
+                    ShopOffers = Array.Empty<BuqiDemoOfferView>(),
+                    BoardSlots = new[]
+                    {
+                        new BuqiDemoItemView
+                        {
+                            Id = "board-blade",
+                            Name = "Blade",
+                            Size = 1,
+                            Price = 6,
+                            Slot = 0,
+                        },
+                    },
+                }, command => submitted = command);
+
+                itemWidget.OnBeginDrag(null);
+                sellZone.OnPointerEnter(null);
+                sellZone.OnDrop(null);
+
+                Assert.That(submitted, Is.Not.Null);
+                Assert.That(submitted.Type, Is.EqualTo(BuqiUIDemoCommandType.SellItem));
+                Assert.That(submitted.PrimaryId, Is.EqualTo("board-blade"));
             }
             finally
             {

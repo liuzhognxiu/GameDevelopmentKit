@@ -28,6 +28,10 @@ namespace Game.Hot.Buqi.UI.Widgets
         private BuqiSellDragSession m_Session;
         private Func<BuqiRunEconomySnapshot> m_CurrentSnapshot;
         private Action<BuqiRunEconomyResult> m_Settled;
+        private string m_CommandInstanceId = string.Empty;
+        private int m_CommandRefund;
+        private Action<string> m_CommandDropped;
+        private bool m_CommandOver;
 
         public void Bind(
             BuqiSellDragSession session,
@@ -41,9 +45,19 @@ namespace Game.Hot.Buqi.UI.Widgets
             RenderPreview();
         }
 
+        public void BindCommand(string instanceId, int expectedRefund, Action<string> dropped)
+        {
+            Clear();
+            m_CommandInstanceId = instanceId ?? string.Empty;
+            m_CommandRefund = Math.Max(0, expectedRefund);
+            m_CommandDropped = dropped;
+            RenderPreview();
+        }
+
         public void Cancel()
         {
             m_Session?.Cancel();
+            ClearCommand();
             RenderPreview();
         }
 
@@ -53,6 +67,7 @@ namespace Game.Hot.Buqi.UI.Widgets
             m_Session = null;
             m_CurrentSnapshot = null;
             m_Settled = null;
+            ClearCommand();
             if (m_Background != null)
                 m_Background.color = normalColor;
             m_RefundPreview?.SetActive(false);
@@ -62,19 +77,24 @@ namespace Game.Hot.Buqi.UI.Widgets
         public void OnPointerEnter(PointerEventData eventData)
         {
             m_Session?.SetOverSellZone(true);
+            m_CommandOver = hasCommand;
             RenderPreview();
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             m_Session?.SetOverSellZone(false);
+            m_CommandOver = false;
             RenderPreview();
         }
 
         public void OnDrop(PointerEventData eventData)
         {
             if (m_Session == null || m_CurrentSnapshot == null)
+            {
+                DropCommand();
                 return;
+            }
 
             BuqiRunEconomyResult result = m_Session.Drop(m_CurrentSnapshot());
             Action<BuqiRunEconomyResult> settled = m_Settled;
@@ -87,15 +107,41 @@ namespace Game.Hot.Buqi.UI.Widgets
 
         private void RenderPreview()
         {
-            bool visible = m_Session != null && m_Session.PreviewVisible;
+            bool sessionVisible = m_Session != null && m_Session.PreviewVisible;
+            bool commandVisible = hasCommand && m_CommandOver;
+            bool visible = sessionVisible || commandVisible;
+            int refund = sessionVisible ? m_Session.ExpectedRefund : m_CommandRefund;
             if (m_Background != null)
                 m_Background.color = visible ? previewColor : normalColor;
             m_RefundPreview?.SetActive(visible);
             SetText(
                 m_RefundText,
                 visible
-                    ? GameFramework.Utility.Text.Format("Refund {0}", m_Session.ExpectedRefund)
+                    ? GameFramework.Utility.Text.Format("Refund {0}", refund)
                     : string.Empty);
+        }
+
+        private bool hasCommand =>
+            !string.IsNullOrEmpty(m_CommandInstanceId) && m_CommandDropped != null;
+
+        private void DropCommand()
+        {
+            if (!hasCommand || !m_CommandOver)
+                return;
+
+            string instanceId = m_CommandInstanceId;
+            Action<string> dropped = m_CommandDropped;
+            ClearCommand();
+            RenderPreview();
+            dropped(instanceId);
+        }
+
+        private void ClearCommand()
+        {
+            m_CommandInstanceId = string.Empty;
+            m_CommandRefund = 0;
+            m_CommandDropped = null;
+            m_CommandOver = false;
         }
 
         private static void SetText(Text text, string value)

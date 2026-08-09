@@ -63,6 +63,8 @@ namespace Game.Hot.Buqi.UI.Stages
                 Action<BuqiUIDemoCommand> callback = submit;
                 button.onClick.AddListener(() => callback?.Invoke(command));
             }
+
+            CompleteRender(view, submit);
         }
 
         public void Clear()
@@ -79,6 +81,10 @@ namespace Game.Hot.Buqi.UI.Stages
         protected abstract void ConfigureActions(BuqiUIDemoView view);
 
         protected virtual void Prepare(BuqiUIDemoView view)
+        {
+        }
+
+        protected virtual void CompleteRender(BuqiUIDemoView view, Action<BuqiUIDemoCommand> submit)
         {
         }
 

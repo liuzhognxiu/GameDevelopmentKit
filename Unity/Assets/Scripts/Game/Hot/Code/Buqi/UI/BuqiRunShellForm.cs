@@ -81,6 +81,7 @@ namespace Game.Hot.Buqi.UI
         private BuqiUIDemoController m_Controller;
         private BuqiStageWidgetRegistry m_Registry;
         private bool m_OpeningBattle;
+        private int? m_ItemDetailSerialId;
 
 #if UNITY_2017_3_OR_NEWER
         protected override void OnInit(object userData)
@@ -104,8 +105,10 @@ namespace Game.Hot.Buqi.UI
         {
             base.OnOpen(userData);
             m_OpeningBattle = false;
+            m_ItemDetailSerialId = null;
             m_DemoCatalog = null;
             BindBazaarSupplySource((userData as BuqiRunShellOpenData)?.BazaarSupplySource);
+            BindShopItemDetails(ShowItemDetails, HideItemDetails);
             if (!TryResolveCatalog(userData, out m_Catalog, out string error))
             {
                 m_Controller = null;
@@ -139,6 +142,7 @@ namespace Game.Hot.Buqi.UI
         protected internal override void OnClose(bool isShutdown, object userData)
 #endif
         {
+            HideItemDetails();
             m_Registry?.Clear();
             foreach (ResourceChipWidget chip in m_ResourceChips)
                 chip?.Clear();
@@ -148,6 +152,7 @@ namespace Game.Hot.Buqi.UI
             m_DemoCatalog = null;
             m_Catalog = null;
             BindBazaarSupplySource(null);
+            BindShopItemDetails(null, null);
             m_OpeningBattle = false;
             SetText(m_StatusText, string.Empty);
             base.OnClose(isShutdown, userData);
@@ -320,6 +325,37 @@ namespace Game.Hot.Buqi.UI
                 if (component is ShopWidget shop)
                     shop.BindSupplySource(supplySource);
             }
+        }
+
+        private void BindShopItemDetails(Action<BuqiDemoItemView> show, Action hide)
+        {
+            foreach (MonoBehaviour component in m_StageComponents)
+            {
+                if (component is ShopWidget shop)
+                    shop.BindItemDetails(show, hide);
+            }
+        }
+
+        private void ShowItemDetails(BuqiDemoItemView item)
+        {
+            if (item == null)
+                return;
+
+            HideItemDetails();
+            m_ItemDetailSerialId = GameEntry.UI.OpenUIForm(UIFormId.BuqiItemDetailForm, new BuqiItemDetailOpenData
+            {
+                Item = item,
+                FullEffectText = item.Description,
+            });
+        }
+
+        private void HideItemDetails()
+        {
+            if (!m_ItemDetailSerialId.HasValue)
+                return;
+
+            GameEntry.UI.TryCloseUIForm(m_ItemDetailSerialId.Value);
+            m_ItemDetailSerialId = null;
         }
 
         private void RenderResources(BuqiUIDemoView view)

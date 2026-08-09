@@ -133,6 +133,38 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void ApplyDeployment_DuringPveSelectionKeepsChoicesAndCanStartBattle()
+        {
+            BuqiUIDemoController controller = CreateController(new MemoryRunStore());
+            SelectOperation(controller, "meditate");
+            SelectOperation(controller, "meditate");
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PveSelection));
+
+            string[] choiceIds = controller.View.Choices.Select(choice => choice.Id).ToArray();
+            BuqiDemoItemView source = controller.View.BoardSlots.First(slot => !slot.Empty);
+            var board = EmptySlots(8);
+            board[3] = source.Id;
+
+            BuqiUIDemoCommandResult deployment = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.ApplyDeployment,
+                Deployment = new BuqiDeploymentSnapshot(board, EmptySlots(8)),
+            });
+
+            Assert.That(deployment.Accepted, Is.True, deployment.Reason);
+            Assert.That(controller.View.Choices.Select(choice => choice.Id), Is.EqualTo(choiceIds));
+
+            BuqiUIDemoCommandResult selected = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectPveDifficulty,
+                PrimaryId = choiceIds[0],
+            });
+
+            Assert.That(selected.Accepted, Is.True, selected.Reason);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleReplay));
+        }
+
+        [Test]
         public void Bazaar_AllowsMultiplePurchasesAndRefreshesOffersInventoryAndCoins()
         {
             var store = new MemoryRunStore();

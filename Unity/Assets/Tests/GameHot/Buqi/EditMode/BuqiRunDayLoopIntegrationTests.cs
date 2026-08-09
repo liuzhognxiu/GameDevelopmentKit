@@ -227,23 +227,34 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void DeploymentCommand_DuringPveSelectionIsRejectedAndLeavesStateUnchanged()
+        public void DeploymentCommand_DuringPveSelectionRefreshesSnapshotAndAllowsBattle()
         {
             var store = new MemoryRunStore();
             BuqiUIDemoController controller = CreateController(store);
             AdvanceUntilPhase(controller, BuqiUIDemoPhase.PveSelection);
-            RunFingerprint before = CaptureRuntime(controller);
-            string jsonBefore = store.CurrentJson;
-            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            string[] choiceIds = controller.View.Choices.Select(choice => choice.Id).ToArray();
+            string instanceId = controller.View.BoardSlots.First(slot => !slot.Empty).Id;
+            var board = Enumerable.Repeat(string.Empty, 8).ToList();
+            board[3] = instanceId;
+
+            BuqiUIDemoCommandResult deployment = controller.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.ApplyDeployment,
-                Deployment = BuildDeploymentSnapshot(controller),
+                Deployment = new BuqiDeploymentSnapshot(
+                    board,
+                    Enumerable.Repeat(string.Empty, 8).ToList()),
             });
 
-            Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Does.Contain("current phase").IgnoreCase);
-            Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
-            Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
+            Assert.That(deployment.Accepted, Is.True, deployment.Reason);
+            Assert.That(controller.View.Choices.Select(choice => choice.Id), Is.EqualTo(choiceIds));
+
+            BuqiUIDemoCommandResult selected = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectPveDifficulty,
+                PrimaryId = choiceIds[0],
+            });
+            Assert.That(selected.Accepted, Is.True, selected.Reason);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleReplay));
         }
 
         [Test]

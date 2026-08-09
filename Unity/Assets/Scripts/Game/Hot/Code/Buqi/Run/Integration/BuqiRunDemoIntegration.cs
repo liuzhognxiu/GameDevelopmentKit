@@ -474,6 +474,12 @@ namespace Game.Hot.Buqi.Run.Integration
             BuqiRunDemoState working = m_State.Clone();
             working.Economy.Run.BoardInstanceIds = new List<string>(normalizedBoard);
             working.Economy.Run.StorageInstanceIds = new List<string>(storage);
+            if (working.Presentation == BuqiRunDemoPresentation.PveSelection)
+            {
+                working.PveSelection = null;
+                if (!EnsureCurrentContent(working, true, out error))
+                    return false;
+            }
             return TryCommitState(working, out error);
         }
 

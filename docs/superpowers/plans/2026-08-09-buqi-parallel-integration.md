@@ -52,7 +52,9 @@
 - [x] Keep newer main versions where differences are formatting/analyzer or Unity `.meta` adaptations; do not duplicate cherry-picks.
 - [x] Run content counts `42/8/4/12/24/72`, event/training 17 tests, link 12 tests, and 1,000-build link stress.
 
-**Known follow-up:** The merchant supply source is now connected to the Demo shop and covered by source contracts plus controller contracts. The rich event/training engines remain present and tested, but the Demo controller still uses its legacy event encounter path; runtime event/training adapter work remains separate.
+**Current integration:** Commit `7b647e02` merges the 300-item catalog, authored item descriptions, merchant supply transactions, Chinese localization, and button-only restart flow into `codex/UnityCode`. Demo keyboard/controller input is intentionally deferred; restart remains available through the UI button.
+
+**Known follow-up:** The merchant supply source is connected to the Demo shop and covered by source, controller, and persistence contracts. The rich event/training engines and operation adapter are present and tested, but the Demo controller still uses its legacy event encounter path; connecting the adapter to the player-facing operation UI remains separate.
 
 ### Task 5: Export, build, and Unity QA
 
@@ -60,6 +62,6 @@
 - [x] Build `Game.Hot.Code`, `Game.Hot.Editor`, and `Game.Hot.Buqi.Tests` with zero errors.
 - [ ] Read the installed AgentBridge `AGENT.md`, obtain runtime commands with `list_commands`, run `BuqiFullUIBuilder.BuildAll`, and execute full Buqi EditMode tests.
 - [ ] In Play Mode verify visible Chinese, incompatible-save restart, repeated buying with visible balance, drag-to-sell, board swapping, event/training flow, supply behavior, eight-slot links, nine-day progression, and tribulation entry.
-- [ ] Commit only the intended integration files and generated Prefab/meta changes after reviewing `git diff --check` and the staged file list.
+- [x] Commit the reviewed integration as `7b647e02`; `git diff --check` findings are limited to intentional Markdown hard breaks and Luban-generated whitespace.
 
 **Blocked verification:** AgentBridge instructions were read, but the active coordination constraint prohibits starting or driving Unity/AgentBridge. The remaining EditMode and Play Mode checks must wait for that constraint to be lifted.

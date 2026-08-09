@@ -201,6 +201,11 @@ namespace Game.Hot.Buqi.Run.Integration
                 error = "Offer is not available in the frozen shop.";
                 return false;
             }
+            if (m_State.Encounter.PurchasedCandidateIds.Contains(definitionId))
+            {
+                error = "Offer has already been purchased.";
+                return false;
+            }
 
             BuqiRunEconomyResult purchase = m_EconomyService.Purchase(m_State.Economy, definitionId);
             if (!purchase.Success)
@@ -211,12 +216,37 @@ namespace Game.Hot.Buqi.Run.Integration
 
             BuqiRunDemoState working = m_State.Clone();
             working.Economy = purchase.Snapshot;
+            working.Encounter.PurchasedCandidateIds.Add(definitionId);
             working.LastResolutionId = definitionId;
-            return TryResolveEncounterCommand(
-                working,
-                CreateCommandId(m_State.Economy.Run, "shop-buy", definitionId),
-                definitionId,
-                out error);
+            return TryCommitState(working, out error);
+        }
+
+        public bool TrySellBoardItem(string instanceId, out string error)
+        {
+            if (!IsEncounterShop(m_State))
+            {
+                error = "Current phase is not a shop encounter.";
+                return false;
+            }
+
+            BuqiRunSellQuote quote = m_EconomyService.QuoteBoardSale(m_State.Economy, instanceId);
+            if (!quote.Success)
+            {
+                error = quote.FailureReason;
+                return false;
+            }
+
+            BuqiRunEconomyResult sale = m_EconomyService.SellQuoted(m_State.Economy, quote);
+            if (!sale.Success)
+            {
+                error = sale.FailureReason;
+                return false;
+            }
+
+            BuqiRunDemoState working = m_State.Clone();
+            working.Economy = sale.Snapshot;
+            working.LastResolutionId = instanceId;
+            return TryCommitState(working, out error);
         }
 
         public bool TryResolveEvent(string eventId, out string error)
@@ -282,7 +312,7 @@ namespace Game.Hot.Buqi.Run.Integration
                 return false;
             }
 
-            if (m_State.Economy.Run.Phase != BuqiRunPhase.Encounter)
+            if (!BuqiUIDemoController.CanConfigureDeployment(CurrentViewPhase(m_State)))
             {
                 error = "Deployment is not available in the current phase.";
                 return false;
@@ -1450,6 +1480,7 @@ namespace Game.Hot.Buqi.Run.Integration
                 SelectedChoiceId = encounter.SelectedChoiceId ?? string.Empty,
             };
             payload.CandidateIds.AddRange(encounter.CandidateIds);
+            payload.PurchasedCandidateIds.AddRange(encounter.PurchasedCandidateIds);
             return JsonUtility.ToJson(payload);
         }
 
@@ -1534,6 +1565,27 @@ namespace Game.Hot.Buqi.Run.Integration
                 candidateIds.Add(candidateId);
             }
 
+            var purchasedCandidateIds = new List<string>();
+            var seenPurchasedCandidateIds = new HashSet<string>(StringComparer.Ordinal);
+            if (payload.PurchasedCandidateIds != null)
+            {
+                foreach (string purchasedCandidateId in payload.PurchasedCandidateIds)
+                {
+                    if (!seenCandidateIds.Contains(purchasedCandidateId))
+                    {
+                        error = $"Encounter payload purchased unknown candidate id '{purchasedCandidateId}'.";
+                        return false;
+                    }
+                    if (!seenPurchasedCandidateIds.Add(purchasedCandidateId))
+                    {
+                        error = $"Encounter payload duplicates purchased candidate id '{purchasedCandidateId}'.";
+                        return false;
+                    }
+
+                    purchasedCandidateIds.Add(purchasedCandidateId);
+                }
+            }
+
             encounter = new BuqiRunEncounterState
             {
                 EncounterId = payload.EncounterId,
@@ -1545,6 +1597,7 @@ namespace Game.Hot.Buqi.Run.Integration
                 ResolutionId = payload.ResolutionId ?? string.Empty,
                 SelectedChoiceId = payload.SelectedChoiceId ?? string.Empty,
                 CandidateIds = candidateIds,
+                PurchasedCandidateIds = purchasedCandidateIds,
             };
             return true;
         }
@@ -2146,6 +2199,7 @@ namespace Game.Hot.Buqi.Run.Integration
             public string ResolutionId = string.Empty;
             public string SelectedChoiceId = string.Empty;
             public List<string> CandidateIds = new List<string>();
+            public List<string> PurchasedCandidateIds = new List<string>();
         }
 
         [Serializable]

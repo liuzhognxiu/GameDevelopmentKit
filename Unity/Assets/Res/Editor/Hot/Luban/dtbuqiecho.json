@@ -14,22 +14,29 @@
         {
           "InstanceId": "efl-deadline",
           "DefinitionId": "W8-006",
-          "Quality": 1,
+          "Quality": 3,
           "AnchorSlot": 0,
-          "RefinementId": "None"
+          "RefinementId": "A-06"
         },
         {
-          "InstanceId": "efl-board",
+          "InstanceId": "efl-board-a",
           "DefinitionId": "W8-005",
-          "Quality": 1,
+          "Quality": 3,
           "AnchorSlot": 3,
-          "RefinementId": "None"
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "efl-board-b",
+          "DefinitionId": "W8-005",
+          "Quality": 2,
+          "AnchorSlot": 5,
+          "RefinementId": "A-02"
         },
         {
           "InstanceId": "efl-urgent",
           "DefinitionId": "W8-003",
-          "Quality": 1,
-          "AnchorSlot": 5,
+          "Quality": 3,
+          "AnchorSlot": 7,
           "RefinementId": "A-01"
         }
       ]
@@ -48,25 +55,32 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "efe-board",
+          "InstanceId": "efe-deadline",
+          "DefinitionId": "W8-006",
+          "Quality": 3,
+          "AnchorSlot": 0,
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "efe-board-a",
+          "DefinitionId": "W8-005",
+          "Quality": 3,
+          "AnchorSlot": 3,
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "efe-board-b",
           "DefinitionId": "W8-005",
           "Quality": 2,
-          "AnchorSlot": 0,
-          "RefinementId": "None"
+          "AnchorSlot": 5,
+          "RefinementId": "A-02"
         },
         {
           "InstanceId": "efe-urgent",
           "DefinitionId": "W8-003",
-          "Quality": 1,
-          "AnchorSlot": 2,
-          "RefinementId": "None"
-        },
-        {
-          "InstanceId": "efe-shield",
-          "DefinitionId": "W8-007",
-          "Quality": 1,
-          "AnchorSlot": 3,
-          "RefinementId": "None"
+          "Quality": 3,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }
@@ -84,25 +98,32 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ebl-shield",
-          "DefinitionId": "W8-007",
-          "Quality": 1,
+          "InstanceId": "ebl-core-a",
+          "DefinitionId": "W8-012",
+          "Quality": 3,
           "AnchorSlot": 0,
-          "RefinementId": "None"
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "ebl-core-b",
+          "DefinitionId": "W8-012",
+          "Quality": 3,
+          "AnchorSlot": 3,
+          "RefinementId": "A-06"
         },
         {
           "InstanceId": "ebl-list",
           "DefinitionId": "W8-008",
-          "Quality": 1,
-          "AnchorSlot": 1,
+          "Quality": 3,
+          "AnchorSlot": 6,
           "RefinementId": "A-04"
         },
         {
-          "InstanceId": "ebl-core",
-          "DefinitionId": "W8-012",
-          "Quality": 1,
-          "AnchorSlot": 2,
-          "RefinementId": "None"
+          "InstanceId": "ebl-shield",
+          "DefinitionId": "W8-007",
+          "Quality": 3,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }
@@ -120,18 +141,32 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ebe-core",
+          "InstanceId": "ebe-core-a",
           "DefinitionId": "W8-012",
-          "Quality": 1,
+          "Quality": 3,
           "AnchorSlot": 0,
-          "RefinementId": "None"
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "ebe-core-b",
+          "DefinitionId": "W8-012",
+          "Quality": 3,
+          "AnchorSlot": 3,
+          "RefinementId": "A-06"
+        },
+        {
+          "InstanceId": "ebe-list",
+          "DefinitionId": "W8-008",
+          "Quality": 3,
+          "AnchorSlot": 6,
+          "RefinementId": "A-04"
         },
         {
           "InstanceId": "ebe-shield",
           "DefinitionId": "W8-007",
-          "Quality": 2,
-          "AnchorSlot": 3,
-          "RefinementId": "None"
+          "Quality": 3,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }
@@ -221,25 +256,32 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ehl-pack",
-          "DefinitionId": "W8-016",
+          "InstanceId": "ehl-flag",
+          "DefinitionId": "W8-018",
           "Quality": 1,
           "AnchorSlot": 0,
           "RefinementId": "None"
         },
         {
-          "InstanceId": "ehl-spring",
+          "InstanceId": "ehl-spring-a",
           "DefinitionId": "W8-017",
-          "Quality": 1,
-          "AnchorSlot": 1,
-          "RefinementId": "None"
-        },
-        {
-          "InstanceId": "ehl-flag",
-          "DefinitionId": "W8-018",
           "Quality": 1,
           "AnchorSlot": 3,
           "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehl-spring-b",
+          "DefinitionId": "W8-017",
+          "Quality": 1,
+          "AnchorSlot": 5,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehl-pack",
+          "DefinitionId": "W8-016",
+          "Quality": 1,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }
@@ -257,25 +299,32 @@
       "InitialNoiseDebt": 0,
       "Items": [
         {
-          "InstanceId": "ehe-pack",
-          "DefinitionId": "W8-016",
-          "Quality": 2,
+          "InstanceId": "ehe-flag",
+          "DefinitionId": "W8-018",
+          "Quality": 1,
           "AnchorSlot": 0,
           "RefinementId": "None"
         },
         {
-          "InstanceId": "ehe-spring",
+          "InstanceId": "ehe-spring-a",
           "DefinitionId": "W8-017",
-          "Quality": 1,
-          "AnchorSlot": 1,
-          "RefinementId": "None"
-        },
-        {
-          "InstanceId": "ehe-shield",
-          "DefinitionId": "W8-007",
           "Quality": 1,
           "AnchorSlot": 3,
           "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehe-spring-b",
+          "DefinitionId": "W8-017",
+          "Quality": 1,
+          "AnchorSlot": 5,
+          "RefinementId": "None"
+        },
+        {
+          "InstanceId": "ehe-pack",
+          "DefinitionId": "W8-016",
+          "Quality": 1,
+          "AnchorSlot": 7,
+          "RefinementId": "A-01"
         }
       ]
     }

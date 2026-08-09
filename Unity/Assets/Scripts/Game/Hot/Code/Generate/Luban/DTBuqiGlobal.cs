@@ -79,6 +79,18 @@ public partial class DTBuqiGlobal : IDataTable
     /// max item events per tick
     /// </summary>
     public int MaxItemEventsPerTick => _data.MaxItemEventsPerTick;
+    /// <summary>
+    /// maximum trigger chain depth
+    /// </summary>
+    public int MaxChainDepth => _data.MaxChainDepth;
+    /// <summary>
+    /// maximum repeated reason code per tick
+    /// </summary>
+    public int MaxRepeatedReasonPerTick => _data.MaxRepeatedReasonPerTick;
+    /// <summary>
+    /// maximum economy item proc per day
+    /// </summary>
+    public int DailyEconomyProcCap => _data.DailyEconomyProcCap;
 
     public void ResolveRef(TablesComponent tables)
     {

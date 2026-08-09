@@ -4,6 +4,7 @@ using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.DemoUI.Deployment;
+using Game.Hot.Buqi.DemoUI.Interaction;
 using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
@@ -16,6 +17,7 @@ namespace Game.Hot.Buqi.UI
     public sealed class BuqiRunShellOpenData
     {
         public BuqiConfigCatalog Catalog;
+        public IBuqiBazaarSupplyViewSource BazaarSupplySource;
     }
 
     [DisallowMultipleComponent]
@@ -103,6 +105,7 @@ namespace Game.Hot.Buqi.UI
             base.OnOpen(userData);
             m_OpeningBattle = false;
             m_DemoCatalog = null;
+            BindBazaarSupplySource((userData as BuqiRunShellOpenData)?.BazaarSupplySource);
             if (!TryResolveCatalog(userData, out m_Catalog, out string error))
             {
                 m_Controller = null;
@@ -144,6 +147,7 @@ namespace Game.Hot.Buqi.UI
             m_Controller = null;
             m_DemoCatalog = null;
             m_Catalog = null;
+            BindBazaarSupplySource(null);
             m_OpeningBattle = false;
             SetText(m_StatusText, string.Empty);
             base.OnClose(isShutdown, userData);
@@ -214,10 +218,10 @@ namespace Game.Hot.Buqi.UI
             {
                 Title = "Confirm Purchase",
                 Message = GameFramework.Utility.Text.Format(
-                    "Buy {0} for {1} coins and leave this shop?",
+                    "Buy {0} for {1} coins?",
                     itemName,
                     selectedOffer.Price),
-                ConfirmLabel = "Buy and Leave",
+                ConfirmLabel = "Buy",
                 CancelLabel = "Keep Shopping",
                 Confirm = () => ExecuteCommand(command),
             });
@@ -306,10 +310,16 @@ namespace Game.Hot.Buqi.UI
 
         private static bool CanConfigureDeployment(BuqiUIDemoView view)
         {
-            return view != null &&
-                (view.Phase == BuqiUIDemoPhase.OperationChoice
-                    || view.Phase == BuqiUIDemoPhase.Shop
-                    || view.Phase == BuqiUIDemoPhase.Event);
+            return view != null && BuqiUIDemoController.CanConfigureDeployment(view.Phase);
+        }
+
+        private void BindBazaarSupplySource(IBuqiBazaarSupplyViewSource supplySource)
+        {
+            foreach (MonoBehaviour component in m_StageComponents)
+            {
+                if (component is ShopWidget shop)
+                    shop.BindSupplySource(supplySource);
+            }
         }
 
         private void RenderResources(BuqiUIDemoView view)

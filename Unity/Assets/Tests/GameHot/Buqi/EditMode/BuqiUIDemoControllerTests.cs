@@ -48,6 +48,132 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void DeploymentAvailability_HasOnePolicyForEditableAndLockedPhases()
+        {
+            System.Reflection.MethodInfo policy = typeof(BuqiUIDemoController).GetMethod(
+                "CanConfigureDeployment",
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+            Assert.That(policy, Is.Not.Null);
+
+            Assert.That(CanConfigure(BuqiUIDemoPhase.OperationChoice), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.Shop), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.Event), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.PveSelection), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.TribulationRoute), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.TribulationStage), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.BattleReplay), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.BattleSummary), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.RoundSettlement), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.RunTerminal), Is.False);
+
+            bool CanConfigure(BuqiUIDemoPhase phase)
+            {
+                return (bool)policy.Invoke(null, new object[] { phase });
+            }
+        }
+
+        [Test]
+        public void OpenDragDeploy_IsAvailableBeforeBattleAndLockedDuringPlaybackAndSettlement()
+        {
+            BuqiUIDemoController controller = CreateController(new MemoryRunStore());
+            SelectOperation(controller, "meditate");
+            SelectOperation(controller, "meditate");
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PveSelection));
+
+            BuqiUIDemoCommandResult preparation = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.OpenDragDeploy,
+            });
+            Assert.That(preparation.Accepted, Is.True, preparation.Reason);
+
+            BuqiUIDemoCommandResult selected = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectPveDifficulty,
+                PrimaryId = controller.View.Choices[0].Id,
+            });
+            Assert.That(selected.Accepted, Is.True, selected.Reason);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleReplay));
+            AssertDeploymentLocked(controller);
+
+            BuqiUIDemoCommandResult settled = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.NextPhase,
+            });
+            Assert.That(settled.Accepted, Is.True, settled.Reason);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleSummary));
+            AssertDeploymentLocked(controller);
+        }
+
+        [Test]
+        public void Bazaar_AllowsMultiplePurchasesAndRefreshesOffersInventoryAndCoins()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store);
+            SelectOperation(controller, "bazaar");
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Shop));
+            Assert.That(controller.View.ShopOffers.Count, Is.GreaterThanOrEqualTo(2));
+            string firstOfferId = controller.View.ShopOffers[0].Id;
+            string secondOfferId = controller.View.ShopOffers[1].Id;
+            string openingItems = ItemFingerprint(controller.View);
+            int openingCoins = controller.View.Coins;
+
+            BuqiUIDemoCommandResult first = Buy(controller, firstOfferId);
+
+            Assert.That(first.Accepted, Is.True, first.Reason);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Shop));
+            Assert.That(controller.View.Coins, Is.LessThan(openingCoins));
+            Assert.That(controller.View.ShopOffers.Single(offer => offer.Id == firstOfferId).Sold, Is.True);
+            Assert.That(ItemFingerprint(controller.View), Is.Not.EqualTo(openingItems));
+            int afterFirstCoins = controller.View.Coins;
+
+            BuqiUIDemoCommandResult second = Buy(controller, secondOfferId);
+
+            Assert.That(second.Accepted, Is.True, second.Reason);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Shop));
+            Assert.That(controller.View.Coins, Is.LessThan(afterFirstCoins));
+            Assert.That(controller.View.ShopOffers.Count(offer => offer.Sold), Is.EqualTo(2));
+
+            int afterSecondCoins = controller.View.Coins;
+            string afterSecondItems = ItemFingerprint(controller.View);
+            BuqiUIDemoCommandResult duplicate = Buy(controller, firstOfferId);
+            Assert.That(duplicate.Accepted, Is.False);
+            Assert.That(controller.View.Coins, Is.EqualTo(afterSecondCoins));
+            Assert.That(ItemFingerprint(controller.View), Is.EqualTo(afterSecondItems));
+
+            controller = CreateController(store);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Shop));
+            Assert.That(controller.View.Coins, Is.EqualTo(afterSecondCoins));
+            Assert.That(controller.View.ShopOffers.Count(offer => offer.Sold), Is.EqualTo(2));
+        }
+
+        [Test]
+        public void Bazaar_SaleRefreshesBoardAndCoinBalanceWithoutLeavingShop()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store);
+            SelectOperation(controller, "bazaar");
+            BuqiDemoItemView soldItem = controller.View.BoardSlots.First(item => !item.Empty);
+            int openingCoins = controller.View.Coins;
+            Assert.That(Enum.TryParse("SellItem", out BuqiUIDemoCommandType sellCommandType), Is.True,
+                "The shell needs a sell command so a completed drag can persist and refresh its resource chips.");
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = sellCommandType,
+                PrimaryId = soldItem.Id,
+            });
+
+            Assert.That(result.Accepted, Is.True, result.Reason);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.Shop));
+            Assert.That(controller.View.Coins, Is.GreaterThan(openingCoins));
+            Assert.That(controller.View.BoardSlots.Any(item => item.Id == soldItem.Id), Is.False);
+
+            controller = CreateController(store);
+            Assert.That(controller.View.Coins, Is.EqualTo(result.View.Coins));
+            Assert.That(controller.View.BoardSlots.Any(item => item.Id == soldItem.Id), Is.False);
+        }
+
+        [Test]
         public void ApplyDeployment_PersistsAnchorOnlyBoardSlotsDuringOperation()
         {
             var store = new MemoryRunStore();
@@ -142,6 +268,51 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(controller.View.Phase, Is.EqualTo(target));
         }
 
+        private static BuqiUIDemoCommandResult Buy(BuqiUIDemoController controller, string offerId)
+        {
+            return controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.BuyOffer,
+                PrimaryId = offerId,
+            });
+        }
+
+        private static void SelectOperation(BuqiUIDemoController controller, string operationId)
+        {
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.SelectOperation,
+                PrimaryId = operationId,
+            });
+            Assert.That(result.Accepted, Is.True, result.Reason);
+        }
+
+        private static void AssertDeploymentLocked(BuqiUIDemoController controller)
+        {
+            BuqiUIDemoView before = controller.View;
+            BuqiUIDemoCommandResult open = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.OpenDragDeploy,
+            });
+            BuqiUIDemoCommandResult apply = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.ApplyDeployment,
+                Deployment = new BuqiDeploymentSnapshot(
+                    before.BoardSlots.Select(item => item.Empty ? string.Empty : item.Id).ToList(),
+                    before.StorageSlots.Select(item => item.Empty ? string.Empty : item.Id).ToList()),
+            });
+
+            Assert.That(open.Accepted, Is.False);
+            Assert.That(apply.Accepted, Is.False);
+            Assert.That(controller.View, Is.SameAs(before));
+        }
+
+        private static string ItemFingerprint(BuqiUIDemoView view)
+        {
+            return string.Join("|", view.BoardSlots.Concat(view.StorageSlots)
+                .Select(item => item.Empty ? "empty" : $"{item.Id}:{item.Description}"));
+        }
+
         private static BuqiUIDemoCommand SelectProgressCommand(BuqiUIDemoView view)
         {
             if (view.Phase == BuqiUIDemoPhase.OperationChoice)
@@ -196,7 +367,7 @@ namespace Game.Hot.Buqi.Tests
                     DefinitionId = $"item-{index:00}",
                     DisplayName = $"Item {index}",
                     Size = index == 1 ? BattleSize.M : BattleSize.S,
-                    BasePrice = index + 1,
+                    BasePrice = 2,
                     BaseCooldownTicks = 20 + index,
                 });
             }

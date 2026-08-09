@@ -1,0 +1,2473 @@
+[
+  {
+    "OptionId": "event-trial-stele-read",
+    "EventId": "event-trial-stele",
+    "Order": 1,
+    "DisplayName": "照刻试锋",
+    "LocalizationKey": "Buqi.Content.EventOption.event_trial_stele_read.Name",
+    "ConditionKind": 3,
+    "ConditionValue": "fast",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "attack",
+        "DurationDays": 0,
+        "ReasonCode": "event-trial-stele-attack"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 1 灵石，从攻击子池获得一件普通小型器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_trial_stele_read.Summary"
+  },
+  {
+    "OptionId": "event-trial-stele-brace",
+    "EventId": "event-trial-stele",
+    "Order": 2,
+    "DisplayName": "以盾拓印",
+    "LocalizationKey": "Buqi.Content.EventOption.event_trial_stele_brace.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "shield",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 6,
+        "Amount": 6,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-trial-stele-buffer"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战开场获得 6 点护体。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_trial_stele_brace.Summary"
+  },
+  {
+    "OptionId": "event-trial-stele-leave",
+    "EventId": "event-trial-stele",
+    "Order": 3,
+    "DisplayName": "记下碑序",
+    "LocalizationKey": "Buqi.Content.EventOption.event_trial_stele_leave.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 1,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-trial-stele-coin"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 1 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_trial_stele_leave.Summary"
+  },
+  {
+    "OptionId": "event-herb-stall-dose",
+    "EventId": "event-herb-stall",
+    "Order": 1,
+    "DisplayName": "买一剂",
+    "LocalizationKey": "Buqi.Content.EventOption.event_herb_stall_dose.Name",
+    "ConditionKind": 1,
+    "ConditionValue": "2",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 7,
+        "Amount": 8,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-herb-stall-heal"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战开场恢复 8 点生命。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_herb_stall_dose.Summary"
+  },
+  {
+    "OptionId": "event-herb-stall-seed",
+    "EventId": "event-herb-stall",
+    "Order": 2,
+    "DisplayName": "换取药种",
+    "LocalizationKey": "Buqi.Content.EventOption.event_herb_stall_seed.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "heal",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "regen",
+        "DurationDays": 0,
+        "ReasonCode": "event-herb-stall-regen"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 1 灵石，从恢复子池获得一件普通小型器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_herb_stall_seed.Summary"
+  },
+  {
+    "OptionId": "event-herb-stall-work",
+    "EventId": "event-herb-stall",
+    "Order": 3,
+    "DisplayName": "帮忙理药",
+    "LocalizationKey": "Buqi.Content.EventOption.event_herb_stall_work.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 2,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-herb-stall-work"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 2 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_herb_stall_work.Summary"
+  },
+  {
+    "OptionId": "event-broken-armor-fit",
+    "EventId": "event-broken-armor",
+    "Order": 1,
+    "DisplayName": "补上甲片",
+    "LocalizationKey": "Buqi.Content.EventOption.event_broken_armor_fit.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "shield",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "shield",
+        "DurationDays": 0,
+        "ReasonCode": "event-broken-armor-upgrade"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 1 灵石，将一件普通护体器物提升为改良。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_broken_armor_fit.Summary"
+  },
+  {
+    "OptionId": "event-broken-armor-salvage",
+    "EventId": "event-broken-armor",
+    "Order": 2,
+    "DisplayName": "拆取护片",
+    "LocalizationKey": "Buqi.Content.EventOption.event_broken_armor_salvage.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "shield",
+        "DurationDays": 0,
+        "ReasonCode": "event-broken-armor-item"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "带 1 点失衡进入下一战，获得一件普通护体器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_broken_armor_salvage.Summary"
+  },
+  {
+    "OptionId": "event-broken-armor-measure",
+    "EventId": "event-broken-armor",
+    "Order": 3,
+    "DisplayName": "量下裂口",
+    "LocalizationKey": "Buqi.Content.EventOption.event_broken_armor_measure.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 10,
+        "Amount": 1,
+        "Value": "shield",
+        "DurationDays": 1,
+        "ReasonCode": "event-broken-armor-discount"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "本日下一件护体器物少花 1 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_broken_armor_measure.Summary"
+  },
+  {
+    "OptionId": "event-cloud-peddler-bundle",
+    "EventId": "event-cloud-peddler",
+    "Order": 1,
+    "DisplayName": "买下杂包",
+    "LocalizationKey": "Buqi.Content.EventOption.event_cloud_peddler_bundle.Name",
+    "ConditionKind": 1,
+    "ConditionValue": "2",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "bridge",
+        "DurationDays": 0,
+        "ReasonCode": "event-cloud-peddler-bridge"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得一件普通桥接器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_cloud_peddler_bundle.Summary"
+  },
+  {
+    "OptionId": "event-cloud-peddler-map",
+    "EventId": "event-cloud-peddler",
+    "Order": 2,
+    "DisplayName": "买路线图",
+    "LocalizationKey": "Buqi.Content.EventOption.event_cloud_peddler_map.Name",
+    "ConditionKind": 1,
+    "ConditionValue": "1",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 9,
+        "Amount": 1,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-cloud-peddler-refresh"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "本日获得 1 次免费商店刷新。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_cloud_peddler_map.Summary"
+  },
+  {
+    "OptionId": "event-cloud-peddler-bargain",
+    "EventId": "event-cloud-peddler",
+    "Order": 3,
+    "DisplayName": "替他叫卖",
+    "LocalizationKey": "Buqi.Content.EventOption.event_cloud_peddler_bargain.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 2,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-cloud-peddler-work"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 2 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_cloud_peddler_bargain.Summary"
+  },
+  {
+    "OptionId": "event-borrowed-flame-temper",
+    "EventId": "event-borrowed-flame",
+    "Order": 1,
+    "DisplayName": "当场淬火",
+    "LocalizationKey": "Buqi.Content.EventOption.event_borrowed_flame_temper.Name",
+    "ConditionKind": 4,
+    "ConditionValue": "Normal",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "any",
+        "DurationDays": 0,
+        "ReasonCode": "event-borrowed-flame-upgrade"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 2 灵石，将一件普通器物提升为改良。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_borrowed_flame_temper.Summary"
+  },
+  {
+    "OptionId": "event-borrowed-flame-carry",
+    "EventId": "event-borrowed-flame",
+    "Order": 2,
+    "DisplayName": "借走火种",
+    "LocalizationKey": "Buqi.Content.EventOption.event_borrowed_flame_carry.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 4,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 10,
+        "Amount": 2,
+        "Value": "upgrade",
+        "DurationDays": 2,
+        "ReasonCode": "event-borrowed-flame-carry"
+      }
+    ],
+    "SetFlags": [
+      "borrowed_flame"
+    ],
+    "ClearFlags": [],
+    "FollowUpEventId": "event-roving-furnace",
+    "FollowUpDelayDays": 2,
+    "Summary": "未来两日首次升级少花 2 灵石；下一战增加 2 点失衡。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_borrowed_flame_carry.Summary"
+  },
+  {
+    "OptionId": "event-borrowed-flame-sell",
+    "EventId": "event-borrowed-flame",
+    "Order": 3,
+    "DisplayName": "转卖余炭",
+    "LocalizationKey": "Buqi.Content.EventOption.event_borrowed_flame_sell.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 2,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-borrowed-flame-sell"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 2 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_borrowed_flame_sell.Summary"
+  },
+  {
+    "OptionId": "event-broken-mechanism-repair",
+    "EventId": "event-broken-mechanism",
+    "Order": 1,
+    "DisplayName": "接回弦线",
+    "LocalizationKey": "Buqi.Content.EventOption.event_broken_mechanism_repair.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "bridge",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "bridge",
+        "DurationDays": 0,
+        "ReasonCode": "event-broken-mechanism-upgrade"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 1 灵石，将一件普通桥接器物提升为改良。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_broken_mechanism_repair.Summary"
+  },
+  {
+    "OptionId": "event-broken-mechanism-take",
+    "EventId": "event-broken-mechanism",
+    "Order": 2,
+    "DisplayName": "拆走转轴",
+    "LocalizationKey": "Buqi.Content.EventOption.event_broken_mechanism_take.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "bridge",
+        "DurationDays": 0,
+        "ReasonCode": "event-broken-mechanism-item"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得一件普通桥接器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_broken_mechanism_take.Summary"
+  },
+  {
+    "OptionId": "event-broken-mechanism-test",
+    "EventId": "event-broken-mechanism",
+    "Order": 3,
+    "DisplayName": "空转试机",
+    "LocalizationKey": "Buqi.Content.EventOption.event_broken_mechanism_test.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 5,
+        "Amount": 800,
+        "Value": "adjacent",
+        "DurationDays": 1,
+        "ReasonCode": "event-broken-mechanism-haste"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战增加 1 点失衡；相邻器物开场加速 800，持续 30 tick。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_broken_mechanism_test.Summary"
+  },
+  {
+    "OptionId": "event-nameless-ledger-borrow",
+    "EventId": "event-nameless-ledger",
+    "Order": 1,
+    "DisplayName": "记一笔赊账",
+    "LocalizationKey": "Buqi.Content.EventOption.event_nameless_ledger_borrow.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 4,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-nameless-ledger-credit"
+      }
+    ],
+    "SetFlags": [
+      "ledger_owed"
+    ],
+    "ClearFlags": [],
+    "FollowUpEventId": "event-ledger-collector",
+    "FollowUpDelayDays": 2,
+    "Summary": "获得 4 灵石；两日后账主回访。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_nameless_ledger_borrow.Summary"
+  },
+  {
+    "OptionId": "event-nameless-ledger-audit",
+    "EventId": "event-nameless-ledger",
+    "Order": 2,
+    "DisplayName": "替它清账",
+    "LocalizationKey": "Buqi.Content.EventOption.event_nameless_ledger_audit.Name",
+    "ConditionKind": 1,
+    "ConditionValue": "1",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 9,
+        "Amount": 1,
+        "Value": "None",
+        "DurationDays": 2,
+        "ReasonCode": "event-nameless-ledger-audit"
+      }
+    ],
+    "SetFlags": [
+      "ledger_closed"
+    ],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "未来两日各获得 1 次免费商店刷新。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_nameless_ledger_audit.Summary"
+  },
+  {
+    "OptionId": "event-nameless-ledger-leave",
+    "EventId": "event-nameless-ledger",
+    "Order": 3,
+    "DisplayName": "合上账册",
+    "LocalizationKey": "Buqi.Content.EventOption.event_nameless_ledger_leave.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 1,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-nameless-ledger-leave"
+      }
+    ],
+    "SetFlags": [
+      "ledger_closed"
+    ],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 1 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_nameless_ledger_leave.Summary"
+  },
+  {
+    "OptionId": "event-rain-umbrella-borrow",
+    "EventId": "event-rain-umbrella",
+    "Order": 1,
+    "DisplayName": "借伞赶路",
+    "LocalizationKey": "Buqi.Content.EventOption.event_rain_umbrella_borrow.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 6,
+        "Amount": 8,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-rain-umbrella-buffer"
+      }
+    ],
+    "SetFlags": [
+      "umbrella_borrowed"
+    ],
+    "ClearFlags": [],
+    "FollowUpEventId": "event-umbrella-return",
+    "FollowUpDelayDays": 2,
+    "Summary": "下一战开场获得 8 点护体；两日后归伞人回访。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_rain_umbrella_borrow.Summary"
+  },
+  {
+    "OptionId": "event-rain-umbrella-buy",
+    "EventId": "event-rain-umbrella",
+    "Order": 2,
+    "DisplayName": "买下旧伞",
+    "LocalizationKey": "Buqi.Content.EventOption.event_rain_umbrella_buy.Name",
+    "ConditionKind": 1,
+    "ConditionValue": "2",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "shield",
+        "DurationDays": 0,
+        "ReasonCode": "event-rain-umbrella-item"
+      }
+    ],
+    "SetFlags": [
+      "umbrella_returned"
+    ],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得一件普通护体器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_rain_umbrella_buy.Summary"
+  },
+  {
+    "OptionId": "event-rain-umbrella-wait",
+    "EventId": "event-rain-umbrella",
+    "Order": 3,
+    "DisplayName": "檐下等雨",
+    "LocalizationKey": "Buqi.Content.EventOption.event_rain_umbrella_wait.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 7,
+        "Amount": 5,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-rain-umbrella-rest"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战开场恢复 5 点生命。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_rain_umbrella_wait.Summary"
+  },
+  {
+    "OptionId": "event-sword-echo-follow",
+    "EventId": "event-sword-echo",
+    "Order": 1,
+    "DisplayName": "循痕运刃",
+    "LocalizationKey": "Buqi.Content.EventOption.event_sword_echo_follow.Name",
+    "ConditionKind": 3,
+    "ConditionValue": "fast",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "attack",
+        "DurationDays": 0,
+        "ReasonCode": "event-sword-echo-upgrade"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 2 灵石，升级一件普通攻击器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_sword_echo_follow.Summary"
+  },
+  {
+    "OptionId": "event-sword-echo-deflect",
+    "EventId": "event-sword-echo",
+    "Order": 2,
+    "DisplayName": "以甲受痕",
+    "LocalizationKey": "Buqi.Content.EventOption.event_sword_echo_deflect.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "shield",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 6,
+        "Amount": 10,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-sword-echo-buffer"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战开场获得 10 点护体。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_sword_echo_deflect.Summary"
+  },
+  {
+    "OptionId": "event-sword-echo-copy",
+    "EventId": "event-sword-echo",
+    "Order": 3,
+    "DisplayName": "拓下剑路",
+    "LocalizationKey": "Buqi.Content.EventOption.event_sword_echo_copy.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 4,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "A-01",
+        "DurationDays": 0,
+        "ReasonCode": "event-sword-echo-refine"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战增加 2 点失衡，获得加急精炼。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_sword_echo_copy.Summary"
+  },
+  {
+    "OptionId": "event-wall-fissure-seal",
+    "EventId": "event-wall-fissure",
+    "Order": 1,
+    "DisplayName": "封住裂隙",
+    "LocalizationKey": "Buqi.Content.EventOption.event_wall_fissure_seal.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "shield",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "shield",
+        "DurationDays": 0,
+        "ReasonCode": "event-wall-fissure-upgrade"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 2 灵石，升级一件普通护体器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_wall_fissure_seal.Summary"
+  },
+  {
+    "OptionId": "event-wall-fissure-brace",
+    "EventId": "event-wall-fissure",
+    "Order": 2,
+    "DisplayName": "立临时支架",
+    "LocalizationKey": "Buqi.Content.EventOption.event_wall_fissure_brace.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 6,
+        "Amount": 12,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-wall-fissure-brace"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战开场获得 12 点护体。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_wall_fissure_brace.Summary"
+  },
+  {
+    "OptionId": "event-wall-fissure-salvage",
+    "EventId": "event-wall-fissure",
+    "Order": 3,
+    "DisplayName": "收走碎砖",
+    "LocalizationKey": "Buqi.Content.EventOption.event_wall_fissure_salvage.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 3,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-wall-fissure-coins"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 3 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_wall_fissure_salvage.Summary"
+  },
+  {
+    "OptionId": "event-herb-water-divert",
+    "EventId": "event-herb-water",
+    "Order": 1,
+    "DisplayName": "引水入田",
+    "LocalizationKey": "Buqi.Content.EventOption.event_herb_water_divert.Name",
+    "ConditionKind": 3,
+    "ConditionValue": "heal",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "heal",
+        "DurationDays": 0,
+        "ReasonCode": "event-herb-water-upgrade"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 2 灵石，升级一件普通恢复器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_herb_water_divert.Summary"
+  },
+  {
+    "OptionId": "event-herb-water-share",
+    "EventId": "event-herb-water",
+    "Order": 2,
+    "DisplayName": "平分水渠",
+    "LocalizationKey": "Buqi.Content.EventOption.event_herb_water_share.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 7,
+        "Amount": 10,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-herb-water-heal"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战开场恢复 10 点生命。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_herb_water_share.Summary"
+  },
+  {
+    "OptionId": "event-herb-water-sell",
+    "EventId": "event-herb-water",
+    "Order": 3,
+    "DisplayName": "卖出水权",
+    "LocalizationKey": "Buqi.Content.EventOption.event_herb_water_sell.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 5,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-herb-water-coins"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "失去 1 命，获得 5 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_herb_water_sell.Summary"
+  },
+  {
+    "OptionId": "event-roving-furnace-return",
+    "EventId": "event-roving-furnace",
+    "Order": 1,
+    "DisplayName": "归还火种",
+    "LocalizationKey": "Buqi.Content.EventOption.event_roving_furnace_return.Name",
+    "ConditionKind": 5,
+    "ConditionValue": "borrowed_flame",
+    "RequiredFlags": [
+      "borrowed_flame"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "A-05",
+        "DurationDays": 0,
+        "ReasonCode": "event-roving-furnace-return"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [
+      "borrowed_flame"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 1 灵石归还火种，获得稳流精炼。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_roving_furnace_return.Summary"
+  },
+  {
+    "OptionId": "event-roving-furnace-keep",
+    "EventId": "event-roving-furnace",
+    "Order": 2,
+    "DisplayName": "留下火种",
+    "LocalizationKey": "Buqi.Content.EventOption.event_roving_furnace_keep.Name",
+    "ConditionKind": 5,
+    "ConditionValue": "borrowed_flame",
+    "RequiredFlags": [
+      "borrowed_flame"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 4,
+        "Amount": 3,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "burn",
+        "DurationDays": 0,
+        "ReasonCode": "event-roving-furnace-keep"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [
+      "borrowed_flame"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战增加 3 点失衡，升级一件灼烧器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_roving_furnace_keep.Summary"
+  },
+  {
+    "OptionId": "event-roving-furnace-trade",
+    "EventId": "event-roving-furnace",
+    "Order": 3,
+    "DisplayName": "换成灵石",
+    "LocalizationKey": "Buqi.Content.EventOption.event_roving_furnace_trade.Name",
+    "ConditionKind": 5,
+    "ConditionValue": "borrowed_flame",
+    "RequiredFlags": [
+      "borrowed_flame"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 3,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-roving-furnace-trade"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [
+      "borrowed_flame"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 3 灵石并结清火种。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_roving_furnace_trade.Summary"
+  },
+  {
+    "OptionId": "event-ledger-collector-pay",
+    "EventId": "event-ledger-collector",
+    "Order": 1,
+    "DisplayName": "照数归还",
+    "LocalizationKey": "Buqi.Content.EventOption.event_ledger_collector_pay.Name",
+    "ConditionKind": 1,
+    "ConditionValue": "3",
+    "RequiredFlags": [
+      "ledger_owed"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 3,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 9,
+        "Amount": 1,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-ledger-collector-pay"
+      }
+    ],
+    "SetFlags": [
+      "ledger_closed"
+    ],
+    "ClearFlags": [
+      "ledger_owed"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 3 灵石，本日获得 1 次免费刷新。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_ledger_collector_pay.Summary"
+  },
+  {
+    "OptionId": "event-ledger-collector-work",
+    "EventId": "event-ledger-collector",
+    "Order": 2,
+    "DisplayName": "替他收账",
+    "LocalizationKey": "Buqi.Content.EventOption.event_ledger_collector_work.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "economy",
+    "RequiredFlags": [
+      "ledger_owed"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 1,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-ledger-collector-work"
+      }
+    ],
+    "SetFlags": [
+      "ledger_closed"
+    ],
+    "ClearFlags": [
+      "ledger_owed"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 1 灵石并结清账目。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_ledger_collector_work.Summary"
+  },
+  {
+    "OptionId": "event-ledger-collector-default",
+    "EventId": "event-ledger-collector",
+    "Order": 3,
+    "DisplayName": "拒绝认账",
+    "LocalizationKey": "Buqi.Content.EventOption.event_ledger_collector_default.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [
+      "ledger_owed"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 8,
+        "Amount": 2,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-ledger-collector-default"
+      }
+    ],
+    "SetFlags": [
+      "ledger_closed"
+    ],
+    "ClearFlags": [
+      "ledger_owed"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "失去 1 命；下一战增加 2 点失衡。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_ledger_collector_default.Summary"
+  },
+  {
+    "OptionId": "event-umbrella-return-return",
+    "EventId": "event-umbrella-return",
+    "Order": 1,
+    "DisplayName": "原样归还",
+    "LocalizationKey": "Buqi.Content.EventOption.event_umbrella_return_return.Name",
+    "ConditionKind": 5,
+    "ConditionValue": "umbrella_borrowed",
+    "RequiredFlags": [
+      "umbrella_borrowed"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 2,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-umbrella-return-good"
+      }
+    ],
+    "SetFlags": [
+      "umbrella_returned"
+    ],
+    "ClearFlags": [
+      "umbrella_borrowed"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 2 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_umbrella_return_return.Summary"
+  },
+  {
+    "OptionId": "event-umbrella-return-repair",
+    "EventId": "event-umbrella-return",
+    "Order": 2,
+    "DisplayName": "修好再还",
+    "LocalizationKey": "Buqi.Content.EventOption.event_umbrella_return_repair.Name",
+    "ConditionKind": 1,
+    "ConditionValue": "1",
+    "RequiredFlags": [
+      "umbrella_borrowed"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "A-04",
+        "DurationDays": 0,
+        "ReasonCode": "event-umbrella-return-repair"
+      }
+    ],
+    "SetFlags": [
+      "umbrella_returned"
+    ],
+    "ClearFlags": [
+      "umbrella_borrowed"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 1 灵石，获得可靠精炼。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_umbrella_return_repair.Summary"
+  },
+  {
+    "OptionId": "event-umbrella-return-keep",
+    "EventId": "event-umbrella-return",
+    "Order": 3,
+    "DisplayName": "留下旧伞",
+    "LocalizationKey": "Buqi.Content.EventOption.event_umbrella_return_keep.Name",
+    "ConditionKind": 5,
+    "ConditionValue": "umbrella_borrowed",
+    "RequiredFlags": [
+      "umbrella_borrowed"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "shield",
+        "DurationDays": 0,
+        "ReasonCode": "event-umbrella-return-keep"
+      }
+    ],
+    "SetFlags": [
+      "umbrella_returned"
+    ],
+    "ClearFlags": [
+      "umbrella_borrowed"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "失去 1 命，获得一件改良护体器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_umbrella_return_keep.Summary"
+  },
+  {
+    "OptionId": "event-headwind-array-enter",
+    "EventId": "event-headwind-array",
+    "Order": 1,
+    "DisplayName": "正面入阵",
+    "LocalizationKey": "Buqi.Content.EventOption.event_headwind_array_enter.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "counter",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 4,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "counter",
+        "DurationDays": 0,
+        "ReasonCode": "event-headwind-array-upgrade"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战增加 2 点失衡，升级一件反制器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_headwind_array_enter.Summary"
+  },
+  {
+    "OptionId": "event-headwind-array-anchor",
+    "EventId": "event-headwind-array",
+    "Order": 2,
+    "DisplayName": "以镇心铃定阵",
+    "LocalizationKey": "Buqi.Content.EventOption.event_headwind_array_anchor.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "shared",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 5,
+        "Amount": 1000,
+        "Value": "adjacent",
+        "DurationDays": 1,
+        "ReasonCode": "event-headwind-array-haste"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 1 灵石；下一战相邻器物开场加速 1000。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_headwind_array_anchor.Summary"
+  },
+  {
+    "OptionId": "event-headwind-array-observe",
+    "EventId": "event-headwind-array",
+    "Order": 3,
+    "DisplayName": "阵外观风",
+    "LocalizationKey": "Buqi.Content.EventOption.event_headwind_array_observe.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 10,
+        "Amount": 1,
+        "Value": "counter",
+        "DurationDays": 1,
+        "ReasonCode": "event-headwind-array-discount"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "本日下一件反制器物少花 1 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_headwind_array_observe.Summary"
+  },
+  {
+    "OptionId": "event-three-bidders-sell",
+    "EventId": "event-three-bidders",
+    "Order": 1,
+    "DisplayName": "卖出闲器",
+    "LocalizationKey": "Buqi.Content.EventOption.event_three_bidders_sell.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "starter",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "starter"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 5,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-three-bidders-sell"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "移除一件起手器物，获得 5 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_three_bidders_sell.Summary"
+  },
+  {
+    "OptionId": "event-three-bidders-bid",
+    "EventId": "event-three-bidders",
+    "Order": 2,
+    "DisplayName": "压价竞买",
+    "LocalizationKey": "Buqi.Content.EventOption.event_three_bidders_bid.Name",
+    "ConditionKind": 1,
+    "ConditionValue": "3",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 3,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "core",
+        "DurationDays": 0,
+        "ReasonCode": "event-three-bidders-core"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得一件改良核心器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_three_bidders_bid.Summary"
+  },
+  {
+    "OptionId": "event-three-bidders-stake",
+    "EventId": "event-three-bidders",
+    "Order": 3,
+    "DisplayName": "押到第九日",
+    "LocalizationKey": "Buqi.Content.EventOption.event_three_bidders_stake.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 11,
+        "Amount": 1,
+        "Value": "auction_claim",
+        "DurationDays": 3,
+        "ReasonCode": "event-three-bidders-stake"
+      }
+    ],
+    "SetFlags": [
+      "auction_claim"
+    ],
+    "ClearFlags": [],
+    "FollowUpEventId": "event-day-nine-ledger",
+    "FollowUpDelayDays": 3,
+    "Summary": "支付 2 灵石，第九日按当前构筑回收。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_three_bidders_stake.Summary"
+  },
+  {
+    "OptionId": "event-heaven-gate-edge",
+    "EventId": "event-heaven-gate",
+    "Order": 1,
+    "DisplayName": "校正攻势",
+    "LocalizationKey": "Buqi.Content.EventOption.event_heaven_gate_edge.Name",
+    "ConditionKind": 3,
+    "ConditionValue": "fast",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 4,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "finisher",
+        "DurationDays": 0,
+        "ReasonCode": "event-heaven-gate-fast"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 4 灵石，从攻击子池获得一件定型收尾器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_heaven_gate_edge.Summary"
+  },
+  {
+    "OptionId": "event-heaven-gate-tempo",
+    "EventId": "event-heaven-gate",
+    "Order": 2,
+    "DisplayName": "校正节拍",
+    "LocalizationKey": "Buqi.Content.EventOption.event_heaven_gate_tempo.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "haste",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "A-01",
+        "DurationDays": 0,
+        "ReasonCode": "event-heaven-gate-tempo"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 2 灵石，获得加急精炼。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_heaven_gate_tempo.Summary"
+  },
+  {
+    "OptionId": "event-heaven-gate-spare",
+    "EventId": "event-heaven-gate",
+    "Order": 3,
+    "DisplayName": "留下余量",
+    "LocalizationKey": "Buqi.Content.EventOption.event_heaven_gate_spare.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 5,
+        "Amount": 1200,
+        "Value": "attack",
+        "DurationDays": 1,
+        "ReasonCode": "event-heaven-gate-haste"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战攻击器物开场加速 1200。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_heaven_gate_spare.Summary"
+  },
+  {
+    "OptionId": "event-mountain-eye-seal",
+    "EventId": "event-mountain-eye",
+    "Order": 1,
+    "DisplayName": "封入堡垒",
+    "LocalizationKey": "Buqi.Content.EventOption.event_mountain_eye_seal.Name",
+    "ConditionKind": 3,
+    "ConditionValue": "buffer",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 4,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "finisher",
+        "DurationDays": 0,
+        "ReasonCode": "event-mountain-eye-buffer"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 4 灵石，从护体子池获得一件定型收尾器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_mountain_eye_seal.Summary"
+  },
+  {
+    "OptionId": "event-mountain-eye-ward",
+    "EventId": "event-mountain-eye",
+    "Order": 2,
+    "DisplayName": "借阵护身",
+    "LocalizationKey": "Buqi.Content.EventOption.event_mountain_eye_ward.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 6,
+        "Amount": 16,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-mountain-eye-ward"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战开场获得 16 点护体。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_mountain_eye_ward.Summary"
+  },
+  {
+    "OptionId": "event-mountain-eye-stone",
+    "EventId": "event-mountain-eye",
+    "Order": 3,
+    "DisplayName": "取一枚阵石",
+    "LocalizationKey": "Buqi.Content.EventOption.event_mountain_eye_stone.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "counter",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 4,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "A-04",
+        "DurationDays": 0,
+        "ReasonCode": "event-mountain-eye-stone"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战增加 2 点失衡，获得可靠精炼。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_mountain_eye_stone.Summary"
+  },
+  {
+    "OptionId": "event-herbs-return-brew",
+    "EventId": "event-herbs-return",
+    "Order": 1,
+    "DisplayName": "合炼归元汤",
+    "LocalizationKey": "Buqi.Content.EventOption.event_herbs_return_brew.Name",
+    "ConditionKind": 3,
+    "ConditionValue": "heal",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 4,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "finisher",
+        "DurationDays": 0,
+        "ReasonCode": "event-herbs-return-heal"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 4 灵石，从恢复子池获得一件定型收尾器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_herbs_return_brew.Summary"
+  },
+  {
+    "OptionId": "event-herbs-return-share",
+    "EventId": "event-herbs-return",
+    "Order": 2,
+    "DisplayName": "分饮药汤",
+    "LocalizationKey": "Buqi.Content.EventOption.event_herbs_return_share.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 7,
+        "Amount": 16,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-herbs-return-rest"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战开场恢复 16 点生命。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_herbs_return_share.Summary"
+  },
+  {
+    "OptionId": "event-herbs-return-seed",
+    "EventId": "event-herbs-return",
+    "Order": 3,
+    "DisplayName": "留下药引",
+    "LocalizationKey": "Buqi.Content.EventOption.event_herbs_return_seed.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "economy",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 3,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-herbs-return-coins"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 3 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_herbs_return_seed.Summary"
+  },
+  {
+    "OptionId": "event-old-pacts-pay",
+    "EventId": "event-old-pacts",
+    "Order": 1,
+    "DisplayName": "清偿旧约",
+    "LocalizationKey": "Buqi.Content.EventOption.event_old_pacts_pay.Name",
+    "ConditionKind": 1,
+    "ConditionValue": "3",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 3,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 12,
+        "Amount": 1,
+        "Value": "all_debt",
+        "DurationDays": 0,
+        "ReasonCode": "event-old-pacts-clear"
+      }
+    ],
+    "SetFlags": [
+      "pacts_settled"
+    ],
+    "ClearFlags": [
+      "ledger_owed",
+      "borrowed_flame"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 3 灵石，清除账册与火种欠约。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_old_pacts_pay.Summary"
+  },
+  {
+    "OptionId": "event-old-pacts-bear",
+    "EventId": "event-old-pacts",
+    "Order": 2,
+    "DisplayName": "带约入战",
+    "LocalizationKey": "Buqi.Content.EventOption.event_old_pacts_bear.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 4,
+        "Amount": 3,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "A-06",
+        "DurationDays": 0,
+        "ReasonCode": "event-old-pacts-overload"
+      }
+    ],
+    "SetFlags": [
+      "pacts_settled"
+    ],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战增加 3 点失衡，获得超载精炼。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_old_pacts_bear.Summary"
+  },
+  {
+    "OptionId": "event-old-pacts-rewrite",
+    "EventId": "event-old-pacts",
+    "Order": 3,
+    "DisplayName": "重订条款",
+    "LocalizationKey": "Buqi.Content.EventOption.event_old_pacts_rewrite.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "economy",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 10,
+        "Amount": 2,
+        "Value": "any",
+        "DurationDays": 1,
+        "ReasonCode": "event-old-pacts-rewrite"
+      }
+    ],
+    "SetFlags": [
+      "pacts_settled"
+    ],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 1 灵石，本日下一次购买少花 2 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_old_pacts_rewrite.Summary"
+  },
+  {
+    "OptionId": "event-scrap-recovery-strip",
+    "EventId": "event-scrap-recovery",
+    "Order": 1,
+    "DisplayName": "拆掉起手件",
+    "LocalizationKey": "Buqi.Content.EventOption.event_scrap_recovery_strip.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "starter",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "starter"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 4,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-scrap-recovery-starter"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "移除一件起手器物，获得 4 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_scrap_recovery_strip.Summary"
+  },
+  {
+    "OptionId": "event-scrap-recovery-trade",
+    "EventId": "event-scrap-recovery",
+    "Order": 2,
+    "DisplayName": "以旧换新",
+    "LocalizationKey": "Buqi.Content.EventOption.event_scrap_recovery_trade.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "pivot",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "pivot"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "counter",
+        "DurationDays": 0,
+        "ReasonCode": "event-scrap-recovery-counter"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "移除一件转向器物，获得一件改良反制器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_scrap_recovery_trade.Summary"
+  },
+  {
+    "OptionId": "event-scrap-recovery-sort",
+    "EventId": "event-scrap-recovery",
+    "Order": 3,
+    "DisplayName": "替人分拣",
+    "LocalizationKey": "Buqi.Content.EventOption.event_scrap_recovery_sort.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 3,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-scrap-recovery-work"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "获得 3 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_scrap_recovery_sort.Summary"
+  },
+  {
+    "OptionId": "event-calming-chime-listen",
+    "EventId": "event-calming-chime",
+    "Order": 1,
+    "DisplayName": "静听一刻",
+    "LocalizationKey": "Buqi.Content.EventOption.event_calming_chime_listen.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 6,
+        "Amount": 10,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-calming-chime-buffer"
+      },
+      {
+        "Kind": 7,
+        "Amount": 6,
+        "Value": "None",
+        "DurationDays": 1,
+        "ReasonCode": "event-calming-chime-heal"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 1 灵石；下一战开场获得 10 护体并恢复 6 生命。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_calming_chime_listen.Summary"
+  },
+  {
+    "OptionId": "event-calming-chime-tune",
+    "EventId": "event-calming-chime",
+    "Order": 2,
+    "DisplayName": "调准钟舌",
+    "LocalizationKey": "Buqi.Content.EventOption.event_calming_chime_tune.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "counter",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "counter",
+        "DurationDays": 0,
+        "ReasonCode": "event-calming-chime-upgrade"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 2 灵石，升级一件普通反制器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_calming_chime_tune.Summary"
+  },
+  {
+    "OptionId": "event-calming-chime-copy",
+    "EventId": "event-calming-chime",
+    "Order": 3,
+    "DisplayName": "记下钟律",
+    "LocalizationKey": "Buqi.Content.EventOption.event_calming_chime_copy.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 4,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "shared",
+        "DurationDays": 0,
+        "ReasonCode": "event-calming-chime-shared"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "下一战增加 2 点失衡，获得一件改良共享器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_calming_chime_copy.Summary"
+  },
+  {
+    "OptionId": "event-day-nine-ledger-attack",
+    "EventId": "event-day-nine-ledger",
+    "Order": 1,
+    "DisplayName": "按攻势结算",
+    "LocalizationKey": "Buqi.Content.EventOption.event_day_nine_ledger_attack.Name",
+    "ConditionKind": 3,
+    "ConditionValue": "fast",
+    "RequiredFlags": [
+      "auction_claim"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 0,
+        "Amount": 5,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-day-nine-ledger-fast"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [
+      "auction_claim"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "攻击构筑获得 5 灵石。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_day_nine_ledger_attack.Summary"
+  },
+  {
+    "OptionId": "event-day-nine-ledger-ward",
+    "EventId": "event-day-nine-ledger",
+    "Order": 2,
+    "DisplayName": "按守势结算",
+    "LocalizationKey": "Buqi.Content.EventOption.event_day_nine_ledger_ward.Name",
+    "ConditionKind": 3,
+    "ConditionValue": "buffer",
+    "RequiredFlags": [
+      "auction_claim"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-day-nine-ledger-buffer"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [
+      "auction_claim"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "护体构筑恢复 1 命。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_day_nine_ledger_ward.Summary"
+  },
+  {
+    "OptionId": "event-day-nine-ledger-sustain",
+    "EventId": "event-day-nine-ledger",
+    "Order": 3,
+    "DisplayName": "按续航结算",
+    "LocalizationKey": "Buqi.Content.EventOption.event_day_nine_ledger_sustain.Name",
+    "ConditionKind": 3,
+    "ConditionValue": "heal",
+    "RequiredFlags": [
+      "auction_claim"
+    ],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "A-03",
+        "DurationDays": 0,
+        "ReasonCode": "event-day-nine-ledger-heal"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [
+      "auction_claim"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "恢复构筑获得复写精炼。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_day_nine_ledger_sustain.Summary"
+  },
+  {
+    "OptionId": "event-return-furnace-finish",
+    "EventId": "event-return-furnace",
+    "Order": 1,
+    "DisplayName": "熔去旧起手",
+    "LocalizationKey": "Buqi.Content.EventOption.event_return_furnace_finish.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "starter",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 3,
+        "Amount": 1,
+        "Value": "starter"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 4,
+        "Amount": 1,
+        "Value": "finisher",
+        "DurationDays": 0,
+        "ReasonCode": "event-return-furnace-finish"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "移除一件起手器物，将一件收尾器物提升一级。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_return_furnace_finish.Summary"
+  },
+  {
+    "OptionId": "event-return-furnace-balance",
+    "EventId": "event-return-furnace",
+    "Order": 2,
+    "DisplayName": "重排三路",
+    "LocalizationKey": "Buqi.Content.EventOption.event_return_furnace_balance.Name",
+    "ConditionKind": 2,
+    "ConditionValue": "bridge",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 1,
+        "Amount": 2,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 2,
+        "Amount": 1,
+        "Value": "pivot",
+        "DurationDays": 0,
+        "ReasonCode": "event-return-furnace-pivot"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "支付 2 灵石，获得一件定型转向器物。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_return_furnace_balance.Summary"
+  },
+  {
+    "OptionId": "event-return-furnace-close",
+    "EventId": "event-return-furnace",
+    "Order": 3,
+    "DisplayName": "封存余火",
+    "LocalizationKey": "Buqi.Content.EventOption.event_return_furnace_close.Name",
+    "ConditionKind": 0,
+    "ConditionValue": "None",
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "Costs": [
+      {
+        "Kind": 0,
+        "Amount": 0,
+        "Value": "None"
+      }
+    ],
+    "Outcomes": [
+      {
+        "Kind": 1,
+        "Amount": 1,
+        "Value": "None",
+        "DurationDays": 0,
+        "ReasonCode": "event-return-furnace-life"
+      }
+    ],
+    "SetFlags": [],
+    "ClearFlags": [
+      "ledger_owed",
+      "borrowed_flame",
+      "umbrella_borrowed",
+      "auction_claim"
+    ],
+    "FollowUpEventId": "",
+    "FollowUpDelayDays": 0,
+    "Summary": "恢复 1 命并清除全部跨日约记。",
+    "SummaryLocalizationKey": "Buqi.Content.EventOption.event_return_furnace_close.Summary"
+  }
+]

@@ -7,7 +7,8 @@ namespace Game.Hot.Buqi.Run.Settlement
     public sealed class BuqiRunSaveData
     {
         public const string LegacySaveVersion = "buqi-run-save-v2";
-        public const string CurrentSaveVersion = "buqi-run-save-v3";
+        public const string PreviousSaveVersion = "buqi-run-save-v3";
+        public const string CurrentSaveVersion = "buqi-run-save-v4";
 
         public string SaveVersion = CurrentSaveVersion;
         public string ContentVersion = string.Empty;

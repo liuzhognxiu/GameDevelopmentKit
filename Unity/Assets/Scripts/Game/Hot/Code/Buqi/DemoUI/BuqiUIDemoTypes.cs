@@ -30,6 +30,7 @@ namespace Game.Hot.Buqi.DemoUI
         SelectStarter,
         SelectChoice,
         BuyOffer,
+        SellItem,
         RefreshShop,
         ToggleShopLock,
         SelectBoardSource,
@@ -93,6 +94,30 @@ namespace Game.Hot.Buqi.DemoUI
         public int Price;
         public bool Sold;
         public bool Locked;
+    }
+
+    public interface IBuqiBazaarSupplyViewSource
+    {
+        bool TryGetCurrentSupply(out BuqiBazaarSupplyView supply);
+    }
+
+    public sealed class BuqiBazaarSupplyView
+    {
+        public string MerchantName = string.Empty;
+        public string MerchantSpecialty = string.Empty;
+        public int RefreshPrice;
+        public string RefreshPriceLabel = string.Empty;
+        public IReadOnlyDictionary<string, string> OfferRoles =
+            new Dictionary<string, string>(StringComparer.Ordinal);
+
+        public string FindOfferRole(string offerId)
+        {
+            if (string.IsNullOrEmpty(offerId) || OfferRoles == null)
+                return string.Empty;
+            return OfferRoles.TryGetValue(offerId, out string role)
+                ? role ?? string.Empty
+                : string.Empty;
+        }
     }
 
     public sealed class BuqiDemoOpponentView

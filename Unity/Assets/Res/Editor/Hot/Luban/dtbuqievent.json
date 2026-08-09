@@ -1,0 +1,452 @@
+[
+  {
+    "EventId": "event-trial-stele",
+    "DisplayName": "试锋碑",
+    "LocalizationKey": "Buqi.Content.Event.event_trial_stele.Name",
+    "MinDay": 1,
+    "MaxDay": 3,
+    "Weight": 110,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-trial-stele-read",
+      "event-trial-stele-brace",
+      "event-trial-stele-leave"
+    ]
+  },
+  {
+    "EventId": "event-herb-stall",
+    "DisplayName": "旧城药摊",
+    "LocalizationKey": "Buqi.Content.Event.event_herb_stall.Name",
+    "MinDay": 1,
+    "MaxDay": 3,
+    "Weight": 100,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-herb-stall-dose",
+      "event-herb-stall-seed",
+      "event-herb-stall-work"
+    ]
+  },
+  {
+    "EventId": "event-broken-armor",
+    "DisplayName": "山门残甲",
+    "LocalizationKey": "Buqi.Content.Event.event_broken_armor.Name",
+    "MinDay": 1,
+    "MaxDay": 3,
+    "Weight": 100,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-broken-armor-fit",
+      "event-broken-armor-salvage",
+      "event-broken-armor-measure"
+    ]
+  },
+  {
+    "EventId": "event-cloud-peddler",
+    "DisplayName": "云脚行商",
+    "LocalizationKey": "Buqi.Content.Event.event_cloud_peddler.Name",
+    "MinDay": 1,
+    "MaxDay": 3,
+    "Weight": 90,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-cloud-peddler-bundle",
+      "event-cloud-peddler-map",
+      "event-cloud-peddler-bargain"
+    ]
+  },
+  {
+    "EventId": "event-borrowed-flame",
+    "DisplayName": "借火炼器",
+    "LocalizationKey": "Buqi.Content.Event.event_borrowed_flame.Name",
+    "MinDay": 1,
+    "MaxDay": 3,
+    "Weight": 85,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [
+      "borrowed_flame"
+    ],
+    "RevisitEventId": "event-roving-furnace",
+    "RevisitDelayDays": 2,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-borrowed-flame-temper",
+      "event-borrowed-flame-carry",
+      "event-borrowed-flame-sell"
+    ]
+  },
+  {
+    "EventId": "event-broken-mechanism",
+    "DisplayName": "断弦机括",
+    "LocalizationKey": "Buqi.Content.Event.event_broken_mechanism.Name",
+    "MinDay": 1,
+    "MaxDay": 3,
+    "Weight": 85,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-broken-mechanism-repair",
+      "event-broken-mechanism-take",
+      "event-broken-mechanism-test"
+    ]
+  },
+  {
+    "EventId": "event-nameless-ledger",
+    "DisplayName": "无名账册",
+    "LocalizationKey": "Buqi.Content.Event.event_nameless_ledger.Name",
+    "MinDay": 1,
+    "MaxDay": 3,
+    "Weight": 80,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [
+      "ledger_owed",
+      "ledger_closed"
+    ],
+    "RevisitEventId": "event-ledger-collector",
+    "RevisitDelayDays": 2,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-nameless-ledger-borrow",
+      "event-nameless-ledger-audit",
+      "event-nameless-ledger-leave"
+    ]
+  },
+  {
+    "EventId": "event-rain-umbrella",
+    "DisplayName": "雨夜借伞",
+    "LocalizationKey": "Buqi.Content.Event.event_rain_umbrella.Name",
+    "MinDay": 1,
+    "MaxDay": 3,
+    "Weight": 75,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [
+      "umbrella_borrowed",
+      "umbrella_returned"
+    ],
+    "RevisitEventId": "event-umbrella-return",
+    "RevisitDelayDays": 2,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-rain-umbrella-borrow",
+      "event-rain-umbrella-buy",
+      "event-rain-umbrella-wait"
+    ]
+  },
+  {
+    "EventId": "event-sword-echo",
+    "DisplayName": "剑痕回声",
+    "LocalizationKey": "Buqi.Content.Event.event_sword_echo.Name",
+    "MinDay": 4,
+    "MaxDay": 6,
+    "Weight": 100,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-sword-echo-follow",
+      "event-sword-echo-deflect",
+      "event-sword-echo-copy"
+    ]
+  },
+  {
+    "EventId": "event-wall-fissure",
+    "DisplayName": "城墙裂隙",
+    "LocalizationKey": "Buqi.Content.Event.event_wall_fissure.Name",
+    "MinDay": 4,
+    "MaxDay": 6,
+    "Weight": 100,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-wall-fissure-seal",
+      "event-wall-fissure-brace",
+      "event-wall-fissure-salvage"
+    ]
+  },
+  {
+    "EventId": "event-herb-water",
+    "DisplayName": "药田争水",
+    "LocalizationKey": "Buqi.Content.Event.event_herb_water.Name",
+    "MinDay": 4,
+    "MaxDay": 6,
+    "Weight": 95,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-herb-water-divert",
+      "event-herb-water-share",
+      "event-herb-water-sell"
+    ]
+  },
+  {
+    "EventId": "event-roving-furnace",
+    "DisplayName": "游炉换火",
+    "LocalizationKey": "Buqi.Content.Event.event_roving_furnace.Name",
+    "MinDay": 4,
+    "MaxDay": 6,
+    "Weight": 90,
+    "RequiredFlags": [
+      "borrowed_flame"
+    ],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-roving-furnace-return",
+      "event-roving-furnace-keep",
+      "event-roving-furnace-trade"
+    ]
+  },
+  {
+    "EventId": "event-ledger-collector",
+    "DisplayName": "欠账来客",
+    "LocalizationKey": "Buqi.Content.Event.event_ledger_collector.Name",
+    "MinDay": 4,
+    "MaxDay": 6,
+    "Weight": 90,
+    "RequiredFlags": [
+      "ledger_owed"
+    ],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-ledger-collector-pay",
+      "event-ledger-collector-work",
+      "event-ledger-collector-default"
+    ]
+  },
+  {
+    "EventId": "event-umbrella-return",
+    "DisplayName": "归伞人",
+    "LocalizationKey": "Buqi.Content.Event.event_umbrella_return.Name",
+    "MinDay": 4,
+    "MaxDay": 6,
+    "Weight": 85,
+    "RequiredFlags": [
+      "umbrella_borrowed"
+    ],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-umbrella-return-return",
+      "event-umbrella-return-repair",
+      "event-umbrella-return-keep"
+    ]
+  },
+  {
+    "EventId": "event-headwind-array",
+    "DisplayName": "逆风试阵",
+    "LocalizationKey": "Buqi.Content.Event.event_headwind_array.Name",
+    "MinDay": 4,
+    "MaxDay": 6,
+    "Weight": 80,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-headwind-array-enter",
+      "event-headwind-array-anchor",
+      "event-headwind-array-observe"
+    ]
+  },
+  {
+    "EventId": "event-three-bidders",
+    "DisplayName": "三家竞价",
+    "LocalizationKey": "Buqi.Content.Event.event_three_bidders.Name",
+    "MinDay": 4,
+    "MaxDay": 6,
+    "Weight": 75,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [
+      "auction_claim"
+    ],
+    "RevisitEventId": "event-day-nine-ledger",
+    "RevisitDelayDays": 3,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-three-bidders-sell",
+      "event-three-bidders-bid",
+      "event-three-bidders-stake"
+    ]
+  },
+  {
+    "EventId": "event-heaven-gate",
+    "DisplayName": "天门校器",
+    "LocalizationKey": "Buqi.Content.Event.event_heaven_gate.Name",
+    "MinDay": 7,
+    "MaxDay": 9,
+    "Weight": 95,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-heaven-gate-edge",
+      "event-heaven-gate-tempo",
+      "event-heaven-gate-spare"
+    ]
+  },
+  {
+    "EventId": "event-mountain-eye",
+    "DisplayName": "护山阵眼",
+    "LocalizationKey": "Buqi.Content.Event.event_mountain_eye.Name",
+    "MinDay": 7,
+    "MaxDay": 9,
+    "Weight": 95,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-mountain-eye-seal",
+      "event-mountain-eye-ward",
+      "event-mountain-eye-stone"
+    ]
+  },
+  {
+    "EventId": "event-herbs-return",
+    "DisplayName": "百草归元",
+    "LocalizationKey": "Buqi.Content.Event.event_herbs_return.Name",
+    "MinDay": 7,
+    "MaxDay": 9,
+    "Weight": 95,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-herbs-return-brew",
+      "event-herbs-return-share",
+      "event-herbs-return-seed"
+    ]
+  },
+  {
+    "EventId": "event-old-pacts",
+    "DisplayName": "旧约清算",
+    "LocalizationKey": "Buqi.Content.Event.event_old_pacts.Name",
+    "MinDay": 7,
+    "MaxDay": 9,
+    "Weight": 85,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-old-pacts-pay",
+      "event-old-pacts-bear",
+      "event-old-pacts-rewrite"
+    ]
+  },
+  {
+    "EventId": "event-scrap-recovery",
+    "DisplayName": "回收残器",
+    "LocalizationKey": "Buqi.Content.Event.event_scrap_recovery.Name",
+    "MinDay": 7,
+    "MaxDay": 9,
+    "Weight": 80,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-scrap-recovery-strip",
+      "event-scrap-recovery-trade",
+      "event-scrap-recovery-sort"
+    ]
+  },
+  {
+    "EventId": "event-calming-chime",
+    "DisplayName": "镇心钟鸣",
+    "LocalizationKey": "Buqi.Content.Event.event_calming_chime.Name",
+    "MinDay": 7,
+    "MaxDay": 9,
+    "Weight": 80,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": false,
+    "OptionIds": [
+      "event-calming-chime-listen",
+      "event-calming-chime-tune",
+      "event-calming-chime-copy"
+    ]
+  },
+  {
+    "EventId": "event-day-nine-ledger",
+    "DisplayName": "九日归账",
+    "LocalizationKey": "Buqi.Content.Event.event_day_nine_ledger.Name",
+    "MinDay": 9,
+    "MaxDay": 9,
+    "Weight": 120,
+    "RequiredFlags": [
+      "auction_claim"
+    ],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": true,
+    "OptionIds": [
+      "event-day-nine-ledger-attack",
+      "event-day-nine-ledger-ward",
+      "event-day-nine-ledger-sustain"
+    ]
+  },
+  {
+    "EventId": "event-return-furnace",
+    "DisplayName": "不器归炉",
+    "LocalizationKey": "Buqi.Content.Event.event_return_furnace.Name",
+    "MinDay": 9,
+    "MaxDay": 9,
+    "Weight": 150,
+    "RequiredFlags": [],
+    "ForbiddenFlags": [],
+    "RevisitEventId": "",
+    "RevisitDelayDays": 0,
+    "DayNineResolution": true,
+    "OptionIds": [
+      "event-return-furnace-finish",
+      "event-return-furnace-balance",
+      "event-return-furnace-close"
+    ]
+  }
+]

@@ -111,6 +111,30 @@ public sealed class DRBuqiGlobal :  Luban.EditorBeanBase
             }
         }
         
+        { 
+            var _fieldJson = _json["MaxChainDepth"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  MaxChainDepth = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["MaxRepeatedReasonPerTick"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  MaxRepeatedReasonPerTick = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["DailyEconomyProcCap"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  DailyEconomyProcCap = _fieldJson;
+            }
+        }
+        
     }
 
     public override void SaveJson(JSONObject _json)
@@ -149,6 +173,15 @@ public sealed class DRBuqiGlobal :  Luban.EditorBeanBase
         }
         {
             _json["MaxItemEventsPerTick"] = new JSONNumber(MaxItemEventsPerTick);
+        }
+        {
+            _json["MaxChainDepth"] = new JSONNumber(MaxChainDepth);
+        }
+        {
+            _json["MaxRepeatedReasonPerTick"] = new JSONNumber(MaxRepeatedReasonPerTick);
+        }
+        {
+            _json["DailyEconomyProcCap"] = new JSONNumber(DailyEconomyProcCap);
         }
     }
 
@@ -218,6 +251,21 @@ public sealed class DRBuqiGlobal :  Luban.EditorBeanBase
     /// max item events per tick
     /// </summary>
     public int MaxItemEventsPerTick;
+
+    /// <summary>
+    /// maximum trigger chain depth
+    /// </summary>
+    public int MaxChainDepth;
+
+    /// <summary>
+    /// maximum repeated reason code per tick
+    /// </summary>
+    public int MaxRepeatedReasonPerTick;
+
+    /// <summary>
+    /// maximum economy item proc per day
+    /// </summary>
+    public int DailyEconomyProcCap;
 
 }
 }

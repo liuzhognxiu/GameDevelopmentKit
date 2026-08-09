@@ -1,0 +1,54 @@
+[
+  {
+    "TrainerId": "trainer-wind",
+    "DisplayName": "踏风教习·简行",
+    "LocalizationKey": "Buqi.Content.Trainer.trainer_wind.Name",
+    "MinDay": 1,
+    "MaxDay": 9,
+    "Weight": 90,
+    "ProjectIds": [
+      "training-wind-01",
+      "training-wind-02",
+      "training-wind-03"
+    ]
+  },
+  {
+    "TrainerId": "trainer-ward",
+    "DisplayName": "垒山教习·岳定",
+    "LocalizationKey": "Buqi.Content.Trainer.trainer_ward.Name",
+    "MinDay": 1,
+    "MaxDay": 9,
+    "Weight": 90,
+    "ProjectIds": [
+      "training-ward-01",
+      "training-ward-02",
+      "training-ward-03"
+    ]
+  },
+  {
+    "TrainerId": "trainer-pulse",
+    "DisplayName": "归脉教习·苏衡",
+    "LocalizationKey": "Buqi.Content.Trainer.trainer_pulse.Name",
+    "MinDay": 1,
+    "MaxDay": 9,
+    "Weight": 90,
+    "ProjectIds": [
+      "training-pulse-01",
+      "training-pulse-02",
+      "training-pulse-03"
+    ]
+  },
+  {
+    "TrainerId": "trainer-craft",
+    "DisplayName": "百工教习·鲁知微",
+    "LocalizationKey": "Buqi.Content.Trainer.trainer_craft.Name",
+    "MinDay": 4,
+    "MaxDay": 9,
+    "Weight": 75,
+    "ProjectIds": [
+      "training-craft-01",
+      "training-craft-02",
+      "training-craft-03"
+    ]
+  }
+]

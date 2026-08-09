@@ -37,20 +37,19 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void TryMove_OverlapIsRejectedWithoutMutation()
+        public void TryMove_OccupiedContinuationSwapsAtomically()
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
                 CreateCatalog(), Slots(8), new List<string> { "item-m", "item-s", "", "", "", "", "", "" });
             Assert.That(controller.TryMove(BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(1)).Accepted,
                 Is.True);
-            BuqiDeploymentSnapshot before = controller.View;
-
             BuqiDeploymentCommandResult result = controller.TryMove(
                 BuqiDeploymentSlotRef.Storage(1), BuqiDeploymentSlotRef.Board(2));
 
-            Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("目标位置与其他装备重叠"));
-            Assert.That(controller.View, Is.SameAs(before));
+            Assert.That(result.Accepted, Is.True, result.Reason);
+            Assert.That(controller.View.BoardSlots[1], Is.EqualTo("item-s"));
+            Assert.That(controller.View.BoardSlots[2], Is.Empty);
+            Assert.That(controller.View.StorageSlots[1], Is.EqualTo("item-m"));
         }
 
         [Test]
@@ -101,6 +100,74 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(controller.View.BoardSlots[4], Is.Empty);
             Assert.That(controller.View.BoardSlots[5], Is.Empty);
             Assert.That(controller.View.StorageSlots[2], Is.EqualTo("item-m"));
+        }
+
+        [Test]
+        public void TryMove_OccupiedStorageSlotsSwapAtomically()
+        {
+            BuqiDragDeployController controller = BuqiDragDeployController.Create(
+                CreateCatalog(), Slots(8), new List<string> { "item-s", "item-m", "", "", "", "", "", "" });
+
+            BuqiDeploymentCommandResult result = controller.TryMove(
+                BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Storage(1));
+
+            Assert.That(result.Accepted, Is.True, result.Reason);
+            Assert.That(controller.View.StorageSlots[0], Is.EqualTo("item-m"));
+            Assert.That(controller.View.StorageSlots[1], Is.EqualTo("item-s"));
+        }
+
+        [Test]
+        public void TryMove_OccupiedBoardSlotsSwapAtomically()
+        {
+            BuqiDragDeployController controller = BuqiDragDeployController.Create(
+                CreateCatalog(),
+                new List<string> { "item-s", "", "", "item-m", "", "", "", "" },
+                Slots(8));
+
+            BuqiDeploymentCommandResult result = controller.TryMove(
+                BuqiDeploymentSlotRef.Board(0), BuqiDeploymentSlotRef.Board(3));
+
+            Assert.That(result.Accepted, Is.True, result.Reason);
+            Assert.That(controller.View.BoardSlots[0], Is.EqualTo("item-m"));
+            Assert.That(controller.View.BoardSlots[1], Is.EqualTo("item-m"));
+            Assert.That(controller.View.BoardSlots[3], Is.EqualTo("item-s"));
+            Assert.That(controller.View.BoardSlots[4], Is.Empty);
+        }
+
+        [Test]
+        public void TryMove_OccupiedBoardAndStorageSlotsSwapAtomically()
+        {
+            BuqiDragDeployController controller = BuqiDragDeployController.Create(
+                CreateCatalog(),
+                new List<string> { "", "", "", "item-m", "", "", "", "" },
+                new List<string> { "item-s", "", "", "", "", "", "", "" });
+
+            BuqiDeploymentCommandResult result = controller.TryMove(
+                BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(3));
+
+            Assert.That(result.Accepted, Is.True, result.Reason);
+            Assert.That(controller.View.BoardSlots[3], Is.EqualTo("item-s"));
+            Assert.That(controller.View.BoardSlots[4], Is.Empty);
+            Assert.That(controller.View.StorageSlots[0], Is.EqualTo("item-m"));
+        }
+
+        [Test]
+        public void TryMove_IllegalOccupiedSwapIsRejectedWithoutMutation()
+        {
+            BuqiDragDeployController controller = BuqiDragDeployController.Create(
+                CreateCatalog(),
+                new List<string> { "", "", "", "", "", "", "item-s", "" },
+                new List<string> { "item-l", "", "", "", "", "", "", "" });
+            BuqiDeploymentSnapshot before = controller.View;
+
+            BuqiDeploymentCommandResult result = controller.TryMove(
+                BuqiDeploymentSlotRef.Board(6), BuqiDeploymentSlotRef.Storage(0));
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(result.Reason, Is.EqualTo("交换后装备超出棋盘范围"));
+            Assert.That(controller.View, Is.SameAs(before));
+            Assert.That(controller.View.BoardSlots[6], Is.EqualTo("item-s"));
+            Assert.That(controller.View.StorageSlots[0], Is.EqualTo("item-l"));
         }
 
         [Test]

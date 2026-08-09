@@ -2,31 +2,31 @@
   {
     "RefinementId": "A-01",
     "DisplayName": "加急",
-    "Summary": "cooldown -15%; each active use creates 1 overload."
+    "Summary": "冷却缩短 15%；每次主动使用增加 1 点失衡。"
   },
   {
     "RefinementId": "A-02",
     "DisplayName": "激化",
-    "Summary": "cooldown +20%; non-opening effects +30%."
+    "Summary": "冷却延长 20%；非开战效果提高 30%。"
   },
   {
     "RefinementId": "A-03",
     "DisplayName": "复写",
-    "Summary": "first active use repeats at 50% effect once per battle."
+    "Summary": "每场战斗首次主动使用时，以 50% 效果额外结算一次。"
   },
   {
     "RefinementId": "A-04",
     "DisplayName": "可靠",
-    "Summary": "immune to enemy slow and ignores friendly haste."
+    "Summary": "免疫敌方减速，但不受友方加速。"
   },
   {
     "RefinementId": "A-05",
     "DisplayName": "稳流",
-    "Summary": "attack/shield -15%; overload gained by this item -1."
+    "Summary": "伤害与护体降低 15%；本器物造成的失衡减少 1 点。"
   },
   {
     "RefinementId": "A-06",
     "DisplayName": "超载",
-    "Summary": "battle start gains 3 overload; attack/shield +35%."
+    "Summary": "开战增加 3 点失衡；伤害与护体提高 35%。"
   }
 ]

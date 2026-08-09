@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Buqi.Slot.Empty
+  m_Text: "\u7A7A\u4F4D"
 --- !u!1 &3546537546840370568
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Buqi.Slot.Number
+  m_Text: 01
 --- !u!1 &5507593744000397823
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,7 +236,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Buqi.Slot.Empty
+  m_Text: "\u7A7A\u4F4D"
 --- !u!1 &7653012636873610966
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,4 +412,4 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Buqi.Slot.CloseMark
+  m_Text: "\xD7"

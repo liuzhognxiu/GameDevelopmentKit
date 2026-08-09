@@ -11,6 +11,12 @@ namespace Game.Hot.Buqi.Run.Settlement
 {
     public static class BuqiRunSaveCodec
     {
+        private const int LegacyV2OperationsBeforeBattle = 3;
+        private const int LegacyV2MigratableOpeningOperations = 2;
+        private const int PreviousV3OperationsPerDay = 2;
+        private const int PreviousV3PvePeriod = 2;
+        private const int PreviousV3PvpPeriod = 3;
+
 #if BUQI_HEADLESS
         private static readonly JsonSerializerOptions HeadlessJsonOptions = new JsonSerializerOptions
         {
@@ -114,6 +120,13 @@ namespace Game.Hot.Buqi.Run.Settlement
 
             if (string.Equals(saveData.SaveVersion, BuqiRunSaveData.LegacySaveVersion, StringComparison.Ordinal) &&
                 !TryMigrateLegacyV2(saveData, out error))
+            {
+                saveData = null!;
+                return false;
+            }
+
+            if (string.Equals(saveData.SaveVersion, BuqiRunSaveData.PreviousSaveVersion, StringComparison.Ordinal) &&
+                !TryMigratePreviousV3(saveData, out error))
             {
                 saveData = null!;
                 return false;
@@ -236,12 +249,31 @@ namespace Game.Hot.Buqi.Run.Settlement
 
             if (phase == BuqiRunPhase.Encounter)
             {
-                BuqiRunPeriod expectedPeriod = saveData.EncounterIndex == 0
-                    ? BuqiRunPeriod.MorningOperation
-                    : BuqiRunPeriod.NoonOperation;
-                if (saveData.EncounterIndex >= BuqiRunRules.OperationsPerDay || period != expectedPeriod)
+                if (!TryGetOperationPeriod(saveData.EncounterIndex, out BuqiRunPeriod expectedPeriod) ||
+                    period != expectedPeriod)
                 {
                     error = "Operation phase does not match its period or index.";
+                    return false;
+                }
+            }
+            else if (phase == BuqiRunPhase.PveBattle)
+            {
+                if (saveData.EncounterIndex != BuqiRunRules.OperationsBeforePve)
+                {
+                    error = "Operation index does not match the PVE phase.";
+                    return false;
+                }
+            }
+            else if (phase == BuqiRunPhase.RunTerminal)
+            {
+                bool validTerminalIndex =
+                    (period == BuqiRunPeriod.Hour3Pve &&
+                     saveData.EncounterIndex == BuqiRunRules.OperationsBeforePve) ||
+                    (period == BuqiRunPeriod.Hour6Pvp &&
+                     saveData.EncounterIndex == BuqiRunRules.OperationsPerDay);
+                if (!validTerminalIndex)
+                {
+                    error = "Operation index does not match the terminal phase.";
                     return false;
                 }
             }
@@ -251,12 +283,12 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
-            if ((phase == BuqiRunPhase.PveBattle && period != BuqiRunPeriod.DuskPve) ||
+            if ((phase == BuqiRunPhase.PveBattle && period != BuqiRunPeriod.Hour3Pve) ||
                 ((phase == BuqiRunPhase.PvpBattle || phase == BuqiRunPhase.DaySettlement ||
                   phase == BuqiRunPhase.TribulationRoute || phase == BuqiRunPhase.TribulationStage) &&
-                 period != BuqiRunPeriod.NightPvp) ||
+                 period != BuqiRunPeriod.Hour6Pvp) ||
                 (phase == BuqiRunPhase.RunTerminal &&
-                 period != BuqiRunPeriod.DuskPve && period != BuqiRunPeriod.NightPvp))
+                 period != BuqiRunPeriod.Hour3Pve && period != BuqiRunPeriod.Hour6Pvp))
             {
                 error = "Run period does not match the current phase.";
                 return false;
@@ -478,31 +510,32 @@ namespace Game.Hot.Buqi.Run.Settlement
             switch (phase)
             {
                 case BuqiRunPhase.Encounter:
-                    if (saveData.EncounterIndex < 0 || saveData.EncounterIndex >= BuqiRunRules.OperationsPerDay)
+                    if (saveData.EncounterIndex < 0 ||
+                        saveData.EncounterIndex >= LegacyV2MigratableOpeningOperations)
                     {
                         error = "Legacy third operation cannot be migrated safely.";
                         return false;
                     }
 
                     saveData.Period = saveData.EncounterIndex == 0
-                        ? (int)BuqiRunPeriod.MorningOperation
-                        : (int)BuqiRunPeriod.NoonOperation;
+                        ? (int)BuqiRunPeriod.Hour1Operation
+                        : (int)BuqiRunPeriod.Hour2Operation;
                     break;
 
                 case BuqiRunPhase.PveBattle:
-                    if (saveData.EncounterIndex != 3)
+                    if (saveData.EncounterIndex != LegacyV2OperationsBeforeBattle)
                     {
                         error = "Legacy PVE operation index is invalid.";
                         return false;
                     }
 
-                    saveData.EncounterIndex = BuqiRunRules.OperationsPerDay;
-                    saveData.Period = (int)BuqiRunPeriod.DuskPve;
+                    saveData.EncounterIndex = BuqiRunRules.OperationsBeforePve;
+                    saveData.Period = (int)BuqiRunPeriod.Hour3Pve;
                     break;
 
                 case BuqiRunPhase.PvpBattle:
                 case BuqiRunPhase.DaySettlement:
-                    if (saveData.EncounterIndex != 3 ||
+                    if (saveData.EncounterIndex != LegacyV2OperationsBeforeBattle ||
                         (phase == BuqiRunPhase.DaySettlement && saveData.Day == BuqiRunRules.RunDayCount))
                     {
                         error = "Legacy night state cannot be migrated safely.";
@@ -510,7 +543,7 @@ namespace Game.Hot.Buqi.Run.Settlement
                     }
 
                     saveData.EncounterIndex = BuqiRunRules.OperationsPerDay;
-                    saveData.Period = (int)BuqiRunPeriod.NightPvp;
+                    saveData.Period = (int)BuqiRunPeriod.Hour6Pvp;
                     break;
 
                 case BuqiRunPhase.RunTerminal:
@@ -533,6 +566,116 @@ namespace Game.Hot.Buqi.Run.Settlement
             saveData.SaveVersion = BuqiRunSaveData.CurrentSaveVersion;
             saveData.RuleVersion = BuqiRunState.CurrentRuleVersion;
             return true;
+        }
+
+        private static bool TryMigratePreviousV3(BuqiRunSaveData saveData, out string error)
+        {
+            error = string.Empty;
+            if (!string.Equals(saveData.RuleVersion, BuqiRunState.PreviousRuleVersion, StringComparison.Ordinal))
+            {
+                error = "Previous rule version is invalid.";
+                return false;
+            }
+
+            if (saveData.Day < 1 || saveData.Day > BuqiRunRules.RunDayCount ||
+                !Enum.IsDefined(typeof(BuqiRunPhase), saveData.Phase))
+            {
+                error = "Previous save cannot be migrated to the six-hour rules.";
+                return false;
+            }
+
+            BuqiRunPhase phase = (BuqiRunPhase)saveData.Phase;
+            switch (phase)
+            {
+                case BuqiRunPhase.Encounter:
+                    if (saveData.EncounterIndex < 0 ||
+                        saveData.EncounterIndex >= PreviousV3OperationsPerDay ||
+                        saveData.Period != saveData.EncounterIndex)
+                    {
+                        error = "Previous operation state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.Period = saveData.EncounterIndex == 0
+                        ? (int)BuqiRunPeriod.Hour1Operation
+                        : (int)BuqiRunPeriod.Hour2Operation;
+                    break;
+
+                case BuqiRunPhase.PveBattle:
+                    if (saveData.EncounterIndex != PreviousV3OperationsPerDay ||
+                        saveData.Period != PreviousV3PvePeriod)
+                    {
+                        error = "Previous PVE state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.EncounterIndex = BuqiRunRules.OperationsBeforePve;
+                    saveData.Period = (int)BuqiRunPeriod.Hour3Pve;
+                    break;
+
+                case BuqiRunPhase.PvpBattle:
+                case BuqiRunPhase.DaySettlement:
+                case BuqiRunPhase.TribulationRoute:
+                case BuqiRunPhase.TribulationStage:
+                    if (saveData.EncounterIndex != PreviousV3OperationsPerDay ||
+                        saveData.Period != PreviousV3PvpPeriod)
+                    {
+                        error = "Previous night state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.EncounterIndex = BuqiRunRules.OperationsPerDay;
+                    saveData.Period = (int)BuqiRunPeriod.Hour6Pvp;
+                    break;
+
+                case BuqiRunPhase.RunTerminal:
+                    if (saveData.EncounterIndex != PreviousV3OperationsPerDay ||
+                        (saveData.Period != PreviousV3PvePeriod &&
+                         saveData.Period != PreviousV3PvpPeriod))
+                    {
+                        error = "Previous terminal state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    bool endedDuringPve = saveData.Period == PreviousV3PvePeriod;
+                    saveData.EncounterIndex = endedDuringPve
+                        ? BuqiRunRules.OperationsBeforePve
+                        : BuqiRunRules.OperationsPerDay;
+                    saveData.Period = endedDuringPve
+                        ? (int)BuqiRunPeriod.Hour3Pve
+                        : (int)BuqiRunPeriod.Hour6Pvp;
+                    break;
+
+                default:
+                    error = "Previous phase cannot be migrated safely.";
+                    return false;
+            }
+
+            saveData.SaveVersion = BuqiRunSaveData.CurrentSaveVersion;
+            saveData.RuleVersion = BuqiRunState.CurrentRuleVersion;
+            return true;
+        }
+
+        private static bool TryGetOperationPeriod(int encounterIndex, out BuqiRunPeriod period)
+        {
+            switch (encounterIndex)
+            {
+                case 0:
+                    period = BuqiRunPeriod.Hour1Operation;
+                    return true;
+                case 1:
+                    period = BuqiRunPeriod.Hour2Operation;
+                    return true;
+                case 2:
+                    period = BuqiRunPeriod.Hour4Operation;
+                    return true;
+                case 3:
+                    period = BuqiRunPeriod.Hour5Operation;
+                    return true;
+                default:
+                    period = default;
+                    return false;
+            }
         }
 
         private static string Normalize(string value)

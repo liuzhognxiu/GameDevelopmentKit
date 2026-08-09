@@ -72,7 +72,7 @@ namespace Game.Hot.Buqi.DemoUI
             switch (command.Type)
             {
                 case BuqiUIDemoCommandType.OpenDragDeploy:
-                    return CanOpenDeploy()
+                    return CanConfigureDeployment(View.Phase)
                         ? AcceptedWithoutMutation()
                         : Rejected("Current phase cannot open deployment.");
 
@@ -88,6 +88,12 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoCommandType.BuyOffer:
                     if (!m_Orchestrator.TryPurchase(command.PrimaryId, out string buyError))
                         return Rejected(buyError);
+                    RefreshView();
+                    return Accepted();
+
+                case BuqiUIDemoCommandType.SellItem:
+                    if (!m_Orchestrator.TrySellBoardItem(command.PrimaryId, out string sellError))
+                        return Rejected(sellError);
                     RefreshView();
                     return Accepted();
 
@@ -140,11 +146,14 @@ namespace Game.Hot.Buqi.DemoUI
             }
         }
 
-        private bool CanOpenDeploy()
+        public static bool CanConfigureDeployment(BuqiUIDemoPhase phase)
         {
-            return View.Phase == BuqiUIDemoPhase.OperationChoice
-                || View.Phase == BuqiUIDemoPhase.Shop
-                || View.Phase == BuqiUIDemoPhase.Event;
+            return phase == BuqiUIDemoPhase.OperationChoice
+                || phase == BuqiUIDemoPhase.Shop
+                || phase == BuqiUIDemoPhase.Event
+                || phase == BuqiUIDemoPhase.PveSelection
+                || phase == BuqiUIDemoPhase.TribulationRoute
+                || phase == BuqiUIDemoPhase.TribulationStage;
         }
 
         private void RefreshView()
@@ -341,7 +350,7 @@ namespace Game.Hot.Buqi.DemoUI
                     Id = definitionId,
                     Item = BuqiUIDemoCatalog.ItemView(definition),
                     Price = definition.Price,
-                    Sold = false,
+                    Sold = state.Encounter.PurchasedCandidateIds.Contains(definitionId),
                 });
             }
 

@@ -125,9 +125,9 @@ namespace Game.Hot.Buqi.Tests
                 form.SelectSource(source);
                 form.ClickItem(BuqiDeploymentSlotRef.Board(0));
 
-                Assert.That(form.SelectedSource, Is.EqualTo(source));
-                Assert.That(form.View.StorageSlots[0], Is.EqualTo("item-m"));
-                Assert.That(form.View.BoardSlots[0], Is.EqualTo("item-s"));
+                Assert.That(form.SelectedSource, Is.Null);
+                Assert.That(form.View.StorageSlots[0], Is.EqualTo("item-s"));
+                Assert.That(form.View.BoardSlots[0], Is.EqualTo("item-m"));
             }
             finally
             {
@@ -136,7 +136,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void StorageHover_RendersIllegalAndLegalTargetStates()
+        public void StorageHover_RendersOccupiedSwapAndEmptyMoveAsLegalTargets()
         {
             var formObject = new GameObject("DragDeployFormTest");
             FormHandle form = FormHandle.Create(formObject);
@@ -155,8 +155,8 @@ namespace Game.Hot.Buqi.Tests
                 form.SelectSource(BuqiDeploymentSlotRef.Board(0));
 
                 form.HoverSlot(BuqiDeploymentSlotRef.Storage(0), true);
-                Assert.That(states[0].text, Does.StartWith("×"));
-                Assert.That(backgrounds[0].color.r, Is.GreaterThan(backgrounds[0].color.g));
+                Assert.That(states[0].text, Is.EqualTo("✓ 可放置"));
+                Assert.That(backgrounds[0].color.g, Is.GreaterThan(backgrounds[0].color.r));
 
                 form.HoverSlot(BuqiDeploymentSlotRef.Storage(1), true);
                 Assert.That(states[1].text, Is.EqualTo("✓ 可放置"));

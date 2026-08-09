@@ -19,6 +19,7 @@ namespace Game.Hot.Buqi.Run.Encounter
         public string ResolutionId = string.Empty;
         public string SelectedChoiceId = string.Empty;
         public List<string> CandidateIds = new List<string>();
+        public List<string> PurchasedCandidateIds = new List<string>();
 
         public BuqiRunEncounterState Clone()
         {
@@ -33,6 +34,7 @@ namespace Game.Hot.Buqi.Run.Encounter
                 ResolutionId = ResolutionId,
                 SelectedChoiceId = SelectedChoiceId,
                 CandidateIds = new List<string>(CandidateIds),
+                PurchasedCandidateIds = new List<string>(PurchasedCandidateIds),
             };
         }
     }

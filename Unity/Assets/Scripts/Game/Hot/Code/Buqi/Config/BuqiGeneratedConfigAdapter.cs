@@ -9,6 +9,7 @@ using BattleQuality = Game.Hot.Buqi.Battle.BuqiQuality;
 using BattleSize = Game.Hot.Buqi.Battle.BuqiSize;
 using BattleTarget = Game.Hot.Buqi.Battle.BuqiTarget;
 using BattleTrigger = Game.Hot.Buqi.Battle.BuqiTrigger;
+using GeneratedBuild = Game.Hot.BuqiBuild;
 
 namespace Game.Hot.Buqi.Config
 {
@@ -37,6 +38,11 @@ namespace Game.Hot.Buqi.Config
             ReadItems(tables, catalog, errors);
             ReadRefinements(tables, catalog, errors);
             ReadEchoes(tables, catalog, errors);
+            ReadMerchants(tables, catalog, errors);
+            ReadTrainers(tables, catalog, errors);
+            ReadTrainingProjects(tables, catalog, errors);
+            ReadEvents(tables, catalog, errors);
+            ReadEventOptions(tables, catalog, errors);
             return errors.Count == 0;
         }
 
@@ -63,6 +69,9 @@ namespace Game.Hot.Buqi.Config
                 OvertimeStartTicks = ReadInt(row, "OvertimeStartTicks", errors),
                 MaxTickEvents = ReadInt(row, "MaxTickEvents", errors),
                 MaxItemEventsPerTick = ReadInt(row, "MaxItemEventsPerTick", errors),
+                MaxChainDepth = ReadInt(row, "MaxChainDepth", errors),
+                MaxRepeatedReasonPerTick = ReadInt(row, "MaxRepeatedReasonPerTick", errors),
+                DailyEconomyProcCap = ReadInt(row, "DailyEconomyProcCap", errors),
             };
             return true;
         }
@@ -78,16 +87,41 @@ namespace Game.Hot.Buqi.Config
                 {
                     DefinitionId = ReadString(row, "DefinitionId", errors),
                     DisplayName = ReadString(row, "DisplayName", errors),
+                    LocalizationKey = ReadString(row, "LocalizationKey", errors),
                     Size = ReadEnum(row, "Size", BattleSize.S, errors),
                     BasePrice = ReadInt(row, "BasePrice", errors),
+                    ImprovedUpgradeCost = ReadInt(row, "ImprovedUpgradeCost", errors),
+                    FixedUpgradeCost = ReadInt(row, "FixedUpgradeCost", errors),
+                    RefinementCost = ReadInt(row, "RefinementCost", errors),
                     BaseCooldownTicks = ReadInt(row, "BaseCooldownTicks", errors),
-                    ArchetypeId = ReadString(row, "ArchetypeId", errors),
+                    ArchetypeId = ReadEnum(row, "ArchetypeId", GeneratedBuild.fast, errors).ToString(),
+                    Role = ReadString(row, "Role", errors),
+                    UnlockDay = ReadInt(row, "UnlockDay", errors),
+                    PositionHint = ReadString(row, "PositionHint", errors),
                     Tags = ReadStringList(row, "Tags"),
+                    UpgradeSummary = ReadString(row, "UpgradeSummary", errors),
+                    UpgradeLocalizationKey = ReadString(row, "UpgradeLocalizationKey", errors),
+                    LinkIds = ReadStringList(row, "LinkIds"),
                 };
                 foreach (object effectRow in ReadObjectList(row, "Effects"))
                     item.Effects.Add(ReadEffect(effectRow, errors));
+                foreach (object effectRow in ReadObjectList(row, "RunEffects"))
+                    item.RunEffects.Add(ReadRunEffect(effectRow, errors));
                 catalog.Items.Add(item);
             }
+        }
+
+        private static BuqiRunEffectConfigRow ReadRunEffect(object row, List<string> errors)
+        {
+            return new BuqiRunEffectConfigRow
+            {
+                Trigger = ReadString(row, "Trigger", errors),
+                Effect = ReadString(row, "Effect", errors),
+                Amount = ReadInt(row, "Amount", errors),
+                Threshold = ReadInt(row, "Threshold", errors),
+                MaxPerDay = ReadInt(row, "MaxPerDay", errors),
+                ReasonCode = ReadString(row, "ReasonCode", errors),
+            };
         }
 
         private static BuqiEffectConfigRow ReadEffect(object row, List<string> errors)
@@ -139,7 +173,7 @@ namespace Game.Hot.Buqi.Config
                     EchoId = ReadString(row, "EchoId", errors),
                     DisplayName = ReadString(row, "DisplayName", errors),
                     Tier = ReadString(row, "Tier", errors),
-                    Build = ReadString(row, "Build", errors),
+                    Build = ReadEnum(row, "Build", GeneratedBuild.fast, errors).ToString(),
                     Snapshot = ReadSnapshot(snapshotRow, errors),
                 });
             }
@@ -150,7 +184,7 @@ namespace Game.Hot.Buqi.Config
             var snapshot = new BuqiBuildSnapshotConfigRow
             {
                 SnapshotId = ReadString(row, "SnapshotId", errors),
-                ArchetypeId = ReadString(row, "ArchetypeId", errors),
+                ArchetypeId = ReadEnum(row, "ArchetypeId", GeneratedBuild.fast, errors).ToString(),
                 InitialExecution = ReadInt(row, "InitialExecution", errors),
                 InitialBuffer = ReadInt(row, "InitialBuffer", errors),
                 InitialNoiseDebt = ReadInt(row, "InitialNoiseDebt", errors),
@@ -167,6 +201,165 @@ namespace Game.Hot.Buqi.Config
                 });
             }
             return snapshot;
+        }
+
+        private static void ReadMerchants(
+            object tables,
+            BuqiConfigCatalog catalog,
+            List<string> errors)
+        {
+            foreach (object row in ReadTableRows(tables, "DTBuqiMerchant", errors))
+            {
+                var merchant = new BuqiMerchantConfigRow
+                {
+                    MerchantId = ReadString(row, "MerchantId", errors),
+                    DisplayName = ReadString(row, "DisplayName", errors),
+                    LocalizationKey = ReadString(row, "LocalizationKey", errors),
+                    MinDay = ReadInt(row, "MinDay", errors),
+                    MaxDay = ReadInt(row, "MaxDay", errors),
+                    Weight = ReadInt(row, "Weight", errors),
+                    PoolItemIds = ReadStringList(row, "PoolItemIds"),
+                };
+                foreach (object slotRow in ReadObjectList(row, "Slots"))
+                {
+                    merchant.Slots.Add(new BuqiMerchantSlotConfigRow
+                    {
+                        SlotId = ReadString(slotRow, "SlotId", errors),
+                        SlotKind = ReadString(slotRow, "SlotKind", errors),
+                        BuildFilter = ReadString(slotRow, "BuildFilter", errors),
+                        SizeFilter = ReadString(slotRow, "SizeFilter", errors),
+                        QualityFilter = ReadString(slotRow, "QualityFilter", errors),
+                        RequiredTag = ReadString(slotRow, "RequiredTag", errors),
+                        MinUnlockDay = ReadInt(slotRow, "MinUnlockDay", errors),
+                        MaxUnlockDay = ReadInt(slotRow, "MaxUnlockDay", errors),
+                        Weight = ReadInt(slotRow, "Weight", errors),
+                        Count = ReadInt(slotRow, "Count", errors),
+                    });
+                }
+                catalog.Merchants.Add(merchant);
+            }
+        }
+
+        private static void ReadTrainers(
+            object tables,
+            BuqiConfigCatalog catalog,
+            List<string> errors)
+        {
+            foreach (object row in ReadTableRows(tables, "DTBuqiTrainer", errors))
+            {
+                catalog.Trainers.Add(new BuqiTrainerConfigRow
+                {
+                    TrainerId = ReadString(row, "TrainerId", errors),
+                    DisplayName = ReadString(row, "DisplayName", errors),
+                    LocalizationKey = ReadString(row, "LocalizationKey", errors),
+                    MinDay = ReadInt(row, "MinDay", errors),
+                    MaxDay = ReadInt(row, "MaxDay", errors),
+                    Weight = ReadInt(row, "Weight", errors),
+                    ProjectIds = ReadStringList(row, "ProjectIds"),
+                });
+            }
+        }
+
+        private static void ReadTrainingProjects(
+            object tables,
+            BuqiConfigCatalog catalog,
+            List<string> errors)
+        {
+            foreach (object row in ReadTableRows(tables, "DTBuqiTrainingProject", errors))
+            {
+                catalog.TrainingProjects.Add(new BuqiTrainingProjectConfigRow
+                {
+                    ProjectId = ReadString(row, "ProjectId", errors),
+                    TrainerId = ReadString(row, "TrainerId", errors),
+                    DisplayName = ReadString(row, "DisplayName", errors),
+                    LocalizationKey = ReadString(row, "LocalizationKey", errors),
+                    MinDay = ReadInt(row, "MinDay", errors),
+                    MaxDay = ReadInt(row, "MaxDay", errors),
+                    Cost = ReadInt(row, "Cost", errors),
+                    RequiredTag = ReadString(row, "RequiredTag", errors),
+                    ExcludedTag = ReadString(row, "ExcludedTag", errors),
+                    EffectKind = ReadString(row, "EffectKind", errors),
+                    Amount = ReadInt(row, "Amount", errors),
+                    Duration = ReadInt(row, "Duration", errors),
+                    MaxPerRun = ReadInt(row, "MaxPerRun", errors),
+                    Summary = ReadString(row, "Summary", errors),
+                    SummaryLocalizationKey = ReadString(row, "SummaryLocalizationKey", errors),
+                });
+            }
+        }
+
+        private static void ReadEvents(
+            object tables,
+            BuqiConfigCatalog catalog,
+            List<string> errors)
+        {
+            foreach (object row in ReadTableRows(tables, "DTBuqiEvent", errors))
+            {
+                catalog.Events.Add(new BuqiEventConfigRow
+                {
+                    EventId = ReadString(row, "EventId", errors),
+                    DisplayName = ReadString(row, "DisplayName", errors),
+                    LocalizationKey = ReadString(row, "LocalizationKey", errors),
+                    MinDay = ReadInt(row, "MinDay", errors),
+                    MaxDay = ReadInt(row, "MaxDay", errors),
+                    Weight = ReadInt(row, "Weight", errors),
+                    RequiredFlags = ReadStringList(row, "RequiredFlags"),
+                    ForbiddenFlags = ReadStringList(row, "ForbiddenFlags"),
+                    RevisitEventId = NormalizeOptionalId(ReadString(row, "RevisitEventId", errors)),
+                    RevisitDelayDays = ReadInt(row, "RevisitDelayDays", errors),
+                    DayNineResolution = ReadBool(row, "DayNineResolution", errors),
+                    OptionIds = ReadStringList(row, "OptionIds"),
+                });
+            }
+        }
+
+        private static void ReadEventOptions(
+            object tables,
+            BuqiConfigCatalog catalog,
+            List<string> errors)
+        {
+            foreach (object row in ReadTableRows(tables, "DTBuqiEventOption", errors))
+            {
+                var option = new BuqiEventOptionConfigRow
+                {
+                    OptionId = ReadString(row, "OptionId", errors),
+                    EventId = ReadString(row, "EventId", errors),
+                    Order = ReadInt(row, "Order", errors),
+                    DisplayName = ReadString(row, "DisplayName", errors),
+                    LocalizationKey = ReadString(row, "LocalizationKey", errors),
+                    ConditionKind = ReadString(row, "ConditionKind", errors),
+                    ConditionValue = ReadString(row, "ConditionValue", errors),
+                    RequiredFlags = ReadStringList(row, "RequiredFlags"),
+                    ForbiddenFlags = ReadStringList(row, "ForbiddenFlags"),
+                    SetFlags = ReadStringList(row, "SetFlags"),
+                    ClearFlags = ReadStringList(row, "ClearFlags"),
+                    FollowUpEventId = NormalizeOptionalId(ReadString(row, "FollowUpEventId", errors)),
+                    FollowUpDelayDays = ReadInt(row, "FollowUpDelayDays", errors),
+                    Summary = ReadString(row, "Summary", errors),
+                    SummaryLocalizationKey = ReadString(row, "SummaryLocalizationKey", errors),
+                };
+                foreach (object costRow in ReadObjectList(row, "Costs"))
+                {
+                    option.Costs.Add(new BuqiEventCostConfigRow
+                    {
+                        Kind = ReadString(costRow, "Kind", errors),
+                        Amount = ReadInt(costRow, "Amount", errors),
+                        Value = ReadString(costRow, "Value", errors),
+                    });
+                }
+                foreach (object outcomeRow in ReadObjectList(row, "Outcomes"))
+                {
+                    option.Outcomes.Add(new BuqiEventOutcomeConfigRow
+                    {
+                        Kind = ReadString(outcomeRow, "Kind", errors),
+                        Amount = ReadInt(outcomeRow, "Amount", errors),
+                        Value = ReadString(outcomeRow, "Value", errors),
+                        DurationDays = ReadInt(outcomeRow, "DurationDays", errors),
+                        ReasonCode = ReadString(outcomeRow, "ReasonCode", errors),
+                    });
+                }
+                catalog.EventOptions.Add(option);
+            }
         }
 
         private static IEnumerable<object> ReadTableRows(

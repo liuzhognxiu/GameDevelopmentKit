@@ -13,10 +13,16 @@ namespace Game.Hot.Buqi.Run.Core
 
     public enum BuqiRunPeriod
     {
-        MorningOperation = 0,
-        NoonOperation = 1,
-        DuskPve = 2,
-        NightPvp = 3,
+        Hour1Operation = 0,
+        MorningOperation = Hour1Operation,
+        Hour2Operation = 1,
+        NoonOperation = Hour2Operation,
+        Hour3Pve = 2,
+        DuskPve = Hour3Pve,
+        Hour4Operation = 3,
+        Hour5Operation = 4,
+        Hour6Pvp = 5,
+        NightPvp = Hour6Pvp,
     }
 
     public enum BuqiTribulationRoute

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="3" result="Passed" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.1424457">
+  <test-suite type="TestSuite" id="1000" name="GameDevelopmentKit" fullname="GameDevelopmentKit" runstate="Runnable" testcasecount="265" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.142446" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <test-suite type="Assembly" id="1305" name="Game.Hot.Buqi.Tests.dll" fullname="E:/Project/GameDevelopmentKit/Unity/Library/ScriptAssemblies/Game.Hot.Buqi.Tests.dll" runstate="Runnable" testcasecount="265" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.133490" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="61356" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <test-suite type="TestSuite" id="1306" name="Game" fullname="Game" runstate="Runnable" testcasecount="265" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.132601" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-suite type="TestSuite" id="1307" name="Hot" fullname="Game.Hot" runstate="Runnable" testcasecount="265" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.132113" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <test-suite type="TestSuite" id="1308" name="Buqi" fullname="Game.Hot.Buqi" runstate="Runnable" testcasecount="265" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.131658" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <test-suite type="TestSuite" id="1309" name="Tests" fullname="Game.Hot.Buqi.Tests" runstate="Runnable" testcasecount="265" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.131262" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <test-suite type="TestFixture" id="1008" name="BuqiBattleReplayInteractionTests" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" testcasecount="3" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.124302" total="3" passed="3" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1010" name="FeedbackEvents_AreDeterministicImmutableAndItemAnchored" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests.FeedbackEvents_AreDeterministicImmutableAndItemAnchored" methodname="FeedbackEvents_AreDeterministicImmutableAndItemAnchored" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" seed="1373323679" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.084570" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1011" name="FloatWidget_CanRenderFeedbackOverAnItemWithoutInteractionApis" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests.FloatWidget_CanRenderFeedbackOverAnItemWithoutInteractionApis" methodname="FloatWidget_CanRenderFeedbackOverAnItemWithoutInteractionApis" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" seed="1806692444" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.000722" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1009" name="PublicControls_ExposeOnlyOneTwoAndSkipToResult" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests.PublicControls_ExposeOnlyOneTwoAndSkipToResult" methodname="PublicControls_ExposeOnlyOneTwoAndSkipToResult" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" seed="37668654" result="Passed" start-time="2026-08-08 08:45:14Z" end-time="2026-08-08 08:45:14Z" duration="0.020611" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/123/AppData/LocalLow/GDK/GameDevelopmentKit\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

@@ -93,8 +93,8 @@ namespace Game.Hot.Buqi.Battle
 
         /// <summary>冷却与 basis points 共用的整数基准 10000。</summary>
         public const int CooldownUnit = 10000;
-        public const string RuleVersion = "0.4.1";
-        public const string SimulationVersion = "battle-core-0.4.1";
+        public const string RuleVersion = "0.5.0";
+        public const string SimulationVersion = "battle-core-0.5.0";
 
         /// <summary>
         /// 模拟一场战斗并返回结果、完整稳定日志和双方最终运行时状态。
@@ -293,11 +293,10 @@ namespace Game.Hot.Buqi.Battle
             foreach (ItemInstance instance in items)
             {
                 provider.TryGet(instance.DefinitionId, out BuqiItemDefinition definition);
-                int baseCooldownTicks = definition.BaseCooldownTicks;
-                if (instance.AnnotationId == "A-01")
-                    baseCooldownTicks = Math.Max(10, RoundBps(baseCooldownTicks, 8500));
-                else if (instance.AnnotationId == "A-02")
-                    baseCooldownTicks = Math.Max(10, RoundBps(baseCooldownTicks, 12000));
+                IBuqiRefinementRule refinement = BuqiRefinementRuleCatalog.GetOrDefault(instance.AnnotationId);
+                int baseCooldownTicks = Math.Max(
+                    10,
+                    refinement.AdjustBaseCooldownTicks(definition.BaseCooldownTicks));
 
                 var state = new ItemState
                 {
@@ -364,16 +363,15 @@ namespace Game.Hot.Buqi.Battle
         {
             foreach (TimedModifier modifier in modifiers)
             {
+                IBuqiRefinementRule refinement = BuqiRefinementRuleCatalog.GetOrDefault(item.AnnotationId);
+                if (!refinement.AllowsModifier(modifier.Effect, modifier.FromEnemy))
+                    continue;
                 if (modifier.Effect == BuqiEffect.Haste)
                 {
-                    if (item.AnnotationId == "A-04" && !modifier.FromEnemy)
-                        continue;
                     hasteBps += modifier.Bps;
                 }
                 else if (modifier.Effect == BuqiEffect.Delay)
                 {
-                    if (item.AnnotationId == "A-04" && modifier.FromEnemy)
-                        continue;
                     delayBps += modifier.Bps;
                 }
             }
@@ -417,7 +415,7 @@ namespace Game.Hot.Buqi.Battle
                 }
             }
 
-            foreach (ItemState adjacent in BuqiTargeting.GetAllAdjacent(side, actor))
+            foreach (ItemState adjacent in GetRingAdjacent(side, actor, provider))
             {
                 provider.TryGet(adjacent.DefinitionId, out BuqiItemDefinition adjacentDefinition);
                 foreach (BuqiEffectSpec spec in adjacentDefinition.Effects)
@@ -432,7 +430,8 @@ namespace Game.Hot.Buqi.Battle
             actor.OwnUseCount++;
             EnqueueUseCountReached(actor, definition, queue, tick);
             // A-03 只复写首次主动使用的直接效果；复写声明深度为 1，且不会再次触发相邻响应。
-            if (actor.AnnotationId == "A-03" && !actor.RewriteUsed)
+            IBuqiRefinementRule refinement = BuqiRefinementRuleCatalog.GetOrDefault(actor.AnnotationId);
+            if (refinement.RewritesFirstActiveUse && !actor.RewriteUsed)
             {
                 actor.RewriteUsed = true;
                 foreach (DeclaredEffect source in directDeclarations)
@@ -642,7 +641,7 @@ namespace Game.Hot.Buqi.Battle
             SideState own = left.Items.Contains(actor) ? left : right;
             SideState enemy = own == left ? right : left;
             BuqiEffectSpec spec = declaration.Spec;
-            ResolvedTargets targets = BuqiTargeting.Resolve(spec.Target, own, enemy, actor);
+            ResolvedTargets targets = ResolveTargets(spec.Target, own, enemy, actor, provider);
             if (targets.Side == null && targets.Items.Count == 0)
             {
                 AppendEvent(
@@ -686,7 +685,8 @@ namespace Game.Hot.Buqi.Battle
                         accumulators[targets.Side]);
                     break;
                 case BuqiEffect.Noise:
-                    amount = Math.Max(0, amount - (actor.AnnotationId == "A-05" ? 1 : 0));
+                    amount = BuqiRefinementRuleCatalog.GetOrDefault(actor.AnnotationId)
+                        .AdjustNoiseAmount(amount);
                     AddPending(accumulators[targets.Side], amount, actor, declaration, spec, accumulators[targets.Side].Noise);
                     break;
                 case BuqiEffect.Charge:
@@ -701,10 +701,13 @@ namespace Game.Hot.Buqi.Battle
                     break;
             }
 
-            if (spec.Trigger == BuqiTrigger.OnUse && !declaration.IsRewrite && actor.AnnotationId == "A-01")
+            IBuqiRefinementRule refinement = BuqiRefinementRuleCatalog.GetOrDefault(actor.AnnotationId);
+            if (spec.Trigger == BuqiTrigger.OnUse &&
+                !declaration.IsRewrite &&
+                refinement.OnUseNoise > 0)
             {
                 AddPending(
-                    accumulators[own], 1, actor, declaration, spec,
+                    accumulators[own], refinement.OnUseNoise, actor, declaration, spec,
                     accumulators[own].Noise, "A01UseNoise");
             }
         }
@@ -766,6 +769,84 @@ namespace Game.Hot.Buqi.Battle
             }
         }
 
+        private static ResolvedTargets ResolveTargets(
+            BuqiTarget target,
+            SideState own,
+            SideState enemy,
+            ItemState source,
+            IItemDefinitionProvider provider)
+        {
+            if (target != BuqiTarget.LeftAdjacentItem &&
+                target != BuqiTarget.RightAdjacentItem &&
+                target != BuqiTarget.AllAdjacentItems)
+            {
+                return BuqiTargeting.Resolve(target, own, enemy, source);
+            }
+
+            var result = new ResolvedTargets();
+            IReadOnlyList<ItemState> adjacent = GetRingAdjacent(own, source, provider);
+            if (target == BuqiTarget.AllAdjacentItems)
+            {
+                result.Items.AddRange(adjacent);
+            }
+            else
+            {
+                bool counterClockwise = target == BuqiTarget.LeftAdjacentItem;
+                BuqiLinkDirection direction = counterClockwise
+                    ? BuqiLinkDirection.CounterClockwise
+                    : BuqiLinkDirection.Clockwise;
+                BuqiLinkBoard board = BuqiLinkBoard.FromSide(own, provider);
+                BuqiLinkItem linkSource = FindLinkItem(board, source.InstanceId);
+                BuqiLinkItem linkTarget = BuqiLinkTopology.GetAdjacent(board, linkSource, direction);
+                ItemState targetState = FindItemState(own, linkTarget?.InstanceId);
+                if (targetState != null)
+                    result.Items.Add(targetState);
+            }
+            if (result.Items.Count > 0)
+                result.Side = own;
+            return result;
+        }
+
+        private static IReadOnlyList<ItemState> GetRingAdjacent(
+            SideState side,
+            ItemState source,
+            IItemDefinitionProvider provider)
+        {
+            BuqiLinkBoard board = BuqiLinkBoard.FromSide(side, provider);
+            BuqiLinkItem linkSource = FindLinkItem(board, source.InstanceId);
+            IReadOnlyList<BuqiLinkItem> adjacent = BuqiLinkTopology.GetAllAdjacent(board, linkSource);
+            var result = new List<ItemState>(adjacent.Count);
+            foreach (BuqiLinkItem item in adjacent)
+            {
+                ItemState state = FindItemState(side, item.InstanceId);
+                if (state != null)
+                    result.Add(state);
+            }
+            return result;
+        }
+
+        private static BuqiLinkItem FindLinkItem(BuqiLinkBoard board, string instanceId)
+        {
+            foreach (BuqiLinkItem item in board.Items)
+            {
+                if (item.InstanceId == instanceId)
+                    return item;
+            }
+            return null;
+        }
+
+        private static ItemState FindItemState(SideState side, string instanceId)
+        {
+            if (string.IsNullOrEmpty(instanceId))
+                return null;
+            foreach (ItemState item in side.Items)
+            {
+                if (item.InstanceId == instanceId)
+                    return item;
+            }
+            return null;
+        }
+
         /// <summary>
         /// 将 Haste/Delay 先放入 Aggregate 修正桶；只有实际生效的敌方 Delay 才标记受扰阵营。
         /// A-04 免疫的 Delay 既不落地，也不触发 OnFirstInterfered。
@@ -788,9 +869,8 @@ namespace Game.Hot.Buqi.Battle
             List<ItemState> candidates = targets.Items.Count > 0 ? targets.Items : targets.Side.Items;
             foreach (ItemState target in candidates)
             {
-                bool immune = target.AnnotationId == "A-04" &&
-                    ((spec.Effect == BuqiEffect.Delay && fromEnemy) ||
-                     (spec.Effect == BuqiEffect.Haste && !fromEnemy));
+                IBuqiRefinementRule refinement = BuqiRefinementRuleCatalog.GetOrDefault(target.AnnotationId);
+                bool immune = !refinement.AllowsModifier(spec.Effect, fromEnemy);
                 if (immune)
                 {
                     AppendEvent(
@@ -1113,15 +1193,10 @@ namespace Game.Hot.Buqi.Battle
             int qualityBps = actor.Quality == (int)BuqiQuality.Improved
                 ? 16000
                 : actor.Quality == (int)BuqiQuality.Fixed ? 24000 : 10000;
-            int annotationBps = 10000;
-            if (actor.AnnotationId == "A-02" && spec.Trigger != BuqiTrigger.OnBattleStart)
-                annotationBps = 13000;
-            else if (actor.AnnotationId == "A-05" &&
-                     (spec.Effect == BuqiEffect.Damage || spec.Effect == BuqiEffect.Buffer))
-                annotationBps = 8500;
-            else if (actor.AnnotationId == "A-06" &&
-                     (spec.Effect == BuqiEffect.Damage || spec.Effect == BuqiEffect.Buffer))
-                annotationBps = 13500;
+            IBuqiRefinementRule refinement = BuqiRefinementRuleCatalog.GetOrDefault(actor.AnnotationId);
+            int annotationBps = refinement.GetEffectMultiplierBps(
+                spec.Effect,
+                spec.Trigger == BuqiTrigger.OnBattleStart);
 
             int rewriteBps = rewrite ? 5000 : 10000;
             long chargeAmount = (long)spec.Amount + (long)declaredCharge * spec.AmountPerCharge;
@@ -1136,11 +1211,12 @@ namespace Game.Hot.Buqi.Battle
         {
             foreach (ItemState item in side.Items)
             {
-                if (item.AnnotationId != "A-06")
+                IBuqiRefinementRule refinement = BuqiRefinementRuleCatalog.GetOrDefault(item.AnnotationId);
+                if (refinement.OpeningNoise <= 0)
                     continue;
                 accumulator.Noise.Add(new PendingAmount
                 {
-                    Amount = 3,
+                    Amount = refinement.OpeningNoise,
                     SourceAnchorSlot = item.AnchorSlot,
                     SourceInstanceId = item.InstanceId,
                     ChainId = BuqiText.Format("{0}@opening-noise", item.InstanceId),

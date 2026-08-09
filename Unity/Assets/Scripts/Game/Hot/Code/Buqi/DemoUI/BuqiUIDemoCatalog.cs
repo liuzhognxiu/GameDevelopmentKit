@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
+using BattleEffect = Game.Hot.Buqi.Battle.BuqiEffect;
 
 namespace Game.Hot.Buqi.DemoUI
 {
@@ -55,20 +56,44 @@ namespace Game.Hot.Buqi.DemoUI
             items.Sort((left, right) => string.Compare(left.DefinitionId, right.DefinitionId, StringComparison.Ordinal));
             foreach (BuqiItemConfigRow item in items)
             {
-                string effect = item.Effects.Count > 0 ? item.Effects[0].Effect.ToString() : "--";
                 result.Items.Add(new BuqiUIDemoItemDefinition
                 {
                     Id = item.DefinitionId,
                     Name = string.IsNullOrEmpty(item.DisplayName) ? item.DefinitionId : item.DisplayName,
-                    Description = BuqiText.Format("{0} | 冷却 {1}", effect, item.BaseCooldownTicks),
+                    Description = BuildItemDescription(item),
                     Size = (int)item.Size,
                     Price = item.BasePrice > 0 ? item.BasePrice : (int)item.Size + 1,
                 });
             }
 
-            for (int index = 0; index < 3; index++)
+            string[] starterBuilds = { "fast", "buffer", "heal" };
+            var starterItems = new List<BuqiUIDemoItemDefinition>();
+            var selectedStarterIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (string buildId in starterBuilds)
             {
-                BuqiUIDemoItemDefinition item = result.Items[index];
+                BuqiItemConfigRow sourceItem = items
+                    .Where(item => string.Equals(item.ArchetypeId, buildId, StringComparison.Ordinal))
+                    .OrderBy(item => item.Size)
+                    .ThenBy(item => item.DefinitionId, StringComparer.Ordinal)
+                    .FirstOrDefault();
+                BuqiUIDemoItemDefinition item = sourceItem == null ? null : result.FindItem(sourceItem.DefinitionId);
+                if (item != null && selectedStarterIds.Add(item.Id))
+                    starterItems.Add(item);
+            }
+            foreach (BuqiUIDemoItemDefinition item in result.Items)
+            {
+                if (starterItems.Count >= 3)
+                    break;
+                if (selectedStarterIds.Add(item.Id))
+                    starterItems.Add(item);
+            }
+            if (starterItems.Count < 3)
+            {
+                error = "可用的初始器物不足 3 件。";
+                return false;
+            }
+            foreach (BuqiUIDemoItemDefinition item in starterItems)
+            {
                 result.StarterChoices.Add(new BuqiDemoChoiceView
                 {
                     Id = item.Id,
@@ -202,6 +227,36 @@ namespace Game.Hot.Buqi.DemoUI
         private static BuqiDemoChoiceView Choice(string id, string title, string description)
         {
             return new BuqiDemoChoiceView { Id = id, Title = title, Description = description };
+        }
+
+        private static string BuildItemDescription(BuqiItemConfigRow item)
+        {
+            string effects = string.Join("、", item.Effects
+                .Select(effect => EffectDisplayName(effect.Effect))
+                .Distinct(StringComparer.Ordinal)
+                .ToArray());
+            if (string.IsNullOrEmpty(effects))
+                effects = "特殊效果";
+            return BuqiText.Format("{0} | 冷却 {1} 拍", effects, item.BaseCooldownTicks);
+        }
+
+        private static string EffectDisplayName(BattleEffect effect)
+        {
+            switch (effect)
+            {
+                case BattleEffect.Damage: return "伤害";
+                case BattleEffect.Buffer: return "护体";
+                case BattleEffect.Haste: return "加速";
+                case BattleEffect.Delay: return "减速";
+                case BattleEffect.Charge: return "充能";
+                case BattleEffect.Noise: return "失衡";
+                case BattleEffect.Heal: return "治疗";
+                case BattleEffect.Regen: return "回生";
+                case BattleEffect.Poison: return "中毒";
+                case BattleEffect.Burn: return "灼烧";
+                case BattleEffect.Freeze: return "冰冻";
+                default: return "特殊效果";
+            }
         }
     }
 }

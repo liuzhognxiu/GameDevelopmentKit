@@ -17,12 +17,23 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     {
         DefinitionId = _buf.ReadString();
         DisplayName = _buf.ReadString();
+        LocalizationKey = _buf.ReadString();
         Size = (BuqiSize)_buf.ReadInt();
         BasePrice = _buf.ReadInt();
+        ImprovedUpgradeCost = _buf.ReadInt();
+        FixedUpgradeCost = _buf.ReadInt();
+        RefinementCost = _buf.ReadInt();
         BaseCooldownTicks = _buf.ReadInt();
         ArchetypeId = (BuqiBuild)_buf.ReadInt();
+        Role = _buf.ReadString();
+        UnlockDay = _buf.ReadInt();
+        PositionHint = _buf.ReadString();
         {int n0 = _buf.ReadSize(); Tags = new System.Collections.Generic.List<string>(n0);for(var i0 = 0 ; i0 < n0 ; i0++) { string _e0;  _e0 = _buf.ReadString(); Tags.Add(_e0);}}
         {int n0 = _buf.ReadSize(); Effects = new System.Collections.Generic.List<BuqiEffectConfig>(n0);for(var i0 = 0 ; i0 < n0 ; i0++) { BuqiEffectConfig _e0;  _e0 = global::Game.Hot.BuqiEffectConfig.DeserializeBuqiEffectConfig(_buf); Effects.Add(_e0);}}
+        {int n0 = _buf.ReadSize(); RunEffects = new System.Collections.Generic.List<BuqiRunEffectConfig>(n0);for(var i0 = 0 ; i0 < n0 ; i0++) { BuqiRunEffectConfig _e0;  _e0 = global::Game.Hot.BuqiRunEffectConfig.DeserializeBuqiRunEffectConfig(_buf); RunEffects.Add(_e0);}}
+        UpgradeSummary = _buf.ReadString();
+        UpgradeLocalizationKey = _buf.ReadString();
+        {int n0 = _buf.ReadSize(); LinkIds = new System.Collections.Generic.List<string>(n0);for(var i0 = 0 ; i0 < n0 ; i0++) { string _e0;  _e0 = _buf.ReadString(); LinkIds.Add(_e0);}}
         PostInit();
     }
 
@@ -40,13 +51,29 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// </summary>
     public readonly string DisplayName;
     /// <summary>
+    /// localization key
+    /// </summary>
+    public readonly string LocalizationKey;
+    /// <summary>
     /// size
     /// </summary>
     public readonly BuqiSize Size;
     /// <summary>
-    /// price
+    /// buy price
     /// </summary>
     public readonly int BasePrice;
+    /// <summary>
+    /// improved cost
+    /// </summary>
+    public readonly int ImprovedUpgradeCost;
+    /// <summary>
+    /// fixed cost
+    /// </summary>
+    public readonly int FixedUpgradeCost;
+    /// <summary>
+    /// refinement cost
+    /// </summary>
+    public readonly int RefinementCost;
     /// <summary>
     /// cooldown ticks
     /// </summary>
@@ -56,13 +83,41 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// </summary>
     public readonly BuqiBuild ArchetypeId;
     /// <summary>
+    /// build role
+    /// </summary>
+    public readonly string Role;
+    /// <summary>
+    /// unlock day
+    /// </summary>
+    public readonly int UnlockDay;
+    /// <summary>
+    /// position hint
+    /// </summary>
+    public readonly string PositionHint;
+    /// <summary>
     /// tags
     /// </summary>
     public readonly System.Collections.Generic.List<string> Tags;
     /// <summary>
-    /// effect list
+    /// battle effects
     /// </summary>
     public readonly System.Collections.Generic.List<BuqiEffectConfig> Effects;
+    /// <summary>
+    /// run effects
+    /// </summary>
+    public readonly System.Collections.Generic.List<BuqiRunEffectConfig> RunEffects;
+    /// <summary>
+    /// upgrade summary
+    /// </summary>
+    public readonly string UpgradeSummary;
+    /// <summary>
+    /// upgrade localization key
+    /// </summary>
+    public readonly string UpgradeLocalizationKey;
+    /// <summary>
+    /// linked item ids
+    /// </summary>
+    public readonly System.Collections.Generic.List<string> LinkIds;
     public const int __ID__ = 494039564;
     public override int GetTypeId() => __ID__;
 
@@ -76,12 +131,23 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
         return "{ "
         + "DefinitionId:" + DefinitionId + ","
         + "DisplayName:" + DisplayName + ","
+        + "LocalizationKey:" + LocalizationKey + ","
         + "Size:" + Size + ","
         + "BasePrice:" + BasePrice + ","
+        + "ImprovedUpgradeCost:" + ImprovedUpgradeCost + ","
+        + "FixedUpgradeCost:" + FixedUpgradeCost + ","
+        + "RefinementCost:" + RefinementCost + ","
         + "BaseCooldownTicks:" + BaseCooldownTicks + ","
         + "ArchetypeId:" + ArchetypeId + ","
+        + "Role:" + Role + ","
+        + "UnlockDay:" + UnlockDay + ","
+        + "PositionHint:" + PositionHint + ","
         + "Tags:" + Luban.StringUtil.CollectionToString(Tags) + ","
         + "Effects:" + Luban.StringUtil.CollectionToString(Effects) + ","
+        + "RunEffects:" + Luban.StringUtil.CollectionToString(RunEffects) + ","
+        + "UpgradeSummary:" + UpgradeSummary + ","
+        + "UpgradeLocalizationKey:" + UpgradeLocalizationKey + ","
+        + "LinkIds:" + Luban.StringUtil.CollectionToString(LinkIds) + ","
         + "}";
     }
 

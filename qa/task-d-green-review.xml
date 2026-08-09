@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="33" result="Failed(Child)" total="33" passed="32" failed="1" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-08-08 08:58:04Z" end-time="2026-08-08 08:58:05Z" duration="0.3070512">
+  <test-suite type="TestSuite" id="1000" name="GameDevelopmentKit" fullname="GameDevelopmentKit" runstate="Runnable" testcasecount="273" result="Failed" site="Child" start-time="2026-08-08 08:58:04Z" end-time="2026-08-08 08:58:05Z" duration="0.307051" total="33" passed="32" failed="1" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="EditMode" />
+    </properties>
+    <failure>
+      <message><![CDATA[One or more child tests had errors]]></message>
+    </failure>
+    <test-suite type="Assembly" id="1314" name="Game.Hot.Buqi.Tests.dll" fullname="E:/Project/GameDevelopmentKit/Unity/Library/ScriptAssemblies/Game.Hot.Buqi.Tests.dll" runstate="Runnable" testcasecount="273" result="Failed" site="Child" start-time="2026-08-08 08:58:04Z" end-time="2026-08-08 08:58:05Z" duration="0.299402" total="33" passed="32" failed="1" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="33180" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="EditMode" />
+        <property name="EditorOnly" value="True" />
+      </properties>
+      <failure>
+        <message><![CDATA[One or more child tests had errors]]></message>
+      </failure>
+      <test-suite type="TestSuite" id="1315" name="Game" fullname="Game" runstate="Runnable" testcasecount="273" result="Failed" site="Child" start-time="2026-08-08 08:58:04Z" end-time="2026-08-08 08:58:05Z" duration="0.298772" total="33" passed="32" failed="1" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <failure>
+          <message><![CDATA[One or more child tests had errors]]></message>
+        </failure>
+        <test-suite type="TestSuite" id="1316" name="Hot" fullname="Game.Hot" runstate="Runnable" testcasecount="273" result="Failed" site="Child" start-time="2026-08-08 08:58:04Z" end-time="2026-08-08 08:58:05Z" duration="0.298571" total="33" passed="32" failed="1" inconclusive="0" skipped="0" asserts="0">
+          <properties />
+          <failure>
+            <message><![CDATA[One or more child tests had errors]]></message>
+          </failure>
+          <test-suite type="TestSuite" id="1317" name="Buqi" fullname="Game.Hot.Buqi" runstate="Runnable" testcasecount="273" result="Failed" site="Child" start-time="2026-08-08 08:58:04Z" end-time="2026-08-08 08:58:05Z" duration="0.298404" total="33" passed="32" failed="1" inconclusive="0" skipped="0" asserts="0">
+            <properties />
+            <failure>
+              <message><![CDATA[One or more child tests had errors]]></message>
+            </failure>
+            <test-suite type="TestSuite" id="1318" name="Tests" fullname="Game.Hot.Buqi.Tests" runstate="Runnable" testcasecount="273" result="Failed" site="Child" start-time="2026-08-08 08:58:04Z" end-time="2026-08-08 08:58:05Z" duration="0.298188" total="33" passed="32" failed="1" inconclusive="0" skipped="0" asserts="0">
+              <properties />
+              <failure>
+                <message><![CDATA[One or more child tests had errors]]></message>
+              </failure>
+              <test-suite type="TestFixture" id="1008" name="BuqiBattleReplayInteractionTests" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" testcasecount="5" result="Failed" site="Child" start-time="2026-08-08 08:58:04Z" end-time="2026-08-08 08:58:05Z" duration="0.141315" total="5" passed="4" failed="1" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <failure>
+                  <message><![CDATA[One or more child tests had errors]]></message>
+                </failure>
+                <test-case id="1010" name="FeedbackEvents_AreDeterministicImmutableAndItemAnchored" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests.FeedbackEvents_AreDeterministicImmutableAndItemAnchored" methodname="FeedbackEvents_AreDeterministicImmutableAndItemAnchored" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" seed="376811852" result="Passed" start-time="2026-08-08 08:58:04Z" end-time="2026-08-08 08:58:05Z" duration="0.070883" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1011" name="FeedbackEvents_ClassifyDeclarationsAndAnchorSideLevelDamageOnDefender" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests.FeedbackEvents_ClassifyDeclarationsAndAnchorSideLevelDamageOnDefender" methodname="FeedbackEvents_ClassifyDeclarationsAndAnchorSideLevelDamageOnDefender" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" seed="199182633" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.014953" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1012" name="FloatWidget_CanRenderFeedbackOverAnItemWithoutInteractionApis" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests.FloatWidget_CanRenderFeedbackOverAnItemWithoutInteractionApis" methodname="FloatWidget_CanRenderFeedbackOverAnItemWithoutInteractionApis" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" seed="1770239952" result="Failed" label="Error" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.003950" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <failure>
+                    <message><![CDATA[System.Reflection.AmbiguousMatchException : Ambiguous match found.]]></message>
+                    <stack-trace><![CDATA[  at System.RuntimeType.GetMethodImplCommon (System.String name, System.Int32 genericParameterCount, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConv, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) [0x00050] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.RuntimeType.GetMethodImpl (System.String name, System.Reflection.BindingFlags bindingAttr, System.Reflection.Binder binder, System.Reflection.CallingConventions callConv, System.Type[] types, System.Reflection.ParameterModifier[] modifiers) [0x00000] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at System.Type.GetMethod (System.String name, System.Reflection.BindingFlags bindingAttr) [0x0000e] in <41d29b352f6a475ab1bf7c6628b82790>:0 
+  at Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests.FloatWidget_CanRenderFeedbackOverAnItemWithoutInteractionApis () [0x00029] in E:\Project\GameDevelopmentKit\Unity\Assets\Tests\GameHot\Buqi\EditMode\BuqiBattleReplayInteractionTests.cs:98 
+  at (wrapper managed-to-native) System.Reflection.RuntimeMethodInfo.InternalInvoke(System.Reflection.RuntimeMethodInfo,object,object[],System.Exception&)
+  at System.Reflection.RuntimeMethodInfo.Invoke (System.Object obj, System.Reflection.BindingFlags invokeAttr, System.Reflection.Binder binder, System.Object[] parameters, System.Globalization.CultureInfo culture) [0x0006a] in <41d29b352f6a475ab1bf7c6628b82790>:0 ]]></stack-trace>
+                  </failure>
+                </test-case>
+                <test-case id="1013" name="FloatWidget_StacksConcurrentFeedbackForTheSameItem" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests.FloatWidget_StacksConcurrentFeedbackForTheSameItem" methodname="FloatWidget_StacksConcurrentFeedbackForTheSameItem" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" seed="758037004" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.020630" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1009" name="PublicControls_ExposeOnlyOneTwoAndSkipToResult" fullname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests.PublicControls_ExposeOnlyOneTwoAndSkipToResult" methodname="PublicControls_ExposeOnlyOneTwoAndSkipToResult" classname="Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests" runstate="Runnable" seed="2101898825" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.015659" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="TestFixture" id="1149" name="BuqiReplayTests" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" testcasecount="10" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.103608" total="10" passed="10" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1160" name="CooldownProgress_UsesRecordedDeclareTicks" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.CooldownProgress_UsesRecordedDeclareTicks" methodname="CooldownProgress_UsesRecordedDeclareTicks" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="1673112126" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.016999" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1159" name="FilteringFactsAndPaging_DoNotMutateFrame" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.FilteringFactsAndPaging_DoNotMutateFrame" methodname="FilteringFactsAndPaging_DoNotMutateFrame" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="1500716567" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.018740" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1157" name="InitialFrame_ComesFromBuildSnapshots" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.InitialFrame_ComesFromBuildSnapshots" methodname="InitialFrame_ComesFromBuildSnapshots" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="1420500335" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.017553" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1158" name="Playback_SpeedAndSkipUseRecordedLog" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.Playback_SpeedAndSkipUseRecordedLog" methodname="Playback_SpeedAndSkipUseRecordedLog" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="371270995" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.026013" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1150" name="ReplayController_IsAvailableInBattleAssembly" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.ReplayController_IsAvailableInBattleAssembly" methodname="ReplayController_IsAvailableInBattleAssembly" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="1857693793" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.001286" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-suite type="ParameterizedMethod" id="1155" name="ReplayModel_IsAvailableInBattleAssembly" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.ReplayModel_IsAvailableInBattleAssembly" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" testcasecount="4" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.002670" total="4" passed="4" failed="0" inconclusive="0" skipped="0" asserts="0">
+                  <properties />
+                  <test-case id="1151" name="ReplayModel_IsAvailableInBattleAssembly(&quot;BattleReplayData&quot;)" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.ReplayModel_IsAvailableInBattleAssembly(&quot;BattleReplayData&quot;)" methodname="ReplayModel_IsAvailableInBattleAssembly" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="439686119" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000456" asserts="0">
+                    <properties>
+                      <property name="retryIteration" value="0" />
+                      <property name="repeatIteration" value="0" />
+                    </properties>
+                  </test-case>
+                  <test-case id="1152" name="ReplayModel_IsAvailableInBattleAssembly(&quot;BattleReplayFrame&quot;)" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.ReplayModel_IsAvailableInBattleAssembly(&quot;BattleReplayFrame&quot;)" methodname="ReplayModel_IsAvailableInBattleAssembly" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="595716635" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000087" asserts="0">
+                    <properties>
+                      <property name="retryIteration" value="0" />
+                      <property name="repeatIteration" value="0" />
+                    </properties>
+                  </test-case>
+                  <test-case id="1153" name="ReplayModel_IsAvailableInBattleAssembly(&quot;BattleReplaySideFrame&quot;)" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.ReplayModel_IsAvailableInBattleAssembly(&quot;BattleReplaySideFrame&quot;)" methodname="ReplayModel_IsAvailableInBattleAssembly" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="789364966" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000038" asserts="0">
+                    <properties>
+                      <property name="retryIteration" value="0" />
+                      <property name="repeatIteration" value="0" />
+                    </properties>
+                  </test-case>
+                  <test-case id="1154" name="ReplayModel_IsAvailableInBattleAssembly(&quot;BattleReplayItemFrame&quot;)" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.ReplayModel_IsAvailableInBattleAssembly(&quot;BattleReplayItemFrame&quot;)" methodname="ReplayModel_IsAvailableInBattleAssembly" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="294352237" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000120" asserts="0">
+                    <properties>
+                      <property name="retryIteration" value="0" />
+                      <property name="repeatIteration" value="0" />
+                    </properties>
+                  </test-case>
+                </test-suite>
+                <test-case id="1156" name="ReplayOpenData_ConfirmOnceInvokesOwnerOnlyOnce" fullname="Game.Hot.Buqi.Tests.BuqiReplayTests.ReplayOpenData_ConfirmOnceInvokesOwnerOnlyOnce" methodname="ReplayOpenData_ConfirmOnceInvokesOwnerOnlyOnce" classname="Game.Hot.Buqi.Tests.BuqiReplayTests" runstate="Runnable" seed="1871532824" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.017442" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+              </test-suite>
+              <test-suite type="TestFixture" id="1161" name="BuqiRunBattleIntegrationTests" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" testcasecount="18" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.040563" total="18" passed="18" failed="0" inconclusive="0" skipped="0" asserts="0">
+                <properties />
+                <test-case id="1178" name="Adapter_PlacesExplicitEchoAssignmentsIntoMatchingPools" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Adapter_PlacesExplicitEchoAssignmentsIntoMatchingPools" methodname="Adapter_PlacesExplicitEchoAssignmentsIntoMatchingPools" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="594420370" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.007245" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1179" name="Adapter_ReportsDuplicateMissingOrIllegalAssignments" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Adapter_ReportsDuplicateMissingOrIllegalAssignments" methodname="Adapter_ReportsDuplicateMissingOrIllegalAssignments" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="1897642589" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000554" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1164" name="CreatingPveDifficultyCardsDoesNotChangePvpPresetSelection" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.CreatingPveDifficultyCardsDoesNotChangePvpPresetSelection" methodname="CreatingPveDifficultyCardsDoesNotChangePvpPresetSelection" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="1359285626" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.005093" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1162" name="PveAndPvpSelectOnlyFromTheirOwnLocalPools" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.PveAndPvpSelectOnlyFromTheirOwnLocalPools" methodname="PveAndPvpSelectOnlyFromTheirOwnLocalPools" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="2133397338" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000530" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1163" name="SameSeedAndCursorSelectSamePresetPlayer" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.SameSeedAndCursorSelectSamePresetPlayer" methodname="SameSeedAndCursorSelectSamePresetPlayer" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="361335470" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000305" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1166" name="SelectionFailsClosedWhenBattleKindIsUndefined" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.SelectionFailsClosedWhenBattleKindIsUndefined" methodname="SelectionFailsClosedWhenBattleKindIsUndefined" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="1718918862" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000210" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1168" name="SelectionFailsClosedWhenPoolIsEmptyOrStructurallyInvalid" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.SelectionFailsClosedWhenPoolIsEmptyOrStructurallyInvalid" methodname="SelectionFailsClosedWhenPoolIsEmptyOrStructurallyInvalid" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="1821674810" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000339" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1167" name="SelectionFailsClosedWhenRngCursorIsNegative" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.SelectionFailsClosedWhenRngCursorIsNegative" methodname="SelectionFailsClosedWhenRngCursorIsNegative" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="305264026" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000237" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1165" name="SelectionFailsWhenPhaseDoesNotMatchBattleKind" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.SelectionFailsWhenPhaseDoesNotMatchBattleKind" methodname="SelectionFailsWhenPhaseDoesNotMatchBattleKind" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="1417410126" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000253" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1173" name="Service_ChangesBattleIdentityWhenPlayerBuildChanges" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Service_ChangesBattleIdentityWhenPlayerBuildChanges" methodname="Service_ChangesBattleIdentityWhenPlayerBuildChanges" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="72286136" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.008972" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1174" name="Service_FailsClosedWhenBattleKindIsUndefined" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Service_FailsClosedWhenBattleKindIsUndefined" methodname="Service_FailsClosedWhenBattleKindIsUndefined" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="1206910008" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000564" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1175" name="Service_FailsClosedWhenDayIsLessThanOne" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Service_FailsClosedWhenDayIsLessThanOne" methodname="Service_FailsClosedWhenDayIsLessThanOne" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="470511276" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000516" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1176" name="Service_FailsClosedWhenRngCursorIsNegative" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Service_FailsClosedWhenRngCursorIsNegative" methodname="Service_FailsClosedWhenRngCursorIsNegative" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="249095019" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000516" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1171" name="Service_PreservesDrawRawOutcome" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Service_PreservesDrawRawOutcome" methodname="Service_PreservesDrawRawOutcome" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="830608132" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.001408" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1172" name="Service_RejectsInvalidPlayerOrOpponentBuilds" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Service_RejectsInvalidPlayerOrOpponentBuilds" methodname="Service_RejectsInvalidPlayerOrOpponentBuilds" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="1416668018" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000514" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1169" name="Service_UsesCallerBuildOnLeftAndSelectedPveOpponentOnRight" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Service_UsesCallerBuildOnLeftAndSelectedPveOpponentOnRight" methodname="Service_UsesCallerBuildOnLeftAndSelectedPveOpponentOnRight" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="487379754" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.003011" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1170" name="Service_UsesCallerBuildOnLeftAndSelectedPvpOpponentOnRight" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.Service_UsesCallerBuildOnLeftAndSelectedPvpOpponentOnRight" methodname="Service_UsesCallerBuildOnLeftAndSelectedPvpOpponentOnRight" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="654725462" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.004013" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                </test-case>
+                <test-case id="1177" name="UnknownBattleOutcomeIsRejectedInsteadOfDowngradingToDraw" fullname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests.UnknownBattleOutcomeIsRejectedInsteadOfDowngradingToDraw" methodname="UnknownBattleOutcomeIsRejectedInsteadOfDowngradingToDraw" classname="Game.Hot.Buqi.Tests.BuqiRunBattleIntegrationTests" runstate="Runnable" seed="1114833286" result="Passed" start-time="2026-08-08 08:58:05Z" end-time="2026-08-08 08:58:05Z" duration="0.000964" asserts="0">
+                  <properties>
+                    <property name="retryIteration" value="0" />
+                    <property name="repeatIteration" value="0" />
+                  </properties>
+                  <output><![CDATA[Saving results to: C:/Users/123/AppData/LocalLow/GDK/GameDevelopmentKit\TestResults.xml
+]]></output>
+                </test-case>
+              </test-suite>
+            </test-suite>
+          </test-suite>
+        </test-suite>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

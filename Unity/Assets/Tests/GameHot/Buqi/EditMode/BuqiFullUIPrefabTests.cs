@@ -85,12 +85,12 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void RunShell_DeploymentEntryIsLimitedToOperationContent()
+        public void RunShell_DeploymentEntryIsAvailableOutsideBattleAndSettlementLocks()
         {
-            GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(ShellPath);
-            MonoBehaviour form = prefab.GetComponents<MonoBehaviour>().Single(component =>
-                component.GetType().FullName == "Game.Hot.Buqi.UI.BuqiRunShellForm");
-            MethodInfo canConfigure = form.GetType().GetMethod(
+            System.Type shellType = typeof(BuqiUIDemoController).Assembly.GetType(
+                "Game.Hot.Buqi.UI.BuqiRunShellForm",
+                true);
+            MethodInfo canConfigure = shellType.GetMethod(
                 "CanConfigureDeployment",
                 BindingFlags.NonPublic | BindingFlags.Static);
 
@@ -98,8 +98,13 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(CanConfigure(BuqiUIDemoPhase.OperationChoice), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.Shop), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.Event), Is.True);
-            Assert.That(CanConfigure(BuqiUIDemoPhase.PveSelection), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.PveSelection), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.TribulationRoute), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.TribulationStage), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.BattleReplay), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.BattleSummary), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.RoundSettlement), Is.False);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.RunTerminal), Is.False);
 
             bool CanConfigure(BuqiUIDemoPhase phase)
             {

@@ -20,10 +20,17 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     {
             DefinitionId = "";
             DisplayName = "";
+            LocalizationKey = "";
             Size = BuqiSize.S;
             ArchetypeId = BuqiBuild.fast;
+            Role = "";
+            PositionHint = "";
             Tags = new System.Collections.Generic.List<string>();
             Effects = new System.Collections.Generic.List<BuqiEffectConfig>();
+            RunEffects = new System.Collections.Generic.List<BuqiRunEffectConfig>();
+            UpgradeSummary = "";
+            UpgradeLocalizationKey = "";
+            LinkIds = new System.Collections.Generic.List<string>();
     }
 
     public override void LoadJson(JSONObject _json)
@@ -45,6 +52,14 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
         }
         
         { 
+            var _fieldJson = _json["LocalizationKey"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsString) { throw new SerializationException(); }  LocalizationKey = _fieldJson;
+            }
+        }
+        
+        { 
             var _fieldJson = _json["Size"];
             if (_fieldJson != null)
             {
@@ -57,6 +72,30 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  BasePrice = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["ImprovedUpgradeCost"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  ImprovedUpgradeCost = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["FixedUpgradeCost"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  FixedUpgradeCost = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["RefinementCost"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  RefinementCost = _fieldJson;
             }
         }
         
@@ -77,6 +116,30 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
         }
         
         { 
+            var _fieldJson = _json["Role"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsString) { throw new SerializationException(); }  Role = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["UnlockDay"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  UnlockDay = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["PositionHint"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsString) { throw new SerializationException(); }  PositionHint = _fieldJson;
+            }
+        }
+        
+        { 
             var _fieldJson = _json["Tags"];
             if (_fieldJson != null)
             {
@@ -89,6 +152,38 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsArray) { throw new SerializationException(); } Effects = new System.Collections.Generic.List<BuqiEffectConfig>(); foreach(JSONNode __e0 in _fieldJson.Children) { BuqiEffectConfig __v0;  if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = BuqiEffectConfig.LoadJsonBuqiEffectConfig(__e0);  Effects.Add(__v0); }  
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["RunEffects"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsArray) { throw new SerializationException(); } RunEffects = new System.Collections.Generic.List<BuqiRunEffectConfig>(); foreach(JSONNode __e0 in _fieldJson.Children) { BuqiRunEffectConfig __v0;  if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = BuqiRunEffectConfig.LoadJsonBuqiRunEffectConfig(__e0);  RunEffects.Add(__v0); }  
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["UpgradeSummary"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsString) { throw new SerializationException(); }  UpgradeSummary = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["UpgradeLocalizationKey"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsString) { throw new SerializationException(); }  UpgradeLocalizationKey = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["LinkIds"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsArray) { throw new SerializationException(); } LinkIds = new System.Collections.Generic.List<string>(); foreach(JSONNode __e0 in _fieldJson.Children) { string __v0;  if(!__e0.IsString) { throw new SerializationException(); }  __v0 = __e0;  LinkIds.Add(__v0); }  
             }
         }
         
@@ -107,16 +202,43 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
             _json["DisplayName"] = new JSONString(DisplayName);
         }
         {
+
+            if (LocalizationKey == null) { throw new System.ArgumentNullException(); }
+            _json["LocalizationKey"] = new JSONString(LocalizationKey);
+        }
+        {
             _json["Size"] = new JSONNumber((int)Size);
         }
         {
             _json["BasePrice"] = new JSONNumber(BasePrice);
         }
         {
+            _json["ImprovedUpgradeCost"] = new JSONNumber(ImprovedUpgradeCost);
+        }
+        {
+            _json["FixedUpgradeCost"] = new JSONNumber(FixedUpgradeCost);
+        }
+        {
+            _json["RefinementCost"] = new JSONNumber(RefinementCost);
+        }
+        {
             _json["BaseCooldownTicks"] = new JSONNumber(BaseCooldownTicks);
         }
         {
             _json["ArchetypeId"] = new JSONNumber((int)ArchetypeId);
+        }
+        {
+
+            if (Role == null) { throw new System.ArgumentNullException(); }
+            _json["Role"] = new JSONString(Role);
+        }
+        {
+            _json["UnlockDay"] = new JSONNumber(UnlockDay);
+        }
+        {
+
+            if (PositionHint == null) { throw new System.ArgumentNullException(); }
+            _json["PositionHint"] = new JSONString(PositionHint);
         }
         {
 
@@ -127,6 +249,26 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
 
             if (Effects == null) { throw new System.ArgumentNullException(); }
             { var __cjson0 = new JSONArray(); _json["Effects"] = __cjson0; foreach(var _e0 in Effects) { JSONNode __v0; { var __bjson1 = new JSONObject();  __v0 = __bjson1; BuqiEffectConfig.SaveJsonBuqiEffectConfig(_e0, __bjson1); } __cjson0.Add(__v0); } }
+        }
+        {
+
+            if (RunEffects == null) { throw new System.ArgumentNullException(); }
+            { var __cjson0 = new JSONArray(); _json["RunEffects"] = __cjson0; foreach(var _e0 in RunEffects) { JSONNode __v0; { var __bjson1 = new JSONObject();  __v0 = __bjson1; BuqiRunEffectConfig.SaveJsonBuqiRunEffectConfig(_e0, __bjson1); } __cjson0.Add(__v0); } }
+        }
+        {
+
+            if (UpgradeSummary == null) { throw new System.ArgumentNullException(); }
+            _json["UpgradeSummary"] = new JSONString(UpgradeSummary);
+        }
+        {
+
+            if (UpgradeLocalizationKey == null) { throw new System.ArgumentNullException(); }
+            _json["UpgradeLocalizationKey"] = new JSONString(UpgradeLocalizationKey);
+        }
+        {
+
+            if (LinkIds == null) { throw new System.ArgumentNullException(); }
+            { var __cjson0 = new JSONArray(); _json["LinkIds"] = __cjson0; foreach(var _e0 in LinkIds) { JSONNode __v0; __v0 = new JSONString(_e0); __cjson0.Add(__v0); } }
         }
     }
 
@@ -153,14 +295,34 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     public string DisplayName;
 
     /// <summary>
+    /// localization key
+    /// </summary>
+    public string LocalizationKey;
+
+    /// <summary>
     /// size
     /// </summary>
     public BuqiSize Size;
 
     /// <summary>
-    /// price
+    /// buy price
     /// </summary>
     public int BasePrice;
+
+    /// <summary>
+    /// improved cost
+    /// </summary>
+    public int ImprovedUpgradeCost;
+
+    /// <summary>
+    /// fixed cost
+    /// </summary>
+    public int FixedUpgradeCost;
+
+    /// <summary>
+    /// refinement cost
+    /// </summary>
+    public int RefinementCost;
 
     /// <summary>
     /// cooldown ticks
@@ -173,14 +335,49 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     public BuqiBuild ArchetypeId;
 
     /// <summary>
+    /// build role
+    /// </summary>
+    public string Role;
+
+    /// <summary>
+    /// unlock day
+    /// </summary>
+    public int UnlockDay;
+
+    /// <summary>
+    /// position hint
+    /// </summary>
+    public string PositionHint;
+
+    /// <summary>
     /// tags
     /// </summary>
     public System.Collections.Generic.List<string> Tags;
 
     /// <summary>
-    /// effect list
+    /// battle effects
     /// </summary>
     public System.Collections.Generic.List<BuqiEffectConfig> Effects;
+
+    /// <summary>
+    /// run effects
+    /// </summary>
+    public System.Collections.Generic.List<BuqiRunEffectConfig> RunEffects;
+
+    /// <summary>
+    /// upgrade summary
+    /// </summary>
+    public string UpgradeSummary;
+
+    /// <summary>
+    /// upgrade localization key
+    /// </summary>
+    public string UpgradeLocalizationKey;
+
+    /// <summary>
+    /// linked item ids
+    /// </summary>
+    public System.Collections.Generic.List<string> LinkIds;
 
 }
 }

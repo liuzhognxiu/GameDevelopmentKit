@@ -48,6 +48,10 @@ namespace Game.Hot
         /// overload engine
         /// </summary>
         overload = 8,
+        /// <summary>
+        /// shared utility
+        /// </summary>
+        shared = 9,
     }
 
 } 

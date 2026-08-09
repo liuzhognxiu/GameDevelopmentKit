@@ -158,6 +158,11 @@
                         "fingerprint":  "4b98da326c94fec919aaf3d1b5f768341ccc48040a1c4277748e970c3d51757e"
                     },
                     {
+                        "id":  "ET-08",
+                        "fileCount":  13,
+                        "fingerprint":  "52fdf3b2dcbe134dc8cabd35a2c8364e9abf90622dcafb5e92355dbb96d1f29f"
+                    },
+                    {
                         "id":  "SERVER-01",
                         "fileCount":  7,
                         "fingerprint":  "11987ab0171ccbb4451e5b995e8521b208860ac42e7323b0f15dd3143b639393"

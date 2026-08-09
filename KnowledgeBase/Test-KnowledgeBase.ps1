@@ -62,14 +62,16 @@ function Set-GitCleanObjectCache($RelativePaths, $HashCache) {
     )
     if ($missing.Count -eq 0) { return }
 
-    # Batched path-aware hashing; each result matches `git hash-object --path=<relative>`.
-    $previousOutputEncoding = $OutputEncoding
+    # Windows PowerShell 5 adds a UTF-8 BOM to native-command stdin. Feed Git a
+    # BOM-free path list through redirection so the first repository path is exact.
+    $pathList = [IO.Path]::GetTempFileName()
     try {
-        $OutputEncoding = [Text.UTF8Encoding]::new($false)
-        $output = @($missing | & git -C $repoRoot hash-object --stdin-paths 2>&1 | ForEach-Object { [string]$_ })
+        [IO.File]::WriteAllLines($pathList, $missing, [Text.UTF8Encoding]::new($false))
+        $commandLine = 'git.exe -C "' + $repoRoot + '" hash-object --stdin-paths < "' + $pathList + '"'
+        $output = @(& cmd.exe /d /s /c $commandLine 2>&1 | ForEach-Object { [string]$_ })
     }
     finally {
-        $OutputEncoding = $previousOutputEncoding
+        [IO.File]::Delete($pathList)
     }
     if ($LASTEXITCODE -ne 0) {
         $detail = ($output -join [Environment]::NewLine).Trim()

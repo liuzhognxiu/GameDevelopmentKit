@@ -35,6 +35,26 @@ public partial class TablesComponent
     /// Buqi expanded build echoes
     /// </summary>
     public DTBuqiEcho DTBuqiEcho { private set; get; }
+    /// <summary>
+    /// Buqi constrained merchant pools
+    /// </summary>
+    public DTBuqiMerchant DTBuqiMerchant { private set; get; }
+    /// <summary>
+    /// Buqi trainers
+    /// </summary>
+    public DTBuqiTrainer DTBuqiTrainer { private set; get; }
+    /// <summary>
+    /// Buqi training projects
+    /// </summary>
+    public DTBuqiTrainingProject DTBuqiTrainingProject { private set; get; }
+    /// <summary>
+    /// Buqi staged event pool
+    /// </summary>
+    public DTBuqiEvent DTBuqiEvent { private set; get; }
+    /// <summary>
+    /// Buqi event options
+    /// </summary>
+    public DTBuqiEventOption DTBuqiEventOption { private set; get; }
     private System.Collections.Generic.Dictionary<string, IDataTable> _tables;
     public System.Collections.Generic.IEnumerable<IDataTable> DataTables => _tables.Values;
     public IDataTable GetDataTable(string tableName) => _tables.TryGetValue(tableName, out var v) ? v : null;
@@ -76,6 +96,21 @@ public partial class TablesComponent
         DTBuqiEcho = new DTBuqiEcho(() => loader("dtbuqiecho"));
         loadTasks.Add(DTBuqiEcho.LoadAsync());
         _tables.Add("DTBuqiEcho", DTBuqiEcho);
+        DTBuqiMerchant = new DTBuqiMerchant(() => loader("dtbuqimerchant"));
+        loadTasks.Add(DTBuqiMerchant.LoadAsync());
+        _tables.Add("DTBuqiMerchant", DTBuqiMerchant);
+        DTBuqiTrainer = new DTBuqiTrainer(() => loader("dtbuqitrainer"));
+        loadTasks.Add(DTBuqiTrainer.LoadAsync());
+        _tables.Add("DTBuqiTrainer", DTBuqiTrainer);
+        DTBuqiTrainingProject = new DTBuqiTrainingProject(() => loader("dtbuqitrainingproject"));
+        loadTasks.Add(DTBuqiTrainingProject.LoadAsync());
+        _tables.Add("DTBuqiTrainingProject", DTBuqiTrainingProject);
+        DTBuqiEvent = new DTBuqiEvent(() => loader("dtbuqievent"));
+        loadTasks.Add(DTBuqiEvent.LoadAsync());
+        _tables.Add("DTBuqiEvent", DTBuqiEvent);
+        DTBuqiEventOption = new DTBuqiEventOption(() => loader("dtbuqieventoption"));
+        loadTasks.Add(DTBuqiEventOption.LoadAsync());
+        _tables.Add("DTBuqiEventOption", DTBuqiEventOption);
 
         await Cysharp.Threading.Tasks.UniTask.WhenAll(loadTasks);
 
@@ -96,6 +131,11 @@ public partial class TablesComponent
         DTBuqiItem.ResolveRef(this);
         DTBuqiRefinement.ResolveRef(this);
         DTBuqiEcho.ResolveRef(this);
+        DTBuqiMerchant.ResolveRef(this);
+        DTBuqiTrainer.ResolveRef(this);
+        DTBuqiTrainingProject.ResolveRef(this);
+        DTBuqiEvent.ResolveRef(this);
+        DTBuqiEventOption.ResolveRef(this);
         PostResolveRef();
     }
 

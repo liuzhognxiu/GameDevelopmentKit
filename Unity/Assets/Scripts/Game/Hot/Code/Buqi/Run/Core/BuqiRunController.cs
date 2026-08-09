@@ -15,6 +15,7 @@ namespace Game.Hot.Buqi.Run.Core
         private const string InvalidTribulationSpend = "Tribulation seal spend is invalid.";
         private const string InvalidTribulationStage = "Tribulation stage is invalid.";
         private const string RunEnded = "Run has already ended.";
+        private const string InvalidOperationPeriod = "Operation period is invalid.";
 
         private BuqiRunState m_State;
 
@@ -39,14 +40,24 @@ namespace Game.Hot.Buqi.Run.Core
 
             BuqiRunState next = m_State.Clone();
             next.EncounterIndex++;
-            if (next.EncounterIndex >= BuqiRunRules.OperationsPerDay)
+            switch (m_State.Period)
             {
-                next.Period = BuqiRunPeriod.DuskPve;
-                next.Phase = BuqiRunPhase.PveBattle;
-            }
-            else
-            {
-                next.Period = BuqiRunPeriod.NoonOperation;
+                case BuqiRunPeriod.Hour1Operation:
+                    next.Period = BuqiRunPeriod.Hour2Operation;
+                    break;
+                case BuqiRunPeriod.Hour2Operation:
+                    next.Period = BuqiRunPeriod.Hour3Pve;
+                    next.Phase = BuqiRunPhase.PveBattle;
+                    break;
+                case BuqiRunPeriod.Hour4Operation:
+                    next.Period = BuqiRunPeriod.Hour5Operation;
+                    break;
+                case BuqiRunPeriod.Hour5Operation:
+                    next.Period = BuqiRunPeriod.Hour6Pvp;
+                    next.Phase = BuqiRunPhase.PvpBattle;
+                    break;
+                default:
+                    return Rejected(InvalidOperationPeriod);
             }
 
             ApplyCommand(next, commandId);
@@ -98,12 +109,14 @@ namespace Game.Hot.Buqi.Run.Core
             }
 
             BuqiRunState next = m_State.Clone();
-            if (rawOutcome == BuqiRunRawBattleOutcome.OpponentWin)
+            bool isPvpLoss = battleKind == BuqiRunBattleKind.Pvp &&
+                             rawOutcome == BuqiRunRawBattleOutcome.OpponentWin;
+            if (isPvpLoss)
             {
                 next.Lives = Math.Max(0, next.Lives - 1);
                 next.CurrentOmen = Math.Min(BuqiRunRules.MaxOmen, next.CurrentOmen + 1);
             }
-            else
+            else if (rawOutcome != BuqiRunRawBattleOutcome.OpponentWin)
             {
                 next.Wins++;
                 next.DaoSeals++;
@@ -118,18 +131,20 @@ namespace Game.Hot.Buqi.Run.Core
             }
             else if (battleKind == BuqiRunBattleKind.Pve)
             {
-                next.Period = BuqiRunPeriod.NightPvp;
-                next.Phase = BuqiRunPhase.PvpBattle;
+                next.Period = BuqiRunPeriod.Hour4Operation;
+                next.Phase = BuqiRunPhase.Encounter;
             }
             else if (next.Day == BuqiRunRules.RunDayCount)
             {
-                next.Period = BuqiRunPeriod.NightPvp;
+                next.Period = BuqiRunPeriod.Hour6Pvp;
                 next.Phase = BuqiRunPhase.TribulationRoute;
             }
             else
             {
-                next.Period = BuqiRunPeriod.NightPvp;
-                next.Phase = BuqiRunPhase.DaySettlement;
+                next.Day++;
+                next.EncounterIndex = 0;
+                next.Period = BuqiRunPeriod.Hour1Operation;
+                next.Phase = BuqiRunPhase.Encounter;
             }
 
             next.Revision++;
@@ -146,7 +161,7 @@ namespace Game.Hot.Buqi.Run.Core
             BuqiRunState next = m_State.Clone();
             next.Day++;
             next.EncounterIndex = 0;
-            next.Period = BuqiRunPeriod.MorningOperation;
+            next.Period = BuqiRunPeriod.Hour1Operation;
             next.Phase = BuqiRunPhase.Encounter;
             ApplyCommand(next, commandId);
             return Commit(next);

@@ -287,6 +287,15 @@
       "keywords": ["Network", "Message", "LockStep", "Room", "Demo"]
     },
     {
+      "id": "ET-08",
+      "name": "ET 业务模块开发与重构规范",
+      "area": "et",
+      "status": "verified",
+      "document": "KnowledgeBase/33-ET业务模块开发与重构规范.md",
+      "sources": ["Unity/Assets/Scripts/Library/ET/Core/Runtime/Entity/SceneType.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Game.ET.Code.Model.asmdef", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Game.ET.Code.Hotfix.asmdef", "Unity/Assets/Scripts/Game/ET/Code/ModelView/Game.ET.Code.ModelView.asmdef", "Unity/Assets/Scripts/Game/ET/Code/HotfixView/Game.ET.Code.HotfixView.asmdef", "Unity/Assets/Scripts/Game/ET/Code/Model/Server/Demo/Gate/SessionPlayerComponent.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Server/Demo/Gate/SessionPlayerComponentSystem.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/Message/MessageSessionHandler.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/Message/Session.cs", "Unity/Assets/Scripts/Game/ET/Code/Hotfix/Client/Demo/Main/ClientSenderComponentSystem.cs", "Unity/Assets/Scripts/Game/ET/Code/Model/Share/Module/Reactive/ETReactiveAttributes.cs", "Share/SourceGenerator/Generator/ETReactiveSystemGenerator/ETReactiveSystemGenerator.cs", "Share/SourceGenerator/Config/DiagnosticRules.cs"],
+      "keywords": ["ET", "业务模块", "重构", "EntityRef", "对象池", "ETReactive"]
+    },
+    {
       "id": "SERVER-01",
       "name": ".NET 服务端入口与加载",
       "area": "server",

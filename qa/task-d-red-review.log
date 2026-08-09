@@ -1,0 +1,1006 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.3/staging' branch; Version is '6000.3.21f1 (c02631ffc030) revision 12592689'; Using compiler version '194234433'; Build Type 'Release'
+OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'zh' Physical Memory: 32567 MB
+BatchMode: 1, IsHumanControllingUs: 0, StartBugReporterOnCrash: 0, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-08-08T08:55:53Z
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-123" at "2026-08-08T08:55:53.4134787Z"
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.3.21f1\Editor\Unity.exe
+-batchmode
+-nographics
+-projectPath
+E:\Project\GameDevelopmentKit\Unity
+-runTests
+-testPlatform
+EditMode
+-testFilter
+Game.Hot.Buqi.Tests.BuqiBattleReplayInteractionTests
+-testResults
+E:\Project\GameDevelopmentKit\qa\task-d-red-review.xml
+-logFile
+E:\Project\GameDevelopmentKit\qa\task-d-red-review.log
+Successfully changed project path to: E:\Project\GameDevelopmentKit\Unity
+E:/Project/GameDevelopmentKit/Unity
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+Player connection [1104]  Target information:
+
+Player connection [1104]  * "[IP] 192.168.31.249 [Port] 55505 [Flags] 2 [Guid] 867011289 [EditorId] 867011289 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-FON1P8I) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [1104]  * "[IP] 100.64.60.25 [Port] 55505 [Flags] 2 [Guid] 867011289 [EditorId] 867011289 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-FON1P8I) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [1104] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [1104] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Package Manager] Connected to IPC stream "Upm-36556" after 0.4 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Error: HandshakeResponse reported an error:
+	ResponseCode: 505
+	ResponseStatus: Unsupported protocol version '1.18.1'.
+[Licensing::Module] Error: Failed to handshake to channel: "LicenseClient-123"
+[Licensing::IpcConnector] LicenseClient-123 channel disconnected successfully.
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-123-6000.3.21" at "2026-08-08T08:55:55.031857Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 44784, path: "C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.1+9fbee8e
+  Session Id:              d88bff8c1704491e914c470a8f20d47a
+  Correlation Id:          f7ab7753ec8b2ce0858a62972764a02b
+  External correlation Id: 1843574656671176501
+  Machine Id:              ++3iACjRJ0bhHnDZyB/uR93imYQ=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-123-6000.3.21" (connect: 0.00s, validation: 0.00s, handshake: 0.01s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-123-6000.3.21-notifications" at "2026-08-08T08:55:55.0454419Z"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: ewogICJzdWJzR3JvdXAiIDogInVuaXR5IGVkaXRvciIsCiAgIm5hbWVzcGFjZSIgOiAidW5pdHlfZWRpdG9yIiwKICAidHlwZSIgOiAiRURJVE9SIiwKICAidGFnIiA6ICJVbml0eVBlcnNvbmFsXXXX
+  Product: Unity Personal Version
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.00
+[Licensing::Module] Licensing Background thread has ended after 1.64s
+[Licensing::Module] Licensing is initialized (took 0.98s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Refreshing native plugins compatible for Editor in 3.33 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.3.21f1 (c02631ffc030)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path E:/Project/GameDevelopmentKit/Unity/Assets
+Forcing GfxDevice: Null
+GfxDevice: creating device client; kGfxThreadingModeNonThreaded
+NullGfxDevice:
+    Version:  NULL 1.0 [1.0]
+    Renderer: Null Device
+    Vendor:   Unity Technologies
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56556
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.006876 seconds.
+- Loaded All Assemblies, in  0.461 seconds
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.392 seconds
+Domain Reload Profiling: 849ms
+	BeginReloadAssembly (148ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (5ms)
+	RebuildCommonClasses (42ms)
+	RebuildNativeTypeToScriptingClass (14ms)
+	initialDomainReloadingComplete (59ms)
+	LoadAllAssembliesAndSetupDomain (194ms)
+		LoadAssemblies (142ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (189ms)
+			TypeCache.Refresh (188ms)
+				TypeCache.ScanAssembly (173ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (0ms)
+	FinalizeReload (393ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (357ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (66ms)
+			SetLoadedEditorAssemblies (4ms)
+			BeforeProcessingInitializeOnLoad (68ms)
+			ProcessInitializeOnLoadAttributes (128ms)
+			ProcessInitializeOnLoadMethodAttributes (91ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 72 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.ide.rider@3.0.40 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.ide.rider@e4950c6d131b)
+    com.unity.inputsystem@1.20.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.inputsystem@7a4e1a2a8194)
+    com.unity.memoryprofiler@1.1.12 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.memoryprofiler@485b5ba42ef5)
+    com.unity.nuget.newtonsoft-json@3.2.2 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64)
+    com.unity.scriptablebuildpipeline@3.1.1 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.scriptablebuildpipeline@ea93f1084040)
+    com.unity.searcher@4.9.5 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.burst@1.8.30 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.burst@2f3d916873ea)
+    com.unity.collections@2.6.8 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.collections@84e8eb3fc12e)
+    com.unity.mathematics@1.3.3 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.mathematics@19a9377c4ffa)
+    com.unity.profiling.core@1.0.3 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+    com.unity.editorcoroutines@1.1.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.editorcoroutines@87a15ed012c2)
+    com.unity.nuget.mono-cecil@1.11.6 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+    com.unity.test-framework.performance@3.5.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.test-framework.performance@8b56083ec0f0)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.2d.sprite@d8bb22511404)
+    com.unity.render-pipelines.universal@17.3.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.render-pipelines.universal@8aa8d736cba6)
+    com.unity.ugui@2.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.ugui@e20f1880fa04)
+    com.unity.modules.accessibility@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.accessibility)
+    com.unity.modules.ai@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.ai)
+    com.unity.modules.androidjni@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.androidjni)
+    com.unity.modules.animation@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.assetbundle@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.assetbundle)
+    com.unity.modules.audio@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.cloth@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.cloth)
+    com.unity.modules.director@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.director)
+    com.unity.modules.imageconversion@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.particlesystem@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.screencapture@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.screencapture)
+    com.unity.modules.terrain@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.modules.terrainphysics@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.terrainphysics)
+    com.unity.modules.tilemap@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.umbra@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.umbra)
+    com.unity.modules.unityanalytics@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unityanalytics)
+    com.unity.modules.unitywebrequest@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequestwww)
+    com.unity.modules.vehicles@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.vehicles)
+    com.unity.modules.video@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.video)
+    com.unity.modules.wind@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.wind)
+    com.unity.modules.jsonserialize@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.hierarchycore@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.test-framework@1.6.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.test-framework@bd7f943e9647)
+    com.unity.render-pipelines.core@17.3.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.render-pipelines.core@c67c01575725)
+    com.unity.shadergraph@17.3.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.shadergraph@aa8306cf39d6)
+    com.unity.render-pipelines.universal-config@17.0.3 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.render-pipelines.universal-config@8dc1aab4af1d)
+    com.unity.ext.nunit@2.0.5 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.ext.nunit@d8c07649098d)
+  Git packages:
+    com.annulusgames.lit-motion@https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.annulusgames.lit-motion@12af37b103ef)
+    com.annulusgames.lit-motion.animation@https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion.Animation (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.annulusgames.lit-motion.animation@10949b0322bb)
+    com.code-philosophy.hybridclr@https://github.com/focus-creative-games/hybridclr_unity.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.code-philosophy.hybridclr@e4def761d69b)
+    com.coffee.softmask-for-ugui@https://github.com/mob-sakai/SoftMaskForUGUI.git?path=Packages/src (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.coffee.softmask-for-ugui@4370a105814e)
+    com.coffee.ui-effect@https://github.com/mob-sakai/UIEffect.git?path=Packages/src (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.coffee.ui-effect@9383539477c9)
+    com.coffee.ui-particle@https://github.com/mob-sakai/ParticleEffectForUGUI.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.coffee.ui-particle@5a305705f845)
+    com.coffee.unmask@https://github.com/mob-sakai/UnmaskForUGUI.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.coffee.unmask@33356da2c43f)
+    com.cysharp.memorypack@https://github.com/XuToWei/MemoryPack-Extension.git?path=src/MemoryPack.Unity/Assets/Plugins/MemoryPack (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.cysharp.memorypack@50936a09b5f3)
+    com.cysharp.unitask@https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.10 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.cysharp.unitask@cda068700cce)
+    com.cysharp.zstring@https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.cysharp.zstring@644053436391)
+    com.psygames.unitywebsocket@https://github.com/psygames/UnityWebSocket.git#upm (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.psygames.unitywebsocket@369f2a56f68e)
+    com.yasirkula.inspectplus@https://github.com/yasirkula/UnityInspectPlus.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.yasirkula.inspectplus@04f6baf3f57a)
+    com.yasirkula.runtimeinspector@https://github.com/yasirkula/UnityRuntimeInspector.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.yasirkula.runtimeinspector@ec8421f71766)
+    me.qiankanglai.loopscrollrect@https://github.com/qiankanglai/LoopScrollRect.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.qiankanglai.loopscrollrect@cb18906158c4)
+    me.xw.codebind@https://github.com/XuToWei/CodeBind.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.codebind@de6877110432)
+    me.xw.protobufunity@https://github.com/XuToWei/Protobuf-Unity.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.protobufunity@37802570b75b)
+    me.xw.reactivebinding@https://github.com/XuToWei/ReactiveBinding.git?path=Unity (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.reactivebinding@8b17dab6eb55)
+    me.xw.statecontroller@https://github.com/XuToWei/StateController.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.statecontroller@87c612de2f08)
+    me.xw.toolbarextension@https://github.com/XuToWei/ToolbarExtension.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.toolbarextension@ecb4645d33e6)
+    me.xw.unityagentbridge@https://github.com/XuToWei/UnityAgentBridge.git?path=Unity (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.unityagentbridge@70c8cd9d9e8d)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+The GUID inside 'Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.BuqiConfig.cs.meta' cannot be extracted by the YAML Parser. Attempting to extract it via string matching instead. Please verify the file does not contain unexpected data.
+The .meta file Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.BuqiConfig.cs.meta does not have a valid GUID and its corresponding Asset file will be ignored. If this file is not malformed, please add a GUID, or delete the .meta file and it will be recreated correctly
+[ScriptCompilation] Requested script compilation because: Assetdatabase observed changes in script compilation related files
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.21f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: E:/Project/GameDevelopmentKit/Unity
+DisplayProgressbar: Compiling Scripts
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.21f1\Editor\Data\netcorerun\netcorerun.exe "C:\Program Files\Unity\Hub\Editor\6000.3.21f1\Editor\Data\Tools\BuildPipeline\ScriptCompilationBuildProgram.exe" "Library/Bee/1900b0aE.dag.json" "Library/Bee/1900b0aE-inputdata.json" "Library\Bee\buildprogram0.traceevents"
+WorkingDir: E:/Project/GameDevelopmentKit/Unity
+ExitCode: 4 Duration: 0s864ms
+Rebuilding DAG because FileSignature timestamp changed: Library/Bee/1900b0aE-inputdata.json
+[1025/1367  0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra requires additional run (0.83 seconds), 2 items updated, 1024 evaluated
+ExitCode: 0 Duration: 1s127ms
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.21f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --dagfilejson="Library\Bee\1900b0aE.dag.json" --profile="Library/Bee/backend2.traceevents" ScriptAssemblies
+WorkingDir: E:/Project/GameDevelopmentKit/Unity
+ExitCode: 3 Duration: 1s83ms
+Finished compiling graph: 1371 nodes, 27978 flattened edges (22508 ToBuild, 234 ToUse), maximum node priority 1503
+[ 738/1367  0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Buqi.Tests.rsp
+[ 739/1367  0s] WriteText Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.rsp
+[1025/1367  0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+[1347/1367  0s] Csc Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.dll (+2 others)
+##### CommandLine
+"C:\Program Files\Unity\Hub\Editor\6000.3.21f1\Editor\Data\NetCoreRuntime\dotnet.exe" exec "C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/DotNetSdkRoslyn/csc.dll" /nostdlib /noconfig /shared "@Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.rsp" "@Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.rsp2"
+##### Contents of Library\Bee\artifacts\1900b0aE.dag\Game.Hot.Code.rsp
+-target:library
+-out:"Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.dll"
+-refout:"Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.ref.dll"
+-define:UNITY_6000_3_21
+-define:UNITY_6000_3
+-define:UNITY_6000
+-define:UNITY_5_3_OR_NEWER
+-define:UNITY_5_4_OR_NEWER
+-define:UNITY_5_5_OR_NEWER
+-define:UNITY_5_6_OR_NEWER
+-define:UNITY_2017_1_OR_NEWER
+-define:UNITY_2017_2_OR_NEWER
+-define:UNITY_2017_3_OR_NEWER
+-define:UNITY_2017_4_OR_NEWER
+-define:UNITY_2018_1_OR_NEWER
+-define:UNITY_2018_2_OR_NEWER
+-define:UNITY_2018_3_OR_NEWER
+-define:UNITY_2018_4_OR_NEWER
+-define:UNITY_2019_1_OR_NEWER
+-define:UNITY_2019_2_OR_NEWER
+-define:UNITY_2019_3_OR_NEWER
+-define:UNITY_2019_4_OR_NEWER
+-define:UNITY_2020_1_OR_NEWER
+-define:UNITY_2020_2_OR_NEWER
+-define:UNITY_2020_3_OR_NEWER
+-define:UNITY_2021_1_OR_NEWER
+-define:UNITY_2021_2_OR_NEWER
+-define:UNITY_2021_3_OR_NEWER
+-define:UNITY_2022_1_OR_NEWER
+-define:UNITY_2022_2_OR_NEWER
+-define:UNITY_2022_3_OR_NEWER
+-define:UNITY_2023_1_OR_NEWER
+-define:UNITY_2023_2_OR_NEWER
+-define:UNITY_2023_3_OR_NEWER
+-define:UNITY_6000_0_OR_NEWER
+-define:UNITY_6000_1_OR_NEWER
+-define:UNITY_6000_2_OR_NEWER
+-define:UNITY_6000_3_OR_NEWER
+-define:PLATFORM_ARCH_64
+-define:UNITY_64
+-define:UNITY_INCLUDE_TESTS
+-define:ENABLE_AR
+-define:ENABLE_AUDIO
+-define:ENABLE_AUDIO_SCRIPTABLE_PIPELINE
+-define:ENABLE_CACHING
+-define:ENABLE_CLOTH
+-define:ENABLE_EVENT_QUEUE
+-define:ENABLE_MICROPHONE
+-define:ENABLE_MULTIPLE_DISPLAYS
+-define:ENABLE_PHYSICS
+-define:ENABLE_TEXTURE_STREAMING
+-define:ENABLE_VIRTUALTEXTURING
+-define:ENABLE_LZMA
+-define:ENABLE_UNITYEVENTS
+-define:ENABLE_VR
+-define:ENABLE_WEBCAM
+-define:ENABLE_UNITYWEBREQUEST
+-define:ENABLE_WWW
+-define:ENABLE_CLOUD_SERVICES
+-define:ENABLE_CLOUD_SERVICES_ADS
+-define:ENABLE_CLOUD_SERVICES_USE_WEBREQUEST
+-define:ENABLE_UNITY_CONSENT
+-define:ENABLE_UNITY_CLOUD_IDENTIFIERS
+-define:ENABLE_CLOUD_SERVICES_CRASH_REPORTING
+-define:ENABLE_CLOUD_SERVICES_NATIVE_CRASH_REPORTING
+-define:ENABLE_CLOUD_SERVICES_PURCHASING
+-define:ENABLE_CLOUD_SERVICES_ANALYTICS
+-define:ENABLE_CLOUD_SERVICES_BUILD
+-define:ENABLE_EDITOR_GAME_SERVICES
+-define:ENABLE_UNITY_GAME_SERVICES_ANALYTICS_SUPPORT
+-define:ENABLE_CLOUD_LICENSE
+-define:ENABLE_EDITOR_HUB_LICENSE
+-define:ENABLE_WEBSOCKET_CLIENT
+-define:ENABLE_GENERATE_NATIVE_PLUGINS_FOR_ASSEMBLIES_API
+-define:ENABLE_DIRECTOR_AUDIO
+-define:ENABLE_DIRECTOR_TEXTURE
+-define:ENABLE_MANAGED_JOBS
+-define:ENABLE_MANAGED_TRANSFORM_JOBS
+-define:ENABLE_MANAGED_ANIMATION_JOBS
+-define:ENABLE_MANAGED_AUDIO_JOBS
+-define:ENABLE_MANAGED_UNITYTLS
+-define:INCLUDE_DYNAMIC_GI
+-define:ENABLE_SCRIPTING_GC_WBARRIERS
+-define:PLATFORM_SUPPORTS_MONO
+-define:RENDER_SOFTWARE_CURSOR
+-define:ENABLE_MARSHALLING_TESTS
+-define:ENABLE_VIDEO
+-define:ENABLE_NAVIGATION_OFFMESHLINK_TO_NAVMESHLINK
+-define:ENABLE_ACCELERATOR_CLIENT_DEBUGGING
+-define:ENABLE_ACCESSIBILITY_SCREEN_READER
+-define:TEXTCORE_1_0_OR_NEWER
+-define:EDITOR_ONLY_NAVMESH_BUILDER_DEPRECATED
+-define:PLATFORM_STANDALONE_WIN
+-define:PLATFORM_STANDALONE
+-define:UNITY_STANDALONE_WIN
+-define:UNITY_STANDALONE
+-define:ENABLE_RUNTIME_GI
+-define:ENABLE_MOVIES
+-define:ENABLE_NETWORK
+-define:ENABLE_NVIDIA
+-define:ENABLE_AMD
+-define:ENABLE_CRUNCH_TEXTURE_COMPRESSION
+-define:ENABLE_CLOUD_SERVICES_ENGINE_DIAGNOSTICS
+-define:ENABLE_OUT_OF_PROCESS_CRASH_HANDLER
+-define:ENABLE_CLUSTER_SYNC
+-define:ENABLE_CLUSTERINPUT
+-define:PLATFORM_UPDATES_TIME_OUTSIDE_OF_PLAYER_LOOP
+-define:GFXDEVICE_WAITFOREVENT_MESSAGEPUMP
+-define:PLATFORM_USES_EXPLICIT_MEMORY_MANAGER_INITIALIZER
+-define:PLATFORM_SUPPORTS_WAIT_FOR_PRESENTATION
+-define:PLATFORM_SUPPORTS_SPLIT_GRAPHICS_JOBS
+-define:PLATFORM_USES_VULKAN_OLD_SWAPCHAIN
+-define:ENABLE_MONO
+-define:NET_4_6
+-define:NET_UNITY_4_8
+-define:ENABLE_PROFILER
+-define:ENABLE_PROFILER_ASSISTANT_INTEGRATION
+-define:DEBUG
+-define:TRACE
+-define:UNITY_ASSERTIONS
+-define:UNITY_EDITOR
+-define:UNITY_EDITOR_64
+-define:UNITY_EDITOR_WIN
+-define:ENABLE_UNITY_COLLECTIONS_CHECKS
+-define:ENABLE_BURST_AOT
+-define:UNITY_TEAM_LICENSE
+-define:ENABLE_CUSTOM_RENDER_TEXTURE
+-define:ENABLE_DIRECTOR
+-define:ENABLE_LOCALIZATION
+-define:ENABLE_SPRITES
+-define:ENABLE_TERRAIN
+-define:ENABLE_TILEMAP
+-define:ENABLE_TIMELINE
+-define:ENABLE_INPUT_SYSTEM
+-define:TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
+-define:TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER
+-define:TEXTCORE_FONT_ENGINE_1_6_OR_NEWER
+-define:NETSTANDARD2_0
+-define:ENABLE_LOG
+-define:UNITY_HOTFIX
+-define:UNITY_ET_VIEW
+-define:LITMOTION_SUPPORT_UNITASK
+-define:UNITY_ET_CODEMODE_CLIENTSERVER
+-define:AIBRIDGE_HYBRIDCLR_AVAILABLE
+-define:ODIN_VALIDATOR
+-define:ODIN_VALIDATOR_3_1
+-define:ODIN_VALIDATOR_3_2
+-define:ODIN_VALIDATOR_3_3
+-define:ODIN_INSPECTOR
+-define:ODIN_INSPECTOR_3
+-define:ODIN_INSPECTOR_3_1
+-define:ODIN_INSPECTOR_3_2
+-define:ODIN_INSPECTOR_3_3
+-define:UNITY_GAMEHOT
+-define:CSHARP_7_OR_LATER
+-define:CSHARP_7_3_OR_NEWER
+-r:"Assets/Plugins/ICSharpCode.SharpZipLib.dll"
+-r:"Assets/Plugins/MongoDB/DnsClient.dll"
+-r:"Assets/Plugins/MongoDB/MongoDB.Bson.dll"
+-r:"Assets/Plugins/MongoDB/MongoDB.Driver.Core.dll"
+-r:"Assets/Plugins/MongoDB/MongoDB.Driver.dll"
+-r:"Assets/Plugins/MongoDB/MongoDB.Libmongocrypt.dll"
+-r:"Assets/Plugins/MongoDB/SharpCompress.dll"
+-r:"Assets/Plugins/MongoDB/System.Runtime.CompilerServices.Unsafe.dll"
+-r:"Assets/Plugins/MongoDB/System.Text.Encoding.CodePages.dll"
+-r:"Assets/Plugins/NPOI/NPOI.OOXML.dll"
+-r:"Assets/Plugins/NPOI/NPOI.OpenXml4Net.dll"
+-r:"Assets/Plugins/NPOI/NPOI.OpenXmlFormats.dll"
+-r:"Assets/Plugins/NPOI/NPOI.dll"
+-r:"Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Attributes.dll"
+-r:"Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinInspector.Editor.dll"
+-r:"Assets/Plugins/Sirenix/Assemblies/Sirenix.OdinValidator.Editor.dll"
+-r:"Assets/Plugins/Sirenix/Assemblies/Sirenix.Reflection.Editor.dll"
+-r:"Assets/Plugins/Sirenix/Assemblies/Sirenix.Serialization.Config.dll"
+-r:"Assets/Plugins/Sirenix/Assemblies/Sirenix.Serialization.dll"
+-r:"Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.Editor.dll"
+-r:"Assets/Plugins/Sirenix/Assemblies/Sirenix.Utilities.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.AccessibilityModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.AdaptivePerformanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.AssetComplianceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.BuildProfileModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.ClothModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.CoreBusinessMetricsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.CoreModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.DeviceSimulatorModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.DiagnosticsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.EditorToolbarModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.EmbreeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.GIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.GraphViewModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.GraphicsStateCollectionSerializerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.GridAndSnapModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.GridModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.HierarchyModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.MediaModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.MultiplayerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.Physics2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.PhysicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.PlayModeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.PresetsUIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.PropertiesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.QuickInstallModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.QuickSearchModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.SafeModeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.SceneTemplateModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.SceneViewModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderBuildSettingsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderCompilationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.ShaderFoundryModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.SketchUpModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.SpriteMaskModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.SpriteShapeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.SubstanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.TerrainModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.TextCoreFontEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.TextCoreTextEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.TextRenderingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.TilemapModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.TreeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIAutomationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIBuilderModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIElementsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIElementsSamplesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.UIToolkitAuthoringModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.UmbraModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.UnityConnectModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.VFXModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.VectorGraphicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.VideoModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.XRModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEditor.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ARModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.AccessibilityModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.AndroidJNIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.AnimationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.AssetBundleModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.AudioModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ClothModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ClusterInputModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ClusterRendererModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ContentLoadModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.CoreModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.CrashReportingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.DSPGraphModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.DirectorModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.GIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.GameCenterModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.GraphicsStateCollectionSerializerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.GridModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.HierarchyCoreModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.HotReloadModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.IMGUIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.IdentifiersModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ImageConversionModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.InputForUIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.InputLegacyModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.InputModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.InsightsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.JSONSerializeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.LocalizationModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.MarshallingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.MultiplayerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ParticleSystemModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.PerformanceReportingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.Physics2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.PhysicsBackendPhysXModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.PhysicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.PropertiesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.RenderAs2DModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.RuntimeInitializeOnLoadManagerInitializerModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ScreenCaptureModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ShaderRuntimeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.ShaderVariantAnalyticsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.SharedInternalsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.SpriteMaskModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.SpriteShapeModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.StreamingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.SubstanceModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.TLSModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.TerrainModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.TerrainPhysicsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.TextCoreFontEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.TextCoreTextEngineModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.TextRenderingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.TilemapModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UIElementsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UIModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UmbraModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityAnalyticsCommonModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityAnalyticsModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityConnectModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityConsentModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityCurlModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestAssetBundleModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestAudioModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestTextureModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.UnityWebRequestWWWModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.VFXModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.VehiclesModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.VideoModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.VirtualTexturingModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.WindModule.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/AndroidPlayer/Unity.Android.Gradle.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/AndroidPlayer/Unity.Android.Types.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.Apple.Extensions.Common.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Common.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/Microsoft.Win32.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.AppContext.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Buffers.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Collections.Concurrent.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Collections.NonGeneric.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Collections.Specialized.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Collections.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.Annotations.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.EventBasedAsync.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.TypeConverter.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ComponentModel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Console.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Data.Common.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.Contracts.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.Debug.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.FileVersionInfo.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.Process.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.StackTrace.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.TextWriterTraceListener.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.Tools.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Diagnostics.TraceSource.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Drawing.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Dynamic.Runtime.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Globalization.Calendars.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Globalization.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Globalization.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.Compression.ZipFile.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.FileSystem.DriveInfo.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.FileSystem.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.FileSystem.Watcher.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.FileSystem.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.IsolatedStorage.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.MemoryMappedFiles.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.Pipes.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.UnmanagedMemoryStream.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.IO.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Linq.Expressions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Linq.Parallel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Linq.Queryable.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Linq.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Memory.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Http.Rtc.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.NameResolution.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.NetworkInformation.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Ping.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Requests.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Security.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.Sockets.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.WebHeaderCollection.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.WebSockets.Client.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Net.WebSockets.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ObjectModel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.DispatchProxy.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Emit.ILGeneration.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Emit.Lightweight.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Emit.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Reflection.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Resources.Reader.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Resources.ResourceManager.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Resources.Writer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.CompilerServices.VisualC.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Handles.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.InteropServices.RuntimeInformation.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.InteropServices.WindowsRuntime.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.InteropServices.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Numerics.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Serialization.Formatters.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Serialization.Json.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Serialization.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.Serialization.Xml.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Runtime.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Claims.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.Algorithms.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.Csp.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.Encoding.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Cryptography.X509Certificates.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.Principal.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Security.SecureString.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.Duplex.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.Http.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.NetTcp.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.Primitives.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ServiceModel.Security.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Text.Encoding.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Text.Encoding.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Text.RegularExpressions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Overlapped.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Tasks.Extensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Tasks.Parallel.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Tasks.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Thread.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.ThreadPool.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.Timer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Threading.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.ValueTuple.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.ReaderWriter.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XDocument.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XPath.XDocument.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XPath.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XmlDocument.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/System.Xml.XmlSerializer.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Facades/netstandard.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/Microsoft.CSharp.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.ComponentModel.Composition.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Core.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Data.DataSetExtensions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Data.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Drawing.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.IO.Compression.FileSystem.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.IO.Compression.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Net.Http.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Numerics.Vectors.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Numerics.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Runtime.Serialization.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Transactions.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Xml.Linq.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.Xml.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/System.dll"
+-r:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/UnityReferenceAssemblies/unity-4.8-api/mscorlib.dll"
+-r:"Library/PackageCache/com.code-philosophy.hybridclr@e4def761d69b/Plugins/LZ4.dll"
+-r:"Library/PackageCache/com.code-philosophy.hybridclr@e4def761d69b/Plugins/dnlib.dll"
+-r:"Library/PackageCache/com.coffee.softmask-for-ugui@4370a105814e/Runtime/Coffee.SoftMaskForUGUI.R.dll"
+-r:"Library/PackageCache/com.coffee.ui-effect@9383539477c9/Runtime/Coffee.UIEffect.R.dll"
+-r:"Library/PackageCache/com.coffee.ui-particle@5a305705f845/Runtime/Coffee.UIParticle.R.dll"
+-r:"Library/PackageCache/com.unity.collections@84e8eb3fc12e/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll"
+-r:"Library/PackageCache/com.unity.ext.nunit@d8c07649098d/net40/unity-custom/nunit.framework.dll"
+-r:"Library/PackageCache/com.unity.nuget.mono-cecil@ecb9724e46ff/Mono.Cecil.dll"
+-r:"Library/PackageCache/com.unity.nuget.newtonsoft-json@4dfd81071c64/Runtime/Newtonsoft.Json.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/CodeBind.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Coffee.SoftMaskForUGUI.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Coffee.UIEffect.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Coffee.UIParticle.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Coffee.UnmaskForUGUI.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Loader.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Game.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/GameFramework.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Leihuo.UXTools.Runtime.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/LitMotion.Animation.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/LitMotion.Extensions.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/LitMotion.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/LoopScrollRect.Runtime.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/LubanLib.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/Protobuf.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/StateController.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UniTask.Extension.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UniTask.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityEditor.UI.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityEngine.UI.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityGameFramework.Extension.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/UnityGameFramework.Runtime.ref.dll"
+-r:"Library/Bee/artifacts/1900b0aE.dag/ZString.ref.dll"
+-analyzer:"Assets/Plugins/Share.Analyzer.dll"
+-analyzer:"Assets/Plugins/Share.SourceGenerator.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.Properties.SourceGenerator.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.SourceGenerators.dll"
+-analyzer:"C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Tools/BuildPipeline/Unity.SourceGenerators/Unity.UIToolkit.SourceGenerator.dll"
+-analyzer:"Library/PackageCache/com.cysharp.memorypack@50936a09b5f3/Runtime/MemoryPack.Generator/MemoryPack.Generator.Roslyn3.dll"
+"Assets/Scripts/Game/Hot/Code/Base/HotEntry.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Definition/BuqiContractChecks.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Definition/BuqiTestSuite.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Model/BuqiBattleDtos.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Model/BuqiBattleResults.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Model/BuqiDefinitions.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Model/BuqiRuntimeState.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Model/BuqiTypes.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Replay/BattleReplayController.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Replay/BattleReplayData.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Replay/BattleReplayFacts.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Replay/BattleReplayFeedback.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Replay/BattleReplayFrame.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Rules/BuqiBoardValidator.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Rules/BuqiCrypto.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Rules/BuqiTargeting.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Rules/BuqiText.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Battle/Simulation/BuqiBattleSimulator.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Config/BuqiConfigModels.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Config/BuqiConfigValidator.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Config/BuqiDefinitionProvider.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Config/BuqiGeneratedConfigAdapter.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Debug/BuqiBattleSandbox.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Demo/BuqiBattleDemoFactory.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/DemoUI/BuqiUIDemoCatalog.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/DemoUI/BuqiUIDemoController.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/DemoUI/BuqiUIDemoState.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/DemoUI/BuqiUIDemoTypes.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/DemoUI/Deployment/BuqiDeploymentTypes.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/DemoUI/Deployment/BuqiDragDeployController.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Battle/BuqiLocalOpponentPoolAdapter.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Battle/BuqiLocalOpponentProvider.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Battle/BuqiRunBattleService.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Battle/BuqiRunBattleSession.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Battle/BuqiRunOpponentTypes.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunController.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunRandom.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunRules.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunState.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunTransitionResult.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunTypes.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Economy/BuqiRunEconomyService.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Economy/BuqiRunEconomySnapshot.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Economy/BuqiRunEconomyTypes.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Economy/BuqiRunItemCatalogAdapter.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Encounter/BuqiRunEncounterService.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Encounter/BuqiRunEncounterTypes.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Encounter/BuqiRunEventResolver.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Integration/BuqiRunDemoIntegration.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Settlement/BuqiFileRunStore.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Settlement/BuqiRunBattleSummary.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Settlement/BuqiRunBattleSummaryBuilder.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Settlement/BuqiRunSaveCodec.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Settlement/BuqiRunSaveData.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Settlement/BuqiRunSettlementCoordinator.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/Run/Settlement/IBuqiRunStore.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/BattleForm.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/BattleLogWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/BuqiConfirmForm.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/BuqiDragDeployForm.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/BuqiItemDetailForm.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/BuqiMessageForm.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/BuqiRunShellForm.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/FactRowWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/ItemCardWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/OpponentSnapshotWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/BattleSummaryWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/BoardEditorWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/BuqiStageWidgetBase.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/BuqiStageWidgetRegistry.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/EventWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/IBuqiStageWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/ModificationWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/OpponentIntelWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/PredictionWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/PreparationChoiceWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/PveSelectionWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/RoundSettlementWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/RunTerminalWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/ShopWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Stages/StarterSelectionWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Widgets/BoardSlotWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Widgets/BuqiBattleFloatWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Widgets/BuqiDeploySlotWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Widgets/BuqiDraggableItemWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Widgets/ChoiceCardWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Widgets/OfferCardWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Widgets/PhaseStepWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Buqi/UI/Widgets/ResourceChipWidget.cs"
+"Assets/Scripts/Game/Hot/Code/Definition/Constant/Constant.Layer.cs"
+"Assets/Scripts/Game/Hot/Code/Definition/DataStruct/ImpactData.cs"
+"Assets/Scripts/Game/Hot/Code/Definition/Enum/CampType.cs"
+"Assets/Scripts/Game/Hot/Code/Definition/Enum/RelationType.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/AccessoryObjectData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/AircraftData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/ArmorData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/AsteroidData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/BulletData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/EffectData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/EntityData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/MyAircraftData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/TargetableObjectData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/ThrusterData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityData/WeaponData.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityExtension.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/Aircraft.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/Armor.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/Asteroid.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/Bullet.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/Effect.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/Entity.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/MyAircraft.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/TargetableObject.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/Thruster.cs"
+"Assets/Scripts/Game/Hot/Code/Entity/EntityLogic/Weapon.cs"
+"Assets/Scripts/Game/Hot/Code/Game/GameBase.cs"
+"Assets/Scripts/Game/Hot/Code/Game/GameMode.cs"
+"Assets/Scripts/Game/Hot/Code/Game/SurvivalGame.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/LocalizationKey.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/AudioType.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiBuild.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiBuildSnapshotConfig.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiConditionKind.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiEffect.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiEffectConfig.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiItemInstanceConfig.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiQuality.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiSize.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiTarget.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/BuqiTrigger.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DRAircraft.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DRArmor.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DRAsteroid.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DRBuqiEcho.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DRBuqiGlobal.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DRBuqiItem.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DRBuqiRefinement.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DROneConfig.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DRThruster.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DRWeapon.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTAircraft.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTArmor.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTAsteroid.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiEcho.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiGlobal.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiItem.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiRefinement.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTOneConfig.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTThruster.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/DTWeapon.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/TablesComponent.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/vec2.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/vec3.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Luban/vec4.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/LubanPartial/ExternalTypeUtility.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Message/GameHotMessage.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Message/GameHotMessageId.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/Message/GameHotMessage_PacketHandler.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/UGF/EntityId.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/UGF/MusicId.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/UGF/SceneId.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/UGF/SoundId.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/UGF/UIEntityId.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/UGF/UIFormId.cs"
+"Assets/Scripts/Game/Hot/Code/Generate/UGF/UISoundId.cs"
+"Assets/Scripts/Game/Hot/Code/HPBar/HPBarComponent.cs"
+"Assets/Scripts/Game/Hot/Code/HPBar/HPBarItem.cs"
+"Assets/Scripts/Game/Hot/Code/HPBar/HPBarItemObject.cs"
+"Assets/Scripts/Game/Hot/Code/Procedure/ProcedureBase.cs"
+"Assets/Scripts/Game/Hot/Code/Procedure/ProcedureChangeScene.cs"
+"Assets/Scripts/Game/Hot/Code/Procedure/ProcedureComponent.cs"
+"Assets/Scripts/Game/Hot/Code/Procedure/ProcedureGame.cs"
+"Assets/Scripts/Game/Hot/Code/Procedure/ProcedureLaunch.cs"
+"Assets/Scripts/Game/Hot/Code/Procedure/ProcedureMain.cs"
+"Assets/Scripts/Game/Hot/Code/Procedure/ProcedureMenu.cs"
+"Assets/Scripts/Game/Hot/Code/Procedure/ProcedurePreload.cs"
+"Assets/Scripts/Game/Hot/Code/Scene/HideByBoundary.cs"
+"Assets/Scripts/Game/Hot/Code/Scene/ScrollableBackground.cs"
+"Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.BuqiConfig.Recovered.cs"
+"Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.Load.cs"
+"Assets/Scripts/Game/Hot/Code/UI/AboutForm.cs"
+"Assets/Scripts/Game/Hot/Code/UI/CommonButton.cs"
+"Assets/Scripts/Game/Hot/Code/UI/DialogForm.cs"
+"Assets/Scripts/Game/Hot/Code/UI/DialogParams.cs"
+"Assets/Scripts/Game/Hot/Code/UI/MenuForm.cs"
+"Assets/Scripts/Game/Hot/Code/UI/SettingForm.cs"
+"Assets/Scripts/Game/Hot/Code/UI/StarForceUIForm.cs"
+"Assets/Scripts/Game/Hot/Code/UI/TutorialForm.cs"
+"Assets/Scripts/Game/Hot/Code/Utility/AIUtility.cs"
+-langversion:9.0
+/deterministic
+/optimize+
+/debug:portable
+/nologo
+/RuntimeMetadataVersion:v4.0.30319
+/nowarn:0169
+/nowarn:0649
+/nowarn:0282
+/nowarn:1701
+/nowarn:1702
+/utf8output
+/preferreduilang:en-US
+/additionalfile:"Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.UnityAdditionalFile.txt"
+##### Custom Environment Variables
+DOTNET_MULTILEVEL_LOOKUP=0
+##### ExitCode
+1
+##### Output
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(419,28): error CS7036: There is no argument given that corresponds to the required formal parameter 'sequence' of 'BattleReplayFeedbackEvent.BattleReplayFeedbackEvent(int, BattleReplayFeedbackKind, BattleReplayFeedbackSide, int, int, float, float)'
+
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(421,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(422,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(423,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(426,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(427,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(428,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(429,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+
+Assets\Scripts\Game\Hot\Code\UI\TutorialForm.cs(16,24): warning CS0414: The field 'TutorialForm.m_SkipButton' is assigned but its value is never used
+*** Tundra build failed (1.05 seconds), 4 items updated, 1367 evaluated
+## Script Compilation Error for: Csc Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.dll (+2 others)
+## CmdLine: "C:\Program Files\Unity\Hub\Editor\6000.3.21f1\Editor\Data\NetCoreRuntime\dotnet.exe" exec "C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/DotNetSdkRoslyn/csc.dll" /nostdlib /noconfig /shared "@Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.rsp" "@Library/Bee/artifacts/1900b0aE.dag/Game.Hot.Code.rsp2"
+## Output:
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(419,28): error CS7036: There is no argument given that corresponds to the required formal parameter 'sequence' of 'BattleReplayFeedbackEvent.BattleReplayFeedbackEvent(int, BattleReplayFeedbackKind, BattleReplayFeedbackSide, int, int, float, float)'
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(421,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(422,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(423,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(426,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(427,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(428,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(429,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\UI\TutorialForm.cs(16,24): warning CS0414: The field 'TutorialForm.m_SkipButton' is assigned but its value is never used
+
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(419,28): error CS7036: There is no argument given that corresponds to the required formal parameter 'sequence' of 'BattleReplayFeedbackEvent.BattleReplayFeedbackEvent(int, BattleReplayFeedbackKind, BattleReplayFeedbackSide, int, int, float, float)'
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(421,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(422,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(423,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(426,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(427,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(428,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\Buqi\Battle\Replay\BattleReplayController.cs(429,17): error CS0191: A readonly field cannot be assigned to (except in a constructor or init-only setter of the type in which the field is defined or a variable initializer)
+Assets\Scripts\Game\Hot\Code\UI\TutorialForm.cs(16,24): warning CS0414: The field 'TutorialForm.m_SkipButton' is assigned but its value is never used
+AssetDatabase: script compilation time: 3.793933s
+Scripts have compiler errors.
+Exiting without the bug reporter. Application will terminate with return code 1

@@ -2,13 +2,22 @@
   {
     "DefinitionId": "W8-003",
     "DisplayName": "急攻令",
+    "LocalizationKey": "Buqi.Content.Item.W8_003.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 60,
     "ArchetypeId": 1,
+    "Role": "starter",
+    "UnlockDay": 1,
+    "PositionHint": "左邻",
     "Tags": [
       "attack",
-      "haste"
+      "haste",
+      "path-fast-tempo",
+      "starter"
     ],
     "Effects": [
       {
@@ -41,18 +50,35 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_003.Upgrade",
+    "LinkIds": [
+      "W8-031",
+      "W8-005",
+      "W8-046"
     ]
   },
   {
     "DefinitionId": "W8-005",
     "DisplayName": "冲锋看板",
+    "LocalizationKey": "Buqi.Content.Item.W8_005.Name",
     "Size": 2,
     "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
     "BaseCooldownTicks": 70,
     "ArchetypeId": 1,
+    "Role": "core",
+    "UnlockDay": 4,
+    "PositionHint": "双邻",
     "Tags": [
       "attack",
-      "charge"
+      "charge",
+      "path-fast-charge",
+      "core"
     ],
     "Effects": [
       {
@@ -85,19 +111,37 @@
         "ChargeConsume": true,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_005.Upgrade",
+    "LinkIds": [
+      "W8-032",
+      "W8-006",
+      "W8-013"
     ]
   },
   {
     "DefinitionId": "W8-006",
     "DisplayName": "终局重锤",
+    "LocalizationKey": "Buqi.Content.Item.W8_006.Name",
     "Size": 3,
     "BasePrice": 6,
+    "ImprovedUpgradeCost": 6,
+    "FixedUpgradeCost": 9,
+    "RefinementCost": 6,
     "BaseCooldownTicks": 100,
     "ArchetypeId": 1,
+    "Role": "finisher",
+    "UnlockDay": 7,
+    "PositionHint": "居中",
     "Tags": [
       "attack",
       "core",
-      "overload"
+      "overload",
+      "path-fast-tempo",
+      "path-fast-charge",
+      "finisher"
     ],
     "Effects": [
       {
@@ -145,17 +189,34 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_006.Upgrade",
+    "LinkIds": [
+      "W8-003",
+      "W8-005",
+      "W8-031"
     ]
   },
   {
     "DefinitionId": "W8-007",
     "DisplayName": "小护盾",
+    "LocalizationKey": "Buqi.Content.Item.W8_007.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 42,
     "ArchetypeId": 2,
+    "Role": "starter",
+    "UnlockDay": 1,
+    "PositionHint": "自由",
     "Tags": [
-      "shield"
+      "shield",
+      "path-buffer-wall",
+      "starter"
     ],
     "Effects": [
       {
@@ -173,18 +234,35 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_007.Upgrade",
+    "LinkIds": [
+      "W8-036",
+      "W8-008",
+      "W8-039"
     ]
   },
   {
     "DefinitionId": "W8-008",
     "DisplayName": "破盾清单",
+    "LocalizationKey": "Buqi.Content.Item.W8_008.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 55,
     "ArchetypeId": 2,
+    "Role": "core",
+    "UnlockDay": 4,
+    "PositionHint": "前位",
     "Tags": [
       "shield",
-      "charge"
+      "charge",
+      "path-buffer-rupture",
+      "core"
     ],
     "Effects": [
       {
@@ -217,18 +295,36 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_008.Upgrade",
+    "LinkIds": [
+      "W8-037",
+      "W8-012",
+      "W8-025"
     ]
   },
   {
     "DefinitionId": "W8-012",
     "DisplayName": "堡垒核心",
+    "LocalizationKey": "Buqi.Content.Item.W8_012.Name",
     "Size": 3,
     "BasePrice": 6,
+    "ImprovedUpgradeCost": 6,
+    "FixedUpgradeCost": 9,
+    "RefinementCost": 6,
     "BaseCooldownTicks": 90,
     "ArchetypeId": 2,
+    "Role": "finisher",
+    "UnlockDay": 7,
+    "PositionHint": "居中",
     "Tags": [
       "shield",
-      "core"
+      "core",
+      "path-buffer-wall",
+      "path-buffer-rupture",
+      "finisher"
     ],
     "Effects": [
       {
@@ -261,18 +357,35 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_012.Upgrade",
+    "LinkIds": [
+      "W8-007",
+      "W8-008",
+      "W8-036"
     ]
   },
   {
     "DefinitionId": "W8-013",
     "DisplayName": "传能接线",
+    "LocalizationKey": "Buqi.Content.Item.W8_013.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 50,
     "ArchetypeId": 3,
+    "Role": "bridge",
+    "UnlockDay": 1,
+    "PositionHint": "左位",
     "Tags": [
       "chain",
-      "charge"
+      "charge",
+      "path-chain-charge",
+      "bridge"
     ],
     "Effects": [
       {
@@ -320,18 +433,35 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_013.Upgrade",
+    "LinkIds": [
+      "W8-014",
+      "W8-005",
+      "W8-032"
     ]
   },
   {
     "DefinitionId": "W8-014",
     "DisplayName": "连击印",
+    "LocalizationKey": "Buqi.Content.Item.W8_014.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 60,
     "ArchetypeId": 3,
+    "Role": "core",
+    "UnlockDay": 1,
+    "PositionHint": "右位",
     "Tags": [
       "chain",
-      "adjacent"
+      "adjacent",
+      "path-chain-charge",
+      "core"
     ],
     "Effects": [
       {
@@ -364,18 +494,35 @@
         "ChargeConsume": true,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_014.Upgrade",
+    "LinkIds": [
+      "W8-013",
+      "W8-015",
+      "W8-005"
     ]
   },
   {
     "DefinitionId": "W8-015",
     "DisplayName": "节奏节点",
+    "LocalizationKey": "Buqi.Content.Item.W8_015.Name",
     "Size": 2,
     "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
     "BaseCooldownTicks": 65,
     "ArchetypeId": 3,
+    "Role": "amplifier",
+    "UnlockDay": 4,
+    "PositionHint": "双邻",
     "Tags": [
       "chain",
-      "haste"
+      "haste",
+      "path-chain-haste",
+      "amplifier"
     ],
     "Effects": [
       {
@@ -408,17 +555,34 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_015.Upgrade",
+    "LinkIds": [
+      "W8-013",
+      "W8-014",
+      "W8-031"
     ]
   },
   {
     "DefinitionId": "W8-016",
     "DisplayName": "急救包",
+    "LocalizationKey": "Buqi.Content.Item.W8_016.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 45,
     "ArchetypeId": 4,
+    "Role": "starter",
+    "UnlockDay": 1,
+    "PositionHint": "自由",
     "Tags": [
-      "heal"
+      "heal",
+      "path-heal-pulse",
+      "starter"
     ],
     "Effects": [
       {
@@ -436,19 +600,36 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_016.Upgrade",
+    "LinkIds": [
+      "W8-041",
+      "W8-017",
+      "W8-043"
     ]
   },
   {
     "DefinitionId": "W8-017",
     "DisplayName": "回春泉",
+    "LocalizationKey": "Buqi.Content.Item.W8_017.Name",
     "Size": 2,
     "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
     "BaseCooldownTicks": 70,
     "ArchetypeId": 4,
+    "Role": "core",
+    "UnlockDay": 4,
+    "PositionHint": "居中",
     "Tags": [
       "heal",
       "regen",
-      "shield"
+      "shield",
+      "path-heal-regen",
+      "core"
     ],
     "Effects": [
       {
@@ -481,20 +662,38 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_017.Upgrade",
+    "LinkIds": [
+      "W8-041",
+      "W8-018",
+      "W8-038"
     ]
   },
   {
     "DefinitionId": "W8-018",
     "DisplayName": "救援旗",
+    "LocalizationKey": "Buqi.Content.Item.W8_018.Name",
     "Size": 3,
     "BasePrice": 6,
+    "ImprovedUpgradeCost": 6,
+    "FixedUpgradeCost": 9,
+    "RefinementCost": 6,
     "BaseCooldownTicks": 95,
     "ArchetypeId": 4,
+    "Role": "finisher",
+    "UnlockDay": 7,
+    "PositionHint": "居中",
     "Tags": [
       "heal",
       "regen",
       "core",
-      "haste"
+      "haste",
+      "path-heal-regen",
+      "path-heal-pulse",
+      "finisher"
     ],
     "Effects": [
       {
@@ -542,17 +741,34 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_018.Upgrade",
+    "LinkIds": [
+      "W8-016",
+      "W8-017",
+      "W8-041"
     ]
   },
   {
     "DefinitionId": "W8-019",
     "DisplayName": "毒针",
+    "LocalizationKey": "Buqi.Content.Item.W8_019.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 40,
     "ArchetypeId": 5,
+    "Role": "starter",
+    "UnlockDay": 1,
+    "PositionHint": "自由",
     "Tags": [
-      "poison"
+      "poison",
+      "path-poison-attrition",
+      "starter"
     ],
     "Effects": [
       {
@@ -570,18 +786,35 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_019.Upgrade",
+    "LinkIds": [
+      "W8-020",
+      "W8-021",
+      "W8-034"
     ]
   },
   {
     "DefinitionId": "W8-020",
     "DisplayName": "腐蚀瓶",
+    "LocalizationKey": "Buqi.Content.Item.W8_020.Name",
     "Size": 2,
     "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
     "BaseCooldownTicks": 65,
     "ArchetypeId": 5,
+    "Role": "counter",
+    "UnlockDay": 4,
+    "PositionHint": "自由",
     "Tags": [
       "poison",
-      "slow"
+      "slow",
+      "path-poison-control",
+      "counter"
     ],
     "Effects": [
       {
@@ -614,19 +847,36 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_020.Upgrade",
+    "LinkIds": [
+      "W8-019",
+      "W8-021",
+      "W8-048"
     ]
   },
   {
     "DefinitionId": "W8-021",
     "DisplayName": "毒雾炉",
+    "LocalizationKey": "Buqi.Content.Item.W8_021.Name",
     "Size": 3,
     "BasePrice": 6,
+    "ImprovedUpgradeCost": 6,
+    "FixedUpgradeCost": 9,
+    "RefinementCost": 6,
     "BaseCooldownTicks": 90,
     "ArchetypeId": 5,
+    "Role": "finisher",
+    "UnlockDay": 7,
+    "PositionHint": "居中",
     "Tags": [
       "poison",
       "core",
-      "overload"
+      "overload",
+      "path-poison-attrition",
+      "finisher"
     ],
     "Effects": [
       {
@@ -659,17 +909,34 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_021.Upgrade",
+    "LinkIds": [
+      "W8-019",
+      "W8-020",
+      "W8-029"
     ]
   },
   {
     "DefinitionId": "W8-022",
     "DisplayName": "火花符",
+    "LocalizationKey": "Buqi.Content.Item.W8_022.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 38,
     "ArchetypeId": 6,
+    "Role": "starter",
+    "UnlockDay": 1,
+    "PositionHint": "自由",
     "Tags": [
-      "burn"
+      "burn",
+      "path-burn-pressure",
+      "starter"
     ],
     "Effects": [
       {
@@ -687,18 +954,35 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_022.Upgrade",
+    "LinkIds": [
+      "W8-023",
+      "W8-024",
+      "W8-034"
     ]
   },
   {
     "DefinitionId": "W8-023",
     "DisplayName": "炽焰炉",
+    "LocalizationKey": "Buqi.Content.Item.W8_023.Name",
     "Size": 2,
     "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
     "BaseCooldownTicks": 60,
     "ArchetypeId": 6,
+    "Role": "core",
+    "UnlockDay": 4,
+    "PositionHint": "自由",
     "Tags": [
       "burn",
-      "attack"
+      "attack",
+      "path-burn-pressure",
+      "core"
     ],
     "Effects": [
       {
@@ -731,19 +1015,36 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_023.Upgrade",
+    "LinkIds": [
+      "W8-022",
+      "W8-024",
+      "W8-043"
     ]
   },
   {
     "DefinitionId": "W8-024",
     "DisplayName": "爆燃阵",
+    "LocalizationKey": "Buqi.Content.Item.W8_024.Name",
     "Size": 3,
     "BasePrice": 6,
+    "ImprovedUpgradeCost": 6,
+    "FixedUpgradeCost": 9,
+    "RefinementCost": 6,
     "BaseCooldownTicks": 95,
     "ArchetypeId": 6,
+    "Role": "finisher",
+    "UnlockDay": 7,
+    "PositionHint": "居中",
     "Tags": [
       "burn",
       "core",
-      "haste"
+      "haste",
+      "path-burn-pressure",
+      "finisher"
     ],
     "Effects": [
       {
@@ -776,17 +1077,34 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_024.Upgrade",
+    "LinkIds": [
+      "W8-022",
+      "W8-023",
+      "W8-031"
     ]
   },
   {
     "DefinitionId": "W8-025",
     "DisplayName": "寒镜",
+    "LocalizationKey": "Buqi.Content.Item.W8_025.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 50,
     "ArchetypeId": 7,
+    "Role": "counter",
+    "UnlockDay": 1,
+    "PositionHint": "自由",
     "Tags": [
-      "freeze"
+      "freeze",
+      "path-freeze-control",
+      "counter"
     ],
     "Effects": [
       {
@@ -804,18 +1122,35 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_025.Upgrade",
+    "LinkIds": [
+      "W8-026",
+      "W8-027",
+      "W8-048"
     ]
   },
   {
     "DefinitionId": "W8-026",
     "DisplayName": "霜锁",
+    "LocalizationKey": "Buqi.Content.Item.W8_026.Name",
     "Size": 2,
     "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
     "BaseCooldownTicks": 75,
     "ArchetypeId": 7,
+    "Role": "pivot",
+    "UnlockDay": 4,
+    "PositionHint": "自由",
     "Tags": [
       "freeze",
-      "attack"
+      "attack",
+      "path-freeze-attack",
+      "pivot"
     ],
     "Effects": [
       {
@@ -848,19 +1183,36 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_026.Upgrade",
+    "LinkIds": [
+      "W8-025",
+      "W8-027",
+      "W8-033"
     ]
   },
   {
     "DefinitionId": "W8-027",
     "DisplayName": "冰封塔",
+    "LocalizationKey": "Buqi.Content.Item.W8_027.Name",
     "Size": 3,
     "BasePrice": 6,
+    "ImprovedUpgradeCost": 6,
+    "FixedUpgradeCost": 9,
+    "RefinementCost": 6,
     "BaseCooldownTicks": 110,
     "ArchetypeId": 7,
+    "Role": "finisher",
+    "UnlockDay": 7,
+    "PositionHint": "居中",
     "Tags": [
       "freeze",
       "core",
-      "slow"
+      "slow",
+      "path-freeze-control",
+      "finisher"
     ],
     "Effects": [
       {
@@ -893,18 +1245,35 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_027.Upgrade",
+    "LinkIds": [
+      "W8-025",
+      "W8-026",
+      "W8-020"
     ]
   },
   {
     "DefinitionId": "W8-028",
     "DisplayName": "过载电池",
+    "LocalizationKey": "Buqi.Content.Item.W8_028.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 36,
     "ArchetypeId": 8,
+    "Role": "starter",
+    "UnlockDay": 1,
+    "PositionHint": "左位",
     "Tags": [
       "overload",
-      "charge"
+      "charge",
+      "path-overload-charge",
+      "starter"
     ],
     "Effects": [
       {
@@ -937,18 +1306,35 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_028.Upgrade",
+    "LinkIds": [
+      "W8-029",
+      "W8-030",
+      "W8-032"
     ]
   },
   {
     "DefinitionId": "W8-029",
     "DisplayName": "泄压阀",
+    "LocalizationKey": "Buqi.Content.Item.W8_029.Name",
     "Size": 1,
     "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
     "BaseCooldownTicks": 55,
     "ArchetypeId": 8,
+    "Role": "counter",
+    "UnlockDay": 1,
+    "PositionHint": "自由",
     "Tags": [
       "overload",
-      "shield"
+      "shield",
+      "path-overload-vent",
+      "counter"
     ],
     "Effects": [
       {
@@ -981,20 +1367,38 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_029.Upgrade",
+    "LinkIds": [
+      "W8-028",
+      "W8-030",
+      "W8-039"
     ]
   },
   {
     "DefinitionId": "W8-030",
     "DisplayName": "稳压核心",
+    "LocalizationKey": "Buqi.Content.Item.W8_030.Name",
     "Size": 2,
     "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
     "BaseCooldownTicks": 80,
     "ArchetypeId": 8,
+    "Role": "core",
+    "UnlockDay": 4,
+    "PositionHint": "居中",
     "Tags": [
       "overload",
       "core",
       "charge",
-      "shield"
+      "shield",
+      "path-overload-charge",
+      "path-overload-vent",
+      "core"
     ],
     "Effects": [
       {
@@ -1042,6 +1446,1103 @@
         "ChargeConsume": false,
         "ResetCountOnReached": true
       }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_030.Upgrade",
+    "LinkIds": [
+      "W8-028",
+      "W8-029",
+      "W8-013"
+    ]
+  },
+  {
+    "DefinitionId": "W8-031",
+    "DisplayName": "走马铃",
+    "LocalizationKey": "Buqi.Content.Item.W8_031.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 55,
+    "ArchetypeId": 1,
+    "Role": "amplifier",
+    "UnlockDay": 1,
+    "PositionHint": "双邻",
+    "Tags": [
+      "attack",
+      "haste",
+      "amplifier",
+      "path-fast-tempo"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 2,
+        "Target": 4,
+        "Amount": 800,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-031-adjacent-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_031.Upgrade",
+    "LinkIds": [
+      "W8-003",
+      "W8-006",
+      "W8-046"
+    ]
+  },
+  {
+    "DefinitionId": "W8-032",
+    "DisplayName": "借势扣",
+    "LocalizationKey": "Buqi.Content.Item.W8_032.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 50,
+    "ArchetypeId": 1,
+    "Role": "bridge",
+    "UnlockDay": 1,
+    "PositionHint": "左位",
+    "Tags": [
+      "attack",
+      "charge",
+      "bridge",
+      "path-fast-charge"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 3,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-032-attack",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 2,
+        "Effect": 4,
+        "Target": 3,
+        "Amount": 1,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-032-pass-charge",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_032.Upgrade",
+    "LinkIds": [
+      "W8-005",
+      "W8-013",
+      "W8-028"
+    ]
+  },
+  {
+    "DefinitionId": "W8-033",
+    "DisplayName": "回锋匣",
+    "LocalizationKey": "Buqi.Content.Item.W8_033.Name",
+    "Size": 2,
+    "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
+    "BaseCooldownTicks": 70,
+    "ArchetypeId": 1,
+    "Role": "pivot",
+    "UnlockDay": 4,
+    "PositionHint": "居中",
+    "Tags": [
+      "attack",
+      "shield",
+      "haste",
+      "pivot",
+      "mix-fast-buffer"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-033-attack",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 5,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-033-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 5,
+        "Effect": 2,
+        "Target": 4,
+        "Amount": 1000,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-033-recover-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_033.Upgrade",
+    "LinkIds": [
+      "W8-003",
+      "W8-007",
+      "W8-048"
+    ]
+  },
+  {
+    "DefinitionId": "W8-034",
+    "DisplayName": "破阵锥",
+    "LocalizationKey": "Buqi.Content.Item.W8_034.Name",
+    "Size": 2,
+    "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
+    "BaseCooldownTicks": 75,
+    "ArchetypeId": 1,
+    "Role": "counter",
+    "UnlockDay": 4,
+    "PositionHint": "自由",
+    "Tags": [
+      "attack",
+      "burn",
+      "counter",
+      "mix-fast-burn"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-034-attack",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 9,
+        "Target": 0,
+        "Amount": 3,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-034-burn",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_034.Upgrade",
+    "LinkIds": [
+      "W8-022",
+      "W8-023",
+      "W8-006"
+    ]
+  },
+  {
+    "DefinitionId": "W8-035",
+    "DisplayName": "试锋算盘",
+    "LocalizationKey": "Buqi.Content.Item.W8_035.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 65,
+    "ArchetypeId": 1,
+    "Role": "economy",
+    "UnlockDay": 7,
+    "PositionHint": "自由",
+    "Tags": [
+      "attack",
+      "economy",
+      "path-fast-tempo"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 3,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-035-attack",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [
+      {
+        "Trigger": 1,
+        "Effect": 0,
+        "Amount": 1,
+        "Threshold": 12,
+        "MaxPerDay": 1,
+        "ReasonCode": "W8-035-damage-dividend"
+      }
+    ],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_035.Upgrade",
+    "LinkIds": [
+      "W8-003",
+      "W8-031",
+      "W8-047"
+    ]
+  },
+  {
+    "DefinitionId": "W8-036",
+    "DisplayName": "连垣扣",
+    "LocalizationKey": "Buqi.Content.Item.W8_036.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 60,
+    "ArchetypeId": 2,
+    "Role": "amplifier",
+    "UnlockDay": 1,
+    "PositionHint": "双邻",
+    "Tags": [
+      "shield",
+      "adjacent",
+      "amplifier",
+      "path-buffer-wall"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-036-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 2,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 3,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-036-adjacent-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_036.Upgrade",
+    "LinkIds": [
+      "W8-007",
+      "W8-012",
+      "W8-037"
+    ]
+  },
+  {
+    "DefinitionId": "W8-037",
+    "DisplayName": "蓄势砚",
+    "LocalizationKey": "Buqi.Content.Item.W8_037.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 58,
+    "ArchetypeId": 2,
+    "Role": "bridge",
+    "UnlockDay": 1,
+    "PositionHint": "左位",
+    "Tags": [
+      "shield",
+      "charge",
+      "bridge",
+      "path-buffer-rupture"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-037-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 4,
+        "Target": 3,
+        "Amount": 1,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-037-pass-charge",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_037.Upgrade",
+    "LinkIds": [
+      "W8-008",
+      "W8-012",
+      "W8-013"
+    ]
+  },
+  {
+    "DefinitionId": "W8-038",
+    "DisplayName": "活门甲",
+    "LocalizationKey": "Buqi.Content.Item.W8_038.Name",
+    "Size": 2,
+    "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
+    "BaseCooldownTicks": 70,
+    "ArchetypeId": 2,
+    "Role": "pivot",
+    "UnlockDay": 4,
+    "PositionHint": "居中",
+    "Tags": [
+      "shield",
+      "regen",
+      "pivot",
+      "mix-buffer-heal"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 6,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-038-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 7,
+        "Target": 1,
+        "Amount": 2,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-038-regen",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_038.Upgrade",
+    "LinkIds": [
+      "W8-007",
+      "W8-017",
+      "W8-041"
+    ]
+  },
+  {
+    "DefinitionId": "W8-039",
+    "DisplayName": "净脉璧",
+    "LocalizationKey": "Buqi.Content.Item.W8_039.Name",
+    "Size": 2,
+    "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
+    "BaseCooldownTicks": 70,
+    "ArchetypeId": 2,
+    "Role": "counter",
+    "UnlockDay": 4,
+    "PositionHint": "自由",
+    "Tags": [
+      "shield",
+      "heal",
+      "counter",
+      "mix-buffer-heal"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 6,
+        "Target": 1,
+        "Amount": 8,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-039-heal",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-039-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_039.Upgrade",
+    "LinkIds": [
+      "W8-008",
+      "W8-016",
+      "W8-044"
+    ]
+  },
+  {
+    "DefinitionId": "W8-040",
+    "DisplayName": "守成印",
+    "LocalizationKey": "Buqi.Content.Item.W8_040.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 65,
+    "ArchetypeId": 2,
+    "Role": "economy",
+    "UnlockDay": 7,
+    "PositionHint": "自由",
+    "Tags": [
+      "shield",
+      "economy",
+      "path-buffer-wall"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 3,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-040-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [
+      {
+        "Trigger": 2,
+        "Effect": 0,
+        "Amount": 1,
+        "Threshold": 12,
+        "MaxPerDay": 1,
+        "ReasonCode": "W8-040-buffer-dividend"
+      }
+    ],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_040.Upgrade",
+    "LinkIds": [
+      "W8-007",
+      "W8-036",
+      "W8-047"
+    ]
+  },
+  {
+    "DefinitionId": "W8-041",
+    "DisplayName": "续脉灯",
+    "LocalizationKey": "Buqi.Content.Item.W8_041.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 60,
+    "ArchetypeId": 4,
+    "Role": "amplifier",
+    "UnlockDay": 1,
+    "PositionHint": "双邻",
+    "Tags": [
+      "heal",
+      "regen",
+      "adjacent",
+      "amplifier",
+      "path-heal-regen"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 7,
+        "Target": 1,
+        "Amount": 2,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-041-regen",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 2,
+        "Effect": 6,
+        "Target": 1,
+        "Amount": 2,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-041-adjacent-heal",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_041.Upgrade",
+    "LinkIds": [
+      "W8-017",
+      "W8-018",
+      "W8-038"
+    ]
+  },
+  {
+    "DefinitionId": "W8-042",
+    "DisplayName": "调息枢",
+    "LocalizationKey": "Buqi.Content.Item.W8_042.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 58,
+    "ArchetypeId": 4,
+    "Role": "bridge",
+    "UnlockDay": 1,
+    "PositionHint": "左位",
+    "Tags": [
+      "heal",
+      "haste",
+      "bridge",
+      "path-heal-pulse"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 6,
+        "Target": 1,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-042-heal",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 2,
+        "Target": 3,
+        "Amount": 800,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-042-pass-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_042.Upgrade",
+    "LinkIds": [
+      "W8-016",
+      "W8-018",
+      "W8-031"
+    ]
+  },
+  {
+    "DefinitionId": "W8-043",
+    "DisplayName": "回光鉴",
+    "LocalizationKey": "Buqi.Content.Item.W8_043.Name",
+    "Size": 2,
+    "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
+    "BaseCooldownTicks": 70,
+    "ArchetypeId": 4,
+    "Role": "pivot",
+    "UnlockDay": 4,
+    "PositionHint": "自由",
+    "Tags": [
+      "heal",
+      "attack",
+      "pivot",
+      "mix-heal-fast"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 6,
+        "Target": 1,
+        "Amount": 6,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-043-heal",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 0,
+        "Target": 0,
+        "Amount": 5,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-043-attack",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_043.Upgrade",
+    "LinkIds": [
+      "W8-016",
+      "W8-033",
+      "W8-023"
+    ]
+  },
+  {
+    "DefinitionId": "W8-044",
+    "DisplayName": "护命佩",
+    "LocalizationKey": "Buqi.Content.Item.W8_044.Name",
+    "Size": 2,
+    "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
+    "BaseCooldownTicks": 80,
+    "ArchetypeId": 4,
+    "Role": "counter",
+    "UnlockDay": 4,
+    "PositionHint": "自由",
+    "Tags": [
+      "heal",
+      "shield",
+      "regen",
+      "counter",
+      "mix-heal-buffer"
+    ],
+    "Effects": [
+      {
+        "Trigger": 1,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 10,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-044-opening-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 1,
+        "Effect": 7,
+        "Target": 1,
+        "Amount": 3,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-044-opening-regen",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 0,
+        "Effect": 6,
+        "Target": 1,
+        "Amount": 5,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-044-heal",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_044.Upgrade",
+    "LinkIds": [
+      "W8-018",
+      "W8-039",
+      "W8-048"
+    ]
+  },
+  {
+    "DefinitionId": "W8-045",
+    "DisplayName": "药引秤",
+    "LocalizationKey": "Buqi.Content.Item.W8_045.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 65,
+    "ArchetypeId": 4,
+    "Role": "economy",
+    "UnlockDay": 7,
+    "PositionHint": "自由",
+    "Tags": [
+      "heal",
+      "economy",
+      "path-heal-pulse"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 6,
+        "Target": 1,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-045-heal",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [
+      {
+        "Trigger": 3,
+        "Effect": 0,
+        "Amount": 1,
+        "Threshold": 10,
+        "MaxPerDay": 1,
+        "ReasonCode": "W8-045-heal-dividend"
+      }
+    ],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_045.Upgrade",
+    "LinkIds": [
+      "W8-016",
+      "W8-041",
+      "W8-047"
+    ]
+  },
+  {
+    "DefinitionId": "W8-046",
+    "DisplayName": "同调尺",
+    "LocalizationKey": "Buqi.Content.Item.W8_046.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 80,
+    "ArchetypeId": 9,
+    "Role": "amplifier",
+    "UnlockDay": 1,
+    "PositionHint": "双邻",
+    "Tags": [
+      "shared",
+      "haste",
+      "adjacent",
+      "amplifier"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 2,
+        "Target": 4,
+        "Amount": 800,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-046-adjacent-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_046.Upgrade",
+    "LinkIds": [
+      "W8-031",
+      "W8-036",
+      "W8-041"
+    ]
+  },
+  {
+    "DefinitionId": "W8-047",
+    "DisplayName": "行脚账",
+    "LocalizationKey": "Buqi.Content.Item.W8_047.Name",
+    "Size": 1,
+    "BasePrice": 2,
+    "ImprovedUpgradeCost": 2,
+    "FixedUpgradeCost": 3,
+    "RefinementCost": 2,
+    "BaseCooldownTicks": 75,
+    "ArchetypeId": 9,
+    "Role": "economy",
+    "UnlockDay": 7,
+    "PositionHint": "自由",
+    "Tags": [
+      "shared",
+      "shield",
+      "economy"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 2,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-047-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [
+      {
+        "Trigger": 4,
+        "Effect": 1,
+        "Amount": 1,
+        "Threshold": 0,
+        "MaxPerDay": 1,
+        "ReasonCode": "W8-047-first-discount"
+      }
+    ],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_047.Upgrade",
+    "LinkIds": [
+      "W8-035",
+      "W8-040",
+      "W8-045"
+    ]
+  },
+  {
+    "DefinitionId": "W8-048",
+    "DisplayName": "镇心铃",
+    "LocalizationKey": "Buqi.Content.Item.W8_048.Name",
+    "Size": 2,
+    "BasePrice": 4,
+    "ImprovedUpgradeCost": 4,
+    "FixedUpgradeCost": 6,
+    "RefinementCost": 4,
+    "BaseCooldownTicks": 80,
+    "ArchetypeId": 9,
+    "Role": "counter",
+    "UnlockDay": 4,
+    "PositionHint": "居中",
+    "Tags": [
+      "shared",
+      "heal",
+      "shield",
+      "haste",
+      "counter"
+    ],
+    "Effects": [
+      {
+        "Trigger": 0,
+        "Effect": 6,
+        "Target": 1,
+        "Amount": 4,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-048-heal",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 5,
+        "Effect": 1,
+        "Target": 1,
+        "Amount": 8,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-048-counter-buffer",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      },
+      {
+        "Trigger": 5,
+        "Effect": 2,
+        "Target": 4,
+        "Amount": 1000,
+        "DurationTicks": 30,
+        "ReasonCode": "W8-048-counter-haste",
+        "ConditionKind": 0,
+        "ConditionThreshold": 0,
+        "UseCountThreshold": 0,
+        "ChargeReadLimit": 0,
+        "AmountPerCharge": 0,
+        "ChargeConsume": false,
+        "ResetCountOnReached": true
+      }
+    ],
+    "RunEffects": [],
+    "UpgradeSummary": "改良：效果数值按 1.6 倍结算；定型：效果数值按 2.4 倍结算；冷却不变。",
+    "UpgradeLocalizationKey": "Buqi.Content.Item.W8_048.Upgrade",
+    "LinkIds": [
+      "W8-033",
+      "W8-039",
+      "W8-044"
     ]
   }
 ]

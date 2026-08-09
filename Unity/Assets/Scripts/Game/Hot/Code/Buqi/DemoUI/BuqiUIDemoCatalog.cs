@@ -234,6 +234,9 @@ namespace Game.Hot.Buqi.DemoUI
 
         private static string BuildItemDescription(BuqiItemConfigRow item)
         {
+            if (!string.IsNullOrWhiteSpace(item.EffectDescription))
+                return item.EffectDescription.Trim();
+
             string effects = string.Join("、", item.Effects
                 .Select(effect => EffectDisplayName(effect.Effect))
                 .Distinct(StringComparer.Ordinal)

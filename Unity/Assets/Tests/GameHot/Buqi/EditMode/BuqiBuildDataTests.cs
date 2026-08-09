@@ -80,6 +80,20 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void GeneratedItem_FormalEffectDescriptionFlowsToPlayerItemView()
+        {
+            BuqiConfigCatalog source = LoadGeneratedCatalog();
+            BuqiItemConfigRow configuredItem = source.Items.Single(item => item.DefinitionId == "W8-001");
+            Assert.That(configuredItem.EffectDescription, Is.Not.Empty);
+
+            Assert.That(BuqiUIDemoCatalog.TryCreate(source, out BuqiUIDemoCatalog catalog, out string error),
+                Is.True, error);
+            BuqiUIDemoItemDefinition playerItem = catalog.Items.Single(item => item.Id == configuredItem.DefinitionId);
+
+            Assert.That(playerItem.Description, Is.EqualTo(configuredItem.EffectDescription));
+        }
+
+        [Test]
         public void GenericCatalog_WithoutPreferredBuilds_StillCreatesThreeDistinctStarters()
         {
             var source = new BuqiConfigCatalog();

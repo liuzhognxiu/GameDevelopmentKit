@@ -20,6 +20,9 @@ namespace Game.Hot.Buqi.UI.Widgets
         private Image m_Background = null;
 
         [SerializeField]
+        private Text m_LabelText = null;
+
+        [SerializeField]
         private GameObject m_RefundPreview = null;
 
         [SerializeField]
@@ -70,6 +73,7 @@ namespace Game.Hot.Buqi.UI.Widgets
             ClearCommand();
             if (m_Background != null)
                 m_Background.color = normalColor;
+            SetText(m_LabelText, "拖动道具至此出售");
             m_RefundPreview?.SetActive(false);
             SetText(m_RefundText, string.Empty);
         }

@@ -123,7 +123,7 @@ namespace Game.Hot.Editor
             Text sellLabel = CreateText(
                 sellZoneObject.transform,
                 "SellLabel_Text",
-                "Drag a board item here to sell",
+                string.Empty,
                 17,
                 TextAnchor.MiddleLeft,
                 inkColor);
@@ -138,6 +138,7 @@ namespace Game.Hot.Editor
             Stretch(refund.rectTransform, new Vector2(240f, 8f), new Vector2(-20f, -8f));
             refund.gameObject.SetActive(false);
             Assign(sellZone, "m_Background", sellZoneObject.GetComponent<Image>());
+            Assign(sellZone, "m_LabelText", sellLabel);
             Assign(sellZone, "m_RefundPreview", refund.gameObject);
             Assign(sellZone, "m_RefundText", refund);
 

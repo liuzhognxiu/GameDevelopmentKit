@@ -29,6 +29,7 @@ namespace Buqi.Simulation.Headless
             ValidateBuqiLocalizationKeys(root, localization, failures);
             ValidateGeneratedArtifacts(root, localization, failures);
             ValidatePrefabs(root, localization, failures);
+            ValidateGeneratedUiBuilders(root, failures);
             ValidatePlayerFacingCode(root, failures);
             ValidateDynamicText(failures);
 
@@ -297,6 +298,36 @@ namespace Buqi.Simulation.Headless
                 }
 
                 ValidateVisibleLiteralContexts(root, path, text, failures);
+            }
+        }
+
+        private static void ValidateGeneratedUiBuilders(string root, ICollection<string> failures)
+        {
+            string editorRoot = Path.Combine(
+                root, "Unity", "Assets", "Scripts", "Game", "Hot", "Code", "Editor", "Buqi");
+            if (!Directory.Exists(editorRoot))
+                return;
+
+            const string literal = "(?<literal>\\$?@?\"(?:[^\"\\\\]|\\\\.)*\"|@\"(?:\"\"|[^\"])*\")";
+            string pattern = "CreateText\\s*\\(\\s*[^,]+,\\s*\"[^\"]*\"\\s*,\\s*" + literal;
+            foreach (string path in Directory.EnumerateFiles(editorRoot, "*.cs", SearchOption.AllDirectories))
+            {
+                string text = File.ReadAllText(path);
+                foreach (Match match in Regex.Matches(text, pattern))
+                {
+                    string value = LiteralContent(match.Groups["literal"].Value);
+                    string playerText = PlayerText(value);
+                    if (value.StartsWith("Buqi.", StringComparison.Ordinal)
+                        || Regex.IsMatch(value, "^[A-Z][A-Z0-9]*-\\d+$"))
+                    {
+                        continue;
+                    }
+                    if (!Regex.IsMatch(playerText, "[A-Za-z]"))
+                        continue;
+                    failures.Add(BattleText.Format(
+                        "{0} 生成界面的可见文案不得使用英文：{1}。",
+                        Relative(root, path), match.Groups["literal"].Value));
+                }
             }
         }
 

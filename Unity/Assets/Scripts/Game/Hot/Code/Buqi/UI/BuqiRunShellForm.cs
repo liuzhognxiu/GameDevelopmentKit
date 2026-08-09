@@ -192,12 +192,6 @@ namespace Game.Hot.Buqi.UI
             base.OnDestroy();
         }
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.R))
-                Restart();
-        }
-
         private void Submit(BuqiUIDemoCommand command)
         {
             if (m_Controller == null)

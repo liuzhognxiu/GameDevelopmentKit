@@ -108,8 +108,19 @@ namespace Game.Hot.Buqi.Config
                     roles.Add(row.Role);
             }
 
-            if (unlockCounts[1] != 17 || unlockCounts[4] != 15 || unlockCounts[7] != 10)
-                errors.Add("Item unlock bands must contain 17/15/10 items for days 1/4/7");
+            int expectedDay1 = rows.Count == 300 ? 120 : 17;
+            int expectedDay4 = rows.Count == 300 ? 108 : 15;
+            int expectedDay7 = rows.Count == 300 ? 72 : 10;
+            if (unlockCounts[1] != expectedDay1 ||
+                unlockCounts[4] != expectedDay4 ||
+                unlockCounts[7] != expectedDay7)
+            {
+                errors.Add(GameFramework.Utility.Text.Format(
+                    "Item unlock bands must contain {0}/{1}/{2} items for days 1/4/7",
+                    expectedDay1,
+                    expectedDay4,
+                    expectedDay7));
+            }
 
             foreach (string build in s_MainBuilds)
             {

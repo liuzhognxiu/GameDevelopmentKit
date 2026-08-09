@@ -1039,6 +1039,26 @@ namespace Game.Hot
         public const string Key_Buqi_Content_EventOption_event_wall_fissure_seal_Summary = "Buqi.Content.EventOption.event_wall_fissure_seal.Summary";
 
         /// <summary>
+        /// 惊鸿刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_001_Name = "Buqi.Content.Item.W8_001.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_001_Upgrade = "Buqi.Content.Item.W8_001.Upgrade";
+
+        /// <summary>
+        /// 玄垒盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_002_Name = "Buqi.Content.Item.W8_002.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_002_Upgrade = "Buqi.Content.Item.W8_002.Upgrade";
+
+        /// <summary>
         /// 急攻令
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_003_Name = "Buqi.Content.Item.W8_003.Name";
@@ -1047,6 +1067,16 @@ namespace Game.Hot
         /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_003_Upgrade = "Buqi.Content.Item.W8_003.Upgrade";
+
+        /// <summary>
+        /// 回环梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_004_Name = "Buqi.Content.Item.W8_004.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_004_Upgrade = "Buqi.Content.Item.W8_004.Upgrade";
 
         /// <summary>
         /// 冲锋看板
@@ -1087,6 +1117,36 @@ namespace Game.Hot
         /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_008_Upgrade = "Buqi.Content.Item.W8_008.Upgrade";
+
+        /// <summary>
+        /// 春生囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_009_Name = "Buqi.Content.Item.W8_009.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_009_Upgrade = "Buqi.Content.Item.W8_009.Upgrade";
+
+        /// <summary>
+        /// 青蚀针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_010_Name = "Buqi.Content.Item.W8_010.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_010_Upgrade = "Buqi.Content.Item.W8_010.Upgrade";
+
+        /// <summary>
+        /// 赤曜炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_011_Name = "Buqi.Content.Item.W8_011.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_011_Upgrade = "Buqi.Content.Item.W8_011.Upgrade";
 
         /// <summary>
         /// 堡垒核心
@@ -1279,7 +1339,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_030_Upgrade = "Buqi.Content.Item.W8_030.Upgrade";
 
         /// <summary>
-        /// 走马铃
+        /// 冰弦镜
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_031_Name = "Buqi.Content.Item.W8_031.Name";
 
@@ -1289,7 +1349,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_031_Upgrade = "Buqi.Content.Item.W8_031.Upgrade";
 
         /// <summary>
-        /// 借势扣
+        /// 奔霆池
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_032_Name = "Buqi.Content.Item.W8_032.Name";
 
@@ -1299,7 +1359,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_032_Upgrade = "Buqi.Content.Item.W8_032.Upgrade";
 
         /// <summary>
-        /// 回锋匣
+        /// 鸣锋刻
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_033_Name = "Buqi.Content.Item.W8_033.Name";
 
@@ -1309,7 +1369,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_033_Upgrade = "Buqi.Content.Item.W8_033.Upgrade";
 
         /// <summary>
-        /// 破阵锥
+        /// 静渊盾
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_034_Name = "Buqi.Content.Item.W8_034.Name";
 
@@ -1319,7 +1379,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_034_Upgrade = "Buqi.Content.Item.W8_034.Upgrade";
 
         /// <summary>
-        /// 试锋算盘
+        /// 循光梭
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_035_Name = "Buqi.Content.Item.W8_035.Name";
 
@@ -1329,7 +1389,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_035_Upgrade = "Buqi.Content.Item.W8_035.Upgrade";
 
         /// <summary>
-        /// 连垣扣
+        /// 润脉囊
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_036_Name = "Buqi.Content.Item.W8_036.Name";
 
@@ -1339,7 +1399,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_036_Upgrade = "Buqi.Content.Item.W8_036.Upgrade";
 
         /// <summary>
-        /// 蓄势砚
+        /// 蚀骨针
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_037_Name = "Buqi.Content.Item.W8_037.Name";
 
@@ -1349,7 +1409,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_037_Upgrade = "Buqi.Content.Item.W8_037.Upgrade";
 
         /// <summary>
-        /// 活门甲
+        /// 灼星炉
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_038_Name = "Buqi.Content.Item.W8_038.Name";
 
@@ -1359,7 +1419,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_038_Upgrade = "Buqi.Content.Item.W8_038.Upgrade";
 
         /// <summary>
-        /// 净脉璧
+        /// 雪寂镜
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_039_Name = "Buqi.Content.Item.W8_039.Name";
 
@@ -1369,7 +1429,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_039_Upgrade = "Buqi.Content.Item.W8_039.Upgrade";
 
         /// <summary>
-        /// 守成印
+        /// 蓄闪池
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_040_Name = "Buqi.Content.Item.W8_040.Name";
 
@@ -1379,7 +1439,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_040_Upgrade = "Buqi.Content.Item.W8_040.Upgrade";
 
         /// <summary>
-        /// 续脉灯
+        /// 流岚刻
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_041_Name = "Buqi.Content.Item.W8_041.Name";
 
@@ -1389,7 +1449,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_041_Upgrade = "Buqi.Content.Item.W8_041.Upgrade";
 
         /// <summary>
-        /// 调息枢
+        /// 承壁盾
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_042_Name = "Buqi.Content.Item.W8_042.Name";
 
@@ -1399,7 +1459,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_042_Upgrade = "Buqi.Content.Item.W8_042.Upgrade";
 
         /// <summary>
-        /// 回光鉴
+        /// 连衡梭
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_043_Name = "Buqi.Content.Item.W8_043.Name";
 
@@ -1409,7 +1469,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_043_Upgrade = "Buqi.Content.Item.W8_043.Upgrade";
 
         /// <summary>
-        /// 护命佩
+        /// 复苏囊
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_044_Name = "Buqi.Content.Item.W8_044.Name";
 
@@ -1419,7 +1479,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_044_Upgrade = "Buqi.Content.Item.W8_044.Upgrade";
 
         /// <summary>
-        /// 药引秤
+        /// 藏蛰针
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_045_Name = "Buqi.Content.Item.W8_045.Name";
 
@@ -1429,7 +1489,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_045_Upgrade = "Buqi.Content.Item.W8_045.Upgrade";
 
         /// <summary>
-        /// 同调尺
+        /// 炎脉炉
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_046_Name = "Buqi.Content.Item.W8_046.Name";
 
@@ -1439,7 +1499,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_046_Upgrade = "Buqi.Content.Item.W8_046.Upgrade";
 
         /// <summary>
-        /// 行脚账
+        /// 冻星镜
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_047_Name = "Buqi.Content.Item.W8_047.Name";
 
@@ -1449,7 +1509,7 @@ namespace Game.Hot
         public const string Key_Buqi_Content_Item_W8_047_Upgrade = "Buqi.Content.Item.W8_047.Upgrade";
 
         /// <summary>
-        /// 镇心铃
+        /// 轰鸣池
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_048_Name = "Buqi.Content.Item.W8_048.Name";
 
@@ -1457,6 +1517,2526 @@ namespace Game.Hot
         /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
         /// </summary>
         public const string Key_Buqi_Content_Item_W8_048_Upgrade = "Buqi.Content.Item.W8_048.Upgrade";
+
+        /// <summary>
+        /// 夺秒刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_049_Name = "Buqi.Content.Item.W8_049.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_049_Upgrade = "Buqi.Content.Item.W8_049.Upgrade";
+
+        /// <summary>
+        /// 镇川盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_050_Name = "Buqi.Content.Item.W8_050.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_050_Upgrade = "Buqi.Content.Item.W8_050.Upgrade";
+
+        /// <summary>
+        /// 合枢梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_051_Name = "Buqi.Content.Item.W8_051.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_051_Upgrade = "Buqi.Content.Item.W8_051.Upgrade";
+
+        /// <summary>
+        /// 温泉囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_052_Name = "Buqi.Content.Item.W8_052.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_052_Upgrade = "Buqi.Content.Item.W8_052.Upgrade";
+
+        /// <summary>
+        /// 阴芽针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_053_Name = "Buqi.Content.Item.W8_053.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_053_Upgrade = "Buqi.Content.Item.W8_053.Upgrade";
+
+        /// <summary>
+        /// 烬潮炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_054_Name = "Buqi.Content.Item.W8_054.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_054_Upgrade = "Buqi.Content.Item.W8_054.Upgrade";
+
+        /// <summary>
+        /// 白渊镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_055_Name = "Buqi.Content.Item.W8_055.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_055_Upgrade = "Buqi.Content.Item.W8_055.Upgrade";
+
+        /// <summary>
+        /// 电汐池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_056_Name = "Buqi.Content.Item.W8_056.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_056_Upgrade = "Buqi.Content.Item.W8_056.Upgrade";
+
+        /// <summary>
+        /// 追电刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_057_Name = "Buqi.Content.Item.W8_057.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_057_Upgrade = "Buqi.Content.Item.W8_057.Upgrade";
+
+        /// <summary>
+        /// 覆甲盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_058_Name = "Buqi.Content.Item.W8_058.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_058_Upgrade = "Buqi.Content.Item.W8_058.Upgrade";
+
+        /// <summary>
+        /// 递潮梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_059_Name = "Buqi.Content.Item.W8_059.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_059_Upgrade = "Buqi.Content.Item.W8_059.Upgrade";
+
+        /// <summary>
+        /// 续命囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_060_Name = "Buqi.Content.Item.W8_060.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_060_Upgrade = "Buqi.Content.Item.W8_060.Upgrade";
+
+        /// <summary>
+        /// 碧痕针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_061_Name = "Buqi.Content.Item.W8_061.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_061_Upgrade = "Buqi.Content.Item.W8_061.Upgrade";
+
+        /// <summary>
+        /// 明炽炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_062_Name = "Buqi.Content.Item.W8_062.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_062_Upgrade = "Buqi.Content.Item.W8_062.Upgrade";
+
+        /// <summary>
+        /// 冷月镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_063_Name = "Buqi.Content.Item.W8_063.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_063_Upgrade = "Buqi.Content.Item.W8_063.Upgrade";
+
+        /// <summary>
+        /// 裂空池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_064_Name = "Buqi.Content.Item.W8_064.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_064_Upgrade = "Buqi.Content.Item.W8_064.Upgrade";
+
+        /// <summary>
+        /// 折光刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_065_Name = "Buqi.Content.Item.W8_065.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_065_Upgrade = "Buqi.Content.Item.W8_065.Upgrade";
+
+        /// <summary>
+        /// 安澜盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_066_Name = "Buqi.Content.Item.W8_066.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_066_Upgrade = "Buqi.Content.Item.W8_066.Upgrade";
+
+        /// <summary>
+        /// 转魁梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_067_Name = "Buqi.Content.Item.W8_067.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_067_Upgrade = "Buqi.Content.Item.W8_067.Upgrade";
+
+        /// <summary>
+        /// 守息囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_068_Name = "Buqi.Content.Item.W8_068.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_068_Upgrade = "Buqi.Content.Item.W8_068.Upgrade";
+
+        /// <summary>
+        /// 暗露针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_069_Name = "Buqi.Content.Item.W8_069.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_069_Upgrade = "Buqi.Content.Item.W8_069.Upgrade";
+
+        /// <summary>
+        /// 丹火炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_070_Name = "Buqi.Content.Item.W8_070.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_070_Upgrade = "Buqi.Content.Item.W8_070.Upgrade";
+
+        /// <summary>
+        /// 封潮镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_071_Name = "Buqi.Content.Item.W8_071.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_071_Upgrade = "Buqi.Content.Item.W8_071.Upgrade";
+
+        /// <summary>
+        /// 惊雷池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_072_Name = "Buqi.Content.Item.W8_072.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_072_Upgrade = "Buqi.Content.Item.W8_072.Upgrade";
+
+        /// <summary>
+        /// 赶月刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_073_Name = "Buqi.Content.Item.W8_073.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_073_Upgrade = "Buqi.Content.Item.W8_073.Upgrade";
+
+        /// <summary>
+        /// 抱朴盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_074_Name = "Buqi.Content.Item.W8_074.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_074_Upgrade = "Buqi.Content.Item.W8_074.Upgrade";
+
+        /// <summary>
+        /// 衔月梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_075_Name = "Buqi.Content.Item.W8_075.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_075_Upgrade = "Buqi.Content.Item.W8_075.Upgrade";
+
+        /// <summary>
+        /// 扶阳囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_076_Name = "Buqi.Content.Item.W8_076.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_076_Upgrade = "Buqi.Content.Item.W8_076.Upgrade";
+
+        /// <summary>
+        /// 蛇涎针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_077_Name = "Buqi.Content.Item.W8_077.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_077_Upgrade = "Buqi.Content.Item.W8_077.Upgrade";
+
+        /// <summary>
+        /// 熔光炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_078_Name = "Buqi.Content.Item.W8_078.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_078_Upgrade = "Buqi.Content.Item.W8_078.Upgrade";
+
+        /// <summary>
+        /// 玄冰镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_079_Name = "Buqi.Content.Item.W8_079.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_079_Upgrade = "Buqi.Content.Item.W8_079.Upgrade";
+
+        /// <summary>
+        /// 回路池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_080_Name = "Buqi.Content.Item.W8_080.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_080_Upgrade = "Buqi.Content.Item.W8_080.Upgrade";
+
+        /// <summary>
+        /// 旋刃刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_081_Name = "Buqi.Content.Item.W8_081.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_081_Upgrade = "Buqi.Content.Item.W8_081.Upgrade";
+
+        /// <summary>
+        /// 重门盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_082_Name = "Buqi.Content.Item.W8_082.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_082_Upgrade = "Buqi.Content.Item.W8_082.Upgrade";
+
+        /// <summary>
+        /// 通络梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_083_Name = "Buqi.Content.Item.W8_083.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_083_Upgrade = "Buqi.Content.Item.W8_083.Upgrade";
+
+        /// <summary>
+        /// 清心囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_084_Name = "Buqi.Content.Item.W8_084.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_084_Upgrade = "Buqi.Content.Item.W8_084.Upgrade";
+
+        /// <summary>
+        /// 苦雾针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_085_Name = "Buqi.Content.Item.W8_085.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_085_Upgrade = "Buqi.Content.Item.W8_085.Upgrade";
+
+        /// <summary>
+        /// 飞焰炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_086_Name = "Buqi.Content.Item.W8_086.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_086_Upgrade = "Buqi.Content.Item.W8_086.Upgrade";
+
+        /// <summary>
+        /// 静雪镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_087_Name = "Buqi.Content.Item.W8_087.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_087_Upgrade = "Buqi.Content.Item.W8_087.Upgrade";
+
+        /// <summary>
+        /// 磁潮池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_088_Name = "Buqi.Content.Item.W8_088.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_088_Upgrade = "Buqi.Content.Item.W8_088.Upgrade";
+
+        /// <summary>
+        /// 越影刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_089_Name = "Buqi.Content.Item.W8_089.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_089_Upgrade = "Buqi.Content.Item.W8_089.Upgrade";
+
+        /// <summary>
+        /// 固元盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_090_Name = "Buqi.Content.Item.W8_090.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_090_Upgrade = "Buqi.Content.Item.W8_090.Upgrade";
+
+        /// <summary>
+        /// 叠声梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_091_Name = "Buqi.Content.Item.W8_091.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_091_Upgrade = "Buqi.Content.Item.W8_091.Upgrade";
+
+        /// <summary>
+        /// 培元囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_092_Name = "Buqi.Content.Item.W8_092.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_092_Upgrade = "Buqi.Content.Item.W8_092.Upgrade";
+
+        /// <summary>
+        /// 沉毒针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_093_Name = "Buqi.Content.Item.W8_093.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_093_Upgrade = "Buqi.Content.Item.W8_093.Upgrade";
+
+        /// <summary>
+        /// 赫日炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_094_Name = "Buqi.Content.Item.W8_094.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_094_Upgrade = "Buqi.Content.Item.W8_094.Upgrade";
+
+        /// <summary>
+        /// 凌晶镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_095_Name = "Buqi.Content.Item.W8_095.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_095_Upgrade = "Buqi.Content.Item.W8_095.Upgrade";
+
+        /// <summary>
+        /// 闪断池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_096_Name = "Buqi.Content.Item.W8_096.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_096_Upgrade = "Buqi.Content.Item.W8_096.Upgrade";
+
+        /// <summary>
+        /// 催阵刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_097_Name = "Buqi.Content.Item.W8_097.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_097_Upgrade = "Buqi.Content.Item.W8_097.Upgrade";
+
+        /// <summary>
+        /// 沉钟盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_098_Name = "Buqi.Content.Item.W8_098.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_098_Upgrade = "Buqi.Content.Item.W8_098.Upgrade";
+
+        /// <summary>
+        /// 聚线梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_099_Name = "Buqi.Content.Item.W8_099.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_099_Upgrade = "Buqi.Content.Item.W8_099.Upgrade";
+
+        /// <summary>
+        /// 生津囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_100_Name = "Buqi.Content.Item.W8_100.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_100_Upgrade = "Buqi.Content.Item.W8_100.Upgrade";
+
+        /// <summary>
+        /// 幽藤针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_101_Name = "Buqi.Content.Item.W8_101.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_101_Upgrade = "Buqi.Content.Item.W8_101.Upgrade";
+
+        /// <summary>
+        /// 焦雷炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_102_Name = "Buqi.Content.Item.W8_102.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_102_Upgrade = "Buqi.Content.Item.W8_102.Upgrade";
+
+        /// <summary>
+        /// 寒钟镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_103_Name = "Buqi.Content.Item.W8_103.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_103_Upgrade = "Buqi.Content.Item.W8_103.Upgrade";
+
+        /// <summary>
+        /// 增幅池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_104_Name = "Buqi.Content.Item.W8_104.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_104_Upgrade = "Buqi.Content.Item.W8_104.Upgrade";
+
+        /// <summary>
+        /// 轻雷刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_105_Name = "Buqi.Content.Item.W8_105.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_105_Upgrade = "Buqi.Content.Item.W8_105.Upgrade";
+
+        /// <summary>
+        /// 止戈盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_106_Name = "Buqi.Content.Item.W8_106.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_106_Upgrade = "Buqi.Content.Item.W8_106.Upgrade";
+
+        /// <summary>
+        /// 承接梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_107_Name = "Buqi.Content.Item.W8_107.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_107_Upgrade = "Buqi.Content.Item.W8_107.Upgrade";
+
+        /// <summary>
+        /// 回岚囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_108_Name = "Buqi.Content.Item.W8_108.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_108_Upgrade = "Buqi.Content.Item.W8_108.Upgrade";
+
+        /// <summary>
+        /// 冷菌针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_109_Name = "Buqi.Content.Item.W8_109.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_109_Upgrade = "Buqi.Content.Item.W8_109.Upgrade";
+
+        /// <summary>
+        /// 炙羽炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_110_Name = "Buqi.Content.Item.W8_110.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_110_Upgrade = "Buqi.Content.Item.W8_110.Upgrade";
+
+        /// <summary>
+        /// 冻土镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_111_Name = "Buqi.Content.Item.W8_111.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_111_Upgrade = "Buqi.Content.Item.W8_111.Upgrade";
+
+        /// <summary>
+        /// 高压池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_112_Name = "Buqi.Content.Item.W8_112.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_112_Upgrade = "Buqi.Content.Item.W8_112.Upgrade";
+
+        /// <summary>
+        /// 瞬息刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_113_Name = "Buqi.Content.Item.W8_113.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_113_Upgrade = "Buqi.Content.Item.W8_113.Upgrade";
+
+        /// <summary>
+        /// 藏锋盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_114_Name = "Buqi.Content.Item.W8_114.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_114_Upgrade = "Buqi.Content.Item.W8_114.Upgrade";
+
+        /// <summary>
+        /// 复轨梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_115_Name = "Buqi.Content.Item.W8_115.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_115_Upgrade = "Buqi.Content.Item.W8_115.Upgrade";
+
+        /// <summary>
+        /// 照夜囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_116_Name = "Buqi.Content.Item.W8_116.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_116_Upgrade = "Buqi.Content.Item.W8_116.Upgrade";
+
+        /// <summary>
+        /// 蚀砂针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_117_Name = "Buqi.Content.Item.W8_117.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_117_Upgrade = "Buqi.Content.Item.W8_117.Upgrade";
+
+        /// <summary>
+        /// 朱砂炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_118_Name = "Buqi.Content.Item.W8_118.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_118_Upgrade = "Buqi.Content.Item.W8_118.Upgrade";
+
+        /// <summary>
+        /// 清冽镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_119_Name = "Buqi.Content.Item.W8_119.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_119_Upgrade = "Buqi.Content.Item.W8_119.Upgrade";
+
+        /// <summary>
+        /// 鸣电池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_120_Name = "Buqi.Content.Item.W8_120.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_120_Upgrade = "Buqi.Content.Item.W8_120.Upgrade";
+
+        /// <summary>
+        /// 疾羽刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_121_Name = "Buqi.Content.Item.W8_121.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_121_Upgrade = "Buqi.Content.Item.W8_121.Upgrade";
+
+        /// <summary>
+        /// 护心盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_122_Name = "Buqi.Content.Item.W8_122.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_122_Upgrade = "Buqi.Content.Item.W8_122.Upgrade";
+
+        /// <summary>
+        /// 交鸣梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_123_Name = "Buqi.Content.Item.W8_123.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_123_Upgrade = "Buqi.Content.Item.W8_123.Upgrade";
+
+        /// <summary>
+        /// 甘露囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_124_Name = "Buqi.Content.Item.W8_124.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_124_Upgrade = "Buqi.Content.Item.W8_124.Upgrade";
+
+        /// <summary>
+        /// 潜腐针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_125_Name = "Buqi.Content.Item.W8_125.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_125_Upgrade = "Buqi.Content.Item.W8_125.Upgrade";
+
+        /// <summary>
+        /// 火浣炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_126_Name = "Buqi.Content.Item.W8_126.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_126_Upgrade = "Buqi.Content.Item.W8_126.Upgrade";
+
+        /// <summary>
+        /// 碎霜镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_127_Name = "Buqi.Content.Item.W8_127.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_127_Upgrade = "Buqi.Content.Item.W8_127.Upgrade";
+
+        /// <summary>
+        /// 伏雷池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_128_Name = "Buqi.Content.Item.W8_128.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_128_Upgrade = "Buqi.Content.Item.W8_128.Upgrade";
+
+        /// <summary>
+        /// 掠星刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_129_Name = "Buqi.Content.Item.W8_129.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_129_Upgrade = "Buqi.Content.Item.W8_129.Upgrade";
+
+        /// <summary>
+        /// 归壑盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_130_Name = "Buqi.Content.Item.W8_130.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_130_Upgrade = "Buqi.Content.Item.W8_130.Upgrade";
+
+        /// <summary>
+        /// 换位梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_131_Name = "Buqi.Content.Item.W8_131.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_131_Upgrade = "Buqi.Content.Item.W8_131.Upgrade";
+
+        /// <summary>
+        /// 和光囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_132_Name = "Buqi.Content.Item.W8_132.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_132_Upgrade = "Buqi.Content.Item.W8_132.Upgrade";
+
+        /// <summary>
+        /// 黯蕊针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_133_Name = "Buqi.Content.Item.W8_133.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_133_Upgrade = "Buqi.Content.Item.W8_133.Upgrade";
+
+        /// <summary>
+        /// 爆竹炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_134_Name = "Buqi.Content.Item.W8_134.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_134_Upgrade = "Buqi.Content.Item.W8_134.Upgrade";
+
+        /// <summary>
+        /// 止水镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_135_Name = "Buqi.Content.Item.W8_135.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_135_Upgrade = "Buqi.Content.Item.W8_135.Upgrade";
+
+        /// <summary>
+        /// 引弧池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_136_Name = "Buqi.Content.Item.W8_136.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_136_Upgrade = "Buqi.Content.Item.W8_136.Upgrade";
+
+        /// <summary>
+        /// 回锋刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_137_Name = "Buqi.Content.Item.W8_137.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_137_Upgrade = "Buqi.Content.Item.W8_137.Upgrade";
+
+        /// <summary>
+        /// 铜关盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_138_Name = "Buqi.Content.Item.W8_138.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_138_Upgrade = "Buqi.Content.Item.W8_138.Upgrade";
+
+        /// <summary>
+        /// 续弦梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_139_Name = "Buqi.Content.Item.W8_139.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_139_Upgrade = "Buqi.Content.Item.W8_139.Upgrade";
+
+        /// <summary>
+        /// 静养囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_140_Name = "Buqi.Content.Item.W8_140.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_140_Upgrade = "Buqi.Content.Item.W8_140.Upgrade";
+
+        /// <summary>
+        /// 玄蝎针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_141_Name = "Buqi.Content.Item.W8_141.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_141_Upgrade = "Buqi.Content.Item.W8_141.Upgrade";
+
+        /// <summary>
+        /// 红莲炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_142_Name = "Buqi.Content.Item.W8_142.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_142_Upgrade = "Buqi.Content.Item.W8_142.Upgrade";
+
+        /// <summary>
+        /// 封声镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_143_Name = "Buqi.Content.Item.W8_143.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_143_Upgrade = "Buqi.Content.Item.W8_143.Upgrade";
+
+        /// <summary>
+        /// 放电池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_144_Name = "Buqi.Content.Item.W8_144.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_144_Upgrade = "Buqi.Content.Item.W8_144.Upgrade";
+
+        /// <summary>
+        /// 破晓刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_145_Name = "Buqi.Content.Item.W8_145.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_145_Upgrade = "Buqi.Content.Item.W8_145.Upgrade";
+
+        /// <summary>
+        /// 石庭盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_146_Name = "Buqi.Content.Item.W8_146.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_146_Upgrade = "Buqi.Content.Item.W8_146.Upgrade";
+
+        /// <summary>
+        /// 并流梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_147_Name = "Buqi.Content.Item.W8_147.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_147_Upgrade = "Buqi.Content.Item.W8_147.Upgrade";
+
+        /// <summary>
+        /// 还真囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_148_Name = "Buqi.Content.Item.W8_148.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_148_Upgrade = "Buqi.Content.Item.W8_148.Upgrade";
+
+        /// <summary>
+        /// 闭息针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_149_Name = "Buqi.Content.Item.W8_149.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_149_Upgrade = "Buqi.Content.Item.W8_149.Upgrade";
+
+        /// <summary>
+        /// 燧石炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_150_Name = "Buqi.Content.Item.W8_150.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_150_Upgrade = "Buqi.Content.Item.W8_150.Upgrade";
+
+        /// <summary>
+        /// 冬藏镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_151_Name = "Buqi.Content.Item.W8_151.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_151_Upgrade = "Buqi.Content.Item.W8_151.Upgrade";
+
+        /// <summary>
+        /// 聚能池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_152_Name = "Buqi.Content.Item.W8_152.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_152_Upgrade = "Buqi.Content.Item.W8_152.Upgrade";
+
+        /// <summary>
+        /// 临机刻
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_153_Name = "Buqi.Content.Item.W8_153.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_153_Upgrade = "Buqi.Content.Item.W8_153.Upgrade";
+
+        /// <summary>
+        /// 息浪盾
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_154_Name = "Buqi.Content.Item.W8_154.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_154_Upgrade = "Buqi.Content.Item.W8_154.Upgrade";
+
+        /// <summary>
+        /// 串玉梭
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_155_Name = "Buqi.Content.Item.W8_155.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_155_Upgrade = "Buqi.Content.Item.W8_155.Upgrade";
+
+        /// <summary>
+        /// 长春囊
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_156_Name = "Buqi.Content.Item.W8_156.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_156_Upgrade = "Buqi.Content.Item.W8_156.Upgrade";
+
+        /// <summary>
+        /// 隐沼针
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_157_Name = "Buqi.Content.Item.W8_157.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_157_Upgrade = "Buqi.Content.Item.W8_157.Upgrade";
+
+        /// <summary>
+        /// 照炉炉
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_158_Name = "Buqi.Content.Item.W8_158.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_158_Upgrade = "Buqi.Content.Item.W8_158.Upgrade";
+
+        /// <summary>
+        /// 冰轮镜
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_159_Name = "Buqi.Content.Item.W8_159.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_159_Upgrade = "Buqi.Content.Item.W8_159.Upgrade";
+
+        /// <summary>
+        /// 疾电池
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_160_Name = "Buqi.Content.Item.W8_160.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_160_Upgrade = "Buqi.Content.Item.W8_160.Upgrade";
+
+        /// <summary>
+        /// 惊鸿轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_161_Name = "Buqi.Content.Item.W8_161.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_161_Upgrade = "Buqi.Content.Item.W8_161.Upgrade";
+
+        /// <summary>
+        /// 玄垒障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_162_Name = "Buqi.Content.Item.W8_162.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_162_Upgrade = "Buqi.Content.Item.W8_162.Upgrade";
+
+        /// <summary>
+        /// 回环桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_163_Name = "Buqi.Content.Item.W8_163.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_163_Upgrade = "Buqi.Content.Item.W8_163.Upgrade";
+
+        /// <summary>
+        /// 春生灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_164_Name = "Buqi.Content.Item.W8_164.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_164_Upgrade = "Buqi.Content.Item.W8_164.Upgrade";
+
+        /// <summary>
+        /// 青蚀匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_165_Name = "Buqi.Content.Item.W8_165.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_165_Upgrade = "Buqi.Content.Item.W8_165.Upgrade";
+
+        /// <summary>
+        /// 赤曜灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_166_Name = "Buqi.Content.Item.W8_166.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_166_Upgrade = "Buqi.Content.Item.W8_166.Upgrade";
+
+        /// <summary>
+        /// 霜衡锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_167_Name = "Buqi.Content.Item.W8_167.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_167_Upgrade = "Buqi.Content.Item.W8_167.Upgrade";
+
+        /// <summary>
+        /// 震弧阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_168_Name = "Buqi.Content.Item.W8_168.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_168_Upgrade = "Buqi.Content.Item.W8_168.Upgrade";
+
+        /// <summary>
+        /// 逐隙轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_169_Name = "Buqi.Content.Item.W8_169.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_169_Upgrade = "Buqi.Content.Item.W8_169.Upgrade";
+
+        /// <summary>
+        /// 磐潮障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_170_Name = "Buqi.Content.Item.W8_170.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_170_Upgrade = "Buqi.Content.Item.W8_170.Upgrade";
+
+        /// <summary>
+        /// 接星桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_171_Name = "Buqi.Content.Item.W8_171.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_171_Upgrade = "Buqi.Content.Item.W8_171.Upgrade";
+
+        /// <summary>
+        /// 归元灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_172_Name = "Buqi.Content.Item.W8_172.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_172_Upgrade = "Buqi.Content.Item.W8_172.Upgrade";
+
+        /// <summary>
+        /// 幽兰匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_173_Name = "Buqi.Content.Item.W8_173.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_173_Upgrade = "Buqi.Content.Item.W8_173.Upgrade";
+
+        /// <summary>
+        /// 焚风灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_174_Name = "Buqi.Content.Item.W8_174.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_174_Upgrade = "Buqi.Content.Item.W8_174.Upgrade";
+
+        /// <summary>
+        /// 寒汐锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_175_Name = "Buqi.Content.Item.W8_175.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_175_Upgrade = "Buqi.Content.Item.W8_175.Upgrade";
+
+        /// <summary>
+        /// 雷容阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_176_Name = "Buqi.Content.Item.W8_176.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_176_Upgrade = "Buqi.Content.Item.W8_176.Upgrade";
+
+        /// <summary>
+        /// 飞白轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_177_Name = "Buqi.Content.Item.W8_177.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_177_Upgrade = "Buqi.Content.Item.W8_177.Upgrade";
+
+        /// <summary>
+        /// 定岳障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_178_Name = "Buqi.Content.Item.W8_178.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_178_Upgrade = "Buqi.Content.Item.W8_178.Upgrade";
+
+        /// <summary>
+        /// 贯流桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_179_Name = "Buqi.Content.Item.W8_179.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_179_Upgrade = "Buqi.Content.Item.W8_179.Upgrade";
+
+        /// <summary>
+        /// 回青灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_180_Name = "Buqi.Content.Item.W8_180.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_180_Upgrade = "Buqi.Content.Item.W8_180.Upgrade";
+
+        /// <summary>
+        /// 腐月匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_181_Name = "Buqi.Content.Item.W8_181.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_181_Upgrade = "Buqi.Content.Item.W8_181.Upgrade";
+
+        /// <summary>
+        /// 烈阳灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_182_Name = "Buqi.Content.Item.W8_182.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_182_Upgrade = "Buqi.Content.Item.W8_182.Upgrade";
+
+        /// <summary>
+        /// 凝川锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_183_Name = "Buqi.Content.Item.W8_183.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_183_Upgrade = "Buqi.Content.Item.W8_183.Upgrade";
+
+        /// <summary>
+        /// 跃流阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_184_Name = "Buqi.Content.Item.W8_184.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_184_Upgrade = "Buqi.Content.Item.W8_184.Upgrade";
+
+        /// <summary>
+        /// 踏霆轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_185_Name = "Buqi.Content.Item.W8_185.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_185_Upgrade = "Buqi.Content.Item.W8_185.Upgrade";
+
+        /// <summary>
+        /// 守衡障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_186_Name = "Buqi.Content.Item.W8_186.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_186_Upgrade = "Buqi.Content.Item.W8_186.Upgrade";
+
+        /// <summary>
+        /// 引脉桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_187_Name = "Buqi.Content.Item.W8_187.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_187_Upgrade = "Buqi.Content.Item.W8_187.Upgrade";
+
+        /// <summary>
+        /// 养和灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_188_Name = "Buqi.Content.Item.W8_188.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_188_Upgrade = "Buqi.Content.Item.W8_188.Upgrade";
+
+        /// <summary>
+        /// 墨瘴匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_189_Name = "Buqi.Content.Item.W8_189.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_189_Upgrade = "Buqi.Content.Item.W8_189.Upgrade";
+
+        /// <summary>
+        /// 燎原灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_190_Name = "Buqi.Content.Item.W8_190.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_190_Upgrade = "Buqi.Content.Item.W8_190.Upgrade";
+
+        /// <summary>
+        /// 冰弦锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_191_Name = "Buqi.Content.Item.W8_191.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_191_Upgrade = "Buqi.Content.Item.W8_191.Upgrade";
+
+        /// <summary>
+        /// 奔霆阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_192_Name = "Buqi.Content.Item.W8_192.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_192_Upgrade = "Buqi.Content.Item.W8_192.Upgrade";
+
+        /// <summary>
+        /// 鸣锋轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_193_Name = "Buqi.Content.Item.W8_193.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_193_Upgrade = "Buqi.Content.Item.W8_193.Upgrade";
+
+        /// <summary>
+        /// 静渊障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_194_Name = "Buqi.Content.Item.W8_194.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_194_Upgrade = "Buqi.Content.Item.W8_194.Upgrade";
+
+        /// <summary>
+        /// 循光桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_195_Name = "Buqi.Content.Item.W8_195.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_195_Upgrade = "Buqi.Content.Item.W8_195.Upgrade";
+
+        /// <summary>
+        /// 润脉灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_196_Name = "Buqi.Content.Item.W8_196.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_196_Upgrade = "Buqi.Content.Item.W8_196.Upgrade";
+
+        /// <summary>
+        /// 蚀骨匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_197_Name = "Buqi.Content.Item.W8_197.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_197_Upgrade = "Buqi.Content.Item.W8_197.Upgrade";
+
+        /// <summary>
+        /// 灼星灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_198_Name = "Buqi.Content.Item.W8_198.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_198_Upgrade = "Buqi.Content.Item.W8_198.Upgrade";
+
+        /// <summary>
+        /// 雪寂锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_199_Name = "Buqi.Content.Item.W8_199.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_199_Upgrade = "Buqi.Content.Item.W8_199.Upgrade";
+
+        /// <summary>
+        /// 蓄闪阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_200_Name = "Buqi.Content.Item.W8_200.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_200_Upgrade = "Buqi.Content.Item.W8_200.Upgrade";
+
+        /// <summary>
+        /// 流岚轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_201_Name = "Buqi.Content.Item.W8_201.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_201_Upgrade = "Buqi.Content.Item.W8_201.Upgrade";
+
+        /// <summary>
+        /// 承壁障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_202_Name = "Buqi.Content.Item.W8_202.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_202_Upgrade = "Buqi.Content.Item.W8_202.Upgrade";
+
+        /// <summary>
+        /// 连衡桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_203_Name = "Buqi.Content.Item.W8_203.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_203_Upgrade = "Buqi.Content.Item.W8_203.Upgrade";
+
+        /// <summary>
+        /// 复苏灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_204_Name = "Buqi.Content.Item.W8_204.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_204_Upgrade = "Buqi.Content.Item.W8_204.Upgrade";
+
+        /// <summary>
+        /// 藏蛰匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_205_Name = "Buqi.Content.Item.W8_205.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_205_Upgrade = "Buqi.Content.Item.W8_205.Upgrade";
+
+        /// <summary>
+        /// 炎脉灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_206_Name = "Buqi.Content.Item.W8_206.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_206_Upgrade = "Buqi.Content.Item.W8_206.Upgrade";
+
+        /// <summary>
+        /// 冻星锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_207_Name = "Buqi.Content.Item.W8_207.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_207_Upgrade = "Buqi.Content.Item.W8_207.Upgrade";
+
+        /// <summary>
+        /// 轰鸣阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_208_Name = "Buqi.Content.Item.W8_208.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_208_Upgrade = "Buqi.Content.Item.W8_208.Upgrade";
+
+        /// <summary>
+        /// 夺秒轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_209_Name = "Buqi.Content.Item.W8_209.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_209_Upgrade = "Buqi.Content.Item.W8_209.Upgrade";
+
+        /// <summary>
+        /// 镇川障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_210_Name = "Buqi.Content.Item.W8_210.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_210_Upgrade = "Buqi.Content.Item.W8_210.Upgrade";
+
+        /// <summary>
+        /// 合枢桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_211_Name = "Buqi.Content.Item.W8_211.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_211_Upgrade = "Buqi.Content.Item.W8_211.Upgrade";
+
+        /// <summary>
+        /// 温泉灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_212_Name = "Buqi.Content.Item.W8_212.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_212_Upgrade = "Buqi.Content.Item.W8_212.Upgrade";
+
+        /// <summary>
+        /// 阴芽匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_213_Name = "Buqi.Content.Item.W8_213.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_213_Upgrade = "Buqi.Content.Item.W8_213.Upgrade";
+
+        /// <summary>
+        /// 烬潮灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_214_Name = "Buqi.Content.Item.W8_214.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_214_Upgrade = "Buqi.Content.Item.W8_214.Upgrade";
+
+        /// <summary>
+        /// 白渊锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_215_Name = "Buqi.Content.Item.W8_215.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_215_Upgrade = "Buqi.Content.Item.W8_215.Upgrade";
+
+        /// <summary>
+        /// 电汐阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_216_Name = "Buqi.Content.Item.W8_216.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_216_Upgrade = "Buqi.Content.Item.W8_216.Upgrade";
+
+        /// <summary>
+        /// 追电轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_217_Name = "Buqi.Content.Item.W8_217.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_217_Upgrade = "Buqi.Content.Item.W8_217.Upgrade";
+
+        /// <summary>
+        /// 覆甲障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_218_Name = "Buqi.Content.Item.W8_218.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_218_Upgrade = "Buqi.Content.Item.W8_218.Upgrade";
+
+        /// <summary>
+        /// 递潮桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_219_Name = "Buqi.Content.Item.W8_219.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_219_Upgrade = "Buqi.Content.Item.W8_219.Upgrade";
+
+        /// <summary>
+        /// 续命灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_220_Name = "Buqi.Content.Item.W8_220.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_220_Upgrade = "Buqi.Content.Item.W8_220.Upgrade";
+
+        /// <summary>
+        /// 碧痕匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_221_Name = "Buqi.Content.Item.W8_221.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_221_Upgrade = "Buqi.Content.Item.W8_221.Upgrade";
+
+        /// <summary>
+        /// 明炽灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_222_Name = "Buqi.Content.Item.W8_222.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_222_Upgrade = "Buqi.Content.Item.W8_222.Upgrade";
+
+        /// <summary>
+        /// 冷月锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_223_Name = "Buqi.Content.Item.W8_223.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_223_Upgrade = "Buqi.Content.Item.W8_223.Upgrade";
+
+        /// <summary>
+        /// 裂空阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_224_Name = "Buqi.Content.Item.W8_224.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_224_Upgrade = "Buqi.Content.Item.W8_224.Upgrade";
+
+        /// <summary>
+        /// 折光轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_225_Name = "Buqi.Content.Item.W8_225.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_225_Upgrade = "Buqi.Content.Item.W8_225.Upgrade";
+
+        /// <summary>
+        /// 安澜障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_226_Name = "Buqi.Content.Item.W8_226.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_226_Upgrade = "Buqi.Content.Item.W8_226.Upgrade";
+
+        /// <summary>
+        /// 转魁桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_227_Name = "Buqi.Content.Item.W8_227.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_227_Upgrade = "Buqi.Content.Item.W8_227.Upgrade";
+
+        /// <summary>
+        /// 守息灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_228_Name = "Buqi.Content.Item.W8_228.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_228_Upgrade = "Buqi.Content.Item.W8_228.Upgrade";
+
+        /// <summary>
+        /// 暗露匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_229_Name = "Buqi.Content.Item.W8_229.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_229_Upgrade = "Buqi.Content.Item.W8_229.Upgrade";
+
+        /// <summary>
+        /// 丹火灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_230_Name = "Buqi.Content.Item.W8_230.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_230_Upgrade = "Buqi.Content.Item.W8_230.Upgrade";
+
+        /// <summary>
+        /// 封潮锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_231_Name = "Buqi.Content.Item.W8_231.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_231_Upgrade = "Buqi.Content.Item.W8_231.Upgrade";
+
+        /// <summary>
+        /// 惊雷阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_232_Name = "Buqi.Content.Item.W8_232.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_232_Upgrade = "Buqi.Content.Item.W8_232.Upgrade";
+
+        /// <summary>
+        /// 赶月轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_233_Name = "Buqi.Content.Item.W8_233.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_233_Upgrade = "Buqi.Content.Item.W8_233.Upgrade";
+
+        /// <summary>
+        /// 抱朴障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_234_Name = "Buqi.Content.Item.W8_234.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_234_Upgrade = "Buqi.Content.Item.W8_234.Upgrade";
+
+        /// <summary>
+        /// 衔月桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_235_Name = "Buqi.Content.Item.W8_235.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_235_Upgrade = "Buqi.Content.Item.W8_235.Upgrade";
+
+        /// <summary>
+        /// 扶阳灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_236_Name = "Buqi.Content.Item.W8_236.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_236_Upgrade = "Buqi.Content.Item.W8_236.Upgrade";
+
+        /// <summary>
+        /// 蛇涎匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_237_Name = "Buqi.Content.Item.W8_237.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_237_Upgrade = "Buqi.Content.Item.W8_237.Upgrade";
+
+        /// <summary>
+        /// 熔光灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_238_Name = "Buqi.Content.Item.W8_238.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_238_Upgrade = "Buqi.Content.Item.W8_238.Upgrade";
+
+        /// <summary>
+        /// 玄冰锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_239_Name = "Buqi.Content.Item.W8_239.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_239_Upgrade = "Buqi.Content.Item.W8_239.Upgrade";
+
+        /// <summary>
+        /// 回路阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_240_Name = "Buqi.Content.Item.W8_240.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_240_Upgrade = "Buqi.Content.Item.W8_240.Upgrade";
+
+        /// <summary>
+        /// 旋刃轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_241_Name = "Buqi.Content.Item.W8_241.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_241_Upgrade = "Buqi.Content.Item.W8_241.Upgrade";
+
+        /// <summary>
+        /// 重门障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_242_Name = "Buqi.Content.Item.W8_242.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_242_Upgrade = "Buqi.Content.Item.W8_242.Upgrade";
+
+        /// <summary>
+        /// 通络桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_243_Name = "Buqi.Content.Item.W8_243.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_243_Upgrade = "Buqi.Content.Item.W8_243.Upgrade";
+
+        /// <summary>
+        /// 清心灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_244_Name = "Buqi.Content.Item.W8_244.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_244_Upgrade = "Buqi.Content.Item.W8_244.Upgrade";
+
+        /// <summary>
+        /// 苦雾匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_245_Name = "Buqi.Content.Item.W8_245.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_245_Upgrade = "Buqi.Content.Item.W8_245.Upgrade";
+
+        /// <summary>
+        /// 飞焰灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_246_Name = "Buqi.Content.Item.W8_246.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_246_Upgrade = "Buqi.Content.Item.W8_246.Upgrade";
+
+        /// <summary>
+        /// 静雪锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_247_Name = "Buqi.Content.Item.W8_247.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_247_Upgrade = "Buqi.Content.Item.W8_247.Upgrade";
+
+        /// <summary>
+        /// 磁潮阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_248_Name = "Buqi.Content.Item.W8_248.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_248_Upgrade = "Buqi.Content.Item.W8_248.Upgrade";
+
+        /// <summary>
+        /// 越影轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_249_Name = "Buqi.Content.Item.W8_249.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_249_Upgrade = "Buqi.Content.Item.W8_249.Upgrade";
+
+        /// <summary>
+        /// 固元障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_250_Name = "Buqi.Content.Item.W8_250.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_250_Upgrade = "Buqi.Content.Item.W8_250.Upgrade";
+
+        /// <summary>
+        /// 叠声桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_251_Name = "Buqi.Content.Item.W8_251.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_251_Upgrade = "Buqi.Content.Item.W8_251.Upgrade";
+
+        /// <summary>
+        /// 培元灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_252_Name = "Buqi.Content.Item.W8_252.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_252_Upgrade = "Buqi.Content.Item.W8_252.Upgrade";
+
+        /// <summary>
+        /// 沉毒匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_253_Name = "Buqi.Content.Item.W8_253.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_253_Upgrade = "Buqi.Content.Item.W8_253.Upgrade";
+
+        /// <summary>
+        /// 赫日灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_254_Name = "Buqi.Content.Item.W8_254.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_254_Upgrade = "Buqi.Content.Item.W8_254.Upgrade";
+
+        /// <summary>
+        /// 凌晶锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_255_Name = "Buqi.Content.Item.W8_255.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_255_Upgrade = "Buqi.Content.Item.W8_255.Upgrade";
+
+        /// <summary>
+        /// 闪断阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_256_Name = "Buqi.Content.Item.W8_256.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_256_Upgrade = "Buqi.Content.Item.W8_256.Upgrade";
+
+        /// <summary>
+        /// 催阵轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_257_Name = "Buqi.Content.Item.W8_257.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_257_Upgrade = "Buqi.Content.Item.W8_257.Upgrade";
+
+        /// <summary>
+        /// 沉钟障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_258_Name = "Buqi.Content.Item.W8_258.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_258_Upgrade = "Buqi.Content.Item.W8_258.Upgrade";
+
+        /// <summary>
+        /// 聚线桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_259_Name = "Buqi.Content.Item.W8_259.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_259_Upgrade = "Buqi.Content.Item.W8_259.Upgrade";
+
+        /// <summary>
+        /// 生津灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_260_Name = "Buqi.Content.Item.W8_260.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_260_Upgrade = "Buqi.Content.Item.W8_260.Upgrade";
+
+        /// <summary>
+        /// 幽藤匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_261_Name = "Buqi.Content.Item.W8_261.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_261_Upgrade = "Buqi.Content.Item.W8_261.Upgrade";
+
+        /// <summary>
+        /// 焦雷灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_262_Name = "Buqi.Content.Item.W8_262.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_262_Upgrade = "Buqi.Content.Item.W8_262.Upgrade";
+
+        /// <summary>
+        /// 寒钟锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_263_Name = "Buqi.Content.Item.W8_263.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_263_Upgrade = "Buqi.Content.Item.W8_263.Upgrade";
+
+        /// <summary>
+        /// 增幅阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_264_Name = "Buqi.Content.Item.W8_264.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_264_Upgrade = "Buqi.Content.Item.W8_264.Upgrade";
+
+        /// <summary>
+        /// 轻雷轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_265_Name = "Buqi.Content.Item.W8_265.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_265_Upgrade = "Buqi.Content.Item.W8_265.Upgrade";
+
+        /// <summary>
+        /// 止戈障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_266_Name = "Buqi.Content.Item.W8_266.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_266_Upgrade = "Buqi.Content.Item.W8_266.Upgrade";
+
+        /// <summary>
+        /// 承接桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_267_Name = "Buqi.Content.Item.W8_267.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_267_Upgrade = "Buqi.Content.Item.W8_267.Upgrade";
+
+        /// <summary>
+        /// 回岚灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_268_Name = "Buqi.Content.Item.W8_268.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_268_Upgrade = "Buqi.Content.Item.W8_268.Upgrade";
+
+        /// <summary>
+        /// 冷菌匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_269_Name = "Buqi.Content.Item.W8_269.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_269_Upgrade = "Buqi.Content.Item.W8_269.Upgrade";
+
+        /// <summary>
+        /// 炙羽灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_270_Name = "Buqi.Content.Item.W8_270.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_270_Upgrade = "Buqi.Content.Item.W8_270.Upgrade";
+
+        /// <summary>
+        /// 冻土锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_271_Name = "Buqi.Content.Item.W8_271.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_271_Upgrade = "Buqi.Content.Item.W8_271.Upgrade";
+
+        /// <summary>
+        /// 高压阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_272_Name = "Buqi.Content.Item.W8_272.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_272_Upgrade = "Buqi.Content.Item.W8_272.Upgrade";
+
+        /// <summary>
+        /// 瞬息轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_273_Name = "Buqi.Content.Item.W8_273.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_273_Upgrade = "Buqi.Content.Item.W8_273.Upgrade";
+
+        /// <summary>
+        /// 藏锋障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_274_Name = "Buqi.Content.Item.W8_274.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_274_Upgrade = "Buqi.Content.Item.W8_274.Upgrade";
+
+        /// <summary>
+        /// 复轨桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_275_Name = "Buqi.Content.Item.W8_275.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_275_Upgrade = "Buqi.Content.Item.W8_275.Upgrade";
+
+        /// <summary>
+        /// 照夜灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_276_Name = "Buqi.Content.Item.W8_276.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_276_Upgrade = "Buqi.Content.Item.W8_276.Upgrade";
+
+        /// <summary>
+        /// 蚀砂匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_277_Name = "Buqi.Content.Item.W8_277.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_277_Upgrade = "Buqi.Content.Item.W8_277.Upgrade";
+
+        /// <summary>
+        /// 朱砂灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_278_Name = "Buqi.Content.Item.W8_278.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_278_Upgrade = "Buqi.Content.Item.W8_278.Upgrade";
+
+        /// <summary>
+        /// 清冽锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_279_Name = "Buqi.Content.Item.W8_279.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_279_Upgrade = "Buqi.Content.Item.W8_279.Upgrade";
+
+        /// <summary>
+        /// 鸣电阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_280_Name = "Buqi.Content.Item.W8_280.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_280_Upgrade = "Buqi.Content.Item.W8_280.Upgrade";
+
+        /// <summary>
+        /// 疾羽轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_281_Name = "Buqi.Content.Item.W8_281.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_281_Upgrade = "Buqi.Content.Item.W8_281.Upgrade";
+
+        /// <summary>
+        /// 护心障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_282_Name = "Buqi.Content.Item.W8_282.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_282_Upgrade = "Buqi.Content.Item.W8_282.Upgrade";
+
+        /// <summary>
+        /// 交鸣桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_283_Name = "Buqi.Content.Item.W8_283.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_283_Upgrade = "Buqi.Content.Item.W8_283.Upgrade";
+
+        /// <summary>
+        /// 甘露灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_284_Name = "Buqi.Content.Item.W8_284.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_284_Upgrade = "Buqi.Content.Item.W8_284.Upgrade";
+
+        /// <summary>
+        /// 潜腐匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_285_Name = "Buqi.Content.Item.W8_285.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_285_Upgrade = "Buqi.Content.Item.W8_285.Upgrade";
+
+        /// <summary>
+        /// 火浣灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_286_Name = "Buqi.Content.Item.W8_286.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_286_Upgrade = "Buqi.Content.Item.W8_286.Upgrade";
+
+        /// <summary>
+        /// 碎霜锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_287_Name = "Buqi.Content.Item.W8_287.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_287_Upgrade = "Buqi.Content.Item.W8_287.Upgrade";
+
+        /// <summary>
+        /// 伏雷阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_288_Name = "Buqi.Content.Item.W8_288.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_288_Upgrade = "Buqi.Content.Item.W8_288.Upgrade";
+
+        /// <summary>
+        /// 掠星轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_289_Name = "Buqi.Content.Item.W8_289.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_289_Upgrade = "Buqi.Content.Item.W8_289.Upgrade";
+
+        /// <summary>
+        /// 归壑障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_290_Name = "Buqi.Content.Item.W8_290.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_290_Upgrade = "Buqi.Content.Item.W8_290.Upgrade";
+
+        /// <summary>
+        /// 换位桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_291_Name = "Buqi.Content.Item.W8_291.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_291_Upgrade = "Buqi.Content.Item.W8_291.Upgrade";
+
+        /// <summary>
+        /// 和光灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_292_Name = "Buqi.Content.Item.W8_292.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_292_Upgrade = "Buqi.Content.Item.W8_292.Upgrade";
+
+        /// <summary>
+        /// 黯蕊匣
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_293_Name = "Buqi.Content.Item.W8_293.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_293_Upgrade = "Buqi.Content.Item.W8_293.Upgrade";
+
+        /// <summary>
+        /// 爆竹灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_294_Name = "Buqi.Content.Item.W8_294.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_294_Upgrade = "Buqi.Content.Item.W8_294.Upgrade";
+
+        /// <summary>
+        /// 止水锁
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_295_Name = "Buqi.Content.Item.W8_295.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_295_Upgrade = "Buqi.Content.Item.W8_295.Upgrade";
+
+        /// <summary>
+        /// 引弧阀
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_296_Name = "Buqi.Content.Item.W8_296.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_296_Upgrade = "Buqi.Content.Item.W8_296.Upgrade";
+
+        /// <summary>
+        /// 回锋轮
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_297_Name = "Buqi.Content.Item.W8_297.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_297_Upgrade = "Buqi.Content.Item.W8_297.Upgrade";
+
+        /// <summary>
+        /// 铜关障
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_298_Name = "Buqi.Content.Item.W8_298.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_298_Upgrade = "Buqi.Content.Item.W8_298.Upgrade";
+
+        /// <summary>
+        /// 续弦桥
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_299_Name = "Buqi.Content.Item.W8_299.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_299_Upgrade = "Buqi.Content.Item.W8_299.Upgrade";
+
+        /// <summary>
+        /// 静养灯
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_300_Name = "Buqi.Content.Item.W8_300.Name";
+
+        /// <summary>
+        /// 强化：效果数值按 1.6 倍结算；高级：效果数值按 2.4 倍结算；冷却不变。
+        /// </summary>
+        public const string Key_Buqi_Content_Item_W8_300_Upgrade = "Buqi.Content.Item.W8_300.Upgrade";
 
         /// <summary>
         /// 护盾装备商人 · 石岑

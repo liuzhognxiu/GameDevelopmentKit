@@ -569,6 +569,13 @@ namespace Game.Hot.Buqi.Tests
 
             private IReadOnlyList<string> m_Offers;
 
+            public void Reset()
+            {
+                Balance = 0;
+                PurchasedOfferIds.Clear();
+                m_Offers = null;
+            }
+
             public bool TryOpen(
                 BuqiBazaarSupplyContext context,
                 out IReadOnlyList<string> offerDefinitionIds,

@@ -17,6 +17,8 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     {
         DefinitionId = _buf.ReadString();
         DisplayName = _buf.ReadString();
+        DesignNote = _buf.ReadString();
+        EffectDescription = _buf.ReadString();
         LocalizationKey = _buf.ReadString();
         Size = (BuqiSize)_buf.ReadInt();
         BasePrice = _buf.ReadInt();
@@ -51,7 +53,15 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// </summary>
     public readonly string DisplayName;
     /// <summary>
-    /// localization key
+    /// planner-only Chinese usage note
+    /// </summary>
+    public readonly string DesignNote;
+    /// <summary>
+    /// formal in-game effect description
+    /// </summary>
+    public readonly string EffectDescription;
+    /// <summary>
+    /// localized item name key
     /// </summary>
     public readonly string LocalizationKey;
     /// <summary>
@@ -59,15 +69,15 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// </summary>
     public readonly BuqiSize Size;
     /// <summary>
-    /// buy price
+    /// price
     /// </summary>
     public readonly int BasePrice;
     /// <summary>
-    /// improved cost
+    /// improved upgrade cost
     /// </summary>
     public readonly int ImprovedUpgradeCost;
     /// <summary>
-    /// fixed cost
+    /// fixed upgrade cost
     /// </summary>
     public readonly int FixedUpgradeCost;
     /// <summary>
@@ -83,7 +93,7 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// </summary>
     public readonly BuqiBuild ArchetypeId;
     /// <summary>
-    /// build role
+    /// supply role
     /// </summary>
     public readonly string Role;
     /// <summary>
@@ -91,7 +101,7 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// </summary>
     public readonly int UnlockDay;
     /// <summary>
-    /// position hint
+    /// recommended board position
     /// </summary>
     public readonly string PositionHint;
     /// <summary>
@@ -99,19 +109,19 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// </summary>
     public readonly System.Collections.Generic.List<string> Tags;
     /// <summary>
-    /// battle effects
+    /// battle effect list
     /// </summary>
     public readonly System.Collections.Generic.List<BuqiEffectConfig> Effects;
     /// <summary>
-    /// run effects
+    /// run-layer effect list
     /// </summary>
     public readonly System.Collections.Generic.List<BuqiRunEffectConfig> RunEffects;
     /// <summary>
-    /// upgrade summary
+    /// quality upgrade summary
     /// </summary>
     public readonly string UpgradeSummary;
     /// <summary>
-    /// upgrade localization key
+    /// localized upgrade summary key
     /// </summary>
     public readonly string UpgradeLocalizationKey;
     /// <summary>
@@ -131,6 +141,8 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
         return "{ "
         + "DefinitionId:" + DefinitionId + ","
         + "DisplayName:" + DisplayName + ","
+        + "DesignNote:" + DesignNote + ","
+        + "EffectDescription:" + EffectDescription + ","
         + "LocalizationKey:" + LocalizationKey + ","
         + "Size:" + Size + ","
         + "BasePrice:" + BasePrice + ","

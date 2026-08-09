@@ -64,7 +64,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(adapted, Is.True, string.Join("\n", adapterErrors));
             List<string> validationErrors = BuqiConfigValidator.Validate(generated);
             Assert.That(validationErrors, Is.Empty, string.Join("\n", validationErrors));
-            Assert.That(generated.Items.Count, Is.EqualTo(42));
+            Assert.That(generated.Items.Count, Is.EqualTo(300));
             Assert.That(generated.Refinements.Count, Is.EqualTo(6));
             Assert.That(generated.Echoes.Count, Is.EqualTo(16));
             Assert.That(generated.Merchants.Count, Is.EqualTo(8));

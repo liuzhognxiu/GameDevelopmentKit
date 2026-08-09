@@ -87,6 +87,8 @@ namespace Game.Hot.Buqi.Config
                 {
                     DefinitionId = ReadString(row, "DefinitionId", errors),
                     DisplayName = ReadString(row, "DisplayName", errors),
+                    DesignNote = ReadString(row, "DesignNote", errors),
+                    EffectDescription = ReadString(row, "EffectDescription", errors),
                     LocalizationKey = ReadString(row, "LocalizationKey", errors),
                     Size = ReadEnum(row, "Size", BattleSize.S, errors),
                     BasePrice = ReadInt(row, "BasePrice", errors),

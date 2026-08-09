@@ -20,6 +20,8 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     {
             DefinitionId = "";
             DisplayName = "";
+            DesignNote = "";
+            EffectDescription = "";
             LocalizationKey = "";
             Size = BuqiSize.S;
             ArchetypeId = BuqiBuild.fast;
@@ -48,6 +50,22 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  DisplayName = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["DesignNote"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsString) { throw new SerializationException(); }  DesignNote = _fieldJson;
+            }
+        }
+        
+        { 
+            var _fieldJson = _json["EffectDescription"];
+            if (_fieldJson != null)
+            {
+                if(!_fieldJson.IsString) { throw new SerializationException(); }  EffectDescription = _fieldJson;
             }
         }
         
@@ -203,6 +221,16 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
         }
         {
 
+            if (DesignNote == null) { throw new System.ArgumentNullException(); }
+            _json["DesignNote"] = new JSONString(DesignNote);
+        }
+        {
+
+            if (EffectDescription == null) { throw new System.ArgumentNullException(); }
+            _json["EffectDescription"] = new JSONString(EffectDescription);
+        }
+        {
+
             if (LocalizationKey == null) { throw new System.ArgumentNullException(); }
             _json["LocalizationKey"] = new JSONString(LocalizationKey);
         }
@@ -295,7 +323,17 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     public string DisplayName;
 
     /// <summary>
-    /// localization key
+    /// planner-only Chinese usage note
+    /// </summary>
+    public string DesignNote;
+
+    /// <summary>
+    /// formal in-game effect description
+    /// </summary>
+    public string EffectDescription;
+
+    /// <summary>
+    /// localized item name key
     /// </summary>
     public string LocalizationKey;
 
@@ -305,17 +343,17 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     public BuqiSize Size;
 
     /// <summary>
-    /// buy price
+    /// price
     /// </summary>
     public int BasePrice;
 
     /// <summary>
-    /// improved cost
+    /// improved upgrade cost
     /// </summary>
     public int ImprovedUpgradeCost;
 
     /// <summary>
-    /// fixed cost
+    /// fixed upgrade cost
     /// </summary>
     public int FixedUpgradeCost;
 
@@ -335,7 +373,7 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     public BuqiBuild ArchetypeId;
 
     /// <summary>
-    /// build role
+    /// supply role
     /// </summary>
     public string Role;
 
@@ -345,7 +383,7 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     public int UnlockDay;
 
     /// <summary>
-    /// position hint
+    /// recommended board position
     /// </summary>
     public string PositionHint;
 
@@ -355,22 +393,22 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     public System.Collections.Generic.List<string> Tags;
 
     /// <summary>
-    /// battle effects
+    /// battle effect list
     /// </summary>
     public System.Collections.Generic.List<BuqiEffectConfig> Effects;
 
     /// <summary>
-    /// run effects
+    /// run-layer effect list
     /// </summary>
     public System.Collections.Generic.List<BuqiRunEffectConfig> RunEffects;
 
     /// <summary>
-    /// upgrade summary
+    /// quality upgrade summary
     /// </summary>
     public string UpgradeSummary;
 
     /// <summary>
-    /// upgrade localization key
+    /// localized upgrade summary key
     /// </summary>
     public string UpgradeLocalizationKey;
 

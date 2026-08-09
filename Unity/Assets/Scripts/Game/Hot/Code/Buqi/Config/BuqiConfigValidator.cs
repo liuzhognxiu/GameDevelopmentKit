@@ -11,7 +11,9 @@ namespace Game.Hot.Buqi.Config
 {
     public static class BuqiConfigValidator
     {
-        private static readonly string[] s_EnabledItemIds =
+        private const int ExpectedItemCount = 300;
+
+        private static readonly string[] s_LegacyEnabledItemIds =
         {
             "W8-003", "W8-005", "W8-006",
             "W8-007", "W8-008", "W8-012",
@@ -114,10 +116,12 @@ namespace Game.Hot.Buqi.Config
                 return items;
             }
 
-            if (rows.Count != s_EnabledItemIds.Length)
+            bool expandedCatalog = rows.Count == ExpectedItemCount;
+            if (!expandedCatalog && rows.Count != s_LegacyEnabledItemIds.Length)
                 errors.Add(BuqiText.Format(
-                    "应有 {0} 件已启用装备，实际为 {1} 件",
-                    s_EnabledItemIds.Length,
+                    "应有 {0} 件正式装备或 {1} 件兼容夹具，实际为 {2} 件",
+                    ExpectedItemCount,
+                    s_LegacyEnabledItemIds.Length,
                     rows.Count));
 
             foreach (BuqiItemConfigRow row in rows)
@@ -134,13 +138,19 @@ namespace Game.Hot.Buqi.Config
                     errors.Add("装备 definitionId 不能为空");
                     continue;
                 }
-                if (!IsExpectedItemId(row.DefinitionId))
+                if (!IsExpectedItemId(row.DefinitionId, expandedCatalog))
                     errors.Add(BuqiText.Format("已启用装备 {0} 超出当前扩展范围", row.DefinitionId));
                 if (items.ContainsKey(row.DefinitionId))
                     errors.Add(BuqiText.Format("装备 ID {0} 重复", row.DefinitionId));
                 else
                     items.Add(row.DefinitionId, row);
 
+                if (string.IsNullOrWhiteSpace(row.DisplayName))
+                    errors.Add(BuqiText.Format("{0}：显示名称不能为空", where));
+                if (expandedCatalog && string.IsNullOrWhiteSpace(row.DesignNote))
+                    errors.Add(BuqiText.Format("{0}：中文策划注释不能为空", where));
+                if (expandedCatalog && string.IsNullOrWhiteSpace(row.EffectDescription))
+                    errors.Add(BuqiText.Format("{0}：正式作用说明不能为空", where));
                 if (!Enum.IsDefined(typeof(BattleSize), row.Size))
                     errors.Add(BuqiText.Format("{0}：尺寸 {1} 无效", where, row.Size));
                 if (row.BasePrice <= 0)
@@ -163,10 +173,22 @@ namespace Game.Hot.Buqi.Config
                     ValidateEffect(row.Effects[index], BuqiText.Format("{0}.效果[{1}]", where, index), errors);
             }
 
-            foreach (string expectedId in s_EnabledItemIds)
+            if (expandedCatalog)
             {
-                if (!items.ContainsKey(expectedId))
-                    errors.Add(BuqiText.Format("缺少已启用装备 {0}", expectedId));
+                for (int index = 1; index <= ExpectedItemCount; index++)
+                {
+                    string expectedId = BuqiText.Format("W8-{0:D3}", index);
+                    if (!items.ContainsKey(expectedId))
+                        errors.Add(BuqiText.Format("缺少已启用装备 {0}", expectedId));
+                }
+            }
+            else
+            {
+                foreach (string expectedId in s_LegacyEnabledItemIds)
+                {
+                    if (!items.ContainsKey(expectedId))
+                        errors.Add(BuqiText.Format("缺少已启用装备 {0}", expectedId));
+                }
             }
 
             return items;
@@ -447,14 +469,22 @@ namespace Game.Hot.Buqi.Config
                 errors.Add(BuqiText.Format("{0}：状态持续时刻必须大于 0", where));
         }
 
-        private static bool IsExpectedItemId(string itemId)
+        private static bool IsExpectedItemId(string itemId, bool expandedCatalog)
         {
-            foreach (string expectedId in s_EnabledItemIds)
+            if (!expandedCatalog)
             {
-                if (itemId == expectedId)
-                    return true;
+                foreach (string expectedId in s_LegacyEnabledItemIds)
+                {
+                    if (itemId == expectedId)
+                        return true;
+                }
+                return false;
             }
-            return false;
+            if (string.IsNullOrEmpty(itemId) || !itemId.StartsWith("W8-", StringComparison.Ordinal))
+                return false;
+            return int.TryParse(itemId.Substring(3), out int value) &&
+                   value >= 1 && value <= ExpectedItemCount &&
+                   itemId == BuqiText.Format("W8-{0:D3}", value);
         }
 
         private static bool IsExpectedBuildId(string buildId)

@@ -45,6 +45,14 @@ namespace Game.Hot.Buqi.UI.Stages
 
         protected override void ConfigureActions(BuqiUIDemoView view)
         {
+            if (m_Supply?.CanRefresh == true)
+            {
+                string refreshLabel = string.IsNullOrEmpty(m_Supply.RefreshPriceLabel)
+                    ? GameFramework.Utility.Text.Format("刷新 {0} 金币", m_Supply.RefreshPrice)
+                    : m_Supply.RefreshPriceLabel;
+                AddAction(refreshLabel, BuqiUIDemoCommandType.RefreshShop);
+            }
+
             if (m_OfferCards.Length > 0)
                 return;
 
@@ -92,7 +100,7 @@ namespace Game.Hot.Buqi.UI.Stages
             string refresh = string.IsNullOrEmpty(m_Supply.RefreshPriceLabel)
                 ? GameFramework.Utility.Text.Format("刷新 {0}", m_Supply.RefreshPrice)
                 : m_Supply.RefreshPriceLabel;
-            return GameFramework.Utility.Text.Format("{0}   余额 {1}", refresh, view?.Coins ?? 0);
+            return GameFramework.Utility.Text.Format("{0}   余额 {1}", refresh, m_Supply.Balance);
         }
 
         protected override void OnCleared()

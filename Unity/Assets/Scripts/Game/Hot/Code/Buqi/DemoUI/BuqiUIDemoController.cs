@@ -75,6 +75,8 @@ namespace Game.Hot.Buqi.DemoUI
                     : orchestrator.TryInitialize(out error);
                 if (!initialized)
                     return false;
+                if (!orchestrator.TrySynchronizeBazaar(out error))
+                    return false;
 
                 controller = new BuqiUIDemoController(catalog, orchestrator);
                 error = string.Empty;
@@ -111,6 +113,12 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoCommandType.BuyOffer:
                     if (!m_Orchestrator.TryPurchase(command.PrimaryId, out string buyError))
                         return Rejected(buyError);
+                    RefreshView();
+                    return Accepted();
+
+                case BuqiUIDemoCommandType.RefreshShop:
+                    if (!m_Orchestrator.TryRefreshShop(out string refreshError))
+                        return Rejected(refreshError);
                     RefreshView();
                     return Accepted();
 

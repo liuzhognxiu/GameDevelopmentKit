@@ -79,6 +79,7 @@ namespace Game.Hot.Buqi.UI
         private BuqiConfigCatalog m_Catalog;
         private BuqiUIDemoCatalog m_DemoCatalog;
         private BuqiUIDemoController m_Controller;
+        private BuqiUIDemoControllerOptions m_ControllerOptions;
         private BuqiStageWidgetRegistry m_Registry;
         private bool m_OpeningBattle;
         private int? m_ItemDetailSerialId;
@@ -107,7 +108,7 @@ namespace Game.Hot.Buqi.UI
             m_OpeningBattle = false;
             m_ItemDetailSerialId = null;
             m_DemoCatalog = null;
-            BindBazaarSupplySource((userData as BuqiRunShellOpenData)?.BazaarSupplySource);
+            m_ControllerOptions = null;
             BindShopItemDetails(ShowItemDetails, HideItemDetails);
             if (!TryResolveCatalog(userData, out m_Catalog, out string error))
             {
@@ -124,8 +125,38 @@ namespace Game.Hot.Buqi.UI
             }
 
             m_DemoCatalog = demoCatalog;
+            BuqiRunShellOpenData openData = userData as BuqiRunShellOpenData;
+            IBuqiBazaarSupplyViewSource supplySource = openData?.BazaarSupplySource;
+            IBuqiBazaarSupplyRuntime supplyRuntime = supplySource as IBuqiBazaarSupplyRuntime;
+            if (supplySource == null)
+            {
+                if (!BuqiBazaarSupplyViewSource.TryCreate(
+                        m_Catalog,
+                        out BuqiBazaarSupplyViewSource productionSupply,
+                        out error))
+                {
+                    m_Controller = null;
+                    ShowError(error);
+                    return;
+                }
 
-            if (!BuqiUIDemoController.TryCreate(demoCatalog, null, out BuqiUIDemoController controller, out error))
+                supplySource = productionSupply;
+                supplyRuntime = productionSupply;
+            }
+            BindBazaarSupplySource(supplySource);
+            if (supplyRuntime != null)
+            {
+                m_ControllerOptions = new BuqiUIDemoControllerOptions
+                {
+                    BazaarSupply = supplyRuntime,
+                };
+            }
+
+            if (!BuqiUIDemoController.TryCreate(
+                    demoCatalog,
+                    m_ControllerOptions,
+                    out BuqiUIDemoController controller,
+                    out error))
             {
                 m_Controller = null;
                 ShowError(error);
@@ -150,6 +181,7 @@ namespace Game.Hot.Buqi.UI
             foreach (PhaseStepWidget step in m_PhaseSteps)
                 step?.Clear();
             m_Controller = null;
+            m_ControllerOptions = null;
             m_DemoCatalog = null;
             m_Catalog = null;
             BindBazaarSupplySource(null);
@@ -314,7 +346,7 @@ namespace Game.Hot.Buqi.UI
 
             if (!BuqiUIDemoController.TryCreateNewRun(
                     m_DemoCatalog,
-                    null,
+                    m_ControllerOptions,
                     out BuqiUIDemoController controller,
                     out string error))
             {

@@ -19,6 +19,8 @@ namespace Game.Hot.Buqi.DemoUI
 
     public interface IBuqiBazaarSupplyRuntime : IBuqiBazaarSupplyViewSource
     {
+        void Reset();
+
         bool TryOpen(
             BuqiBazaarSupplyContext context,
             out IReadOnlyList<string> offerDefinitionIds,
@@ -225,25 +227,64 @@ namespace Game.Hot.Buqi.DemoUI
                 error = "A restored merchant shelf must contain four offers.";
                 return false;
             }
-            if (!TryOpen(context, out IReadOnlyList<string> current, out error))
-                return false;
-            if (current.SequenceEqual(offerDefinitionIds, StringComparer.Ordinal))
-                return RestorePurchases(context, out error);
 
-            for (int refresh = 0; refresh < BuqiSupplyService.MaximumRefreshCount; refresh++)
+            string previousEncounterKey = m_EncounterKey;
+            MerchantProfile previousMerchant = m_CurrentMerchant;
+            BuqiSupplyShelf previousShelf = m_CurrentShelf;
+            string previousPreference = m_PreferredArchetypeId;
+            int previousBalance = m_Balance;
+            var previousPurchases = new HashSet<string>(m_PurchasedOfferIds, StringComparer.Ordinal);
+            Dictionary<string, string> previousRoles = m_OfferRoles;
+            bool restored = false;
+
+            try
             {
-                var replay = CloneContext(context, int.MaxValue);
-                if (!TryRefresh(replay, out current, out _, out error))
+                m_EncounterKey = string.Empty;
+                m_CurrentMerchant = null;
+                m_CurrentShelf = null;
+                m_PreferredArchetypeId = string.Empty;
+                m_PurchasedOfferIds.Clear();
+                m_OfferRoles = new Dictionary<string, string>(StringComparer.Ordinal);
+
+                if (!TryOpen(context, out IReadOnlyList<string> current, out error))
                     return false;
                 if (current.SequenceEqual(offerDefinitionIds, StringComparer.Ordinal))
                 {
+                    restored = RestorePurchases(context, out error);
+                    return restored;
+                }
+
+                for (int refresh = 0; refresh < BuqiSupplyService.MaximumRefreshCount; refresh++)
+                {
+                    var replay = CloneContext(context, int.MaxValue);
+                    if (!TryRefresh(replay, out current, out _, out error))
+                        return false;
+                    if (!current.SequenceEqual(offerDefinitionIds, StringComparer.Ordinal))
+                        continue;
+
                     m_Balance = context.Balance;
-                    return RestorePurchases(context, out error);
+                    restored = RestorePurchases(context, out error);
+                    return restored;
+                }
+
+                error = "Saved merchant offers do not match the deterministic supply sequence.";
+                return false;
+            }
+            finally
+            {
+                if (!restored)
+                {
+                    m_EncounterKey = previousEncounterKey;
+                    m_CurrentMerchant = previousMerchant;
+                    m_CurrentShelf = previousShelf;
+                    m_PreferredArchetypeId = previousPreference;
+                    m_Balance = previousBalance;
+                    m_PurchasedOfferIds.Clear();
+                    foreach (string purchased in previousPurchases)
+                        m_PurchasedOfferIds.Add(purchased);
+                    m_OfferRoles = previousRoles;
                 }
             }
-
-            error = "Saved merchant offers do not match the deterministic supply sequence.";
-            return false;
         }
 
         public bool TryRefresh(
@@ -325,6 +366,17 @@ namespace Game.Hot.Buqi.DemoUI
             m_CurrentShelf.NextState = m_Service.RecordAcquired(m_CurrentShelf.NextState, acquired);
             error = string.Empty;
             return true;
+        }
+
+        public void Reset()
+        {
+            m_EncounterKey = string.Empty;
+            m_CurrentMerchant = null;
+            m_CurrentShelf = null;
+            m_PreferredArchetypeId = string.Empty;
+            m_Balance = 0;
+            m_PurchasedOfferIds.Clear();
+            m_OfferRoles = new Dictionary<string, string>(StringComparer.Ordinal);
         }
 
         public bool TryGetCurrentSupply(out BuqiBazaarSupplyView supply)
@@ -490,7 +542,11 @@ namespace Game.Hot.Buqi.DemoUI
         private MerchantProfile SelectMerchant(BuqiBazaarSupplyContext context, string preferredArchetypeId)
         {
             List<MerchantProfile> eligible = m_Merchants
-                .Where(merchant => merchant.Row.MinDay <= context.Day && merchant.Row.MaxDay >= context.Day)
+                .Where(merchant => merchant.Row.MinDay <= context.Day &&
+                                   merchant.Row.MaxDay >= context.Day &&
+                                   merchant.PoolItemIds.Count(definitionId =>
+                                       m_Items[definitionId].Row.UnlockDay <= context.Day) >=
+                                   BuqiSupplyService.MerchantSlotCount)
                 .ToList();
             if (eligible.Count == 0)
                 return null;

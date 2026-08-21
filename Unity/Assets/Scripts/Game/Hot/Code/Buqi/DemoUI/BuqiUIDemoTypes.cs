@@ -71,10 +71,20 @@ namespace Game.Hot.Buqi.DemoUI
         public string Description = string.Empty;
         public int Size;
         public int Price;
+        public int SellPrice;
+        public int CooldownTicks;
+        public string EffectDescription = string.Empty;
+        public string Quality = string.Empty;
+        public string ArchetypeId = string.Empty;
+        public string Role = string.Empty;
+        public string PositionHint = string.Empty;
+        public string UpgradeSummary = string.Empty;
+        public List<string> Tags = new List<string>();
         public bool Empty;
         public bool Selected;
         public bool Locked;
         public int Slot;
+        public int AnchorSlot = -1;
     }
 
     public sealed class BuqiDemoChoiceView
@@ -92,6 +102,8 @@ namespace Game.Hot.Buqi.DemoUI
         public string Id = string.Empty;
         public BuqiDemoItemView Item;
         public int Price;
+        public int AnchorSlot = -1;
+        public int Span;
         public bool Sold;
         public bool Locked;
     }
@@ -103,6 +115,8 @@ namespace Game.Hot.Buqi.DemoUI
 
     public sealed class BuqiBazaarSupplyView
     {
+        public const int DefaultShelfSlotCount = 10;
+        public int ShelfSlotCount = DefaultShelfSlotCount;
         public string MerchantId = string.Empty;
         public string MerchantName = string.Empty;
         public string MerchantSpecialty = string.Empty;
@@ -114,6 +128,8 @@ namespace Game.Hot.Buqi.DemoUI
         public string RefreshPriceLabel = string.Empty;
         public IReadOnlyList<string> OfferIds = Array.Empty<string>();
         public IReadOnlyList<string> PurchasedOfferIds = Array.Empty<string>();
+        public IReadOnlyDictionary<string, int> OfferAnchorSlots =
+            new Dictionary<string, int>(StringComparer.Ordinal);
         public IReadOnlyDictionary<string, string> OfferRoles =
             new Dictionary<string, string>(StringComparer.Ordinal);
 

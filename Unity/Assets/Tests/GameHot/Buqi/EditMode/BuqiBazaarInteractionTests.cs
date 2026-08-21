@@ -19,7 +19,7 @@ namespace Game.Hot.Buqi.Tests
         private const string InteractionNamespace = "Game.Hot.Buqi.DemoUI.Interaction.";
 
         [Test]
-        public void BazaarHasNeitherLockNorSellButtonAndLockedOfferRemainsBuyable()
+        public void BazaarOfferClickOnlyFixesPreviewAndNeverPurchases()
         {
             Type interactionType = RuntimeType("BuqiBazaarInteraction");
             var interaction = Activator.CreateInstance(
@@ -46,15 +46,21 @@ namespace Game.Hot.Buqi.Tests
                     _ => buyCount++,
                     _ => detailsCount++);
 
-                buyButton.onClick.Invoke();
-                detailsButton.onClick.Invoke();
+                for (int click = 0; click < 10; click++)
+                {
+                    buyButton.onClick.Invoke();
+                    ((IPointerClickHandler)(object)widget).OnPointerClick(
+                        new PointerEventData(null) { pointerId = -1 });
+                }
 
                 Assert.That(GetProperty<bool>(interaction, "HasLock"), Is.False);
                 Assert.That(GetProperty<bool>(interaction, "HasSellButton"), Is.False);
-                Assert.That(buyButton.interactable, Is.True);
-                Assert.That(buyCount, Is.EqualTo(1));
-                Assert.That(detailsCount, Is.EqualTo(0), "Details must not open from a click.");
+                Assert.That(buyButton.interactable, Is.False);
+                Assert.That(buyButton.gameObject.activeSelf, Is.False);
+                Assert.That(buyCount, Is.EqualTo(0));
+                Assert.That(detailsCount, Is.EqualTo(10), "Repeated clicks only fix the preview; they never purchase.");
                 Assert.That(detailsButton.enabled, Is.False, "The obsolete button must not intercept long press input.");
+                Assert.That(detailsButton.gameObject.activeSelf, Is.False);
             }
             finally
             {
@@ -115,7 +121,7 @@ namespace Game.Hot.Buqi.Tests
                 Assert.That(body.text, Does.Contain("阵器"));
                 Assert.That(meta.text, Does.Contain("刷新 7"));
                 Assert.That(meta.text, Does.Contain("余额 19"));
-                Assert.That(actionLabel.text, Does.Contain("破阵"));
+                Assert.That(actionLabel.text, Is.Empty, "Offers are rendered as drag cards, never as BuyOffer actions.");
             }
             finally
             {
@@ -166,6 +172,74 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(canDrop.Invoke(null, new object[] { board, offer, 3 }), Is.True);
             Assert.That(canDrop.Invoke(null, new object[] { board, offer, 0 }), Is.False);
             Assert.That(canDrop.Invoke(null, new object[] { board, offer, 7 }), Is.False);
+        }
+
+        [Test]
+        public void ShelfProjectionUsesTenSlotsAndPreservesAnchorSpans()
+        {
+            var offers = new[]
+            {
+                new BuqiDemoOfferView
+                {
+                    Id = "small",
+                    Item = new BuqiDemoItemView { Id = "small", Size = 1 },
+                    AnchorSlot = 0,
+                },
+                new BuqiDemoOfferView
+                {
+                    Id = "large",
+                    Item = new BuqiDemoItemView { Id = "large", Size = 3 },
+                    AnchorSlot = 1,
+                },
+            };
+
+            IReadOnlyList<BuqiDemoOfferView> projected =
+                BuqiBazaarShelfProjection.Project(offers, 10);
+
+            Assert.That(projected.Count, Is.EqualTo(2));
+            Assert.That(projected[0].AnchorSlot, Is.EqualTo(0));
+            Assert.That(projected[0].Span, Is.EqualTo(1));
+            Assert.That(projected[1].AnchorSlot, Is.EqualTo(1));
+            Assert.That(projected[1].Span, Is.EqualTo(3));
+            Assert.That(BuqiBazaarShelfProjection.ShelfSlotCount, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void ShopActionsNeverExposeBuyOfferCommands()
+        {
+            var owner = new GameObject("ShopActions", typeof(RectTransform));
+            var widget = owner.AddComponent<ShopWidget>();
+            try
+            {
+                Assert.That(widget, Is.InstanceOf<IPointerClickHandler>());
+                var action = CreateButton(owner.transform, "Action");
+                var label = CreateText(action.transform, "Label");
+                SetPrivate(widget, "m_ActionButtons", new[] { action });
+                SetPrivate(widget, "m_ActionLabels", new[] { label });
+                widget.Render(new BuqiUIDemoView
+                {
+                    Phase = BuqiUIDemoPhase.Shop,
+                    Coins = 10,
+                    ShopOffers = new[]
+                    {
+                        new BuqiDemoOfferView
+                        {
+                            Id = "offer",
+                            Item = new BuqiDemoItemView { Id = "item", Size = 1 },
+                            Price = 4,
+                        },
+                    },
+                }, _ => { });
+
+                FieldInfo commands = typeof(BuqiStageWidgetBase).GetField(
+                    "m_Commands", BindingFlags.Instance | BindingFlags.NonPublic);
+                var values = (IEnumerable<BuqiUIDemoCommand>)commands.GetValue(widget);
+                Assert.That(values.Any(command => command.Type == BuqiUIDemoCommandType.BuyOffer), Is.False);
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
         }
 
         [Test]
@@ -267,6 +341,7 @@ namespace Game.Hot.Buqi.Tests
                 widget.Render(new BuqiUIDemoView
                 {
                     Phase = BuqiUIDemoPhase.Shop,
+                    Coins = 10,
                     ShopOffers = new[]
                     {
                         new BuqiDemoOfferView
@@ -297,6 +372,116 @@ namespace Game.Hot.Buqi.Tests
                 Assert.That(submitted.Type, Is.EqualTo(BuqiUIDemoCommandType.BuyOffer));
                 Assert.That(submitted.PrimaryId, Is.EqualTo("item-02"));
                 Assert.That(submitted.Slot, Is.EqualTo(3));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
+        [Test]
+        public void ShopBoardDragCanMoveOwnedItemWithinBoard()
+        {
+            var owner = new GameObject("ShopMove", typeof(RectTransform));
+            var widget = owner.AddComponent<ShopWidget>();
+            var sellZoneOwner = new GameObject("SellZone", typeof(RectTransform));
+            sellZoneOwner.transform.SetParent(owner.transform, false);
+            var sellZone = sellZoneOwner.AddComponent<BuqiSellZoneWidget>();
+            var itemOwner = new GameObject("BoardItem", typeof(RectTransform));
+            itemOwner.transform.SetParent(owner.transform, false);
+            var itemWidget = itemOwner.AddComponent<BuqiDraggableItemWidget>();
+            var slots = new BuqiDeploySlotWidget[8];
+            BuqiUIDemoCommand submitted = null;
+            try
+            {
+                for (int index = 0; index < slots.Length; index++)
+                {
+                    var slotOwner = new GameObject($"BoardSlot{index + 1}", typeof(RectTransform));
+                    slotOwner.transform.SetParent(owner.transform, false);
+                    slots[index] = slotOwner.AddComponent<BuqiDeploySlotWidget>();
+                }
+
+                SetPrivate(widget, "m_SellZone", sellZone);
+                SetPrivate(widget, "m_BoardItems", new[] { itemWidget });
+                SetPrivate(widget, "m_BoardDropSlots", slots);
+                widget.Render(new BuqiUIDemoView
+                {
+                    Phase = BuqiUIDemoPhase.Shop,
+                    BoardSlots = Enumerable.Range(0, 8)
+                        .Select(index => new BuqiDemoItemView
+                        {
+                            Id = index < 2 ? "owned-wide" : string.Empty,
+                            Name = index < 2 ? "Wide" : string.Empty,
+                            Empty = index >= 2,
+                            Size = 2,
+                            AnchorSlot = 0,
+                            Slot = index,
+                        })
+                        .ToArray(),
+                    StorageSlots = Array.Empty<BuqiDemoItemView>(),
+                }, command => submitted = command);
+
+                itemWidget.OnBeginDrag(null);
+                slots[3].OnPointerEnter(null);
+                slots[3].OnDrop(null);
+                itemWidget.OnEndDrag(null);
+
+                Assert.That(submitted, Is.Not.Null);
+                Assert.That(submitted.Type, Is.EqualTo(BuqiUIDemoCommandType.ApplyDeployment));
+                Assert.That(submitted.Deployment, Is.Not.Null);
+                Assert.That(submitted.Deployment.BoardSlots, Is.EqualTo(new[]
+                {
+                    string.Empty, string.Empty, string.Empty, "owned-wide", "owned-wide",
+                    string.Empty, string.Empty, string.Empty,
+                }));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
+        [Test]
+        public void ShopOfferDropReportsInsufficientCoins()
+        {
+            var owner = new GameObject("ShopInsufficientCoins", typeof(RectTransform));
+            var widget = owner.AddComponent<ShopWidget>();
+            var cardOwner = new GameObject("Offer", typeof(RectTransform));
+            cardOwner.transform.SetParent(owner.transform, false);
+            var card = cardOwner.AddComponent<OfferCardWidget>();
+            var slotOwner = new GameObject("BoardSlot", typeof(RectTransform));
+            slotOwner.transform.SetParent(owner.transform, false);
+            var slot = slotOwner.AddComponent<BuqiDeploySlotWidget>();
+            Text stateText = CreateText(slotOwner.transform, "State");
+            BuqiUIDemoCommand submitted = null;
+            try
+            {
+                SetPrivate(widget, "m_OfferCards", new[] { card });
+                SetPrivate(widget, "m_BoardDropSlots", new[] { slot });
+                SetPrivate(slot, "m_StateText", stateText);
+                widget.Render(new BuqiUIDemoView
+                {
+                    Phase = BuqiUIDemoPhase.Shop,
+                    Coins = 1,
+                    ShopOffers = new[]
+                    {
+                        new BuqiDemoOfferView
+                        {
+                            Id = "item-expensive",
+                            Item = new BuqiDemoItemView { Id = "item-expensive", Name = "Expensive", Size = 1 },
+                            Price = 2,
+                        },
+                    },
+                    BoardSlots = new[] { new BuqiDemoItemView { Empty = true, Slot = 0 } },
+                }, command => submitted = command);
+
+                ((IBeginDragHandler)(object)card).OnBeginDrag(null);
+                slot.OnPointerEnter(null);
+
+                Assert.That(stateText.text, Does.Contain("金币不足"));
+                slot.OnDrop(null);
+                ((IEndDragHandler)(object)card).OnEndDrag(null);
+                Assert.That(submitted, Is.Null);
             }
             finally
             {

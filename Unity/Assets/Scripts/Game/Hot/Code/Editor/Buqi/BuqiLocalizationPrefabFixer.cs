@@ -197,7 +197,7 @@ namespace Game.Hot.Editor.Buqi
                 ["--"] = "Buqi.Common.Placeholder",
                 ["DEMO"] = "Buqi.Common.DemoTag",
                 ["商店"] = "Buqi.Stage.Shop.Title",
-                ["购买装备、刷新或锁定当前报价。"] = "Buqi.Stage.Shop.Description",
+                ["点击预览商品，拖到棋盘完成购买；可刷新或离开商店。"] = "Buqi.Stage.Shop.Description",
             },
             ["EventWidget.prefab"] = new Dictionary<string, string>
             {

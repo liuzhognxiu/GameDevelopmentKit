@@ -36,6 +36,8 @@ namespace Game.Hot.Buqi.UI.Widgets
         private Action<string> m_CommandDropped;
         private bool m_CommandOver;
 
+        public bool HasActiveDrag => m_Session != null || hasCommand;
+
         public void BindVisuals(Image background, Text labelText, GameObject refundPreview, Text refundText)
         {
             m_Background = background;

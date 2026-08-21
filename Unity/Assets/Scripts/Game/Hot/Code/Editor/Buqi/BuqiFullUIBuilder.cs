@@ -35,7 +35,7 @@ namespace Game.Hot.Editor
             BuildStage<StarterSelectionWidget>("StarterSelectionWidget", "起始选择", "选择本局的第一件装备。");
             BuildStage<OpponentIntelWidget>("OpponentIntelWidget", "对手快照", "只展示公开的棋盘和构筑信息。");
             BuildStage<PreparationChoiceWidget>("PreparationChoiceWidget", "战前准备", "选择本回合的准备收益。");
-            BuildStage<ShopWidget>("ShopWidget", "商店", "购买装备、刷新或锁定当前报价。", BuildShopContent);
+            BuildStage<ShopWidget>("ShopWidget", "商店", "点击预览商品，拖到棋盘完成购买；可刷新或离开商店。", BuildShopContent);
             BuildStage<EventWidget>("EventWidget", "事件", "在收益与风险之间做出选择。");
             BuildStage<ModificationWidget>("ModificationWidget", "改造", "为装备添加收益与代价并存的改造。");
             BuildStage<BoardEditorWidget>("BoardEditorWidget", "棋盘编辑", "点选装备，再选择 8 格棋盘中的目标位。");
@@ -143,11 +143,9 @@ namespace Game.Hot.Editor
             Assign(sellZone, "m_RefundPreview", refund.gameObject);
             Assign(sellZone, "m_RefundText", refund);
 
-            var offerCards = new List<OfferCardWidget>(8);
-            for (int index = 0; index < 8; index++)
+            var offerCards = new List<OfferCardWidget>(10);
+            for (int index = 0; index < 10; index++)
             {
-                int row = index / 4;
-                int column = index % 4;
                 GameObject cardObject = Instantiate(
                     offerPrefab,
                     parent,
@@ -156,8 +154,8 @@ namespace Game.Hot.Editor
                     cardObject.GetComponent<RectTransform>(),
                     new Vector2(0.5f, 0.5f),
                     new Vector2(0.5f, 0.5f),
-                    new Vector2(-384f + column * 256f, 90f - row * 122f),
-                    new Vector2(244f, 112f));
+                    new Vector2(-441f + index * 98f, 90f),
+                    new Vector2(92f, 112f));
                 offerCards.Add(cardObject.GetComponent<OfferCardWidget>());
             }
 

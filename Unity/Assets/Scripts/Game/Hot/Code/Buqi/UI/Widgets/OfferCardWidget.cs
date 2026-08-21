@@ -11,7 +11,8 @@ namespace Game.Hot.Buqi.UI
     public sealed class OfferCardWidget : MonoBehaviour,
         IBeginDragHandler,
         IDragHandler,
-        IEndDragHandler
+        IEndDragHandler,
+        IPointerClickHandler
     {
         private static readonly Color baseColor = new Color32(36, 43, 51, 255);
         private static readonly Color soldColor = new Color32(77, 73, 61, 255);
@@ -45,6 +46,7 @@ namespace Game.Hot.Buqi.UI
         private Action<string, PointerEventData> m_BeginDrag;
         private Action<PointerEventData> m_Drag;
         private Action<string, PointerEventData> m_EndDrag;
+        private Action<string> m_FixedDetails;
         private bool m_Draggable;
 
         public void Render(BuqiDemoOfferView view, Action<string> onBuy, Action<string> onDetails)
@@ -68,7 +70,8 @@ namespace Game.Hot.Buqi.UI
             Action onDetailsHidden,
             Action<string, PointerEventData> onBeginDrag,
             Action<PointerEventData> onDrag,
-            Action<string, PointerEventData> onEndDrag)
+            Action<string, PointerEventData> onEndDrag,
+            Action<string> onFixedDetails = null)
         {
             if (view == null)
             {
@@ -81,12 +84,16 @@ namespace Game.Hot.Buqi.UI
 
             BuqiDemoItemView item = view.Item;
             string itemName = item == null ? view.Id : string.IsNullOrEmpty(item.Name) ? item.Id : item.Name;
-            string itemDescription = item == null ? string.Empty : item.Description;
+            string itemDescription = item == null
+                ? string.Empty
+                : string.Format("{0}\n{1} 格 · {2}", item.Description, Math.Max(1, item.Size),
+                    string.IsNullOrEmpty(item.Quality) ? "普通" : item.Quality);
             bool unavailable = view.Sold;
             m_OfferId = view.Id ?? string.Empty;
             m_BeginDrag = onBeginDrag;
             m_Drag = onDrag;
             m_EndDrag = onEndDrag;
+            m_FixedDetails = onFixedDetails ?? onDetails;
             m_Draggable = !unavailable && onBeginDrag != null;
 
             SetText(m_NameText, itemName);
@@ -100,14 +107,15 @@ namespace Game.Hot.Buqi.UI
                 m_SoldOverlay.SetActive(view.Sold);
             if (m_BuyButton != null)
             {
-                m_BuyButton.interactable = !unavailable;
-                if (onBuy != null && !unavailable)
-                    m_BuyButton.onClick.AddListener(() => onBuy(view.Id));
+                // A shop card is a preview surface. Purchase is submitted only by drag/drop.
+                m_BuyButton.interactable = false;
+                m_BuyButton.gameObject.SetActive(false);
             }
             if (m_DetailsButton != null)
             {
                 m_DetailsButton.enabled = false;
                 m_DetailsButton.interactable = false;
+                m_DetailsButton.gameObject.SetActive(false);
             }
             ResolveDetailTrigger().Bind(view.Id, onDetails, onDetailsHidden);
         }
@@ -126,18 +134,42 @@ namespace Game.Hot.Buqi.UI
             m_BuyButton = buyButton;
         }
 
+        public void SetShelfLayout(
+            int anchorSlot,
+            int span,
+            float slotWidth,
+            float gap,
+            int shelfSlotCount)
+        {
+            if (!(transform is RectTransform rect) || anchorSlot < 0 || shelfSlotCount <= 0)
+                return;
+
+            span = Math.Max(1, span);
+            float shelfWidth = shelfSlotCount * slotWidth + (shelfSlotCount - 1) * gap;
+            float itemWidth = span * slotWidth + (span - 1) * gap;
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = new Vector2(
+                -shelfWidth * 0.5f + anchorSlot * (slotWidth + gap) + itemWidth * 0.5f,
+                rect.anchoredPosition.y);
+            rect.sizeDelta = new Vector2(itemWidth, rect.sizeDelta.y > 0f ? rect.sizeDelta.y : 112f);
+        }
+
         public void Clear()
         {
             if (m_BuyButton != null)
             {
                 m_BuyButton.onClick.RemoveAllListeners();
                 m_BuyButton.interactable = true;
+                m_BuyButton.gameObject.SetActive(false);
             }
             if (m_DetailsButton != null)
             {
                 m_DetailsButton.onClick.RemoveAllListeners();
                 m_DetailsButton.enabled = false;
                 m_DetailsButton.interactable = false;
+                m_DetailsButton.gameObject.SetActive(false);
             }
             if (m_DetailTrigger != null)
                 m_DetailTrigger.Clear();
@@ -145,6 +177,7 @@ namespace Game.Hot.Buqi.UI
             m_BeginDrag = null;
             m_Drag = null;
             m_EndDrag = null;
+            m_FixedDetails = null;
             m_Draggable = false;
             CanvasGroup canvasGroup = ResolveCanvasGroup();
             canvasGroup.alpha = 1f;
@@ -185,6 +218,12 @@ namespace Game.Hot.Buqi.UI
             canvasGroup.blocksRaycasts = true;
             if (m_Draggable)
                 m_EndDrag?.Invoke(m_OfferId, eventData);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!string.IsNullOrEmpty(m_OfferId))
+                m_FixedDetails?.Invoke(m_OfferId);
         }
 
         private void SetBackground(Color color)

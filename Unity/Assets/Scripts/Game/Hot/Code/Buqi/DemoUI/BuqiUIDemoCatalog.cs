@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
+using Game.Hot.Buqi.Run.Economy;
 using BattleEffect = Game.Hot.Buqi.Battle.BuqiEffect;
 
 namespace Game.Hot.Buqi.DemoUI
@@ -14,6 +15,15 @@ namespace Game.Hot.Buqi.DemoUI
         public string Description = string.Empty;
         public int Size;
         public int Price;
+        public int SellPrice;
+        public string Quality = "普通";
+        public int CooldownTicks;
+        public string EffectDescription = string.Empty;
+        public string ArchetypeId = string.Empty;
+        public string Role = string.Empty;
+        public string PositionHint = string.Empty;
+        public string UpgradeSummary = string.Empty;
+        public List<string> Tags = new List<string>();
     }
 
     public sealed class BuqiUIDemoCatalog : Game.Hot.Buqi.Run.Encounter.IBuqiRunEncounterCatalog,
@@ -52,6 +62,7 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 SourceCatalog = source,
             };
+            var economyCatalog = new BuqiRunItemCatalogAdapter(source);
             var items = new List<BuqiItemConfigRow>(source.Items);
             items.Sort((left, right) => string.Compare(left.DefinitionId, right.DefinitionId, StringComparison.Ordinal));
             foreach (BuqiItemConfigRow item in items)
@@ -63,6 +74,16 @@ namespace Game.Hot.Buqi.DemoUI
                     Description = BuildItemDescription(item),
                     Size = (int)item.Size,
                     Price = item.BasePrice > 0 ? item.BasePrice : (int)item.Size + 1,
+                    SellPrice = economyCatalog.TryGet(item.DefinitionId, out BuqiRunItemDefinition runtimeDefinition)
+                        ? runtimeDefinition.SellPrice
+                        : 0,
+                    CooldownTicks = item.BaseCooldownTicks,
+                    EffectDescription = item.EffectDescription,
+                    ArchetypeId = item.ArchetypeId,
+                    Role = item.Role,
+                    PositionHint = item.PositionHint,
+                    UpgradeSummary = item.UpgradeSummary,
+                    Tags = item.Tags == null ? new List<string>() : new List<string>(item.Tags),
                 });
             }
 
@@ -224,6 +245,15 @@ namespace Game.Hot.Buqi.DemoUI
                 Description = item.Description,
                 Size = item.Size,
                 Price = item.Price,
+                SellPrice = item.SellPrice,
+                Quality = item.Quality,
+                CooldownTicks = item.CooldownTicks,
+                EffectDescription = item.EffectDescription,
+                ArchetypeId = item.ArchetypeId,
+                Role = item.Role,
+                PositionHint = item.PositionHint,
+                UpgradeSummary = item.UpgradeSummary,
+                Tags = item.Tags == null ? new List<string>() : new List<string>(item.Tags),
             };
         }
 

@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.DemoUI.Deployment;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI.Widgets;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,10 +11,13 @@ using UnityEngine.UI;
 
 namespace Game.Hot.Buqi.UI.Stages
 {
-    public sealed class ShopWidget : BuqiStageWidgetBase
+    public sealed class ShopWidget : BuqiStageWidgetBase,
+        IPointerEnterHandler,
+        IPointerExitHandler,
+        IPointerClickHandler,
+        IDropHandler
     {
-        private const int BoardSlotCount = 8;
-        private const int RuntimeOfferCount = 8;
+        private const int RuntimeOfferCount = BuqiBazaarShelfProjection.ShelfSlotCount;
         private const float BoardSlotWidth = 118f;
         private const float BoardSlotGap = 6f;
 
@@ -28,6 +33,12 @@ namespace Game.Hot.Buqi.UI.Stages
         [SerializeField]
         private BuqiDeploySlotWidget[] m_BoardDropSlots = Array.Empty<BuqiDeploySlotWidget>();
 
+        [SerializeField]
+        private GameObject m_DetailPanel = null;
+
+        [SerializeField]
+        private Text m_DetailText = null;
+
         private IBuqiBazaarSupplyViewSource m_SupplySource;
         private BuqiBazaarSupplyView m_Supply;
         private Action<BuqiDemoItemView> m_ShowItemDetails;
@@ -35,7 +46,26 @@ namespace Game.Hot.Buqi.UI.Stages
         private BuqiUIDemoView m_CurrentView;
         private Action<BuqiUIDemoCommand> m_Submit;
         private BuqiDemoOfferView m_DraggedOffer;
+        private BuqiDemoItemView m_DraggedBoardItem;
         private int m_HoveredBoardSlot = -1;
+        private int m_BoardSlotCount = BuqiRunRules.BoardSlotCount;
+        private BuqiDemoItemView m_FixedPreview;
+        private BuqiDemoItemView m_HoverPreview;
+        private bool m_ShelfPointerOver;
+        private Coroutine m_SuccessPulse;
+
+        public bool IsDragging => m_DraggedOffer != null || m_DraggedBoardItem != null ||
+                                   (m_SellZone != null && m_SellZone.HasActiveDrag);
+
+        public void NotifyTransactionSuccess()
+        {
+            if (!isActiveAndEnabled)
+                return;
+
+            if (m_SuccessPulse != null)
+                StopCoroutine(m_SuccessPulse);
+            m_SuccessPulse = StartCoroutine(PlaySuccessPulse());
+        }
 
         public override BuqiUIDemoPhase Phase => BuqiUIDemoPhase.Shop;
 
@@ -53,7 +83,11 @@ namespace Game.Hot.Buqi.UI.Stages
 
         protected override void Prepare(BuqiUIDemoView view)
         {
+            m_BoardSlotCount = view?.BoardSlots == null || view.BoardSlots.Count == 0
+                ? BuqiRunRules.BoardSlotCount
+                : view.BoardSlots.Count;
             EnsureRuntimeSurface();
+            EnsureDetailsSurface();
             m_Supply = null;
             m_SupplySource?.TryGetCurrentSupply(out m_Supply);
         }
@@ -66,23 +100,13 @@ namespace Game.Hot.Buqi.UI.Stages
                 string refreshLabel = string.IsNullOrEmpty(m_Supply.RefreshPriceLabel)
                     ? GameFramework.Utility.Text.Format("刷新 {0} 金币", m_Supply.RefreshPrice)
                     : m_Supply.RefreshPriceLabel;
-                AddAction(refreshLabel, BuqiUIDemoCommandType.RefreshShop);
+                AddAction(GameFramework.Utility.Text.Format("↻ {0}", refreshLabel), BuqiUIDemoCommandType.RefreshShop);
             }
 
             if (m_OfferCards.Length > 0)
                 return;
 
-            foreach (BuqiDemoOfferView offer in view.ShopOffers)
-            {
-                if (offer.Sold)
-                    continue;
-                string name = offer.Item == null ? "未命名装备" : offer.Item.Name;
-                string role = m_Supply?.FindOfferRole(offer.Id) ?? string.Empty;
-                string label = string.IsNullOrEmpty(role)
-                    ? $"{name}  {offer.Price} 金币"
-                    : $"{role} · {name}  {offer.Price} 金币";
-                AddAction(label, BuqiUIDemoCommandType.BuyOffer, offer.Id);
-            }
+            // Product cards are drag sources only. BuyOffer is never exposed as a button action.
         }
 
         protected override void CompleteRender(BuqiUIDemoView view, Action<BuqiUIDemoCommand> submit)
@@ -116,19 +140,36 @@ namespace Game.Hot.Buqi.UI.Stages
         {
             if (m_Supply == null)
                 return base.ResolveMeta(view);
-            string refresh = string.IsNullOrEmpty(m_Supply.RefreshPriceLabel)
-                ? GameFramework.Utility.Text.Format("刷新 {0}", m_Supply.RefreshPrice)
-                : m_Supply.RefreshPriceLabel;
+            string refresh;
+            if (m_Supply.CanRefresh && m_Supply.Balance < m_Supply.RefreshPrice)
+            {
+                refresh = GameFramework.Utility.Text.Format(
+                    "刷新不可用：金币不足（需 {0}）",
+                    m_Supply.RefreshPrice);
+            }
+            else
+            {
+                refresh = string.IsNullOrEmpty(m_Supply.RefreshPriceLabel)
+                    ? GameFramework.Utility.Text.Format("刷新 {0}", m_Supply.RefreshPrice)
+                    : m_Supply.RefreshPriceLabel;
+            }
             return GameFramework.Utility.Text.Format("{0}   余额 {1}", refresh, m_Supply.Balance);
         }
 
         protected override void OnCleared()
         {
+            if (m_SuccessPulse != null)
+                StopCoroutine(m_SuccessPulse);
+            m_SuccessPulse = null;
             m_Supply = null;
             m_CurrentView = null;
             m_Submit = null;
             m_DraggedOffer = null;
+            m_DraggedBoardItem = null;
             m_HoveredBoardSlot = -1;
+            m_FixedPreview = null;
+            m_HoverPreview = null;
+            m_ShelfPointerOver = false;
             foreach (OfferCardWidget card in m_OfferCards)
                 card?.Clear();
             foreach (BuqiDeploySlotWidget slot in m_BoardDropSlots)
@@ -139,17 +180,23 @@ namespace Game.Hot.Buqi.UI.Stages
                 item?.gameObject.SetActive(false);
             }
             m_SellZone?.Clear();
+            RenderDetails(null);
         }
 
         private void RenderOffers(BuqiUIDemoView view, Action<BuqiUIDemoCommand> submit)
         {
-            IReadOnlyList<BuqiDemoOfferView> offers = view?.ShopOffers ?? Array.Empty<BuqiDemoOfferView>();
+            IReadOnlyDictionary<string, int> anchors = m_Supply?.OfferAnchorSlots;
+            IReadOnlyList<BuqiDemoOfferView> offers = BuqiBazaarShelfProjection.Project(
+                view?.ShopOffers,
+                m_Supply?.ShelfSlotCount ?? BuqiBazaarShelfProjection.ShelfSlotCount,
+                anchors);
             for (int index = 0; index < m_OfferCards.Length; index++)
             {
                 OfferCardWidget card = m_OfferCards[index];
                 if (card == null)
                     continue;
-                if (index >= offers.Count)
+                if (index >= offers.Count || offers[index] == null || offers[index].Sold ||
+                    offers[index].AnchorSlot < 0)
                 {
                     card.Clear();
                     continue;
@@ -158,25 +205,31 @@ namespace Game.Hot.Buqi.UI.Stages
                 BuqiDemoOfferView offer = CreateOfferPresentation(offers[index]);
                 card.Render(
                     offer,
-                    offerId => submit?.Invoke(new BuqiUIDemoCommand
-                    {
-                        Type = BuqiUIDemoCommandType.BuyOffer,
-                        PrimaryId = offerId,
-                    }),
-                    _ => m_ShowItemDetails?.Invoke(offer.Item),
-                    () => m_HideItemDetails?.Invoke(),
+                    null,
+                    _ => ShowTemporaryPreview(offer.Item),
+                    HideTemporaryPreview,
                     BeginOfferDrag,
                     null,
-                    EndOfferDrag);
+                    EndOfferDrag,
+                    _ => SetFixedPreview(offer.Item));
+                card.SetShelfLayout(
+                    offer.AnchorSlot,
+                    Math.Max(1, offer.Span),
+                    92f,
+                    6f,
+                    Math.Max(1, m_Supply?.ShelfSlotCount ?? BuqiBazaarShelfProjection.ShelfSlotCount));
             }
         }
 
         private void RenderBoardDropSlots(BuqiUIDemoView view)
         {
             IReadOnlyList<BuqiDemoItemView> board = view?.BoardSlots ?? Array.Empty<BuqiDemoItemView>();
-            bool hasPreview = m_DraggedOffer != null && m_HoveredBoardSlot >= 0;
-            bool previewAccepted = hasPreview && CanDropOfferAt(board, m_DraggedOffer, m_HoveredBoardSlot);
-            int previewSpan = m_DraggedOffer?.Item == null ? 0 : m_DraggedOffer.Item.Size;
+            bool hasPreview = (m_DraggedOffer != null || m_DraggedBoardItem != null) &&
+                              m_HoveredBoardSlot >= 0;
+            bool previewAccepted = m_DraggedOffer != null
+                ? CanPurchaseOfferAt(board, m_DraggedOffer, m_HoveredBoardSlot)
+                : CanMoveBoardItem(board, m_DraggedBoardItem, m_HoveredBoardSlot);
+            int previewSpan = m_DraggedOffer?.Item?.Size ?? m_DraggedBoardItem?.Size ?? 0;
 
             for (int index = 0; index < m_BoardDropSlots.Length; index++)
             {
@@ -192,7 +245,15 @@ namespace Game.Hot.Buqi.UI.Stages
                 BuqiDeploySlotVisualState state = inPreview
                     ? previewAccepted ? BuqiDeploySlotVisualState.Legal : BuqiDeploySlotVisualState.Illegal
                     : BuqiDeploySlotVisualState.Normal;
-                string reason = inPreview && !previewAccepted ? "位置被占用或空间不足" : string.Empty;
+                string reason = string.Empty;
+                if (inPreview && !previewAccepted)
+                {
+                    reason = m_DraggedOffer != null &&
+                             CanDropOfferAt(board, m_DraggedOffer, m_HoveredBoardSlot) &&
+                             !HasEnoughCoins(m_DraggedOffer)
+                        ? "金币不足"
+                        : "位置被占用、越界或空间不足";
+                }
                 slot.Render(
                     BuqiDeploymentSlotRef.Board(index),
                     occupied ? item.Name : string.Empty,
@@ -236,36 +297,58 @@ namespace Game.Hot.Buqi.UI.Stages
                         Description = item.Description,
                         Size = item.Size,
                         Price = item.Price,
+                        SellPrice = item.SellPrice,
+                        CooldownTicks = item.CooldownTicks,
+                        EffectDescription = item.EffectDescription,
+                        ArchetypeId = item.ArchetypeId,
+                        Role = item.Role,
+                        PositionHint = item.PositionHint,
+                        UpgradeSummary = item.UpgradeSummary,
+                        Tags = item.Tags == null ? new List<string>() : new List<string>(item.Tags),
                     },
-                    BuqiDeploymentSlotRef.Board(item.Slot),
+                    BuqiDeploymentSlotRef.Board(item.AnchorSlot >= 0 ? item.AnchorSlot : item.Slot),
                     null,
-                    (_, __) => BeginSale(capturedItem, submit),
+                    (_, __) => BeginBoardItemDrag(capturedItem),
                     null,
-                    (_, __) => m_SellZone?.Cancel());
-                PositionBoardItem(widget, item.Slot, Math.Max(1, item.Size));
+                    (_, __) => EndBoardItemDrag());
+                PositionBoardItem(
+                    widget,
+                    item.AnchorSlot >= 0 ? item.AnchorSlot : item.Slot,
+                    Math.Max(1, item.Size));
             }
         }
 
-        private void BeginSale(BuqiDemoItemView item, Action<BuqiUIDemoCommand> submit)
+        private void BeginBoardItemDrag(BuqiDemoItemView item)
         {
             if (item == null || m_SellZone == null)
                 return;
 
-            ClearOfferDrag();
+            ClearDrag();
+            m_DraggedBoardItem = item;
+            m_HoveredBoardSlot = -1;
+            m_HideItemDetails?.Invoke();
+            SetBoardItemRaycasts(false);
 
             m_SellZone.BindCommand(
                 item.Id,
-                Math.Max(1, item.Price / 2),
-                instanceId => submit?.Invoke(new BuqiUIDemoCommand
+                Math.Max(0, item.SellPrice),
+                instanceId =>
                 {
-                    Type = BuqiUIDemoCommandType.SellItem,
-                    PrimaryId = instanceId,
-                }));
+                    Action<BuqiUIDemoCommand> submit = m_Submit;
+                    ClearDrag();
+                    submit?.Invoke(new BuqiUIDemoCommand
+                    {
+                        Type = BuqiUIDemoCommandType.SellItem,
+                        PrimaryId = instanceId,
+                    });
+                });
+            RenderBoardDropSlots(m_CurrentView);
         }
 
         private void BeginOfferDrag(string offerId, PointerEventData eventData)
         {
             m_DraggedOffer = FindOffer(m_CurrentView, offerId);
+            m_DraggedBoardItem = null;
             m_HoveredBoardSlot = -1;
             if (m_DraggedOffer == null || m_DraggedOffer.Sold)
             {
@@ -273,57 +356,174 @@ namespace Game.Hot.Buqi.UI.Stages
                 return;
             }
 
-            m_HideItemDetails?.Invoke();
+            HideTemporaryPreview();
             SetBoardItemRaycasts(false);
             RenderBoardDropSlots(m_CurrentView);
         }
 
         private void EndOfferDrag(string offerId, PointerEventData eventData)
         {
-            ClearOfferDrag();
+            ClearDrag();
+        }
+
+        private void EndBoardItemDrag()
+        {
+            if (m_DraggedBoardItem != null)
+                ClearDrag();
         }
 
         private void OnBoardSlotHover(BuqiDeploymentSlotRef slot, bool over)
         {
-            if (m_DraggedOffer == null || slot.Area != BuqiDeploymentArea.Board)
+            if ((m_DraggedOffer == null && m_DraggedBoardItem == null) ||
+                slot.Area != BuqiDeploymentArea.Board)
                 return;
+
+            if (m_DraggedBoardItem != null)
+            {
+                if (over)
+                    m_SellZone?.OnPointerExit(null);
+                else if (m_ShelfPointerOver)
+                    m_SellZone?.OnPointerEnter(null);
+            }
 
             m_HoveredBoardSlot = over ? slot.Index : -1;
             RenderBoardDropSlots(m_CurrentView);
         }
 
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (!IsShelfWorkspace(eventData))
+                return;
+
+            m_ShelfPointerOver = true;
+            if (m_DraggedBoardItem != null)
+                m_SellZone?.OnPointerEnter(eventData);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!IsShelfWorkspace(eventData))
+                return;
+
+            m_ShelfPointerOver = false;
+            m_SellZone?.OnPointerExit(eventData);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (m_DraggedOffer != null || m_DraggedBoardItem != null)
+                return;
+
+            m_FixedPreview = null;
+            m_HoverPreview = null;
+            RenderDetails(null);
+            m_HideItemDetails?.Invoke();
+        }
+
+        public void OnDrop(PointerEventData eventData)
+        {
+            if (m_DraggedBoardItem == null || !IsShelfWorkspace(eventData))
+                return;
+
+            m_SellZone?.OnPointerEnter(eventData);
+            m_SellZone?.OnDrop(eventData);
+        }
+
         private void OnBoardSlotDrop(BuqiDeploymentSlotRef slot)
         {
-            if (m_DraggedOffer == null || slot.Area != BuqiDeploymentArea.Board ||
-                !CanDropOfferAt(m_CurrentView?.BoardSlots, m_DraggedOffer, slot.Index))
+            if (slot.Area != BuqiDeploymentArea.Board)
             {
                 return;
             }
 
-            string offerId = m_DraggedOffer.Id;
-            Action<BuqiUIDemoCommand> submit = m_Submit;
-            ClearOfferDrag();
-            submit?.Invoke(new BuqiUIDemoCommand
+            if (m_DraggedOffer != null)
             {
-                Type = BuqiUIDemoCommandType.BuyOffer,
-                PrimaryId = offerId,
-                Slot = slot.Index,
+                if (!CanPurchaseOfferAt(m_CurrentView?.BoardSlots, m_DraggedOffer, slot.Index))
+                    return;
+
+                string offerId = m_DraggedOffer.Id;
+                Action<BuqiUIDemoCommand> submit = m_Submit;
+                ClearDrag();
+                submit?.Invoke(new BuqiUIDemoCommand
+                {
+                    Type = BuqiUIDemoCommandType.BuyOffer,
+                    PrimaryId = offerId,
+                    Slot = slot.Index,
+                });
+                return;
+            }
+
+            if (m_DraggedBoardItem == null ||
+                !CanMoveBoardItem(m_CurrentView?.BoardSlots, m_DraggedBoardItem, slot.Index))
+                return;
+
+            BuqiDeploymentSnapshot deployment = BuildMoveSnapshot(
+                m_CurrentView.BoardSlots,
+                m_CurrentView.StorageSlots,
+                m_DraggedBoardItem,
+                slot.Index);
+            Action<BuqiUIDemoCommand> moveSubmit = m_Submit;
+            ClearDrag();
+            moveSubmit?.Invoke(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.ApplyDeployment,
+                Deployment = deployment,
             });
+        }
+
+        private void ClearDrag()
+        {
+            m_DraggedOffer = null;
+            m_DraggedBoardItem = null;
+            m_HoveredBoardSlot = -1;
+            m_ShelfPointerOver = false;
+            SetBoardItemRaycasts(true);
+            m_SellZone?.Cancel();
+            if (m_CurrentView != null)
+                RenderBoardDropSlots(m_CurrentView);
+        }
+
+        private bool IsShelfWorkspace(PointerEventData eventData)
+        {
+            if (eventData == null || !(transform is RectTransform rect))
+                return true;
+
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                    rect,
+                    eventData.position,
+                    eventData.pressEventCamera,
+                    out Vector2 local))
+            {
+                return false;
+            }
+
+            // The shelf occupies the upper work area; the lower board and right detail
+            // panel remain independent drop targets and do not sell an item accidentally.
+            return local.x >= -510f && local.x <= 510f && local.y >= -150f && local.y <= 180f;
         }
 
         private void ClearOfferDrag()
         {
-            m_DraggedOffer = null;
-            m_HoveredBoardSlot = -1;
-            SetBoardItemRaycasts(true);
-            if (m_CurrentView != null)
-                RenderBoardDropSlots(m_CurrentView);
+            ClearDrag();
         }
 
         private void SetBoardItemRaycasts(bool enabled)
         {
             foreach (BuqiDraggableItemWidget item in m_BoardItems)
                 item?.SetRaycastEnabled(enabled);
+        }
+
+        private IEnumerator PlaySuccessPulse()
+        {
+            CanvasGroup group = GetComponent<CanvasGroup>();
+            if (group == null)
+                group = gameObject.AddComponent<CanvasGroup>();
+
+            group.alpha = 0.86f;
+            yield return new WaitForSecondsRealtime(0.08f);
+            group.alpha = 1f;
+            yield return new WaitForSecondsRealtime(0.1f);
+            m_SuccessPulse = null;
         }
 
         private static bool CanDropOfferAt(
@@ -348,6 +548,151 @@ namespace Game.Hot.Buqi.UI.Stages
             return true;
         }
 
+        private bool CanPurchaseOfferAt(
+            IReadOnlyList<BuqiDemoItemView> board,
+            BuqiDemoOfferView offer,
+            int anchorSlot)
+        {
+            return CanDropOfferAt(board, offer, anchorSlot) && HasEnoughCoins(offer);
+        }
+
+        private bool HasEnoughCoins(BuqiDemoOfferView offer)
+        {
+            return offer != null && (m_CurrentView?.Coins ?? 0) >= Math.Max(0, offer.Price);
+        }
+
+        private void SetFixedPreview(BuqiDemoItemView item)
+        {
+            m_FixedPreview = item;
+            m_HoverPreview = null;
+            RenderDetails(item);
+            m_ShowItemDetails?.Invoke(item);
+        }
+
+        private void ShowTemporaryPreview(BuqiDemoItemView item)
+        {
+            m_HoverPreview = item;
+            RenderDetails(item);
+            m_ShowItemDetails?.Invoke(item);
+        }
+
+        private void HideTemporaryPreview()
+        {
+            m_HoverPreview = null;
+            BuqiDemoItemView fallback = m_FixedPreview;
+            RenderDetails(fallback);
+            if (fallback == null)
+                m_HideItemDetails?.Invoke();
+            else
+                m_ShowItemDetails?.Invoke(fallback);
+        }
+
+        private void RenderDetails(BuqiDemoItemView item)
+        {
+            if (m_DetailText == null)
+                return;
+            if (item == null)
+            {
+                string merchantName = m_Supply?.MerchantName ?? string.Empty;
+                string specialty = m_Supply?.MerchantSpecialty ?? string.Empty;
+                string context = m_CurrentView?.ContextBody ?? string.Empty;
+                bool hasMerchantDetails = !string.IsNullOrEmpty(merchantName) ||
+                                           !string.IsNullOrEmpty(specialty) ||
+                                           !string.IsNullOrEmpty(context);
+                if (m_DetailPanel != null)
+                    m_DetailPanel.SetActive(hasMerchantDetails);
+                m_DetailText.text = hasMerchantDetails
+                    ? string.Join("\n", new[] { merchantName, specialty, context })
+                    : string.Empty;
+                return;
+            }
+
+            if (m_DetailPanel != null)
+                m_DetailPanel.SetActive(true);
+
+            string effect = string.IsNullOrEmpty(item.EffectDescription)
+                ? item.Description
+                : item.EffectDescription;
+            string tags = item.Tags == null || item.Tags.Count == 0
+                ? "无"
+                : string.Join(" / ", item.Tags);
+            m_DetailText.text = string.Format(
+                "{0}\n品质：{1}\n购买价：{2} 金币\n出售价：{3} 金币\n尺寸：{4} 格\n冷却：{5} 时间单位\n作用：{6}\n类型：{7}  ·  流派：{8}\n标签：{9}\n位置：{10}\n改造：{11}",
+                item.Name,
+                string.IsNullOrEmpty(item.Quality) ? "普通" : item.Quality,
+                item.Price,
+                item.SellPrice,
+                item.Size,
+                item.CooldownTicks,
+                effect,
+                item.Role,
+                item.ArchetypeId,
+                tags,
+                item.PositionHint,
+                string.IsNullOrEmpty(item.UpgradeSummary) ? "无" : item.UpgradeSummary);
+        }
+
+        private static bool CanMoveBoardItem(
+            IReadOnlyList<BuqiDemoItemView> board,
+            BuqiDemoItemView item,
+            int anchorSlot)
+        {
+            int span = item?.Size ?? 0;
+            if (board == null || item == null || string.IsNullOrEmpty(item.Id) || span <= 0 ||
+                anchorSlot < 0 || anchorSlot + span > board.Count)
+            {
+                return false;
+            }
+
+            int sourceAnchor = item.AnchorSlot >= 0 ? item.AnchorSlot : item.Slot;
+            for (int slot = anchorSlot; slot < anchorSlot + span; slot++)
+            {
+                BuqiDemoItemView occupant = board[slot];
+                if (occupant == null || occupant.Empty || string.IsNullOrEmpty(occupant.Id) ||
+                    string.Equals(occupant.Id, item.Id, StringComparison.Ordinal))
+                    continue;
+                return false;
+            }
+
+            return sourceAnchor != anchorSlot || CanMoveWithinSource(board, item, sourceAnchor);
+        }
+
+        private static bool CanMoveWithinSource(
+            IReadOnlyList<BuqiDemoItemView> board,
+            BuqiDemoItemView item,
+            int sourceAnchor)
+        {
+            return sourceAnchor >= 0 && sourceAnchor + item.Size <= board.Count;
+        }
+
+        private static BuqiDeploymentSnapshot BuildMoveSnapshot(
+            IReadOnlyList<BuqiDemoItemView> board,
+            IReadOnlyList<BuqiDemoItemView> storage,
+            BuqiDemoItemView item,
+            int targetAnchor)
+        {
+            var boardSlots = new string[board?.Count ?? 0];
+            for (int index = 0; index < boardSlots.Length; index++)
+            {
+                BuqiDemoItemView slot = board[index];
+                boardSlots[index] = slot == null || slot.Empty ? string.Empty : slot.Id ?? string.Empty;
+                if (string.Equals(boardSlots[index], item.Id, StringComparison.Ordinal))
+                    boardSlots[index] = string.Empty;
+            }
+
+            for (int offset = 0; offset < item.Size && targetAnchor + offset < boardSlots.Length; offset++)
+                boardSlots[targetAnchor + offset] = item.Id;
+
+            var storageSlots = new string[storage?.Count ?? 0];
+            for (int index = 0; index < storageSlots.Length; index++)
+            {
+                BuqiDemoItemView slot = storage[index];
+                storageSlots[index] = slot == null || slot.Empty ? string.Empty : slot.Id ?? string.Empty;
+            }
+
+            return new BuqiDeploymentSnapshot(boardSlots, storageSlots);
+        }
+
         private static BuqiDemoOfferView FindOffer(BuqiUIDemoView view, string offerId)
         {
             if (view?.ShopOffers == null || string.IsNullOrEmpty(offerId))
@@ -365,7 +710,7 @@ namespace Game.Hot.Buqi.UI.Stages
             if (widget == null || !(widget.transform is RectTransform rect) || anchorSlot < 0)
                 return;
 
-            float boardWidth = BoardSlotWidth * BoardSlotCount + BoardSlotGap * (BoardSlotCount - 1);
+            float boardWidth = BoardSlotWidth * m_BoardSlotCount + BoardSlotGap * (m_BoardSlotCount - 1);
             float itemWidth = BoardSlotWidth * span + BoardSlotGap * (span - 1);
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
@@ -373,6 +718,35 @@ namespace Game.Hot.Buqi.UI.Stages
                 -boardWidth * 0.5f + anchorSlot * (BoardSlotWidth + BoardSlotGap) + itemWidth * 0.5f,
                 -22f);
             rect.sizeDelta = new Vector2(itemWidth, 92f);
+        }
+
+        private void EnsureDetailsSurface()
+        {
+            if (m_DetailPanel != null)
+                return;
+
+            Font font = null;
+            Text existingText = GetComponentInChildren<Text>(true);
+            if (existingText != null)
+                font = existingText.font;
+            m_DetailPanel = CreateRuntimePanel(
+                transform,
+                "RuntimeShopDetailsPanel",
+                new Vector2(558f, -52f),
+                new Vector2(300f, 430f),
+                new Color32(24, 31, 37, 255));
+            m_DetailText = CreateRuntimeText(
+                m_DetailPanel.transform,
+                "Details_Text",
+                string.Empty,
+                font,
+                14,
+                new Vector2(0f, 0f),
+                new Vector2(276f, 408f),
+                TextAnchor.UpperLeft);
+            m_DetailText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            m_DetailText.verticalOverflow = VerticalWrapMode.Overflow;
+            m_DetailPanel.SetActive(false);
         }
 
         private void EnsureRuntimeSurface()
@@ -384,8 +758,6 @@ namespace Game.Hot.Buqi.UI.Stages
             }
 
             Button[] legacyActions = GetComponentsInChildren<Button>(true);
-            if (legacyActions.Length < RuntimeOfferCount)
-                return;
 
             Font font = null;
             Text existingText = GetComponentInChildren<Text>(true);
@@ -433,16 +805,12 @@ namespace Game.Hot.Buqi.UI.Stages
             var offerCards = new List<OfferCardWidget>(RuntimeOfferCount);
             for (int index = 0; index < RuntimeOfferCount; index++)
             {
-                int row = index / 4;
-                int column = index % 4;
                 GameObject offerObject = CreateRuntimePanel(
                     transform,
                     GameFramework.Utility.Text.Format("运行时商品卡{0:00}", index + 1),
-                    new Vector2(-384f + column * 256f, 90f - row * 122f),
-                    new Vector2(244f, 112f),
+                    new Vector2(-441f + index * 98f, 90f),
+                    new Vector2(92f, 112f),
                     new Color32(36, 43, 51, 255));
-                Button buyButton = offerObject.AddComponent<Button>();
-                buyButton.targetGraphic = offerObject.GetComponent<Image>();
                 Text nameText = CreateRuntimeText(
                     offerObject.transform,
                     "Name_Text",
@@ -450,7 +818,7 @@ namespace Game.Hot.Buqi.UI.Stages
                     font,
                     17,
                     new Vector2(0f, 30f),
-                    new Vector2(220f, 30f),
+                    new Vector2(84f, 30f),
                     TextAnchor.MiddleLeft);
                 Text descriptionText = CreateRuntimeText(
                     offerObject.transform,
@@ -459,7 +827,7 @@ namespace Game.Hot.Buqi.UI.Stages
                     font,
                     13,
                     new Vector2(0f, 0f),
-                    new Vector2(220f, 30f),
+                    new Vector2(84f, 30f),
                     TextAnchor.MiddleLeft);
                 Text priceText = CreateRuntimeText(
                     offerObject.transform,
@@ -468,7 +836,7 @@ namespace Game.Hot.Buqi.UI.Stages
                     font,
                     15,
                     new Vector2(0f, -34f),
-                    new Vector2(220f, 28f),
+                    new Vector2(84f, 28f),
                     TextAnchor.MiddleRight);
                 OfferCardWidget card = offerObject.AddComponent<OfferCardWidget>();
                 card.BindVisuals(
@@ -476,7 +844,7 @@ namespace Game.Hot.Buqi.UI.Stages
                     nameText,
                     descriptionText,
                     priceText,
-                    buyButton);
+                    null);
                 offerCards.Add(card);
             }
 
@@ -496,10 +864,10 @@ namespace Game.Hot.Buqi.UI.Stages
                 new Vector2(330f, 30f),
                 TextAnchor.MiddleLeft);
 
-            var dropSlots = new List<BuqiDeploySlotWidget>(BoardSlotCount);
-            var boardItems = new List<BuqiDraggableItemWidget>(BoardSlotCount);
-            float boardWidth = BoardSlotWidth * BoardSlotCount + BoardSlotGap * (BoardSlotCount - 1);
-            for (int index = 0; index < BoardSlotCount; index++)
+            var dropSlots = new List<BuqiDeploySlotWidget>(m_BoardSlotCount);
+            var boardItems = new List<BuqiDraggableItemWidget>(m_BoardSlotCount);
+            float boardWidth = BoardSlotWidth * m_BoardSlotCount + BoardSlotGap * (m_BoardSlotCount - 1);
+            for (int index = 0; index < m_BoardSlotCount; index++)
             {
                 float x = -boardWidth * 0.5f + index * (BoardSlotWidth + BoardSlotGap) + BoardSlotWidth * 0.5f;
                 GameObject slotObject = CreateRuntimePanel(
@@ -678,12 +1046,24 @@ namespace Game.Hot.Buqi.UI.Stages
                         : GameFramework.Utility.Text.Format("{0}\n{1}", role, source.Description),
                     Size = source.Size,
                     Price = source.Price,
+                    SellPrice = source.SellPrice,
+                    CooldownTicks = source.CooldownTicks,
+                    EffectDescription = source.EffectDescription,
+                    Quality = source.Quality,
+                    ArchetypeId = source.ArchetypeId,
+                    Role = source.Role,
+                    PositionHint = source.PositionHint,
+                    UpgradeSummary = source.UpgradeSummary,
+                    Tags = source.Tags == null ? new List<string>() : new List<string>(source.Tags),
                     Empty = source.Empty,
                     Selected = source.Selected,
                     Locked = source.Locked,
                     Slot = source.Slot,
+                    AnchorSlot = source.AnchorSlot,
                 },
                 Price = offer.Price,
+                AnchorSlot = offer.AnchorSlot,
+                Span = offer.Span,
                 Sold = offer.Sold,
                 Locked = offer.Locked,
             };

@@ -298,17 +298,15 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void RunShell_ShopPurchaseRequiresConfirmationAndEmptyLabelsHidePrimaryButton()
+        public void RunShell_ShopPurchaseHasNoConfirmationAndEmptyLabelsHidePrimaryButton()
         {
             string shellFormPath = Path.Combine(
                 Application.dataPath,
                 "Scripts/Game/Hot/Code/Buqi/UI/BuqiRunShellForm.cs");
             string source = File.ReadAllText(shellFormPath);
 
-            Assert.That(source, Does.Contain("command.Type == BuqiUIDemoCommandType.BuyOffer"));
-            Assert.That(source, Does.Contain("command.Slot < 0"));
-            Assert.That(source, Does.Contain("OpenPurchaseConfirmation(command)"));
-            Assert.That(source, Does.Contain("OpenUIForm(UIFormId.BuqiConfirmForm"));
+            Assert.That(source, Does.Not.Contain("OpenPurchaseConfirmation"));
+            Assert.That(source, Does.Not.Contain("BuqiConfirmForm"));
             Assert.That(source, Does.Contain("m_PrimaryButton.gameObject.SetActive(!string.IsNullOrEmpty(view.PrimaryCommandLabel))"));
         }
 

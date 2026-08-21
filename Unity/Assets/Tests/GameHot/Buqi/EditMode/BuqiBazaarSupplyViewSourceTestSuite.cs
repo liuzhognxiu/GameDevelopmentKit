@@ -11,12 +11,13 @@ namespace Game.Hot.Buqi.Tests
 {
     public static class BuqiBazaarSupplyViewSourceTestSuite
     {
-        private const int ContractCount = 8;
+        private const int ContractCount = 9;
 
         public static List<string> RunAll()
         {
             var failures = new List<string>();
             Run("catalog-contract", CatalogContract, failures);
+            Run("complete-merchant-coverage-contract", CompleteMerchantCoverageContract, failures);
             Run("constrained-shelf-contract", ConstrainedShelfContract, failures);
             Run("preference-contract", PreferenceContract, failures);
             Run("refresh-contract", RefreshContract, failures);
@@ -58,14 +59,14 @@ namespace Game.Hot.Buqi.Tests
             BuqiBazaarSupplyContext context = Context(4101, 5, 0, 30, "fast-01", "fast-02");
 
             Require(source.TryOpen(context, out IReadOnlyList<string> offers, out error), error);
-            Require(offers.Count == 4 && offers.Distinct(StringComparer.Ordinal).Count() == 4,
-                "A merchant shelf must contain four distinct offers.");
+            Require(offers.Count == 8 && offers.Distinct(StringComparer.Ordinal).Count() == 8,
+                "A merchant shelf must contain eight distinct offers.");
             Require(source.TryGetCurrentSupply(out BuqiBazaarSupplyView view),
                 "The opened shelf must be visible to the Demo view source.");
             BuqiMerchantConfigRow merchant = catalog.Merchants.Single(row => row.MerchantId == view.MerchantId);
             Require(offers.All(merchant.PoolItemIds.Contains),
                 "Merchant offers must stay inside the configured constrained pool.");
-            Require(view.OfferRoles.Count == 4 && offers.All(id => view.OfferRoles.ContainsKey(id)),
+            Require(view.OfferRoles.Count == 8 && offers.All(id => view.OfferRoles.ContainsKey(id)),
                 "Every offer must expose its configured slot role.");
 
             Require(source.TryOpen(context, out IReadOnlyList<string> frozen, out error), error);
@@ -187,6 +188,27 @@ namespace Game.Hot.Buqi.Tests
                 "Restoring the opening shelf must reset the refresh count.");
         }
 
+        private static void CompleteMerchantCoverageContract()
+        {
+            BuqiConfigCatalog catalog = CreateCatalog();
+            var unassigned = new BuqiItemConfigRow
+            {
+                DefinitionId = "unassigned-item",
+                DisplayName = "Unassigned item",
+                ArchetypeId = "fast",
+                Role = "starter",
+                Size = BattleSize.S,
+                UnlockDay = 1,
+                BasePrice = 2,
+                BaseCooldownTicks = 30,
+            };
+            unassigned.Tags.Add("fast");
+            unassigned.Tags.Add("starter");
+            catalog.Items.Add(unassigned);
+
+            Require(BuqiBazaarSupplyViewSource.TryCreate(catalog, out _, out string error), error);
+        }
+
         private static void RestoreContract()
         {
             Require(BuqiBazaarSupplyViewSource.TryCreate(
@@ -225,8 +247,8 @@ namespace Game.Hot.Buqi.Tests
                     catalog, out BuqiBazaarSupplyViewSource source, out string error), error);
                 Require(source.TryOpen(
                     Context(seed, 1, 0, 20), out IReadOnlyList<string> offers, out error), error);
-                Require(offers.Count == 4,
-                    "An eligible early merchant must still provide four distinct offers.");
+                Require(offers.Count == 8,
+                    "An eligible early merchant must still provide eight distinct offers.");
                 Require(source.TryGetCurrentSupply(out BuqiBazaarSupplyView view),
                     "The replacement merchant must expose view metadata.");
                 Require(view.MerchantId != constrained.MerchantId,

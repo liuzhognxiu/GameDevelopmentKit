@@ -175,6 +175,62 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void Bazaar_DragPurchasePlacesOfferOnRequestedBoardSlotAndPersistsOnce()
+        {
+            var store = new MemoryRunStore();
+            var supply = new FakeBazaarSupplyRuntime();
+            BuqiUIDemoController controller = CreateController(store, supply);
+            SelectOperation(controller, "bazaar");
+            int openingCoins = controller.View.Coins;
+            string expectedName = controller.View.ShopOffers
+                .Single(offer => offer.Id == "item-02")
+                .Item.Name;
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.BuyOffer,
+                PrimaryId = "item-02",
+                Slot = 3,
+            });
+
+            Assert.That(result.Accepted, Is.True, result.Reason);
+            BuqiDemoItemView placed = controller.View.BoardSlots[3];
+            Assert.That(placed.Empty, Is.False);
+            Assert.That(placed.Name, Is.EqualTo(expectedName));
+            Assert.That(controller.View.StorageSlots.Any(item => item.Id == placed.Id), Is.False);
+            Assert.That(controller.View.Coins, Is.EqualTo(openingCoins - 2));
+            Assert.That(controller.View.ShopOffers.Single(offer => offer.Id == "item-02").Sold, Is.True);
+
+            controller = CreateController(store, new FakeBazaarSupplyRuntime());
+            Assert.That(controller.View.BoardSlots[3].Id, Is.EqualTo(placed.Id));
+            Assert.That(controller.View.ShopOffers.Single(offer => offer.Id == "item-02").Sold, Is.True);
+        }
+
+        [Test]
+        public void Bazaar_DragPurchaseRejectsOccupiedBoardTargetWithoutChargingOrSellingOffer()
+        {
+            var store = new MemoryRunStore();
+            BuqiUIDemoController controller = CreateController(store, new FakeBazaarSupplyRuntime());
+            SelectOperation(controller, "bazaar");
+            int openingCoins = controller.View.Coins;
+            string openingItems = ItemFingerprint(controller.View);
+            string openingSave = store.CurrentJson;
+
+            BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.BuyOffer,
+                PrimaryId = "item-03",
+                Slot = 0,
+            });
+
+            Assert.That(result.Accepted, Is.False);
+            Assert.That(controller.View.Coins, Is.EqualTo(openingCoins));
+            Assert.That(ItemFingerprint(controller.View), Is.EqualTo(openingItems));
+            Assert.That(controller.View.ShopOffers.Single(offer => offer.Id == "item-03").Sold, Is.False);
+            Assert.That(store.CurrentJson, Is.EqualTo(openingSave));
+        }
+
+        [Test]
         public void BazaarSupplyRuntime_OpensPurchasesRefreshesAndRestoresAuthoritativeShelf()
         {
             var store = new MemoryRunStore();
@@ -557,9 +613,9 @@ namespace Game.Hot.Buqi.Tests
         private sealed class FakeBazaarSupplyRuntime : IBuqiBazaarSupplyRuntime
         {
             public readonly string[] InitialOffers =
-                { "item-01", "item-02", "item-03", "item-04" };
+                { "item-01", "item-02", "item-03", "item-04", "item-05", "item-06", "item-07", "item-08" };
             public readonly string[] RefreshedOffers =
-                { "item-05", "item-06", "item-07", "item-08" };
+                { "item-08", "item-07", "item-06", "item-05", "item-04", "item-03", "item-02", "item-01" };
 
             public int OpenCount { get; private set; }
             public int RestoreCount { get; private set; }

@@ -62,6 +62,61 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void PurchaseToBoardDeductsCoinsAndPlacesMultiSlotItemAtRequestedAnchor()
+        {
+            BuqiRunEconomySnapshot state = BuqiRunEconomySnapshot.CreateInitial(812);
+            var service = new BuqiRunEconomyService(TestCatalog.With("blade", 3, 4));
+
+            BuqiRunEconomyResult result = service.PurchaseToBoard(state, "blade", 2);
+
+            Assert.That(result.Success, Is.True, result.FailureReason);
+            Assert.That(result.AffectedInstanceId, Is.EqualTo("run-812-item-1"));
+            Assert.That(result.Snapshot.Run.Coins, Is.EqualTo(8));
+            Assert.That(result.Snapshot.Run.BoardInstanceIds[2], Is.EqualTo("run-812-item-1"));
+            Assert.That(result.Snapshot.Run.BoardInstanceIds[0], Is.Empty);
+            Assert.That(result.Snapshot.Run.BoardInstanceIds[1], Is.Empty);
+            Assert.That(result.Snapshot.Run.BoardInstanceIds[3], Is.Empty);
+            Assert.That(result.Snapshot.Run.StorageInstanceIds[0], Is.Empty);
+            Assert.That(state.Run.Coins, Is.EqualTo(12));
+            Assert.That(state.Run.BoardInstanceIds[2], Is.Empty);
+        }
+
+        [Test]
+        public void PurchaseToBoardRejectsOverlapAndOverflowWithoutMutatingState()
+        {
+            BuqiRunEconomySnapshot state = BuqiRunEconomySnapshot.CreateInitial(813);
+            PutOnBoard(state, 1, "final-blade", "blade", BuqiRunItemQuality.Finalized);
+            BuqiRunEconomySnapshot expected = state.Clone();
+            var service = new BuqiRunEconomyService(TestCatalog.With("blade", 2, 4));
+
+            BuqiRunEconomyResult overlap = service.PurchaseToBoard(state, "blade", 2);
+            BuqiRunEconomyResult overflow = service.PurchaseToBoard(state, "blade", 7);
+
+            Assert.That(overlap.Success, Is.False);
+            Assert.That(overflow.Success, Is.False);
+            AssertSnapshotsEqual(overlap.Snapshot, expected);
+            AssertSnapshotsEqual(overflow.Snapshot, expected);
+            AssertSnapshotsEqual(state, expected);
+        }
+
+        [Test]
+        public void PurchaseToBoardMovesMatchingCommonCopyAndUpgradesItAtTargetAnchor()
+        {
+            BuqiRunEconomySnapshot state = BuqiRunEconomySnapshot.CreateInitial(814);
+            PutInStorage(state, 0, "storage-blade", "blade", BuqiRunItemQuality.Common);
+            var service = new BuqiRunEconomyService(TestCatalog.With("blade", 2, 4));
+
+            BuqiRunEconomyResult result = service.PurchaseToBoard(state, "blade", 4);
+
+            Assert.That(result.Success, Is.True, result.FailureReason);
+            Assert.That(result.AffectedInstanceId, Is.EqualTo("storage-blade"));
+            Assert.That(result.Snapshot.Items["storage-blade"].Quality, Is.EqualTo(BuqiRunItemQuality.Improved));
+            Assert.That(result.Snapshot.Run.StorageInstanceIds[0], Is.Empty);
+            Assert.That(result.Snapshot.Run.BoardInstanceIds[4], Is.EqualTo("storage-blade"));
+            Assert.That(result.Snapshot.Run.Coins, Is.EqualTo(8));
+        }
+
+        [Test]
         public void PurchasePrefersLowestSlotMatchingInstanceAndPreservesItsIdentity()
         {
             BuqiRunEconomySnapshot state = BuqiRunEconomySnapshot.CreateInitial(803);

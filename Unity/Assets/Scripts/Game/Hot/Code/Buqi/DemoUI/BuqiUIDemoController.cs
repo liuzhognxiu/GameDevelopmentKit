@@ -111,7 +111,7 @@ namespace Game.Hot.Buqi.DemoUI
                     return Accepted();
 
                 case BuqiUIDemoCommandType.BuyOffer:
-                    if (!m_Orchestrator.TryPurchase(command.PrimaryId, out string buyError))
+                    if (!m_Orchestrator.TryPurchase(command.PrimaryId, command.Slot, out string buyError))
                         return Rejected(buyError);
                     RefreshView();
                     return Accepted();

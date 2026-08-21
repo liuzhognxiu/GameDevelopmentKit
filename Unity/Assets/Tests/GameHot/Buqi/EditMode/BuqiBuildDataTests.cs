@@ -94,6 +94,18 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void GeneratedMerchantSupply_ProjectsAllThreeHundredAuthoredItems()
+        {
+            BuqiConfigCatalog source = LoadGeneratedCatalog();
+
+            Assert.That(source.Items, Has.Count.EqualTo(300));
+            Assert.That(
+                BuqiBazaarSupplyViewSource.TryCreate(source, out _, out string error),
+                Is.True,
+                error);
+        }
+
+        [Test]
         public void GenericCatalog_WithoutPreferredBuilds_StillCreatesThreeDistinctStarters()
         {
             var source = new BuqiConfigCatalog();

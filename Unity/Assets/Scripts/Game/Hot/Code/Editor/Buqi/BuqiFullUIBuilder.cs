@@ -112,12 +112,13 @@ namespace Game.Hot.Editor
         {
             GameObject offerPrefab = LoadPrefab(WidgetFolder + "/OfferCardWidget.prefab");
             GameObject itemPrefab = LoadPrefab(WidgetFolder + "/BuqiDraggableItemWidget.prefab");
+            GameObject slotPrefab = LoadPrefab(WidgetFolder + "/BuqiDeploySlotWidget.prefab");
 
             GameObject sellZoneObject = CreatePanel(
                 parent,
                 "SellDropZone",
-                new Vector2(0f, 184f),
-                new Vector2(1024f, 64f),
+                new Vector2(0f, 190f),
+                new Vector2(1024f, 56f),
                 new Color32(62, 67, 72, 255));
             BuqiSellZoneWidget sellZone = sellZoneObject.AddComponent<BuqiSellZoneWidget>();
             Text sellLabel = CreateText(
@@ -142,9 +143,11 @@ namespace Game.Hot.Editor
             Assign(sellZone, "m_RefundPreview", refund.gameObject);
             Assign(sellZone, "m_RefundText", refund);
 
-            var offerCards = new List<OfferCardWidget>(4);
-            for (int index = 0; index < 4; index++)
+            var offerCards = new List<OfferCardWidget>(8);
+            for (int index = 0; index < 8; index++)
             {
+                int row = index / 4;
+                int column = index % 4;
                 GameObject cardObject = Instantiate(
                     offerPrefab,
                     parent,
@@ -153,26 +156,58 @@ namespace Game.Hot.Editor
                     cardObject.GetComponent<RectTransform>(),
                     new Vector2(0.5f, 0.5f),
                     new Vector2(0.5f, 0.5f),
-                    new Vector2(-390f + index * 260f, 57f),
-                    new Vector2(244f, 188f));
+                    new Vector2(-384f + column * 256f, 90f - row * 122f),
+                    new Vector2(244f, 112f));
                 offerCards.Add(cardObject.GetComponent<OfferCardWidget>());
             }
 
+            GameObject boardPanel = CreatePanel(
+                parent,
+                "PlayerBoard",
+                new Vector2(0f, -292f),
+                new Vector2(1024f, 158f),
+                new Color32(29, 36, 42, 255));
+            Text boardTitle = CreateText(
+                boardPanel.transform,
+                "BoardTitle_Text",
+                "当前棋盘 · 将商品拖到空位购买",
+                16,
+                TextAnchor.MiddleLeft,
+                inkColor);
+            SetRect(
+                boardTitle.rectTransform,
+                new Vector2(0.5f, 0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(-340f, 58f),
+                new Vector2(330f, 30f));
+
+            var boardSlots = new List<BuqiDeploySlotWidget>(8);
             var boardItems = new List<BuqiDraggableItemWidget>(8);
             for (int index = 0; index < 8; index++)
             {
-                int row = index / 4;
-                int column = index % 4;
+                float x = -434f + index * 124f;
+                GameObject slotObject = Instantiate(
+                    slotPrefab,
+                    boardPanel.transform,
+                    "BoardDropSlot" + (index + 1).ToString("00"));
+                SetRect(
+                    slotObject.GetComponent<RectTransform>(),
+                    new Vector2(0.5f, 0.5f),
+                    new Vector2(0.5f, 0.5f),
+                    new Vector2(x, -22f),
+                    new Vector2(118f, 92f));
+                boardSlots.Add(slotObject.GetComponent<BuqiDeploySlotWidget>());
+
                 GameObject itemObject = Instantiate(
                     itemPrefab,
-                    parent,
+                    boardPanel.transform,
                     "BoardItem" + (index + 1).ToString("00"));
                 SetRect(
                     itemObject.GetComponent<RectTransform>(),
                     new Vector2(0.5f, 0.5f),
                     new Vector2(0.5f, 0.5f),
-                    new Vector2(-390f + column * 260f, -142f - row * 96f),
-                    new Vector2(244f, 82f));
+                    new Vector2(x, -22f),
+                    new Vector2(118f, 92f));
                 itemObject.SetActive(false);
                 boardItems.Add(itemObject.GetComponent<BuqiDraggableItemWidget>());
             }
@@ -180,6 +215,7 @@ namespace Game.Hot.Editor
             AssignArray(widget, "m_OfferCards", offerCards);
             Assign(widget, "m_SellZone", sellZone);
             AssignArray(widget, "m_BoardItems", boardItems);
+            AssignArray(widget, "m_BoardDropSlots", boardSlots);
         }
 
         private static void BuildReadOnlyBoard(Transform parent, MonoBehaviour widget)

@@ -306,6 +306,7 @@ namespace Game.Hot.Buqi.Tests
             string source = File.ReadAllText(shellFormPath);
 
             Assert.That(source, Does.Contain("command.Type == BuqiUIDemoCommandType.BuyOffer"));
+            Assert.That(source, Does.Contain("command.Slot < 0"));
             Assert.That(source, Does.Contain("OpenPurchaseConfirmation(command)"));
             Assert.That(source, Does.Contain("OpenUIForm(UIFormId.BuqiConfirmForm"));
             Assert.That(source, Does.Contain("m_PrimaryButton.gameObject.SetActive(!string.IsNullOrEmpty(view.PrimaryCommandLabel))"));

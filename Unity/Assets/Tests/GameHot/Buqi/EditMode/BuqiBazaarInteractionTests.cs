@@ -142,6 +142,33 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void ShopOfferDropPolicyAcceptsOnlyContiguousEmptyBoardRange()
+        {
+            MethodInfo canDrop = typeof(ShopWidget).GetMethod(
+                "CanDropOfferAt",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            Assert.That(canDrop, Is.Not.Null, "Shop needs one shared legality rule for preview and drop.");
+
+            var board = Enumerable.Range(0, 8)
+                .Select(index => new BuqiDemoItemView
+                {
+                    Empty = index != 0,
+                    Id = index == 0 ? "starter" : string.Empty,
+                    Slot = index,
+                })
+                .ToArray();
+            var offer = new BuqiDemoOfferView
+            {
+                Id = "wide-offer",
+                Item = new BuqiDemoItemView { Id = "wide", Size = 2 },
+            };
+
+            Assert.That(canDrop.Invoke(null, new object[] { board, offer, 3 }), Is.True);
+            Assert.That(canDrop.Invoke(null, new object[] { board, offer, 0 }), Is.False);
+            Assert.That(canDrop.Invoke(null, new object[] { board, offer, 7 }), Is.False);
+        }
+
+        [Test]
         public void CommandSellZoneDropsOnlyOnceAndCancelDoesNotSubmit()
         {
             var owner = new GameObject("CommandSellZone", typeof(RectTransform));
@@ -207,6 +234,118 @@ namespace Game.Hot.Buqi.Tests
                 Assert.That(submitted, Is.Not.Null);
                 Assert.That(submitted.Type, Is.EqualTo(BuqiUIDemoCommandType.SellItem));
                 Assert.That(submitted.PrimaryId, Is.EqualTo("board-blade"));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
+        [Test]
+        public void ShopOfferDragOntoLegalBoardSlotSubmitsTargetedPurchase()
+        {
+            var owner = new GameObject("ShopPurchase", typeof(RectTransform));
+            var widget = owner.AddComponent<ShopWidget>();
+            var cardOwner = new GameObject("Offer", typeof(RectTransform));
+            cardOwner.transform.SetParent(owner.transform, false);
+            var card = cardOwner.AddComponent<OfferCardWidget>();
+            var slots = new BuqiDeploySlotWidget[8];
+            BuqiUIDemoCommand submitted = null;
+            try
+            {
+                for (int index = 0; index < slots.Length; index++)
+                {
+                    var slotOwner = new GameObject($"BoardSlot{index + 1}", typeof(RectTransform));
+                    slotOwner.transform.SetParent(owner.transform, false);
+                    slots[index] = slotOwner.AddComponent<BuqiDeploySlotWidget>();
+                }
+
+                Assert.That(card, Is.InstanceOf<IBeginDragHandler>());
+                Assert.That(card, Is.InstanceOf<IEndDragHandler>());
+                SetPrivate(widget, "m_OfferCards", new[] { card });
+                SetPrivate(widget, "m_BoardDropSlots", slots);
+                widget.Render(new BuqiUIDemoView
+                {
+                    Phase = BuqiUIDemoPhase.Shop,
+                    ShopOffers = new[]
+                    {
+                        new BuqiDemoOfferView
+                        {
+                            Id = "item-02",
+                            Item = new BuqiDemoItemView { Id = "item-02", Name = "Blade", Size = 1 },
+                            Price = 2,
+                        },
+                    },
+                    BoardSlots = Enumerable.Range(0, 8)
+                        .Select(index => new BuqiDemoItemView
+                        {
+                            Empty = index != 0,
+                            Id = index == 0 ? "starter" : string.Empty,
+                            Name = index == 0 ? "Starter" : string.Empty,
+                            Size = 1,
+                            Slot = index,
+                        })
+                        .ToArray(),
+                }, command => submitted = command);
+
+                ((IBeginDragHandler)(object)card).OnBeginDrag(null);
+                slots[3].OnPointerEnter(null);
+                slots[3].OnDrop(null);
+                ((IEndDragHandler)(object)card).OnEndDrag(null);
+
+                Assert.That(submitted, Is.Not.Null);
+                Assert.That(submitted.Type, Is.EqualTo(BuqiUIDemoCommandType.BuyOffer));
+                Assert.That(submitted.PrimaryId, Is.EqualTo("item-02"));
+                Assert.That(submitted.Slot, Is.EqualTo(3));
+            }
+            finally
+            {
+                UnityEngine.Object.DestroyImmediate(owner);
+            }
+        }
+
+        [Test]
+        public void ShopOfferDragOntoOccupiedBoardSlotDoesNotSubmitPurchase()
+        {
+            var owner = new GameObject("ShopPurchaseRejected", typeof(RectTransform));
+            var widget = owner.AddComponent<ShopWidget>();
+            var cardOwner = new GameObject("Offer", typeof(RectTransform));
+            cardOwner.transform.SetParent(owner.transform, false);
+            var card = cardOwner.AddComponent<OfferCardWidget>();
+            var slotOwner = new GameObject("BoardSlot", typeof(RectTransform));
+            slotOwner.transform.SetParent(owner.transform, false);
+            var slot = slotOwner.AddComponent<BuqiDeploySlotWidget>();
+            BuqiUIDemoCommand submitted = null;
+            try
+            {
+                Assert.That(card, Is.InstanceOf<IBeginDragHandler>());
+                Assert.That(card, Is.InstanceOf<IEndDragHandler>());
+                SetPrivate(widget, "m_OfferCards", new[] { card });
+                SetPrivate(widget, "m_BoardDropSlots", new[] { slot });
+                widget.Render(new BuqiUIDemoView
+                {
+                    Phase = BuqiUIDemoPhase.Shop,
+                    ShopOffers = new[]
+                    {
+                        new BuqiDemoOfferView
+                        {
+                            Id = "item-02",
+                            Item = new BuqiDemoItemView { Id = "item-02", Name = "Blade", Size = 1 },
+                            Price = 2,
+                        },
+                    },
+                    BoardSlots = new[]
+                    {
+                        new BuqiDemoItemView { Id = "starter", Name = "Starter", Size = 1, Slot = 0 },
+                    },
+                }, command => submitted = command);
+
+                ((IBeginDragHandler)(object)card).OnBeginDrag(null);
+                slot.OnPointerEnter(null);
+                slot.OnDrop(null);
+                ((IEndDragHandler)(object)card).OnEndDrag(null);
+
+                Assert.That(submitted, Is.Null);
             }
             finally
             {

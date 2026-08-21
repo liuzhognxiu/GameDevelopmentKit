@@ -35,6 +35,20 @@ namespace Game.Hot.Buqi.UI.Widgets
         private Action<PointerEventData> m_Drag;
         private Action<BuqiDeploymentSlotRef, PointerEventData> m_EndDrag;
 
+        public void BindVisuals(
+            CanvasGroup canvasGroup,
+            Image background,
+            Text nameText,
+            Text sizeText,
+            Text sourceText)
+        {
+            m_CanvasGroup = canvasGroup;
+            m_Background = background;
+            m_NameText = nameText;
+            m_SizeText = sizeText;
+            m_SourceText = sourceText;
+        }
+
         public void Render(
             BuqiUIDemoItemDefinition item,
             BuqiDeploymentSlotRef source,

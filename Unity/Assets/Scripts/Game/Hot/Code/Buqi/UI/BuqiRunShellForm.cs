@@ -197,7 +197,9 @@ namespace Game.Hot.Buqi.UI
             if (m_Controller == null)
                 return;
 
-            if (command != null && command.Type == BuqiUIDemoCommandType.BuyOffer)
+            if (command != null &&
+                command.Type == BuqiUIDemoCommandType.BuyOffer &&
+                command.Slot < 0)
             {
                 OpenPurchaseConfirmation(command);
                 return;

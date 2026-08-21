@@ -17,7 +17,9 @@ namespace Game.Hot.Buqi.UI.Stages
             int shelfSlotCount = ShelfSlotCount,
             IReadOnlyDictionary<string, int> suppliedAnchors = null)
         {
-            int capacity = shelfSlotCount > 0 ? shelfSlotCount : ShelfSlotCount;
+            int capacity = shelfSlotCount > 0
+                ? Math.Min(ShelfSlotCount, shelfSlotCount)
+                : ShelfSlotCount;
             var result = new List<BuqiDemoOfferView>(offers?.Count ?? 0);
             var occupied = new bool[capacity];
             var ids = new HashSet<string>(StringComparer.Ordinal);

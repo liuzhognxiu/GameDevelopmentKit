@@ -205,6 +205,26 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void ShelfProjectionClampsSuppliedCapacityToTenSlots()
+        {
+            var offers = new[]
+            {
+                new BuqiDemoOfferView
+                {
+                    Id = "outside",
+                    Item = new BuqiDemoItemView { Id = "outside", Size = 1 },
+                    AnchorSlot = 10,
+                },
+            };
+
+            IReadOnlyList<BuqiDemoOfferView> projected =
+                BuqiBazaarShelfProjection.Project(offers, 12);
+
+            Assert.That(projected.Single().AnchorSlot, Is.LessThan(10));
+            Assert.That(projected.Single().AnchorSlot + projected.Single().Span, Is.LessThanOrEqualTo(10));
+        }
+
+        [Test]
         public void ShopActionsNeverExposeBuyOfferCommands()
         {
             var owner = new GameObject("ShopActions", typeof(RectTransform));

@@ -26,6 +26,28 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(state.StorageInstanceIds, Has.Count.EqualTo(10));
         }
 
+        [TestCase(0, 0)]
+        [TestCase(7, 0)]
+        [TestCase(8, 1)]
+        [TestCase(119, 7)]
+        [TestCase(120, 8)]
+        public void RealmProgression_UsesApprovedThresholds(int cultivation, int expectedRealm)
+        {
+            Assert.That(BuqiRunProgression.GetRealm(cultivation), Is.EqualTo(expectedRealm));
+        }
+
+        [TestCase(BuqiRunBattleKind.Pve, BuqiRunRawBattleOutcome.PlayerWin, 3)]
+        [TestCase(BuqiRunBattleKind.Pve, BuqiRunRawBattleOutcome.OpponentWin, 1)]
+        [TestCase(BuqiRunBattleKind.Pvp, BuqiRunRawBattleOutcome.PlayerWin, 2)]
+        [TestCase(BuqiRunBattleKind.Pvp, BuqiRunRawBattleOutcome.OpponentWin, 1)]
+        public void BattleCultivationReward_IsExplicit(
+            BuqiRunBattleKind kind,
+            BuqiRunRawBattleOutcome outcome,
+            int expected)
+        {
+            Assert.That(BuqiRunProgression.GetBattleReward(kind, outcome), Is.EqualTo(expected));
+        }
+
         [Test]
         public void DailyLoop_PveLossKeepsLivesAndOpensTwoPostBattleOperations()
         {

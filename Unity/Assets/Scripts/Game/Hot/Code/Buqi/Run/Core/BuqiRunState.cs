@@ -17,11 +17,20 @@ namespace Game.Hot.Buqi.Run.Core
         public BuqiRunPeriod Period;
         public BuqiRunPhase Phase;
         public BuqiRunOutcome Outcome;
+        public int HeroId;
         public int Coins;
         public int Wins;
         public int DaoSeals;
         public int CurrentOmen;
-        public int Lives;
+        public int Cultivation;
+        public int Realm;
+        public int LifePool;
+        public bool InTribulationTrial;
+        public int Lives
+        {
+            get => LifePool;
+            set => LifePool = value;
+        }
         public BuqiTribulationRoute TribulationRoute;
         public int TribulationDaoSealsSpent;
         public int TribulationStage;
@@ -42,11 +51,15 @@ namespace Game.Hot.Buqi.Run.Core
                 Period = BuqiRunPeriod.Hour1Operation,
                 Phase = BuqiRunPhase.Encounter,
                 Outcome = BuqiRunOutcome.None,
+                HeroId = 0,
                 Coins = BuqiRunRules.StartingCoins,
                 Wins = 0,
                 DaoSeals = 0,
                 CurrentOmen = 0,
-                Lives = BuqiRunRules.StartingLives,
+                Cultivation = 0,
+                Realm = 0,
+                LifePool = BuqiRunRules.StartingLifePool,
+                InTribulationTrial = false,
                 TribulationRoute = BuqiTribulationRoute.None,
                 TribulationDaoSealsSpent = 0,
                 TribulationStage = 0,
@@ -70,11 +83,15 @@ namespace Game.Hot.Buqi.Run.Core
                 Period = Period,
                 Phase = Phase,
                 Outcome = Outcome,
+                HeroId = HeroId,
                 Coins = Coins,
                 Wins = Wins,
                 DaoSeals = DaoSeals,
                 CurrentOmen = CurrentOmen,
-                Lives = Lives,
+                Cultivation = Cultivation,
+                Realm = Realm,
+                LifePool = LifePool,
+                InTribulationTrial = InTribulationTrial,
                 TribulationRoute = TribulationRoute,
                 TribulationDaoSealsSpent = TribulationDaoSealsSpent,
                 TribulationStage = TribulationStage,

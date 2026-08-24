@@ -23,6 +23,7 @@ public sealed partial class DRBuqiMerchant : Luban.BeanBase
         Weight = _buf.ReadInt();
         {int n0 = _buf.ReadSize(); PoolItemIds = new System.Collections.Generic.List<string>(n0);for(var i0 = 0 ; i0 < n0 ; i0++) { string _e0;  _e0 = _buf.ReadString(); PoolItemIds.Add(_e0);}}
         {int n0 = _buf.ReadSize(); Slots = new System.Collections.Generic.List<BuqiMerchantSlotConfig>(n0);for(var i0 = 0 ; i0 < n0 ; i0++) { BuqiMerchantSlotConfig _e0;  _e0 = global::Game.Hot.BuqiMerchantSlotConfig.DeserializeBuqiMerchantSlotConfig(_buf); Slots.Add(_e0);}}
+        Specialty = (BuqiMerchantSpecialty)_buf.ReadInt();
         PostInit();
     }
 
@@ -64,6 +65,10 @@ public sealed partial class DRBuqiMerchant : Luban.BeanBase
     /// offer slot constraints
     /// </summary>
     public readonly System.Collections.Generic.List<BuqiMerchantSlotConfig> Slots;
+    /// <summary>
+    /// formal merchant supply specialty
+    /// </summary>
+    public readonly BuqiMerchantSpecialty Specialty;
     public const int __ID__ = -143877055;
     public override int GetTypeId() => __ID__;
 
@@ -86,6 +91,7 @@ public sealed partial class DRBuqiMerchant : Luban.BeanBase
         + "Weight:" + Weight + ","
         + "PoolItemIds:" + Luban.StringUtil.CollectionToString(PoolItemIds) + ","
         + "Slots:" + Luban.StringUtil.CollectionToString(Slots) + ","
+        + "Specialty:" + Specialty + ","
         + "}";
     }
 

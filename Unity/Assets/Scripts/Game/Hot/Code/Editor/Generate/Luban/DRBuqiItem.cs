@@ -33,6 +33,7 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
             UpgradeSummary = "";
             UpgradeLocalizationKey = "";
             LinkIds = new System.Collections.Generic.List<string>();
+            Category = BuqiItemCategory.Unknown;
     }
 
     public override void LoadJson(JSONObject _json)
@@ -205,6 +206,14 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
             }
         }
         
+        { 
+            var _fieldJson = _json["Category"];
+            if (_fieldJson != null)
+            {
+                if(_fieldJson.IsString) { Category = (BuqiItemCategory)System.Enum.Parse(typeof(BuqiItemCategory), _fieldJson); } else if(_fieldJson.IsNumber) { Category = (BuqiItemCategory)(int)_fieldJson; } else { throw new SerializationException(); }  
+            }
+        }
+        
     }
 
     public override void SaveJson(JSONObject _json)
@@ -297,6 +306,9 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
 
             if (LinkIds == null) { throw new System.ArgumentNullException(); }
             { var __cjson0 = new JSONArray(); _json["LinkIds"] = __cjson0; foreach(var _e0 in LinkIds) { JSONNode __v0; __v0 = new JSONString(_e0); __cjson0.Add(__v0); } }
+        }
+        {
+            _json["Category"] = new JSONNumber((int)Category);
         }
     }
 
@@ -416,6 +428,11 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
     /// linked item ids
     /// </summary>
     public System.Collections.Generic.List<string> LinkIds;
+
+    /// <summary>
+    /// formal weapon or non-weapon supply classification
+    /// </summary>
+    public BuqiItemCategory Category;
 
 }
 }

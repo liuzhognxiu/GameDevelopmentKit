@@ -36,6 +36,7 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
         UpgradeSummary = _buf.ReadString();
         UpgradeLocalizationKey = _buf.ReadString();
         {int n0 = _buf.ReadSize(); LinkIds = new System.Collections.Generic.List<string>(n0);for(var i0 = 0 ; i0 < n0 ; i0++) { string _e0;  _e0 = _buf.ReadString(); LinkIds.Add(_e0);}}
+        Category = (BuqiItemCategory)_buf.ReadInt();
         PostInit();
     }
 
@@ -128,6 +129,10 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// linked item ids
     /// </summary>
     public readonly System.Collections.Generic.List<string> LinkIds;
+    /// <summary>
+    /// formal weapon or non-weapon supply classification
+    /// </summary>
+    public readonly BuqiItemCategory Category;
     public const int __ID__ = 494039564;
     public override int GetTypeId() => __ID__;
 
@@ -160,6 +165,7 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
         + "UpgradeSummary:" + UpgradeSummary + ","
         + "UpgradeLocalizationKey:" + UpgradeLocalizationKey + ","
         + "LinkIds:" + Luban.StringUtil.CollectionToString(LinkIds) + ","
+        + "Category:" + Category + ","
         + "}";
     }
 

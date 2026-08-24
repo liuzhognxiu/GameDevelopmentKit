@@ -41,6 +41,7 @@ namespace Game.Hot.Buqi.Run.Supply
     {
         public string DefinitionId = string.Empty;
         public string ArchetypeId = string.Empty;
+        public Game.Hot.BuqiItemCategory Category = Game.Hot.BuqiItemCategory.NonWeapon;
         public BuqiSupplyProductRole Role;
         public int MinimumDay = 1;
         public int MaximumDay = 9;
@@ -49,6 +50,7 @@ namespace Game.Hot.Buqi.Run.Supply
         public BuqiSupplySource Sources = BuqiSupplySource.All;
         public int BaseWeight = 100;
         public string RefinementId = string.Empty;
+        public int AnchorSlot = -1;
         public List<string> Tags = new List<string>();
         public List<string> MerchantPoolIds = new List<string>();
 
@@ -58,6 +60,7 @@ namespace Game.Hot.Buqi.Run.Supply
             {
                 DefinitionId = DefinitionId,
                 ArchetypeId = ArchetypeId,
+                Category = Category,
                 Role = Role,
                 MinimumDay = MinimumDay,
                 MaximumDay = MaximumDay,
@@ -66,6 +69,7 @@ namespace Game.Hot.Buqi.Run.Supply
                 Sources = Sources,
                 BaseWeight = BaseWeight,
                 RefinementId = RefinementId,
+                AnchorSlot = AnchorSlot,
                 Tags = new List<string>(Tags),
                 MerchantPoolIds = new List<string>(MerchantPoolIds),
             };
@@ -81,6 +85,7 @@ namespace Game.Hot.Buqi.Run.Supply
         public BuqiSupplyQuality MinimumQuality = BuqiSupplyQuality.Common;
         public BuqiSupplyQuality MaximumQuality = BuqiSupplyQuality.Finalized;
         public int CandidateCount = 4;
+        public int ShelfSlotBudget;
         public List<int> AllowedSizes = new List<int>();
         public List<string> AllowedArchetypeIds = new List<string>();
         public List<BuqiSupplyProductRole> AllowedRoles = new List<BuqiSupplyProductRole>();
@@ -138,7 +143,9 @@ namespace Game.Hot.Buqi.Run.Supply
         public int RefreshIndex;
         public int RefreshPricePaid;
         public int NextRefreshPrice;
+        public int ShelfSlotCount;
         public List<BuqiSupplyDefinition> Offers = new List<BuqiSupplyDefinition>();
+        public List<int> EmptySlots = new List<int>();
         public List<BuqiSupplySlotPurpose> SlotPurposes = new List<BuqiSupplySlotPurpose>();
         public BuqiSupplyState NextState = null!;
     }

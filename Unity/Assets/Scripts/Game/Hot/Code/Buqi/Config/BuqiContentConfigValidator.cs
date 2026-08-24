@@ -155,6 +155,8 @@ namespace Game.Hot.Buqi.Config
                 }
                 string where = GameFramework.Utility.Text.Format("Merchant {0}", row.MerchantId);
                 ValidateDayRange(row.MinDay, row.MaxDay, where, errors);
+                if (!Enum.IsDefined(typeof(Game.Hot.BuqiMerchantSpecialty), row.Specialty))
+                    errors.Add(GameFramework.Utility.Text.Format("{0} has an invalid specialty {1}", where, row.Specialty));
                 if (row.Weight <= 0 || string.IsNullOrEmpty(row.LocalizationKey))
                     errors.Add(GameFramework.Utility.Text.Format("{0} must define positive weight and localization", where));
                 if (row.PoolItemIds == null || row.PoolItemIds.Count < 4 || row.PoolItemIds.Count >= items.Count)
@@ -165,6 +167,10 @@ namespace Game.Hot.Buqi.Config
                     {
                         if (!items.ContainsKey(itemId))
                             errors.Add(GameFramework.Utility.Text.Format("{0} references unknown item {1}", where, itemId));
+                        else if (row.Specialty == Game.Hot.BuqiMerchantSpecialty.NonWeaponOnly &&
+                                 items[itemId].Category != Game.Hot.BuqiItemCategory.NonWeapon)
+                            errors.Add(GameFramework.Utility.Text.Format(
+                                "{0} non-weapon specialty cannot reference weapon {1}", where, itemId));
                     }
                 }
                 if (row.Slots == null || row.Slots.Count != 4)

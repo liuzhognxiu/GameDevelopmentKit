@@ -153,6 +153,11 @@ namespace Game.Hot.Buqi.Config
                     errors.Add(BuqiText.Format("{0}：正式作用说明不能为空", where));
                 if (!Enum.IsDefined(typeof(BattleSize), row.Size))
                     errors.Add(BuqiText.Format("{0}：尺寸 {1} 无效", where, row.Size));
+                if (!Enum.IsDefined(typeof(Game.Hot.BuqiItemCategory), row.Category) ||
+                    row.Category == Game.Hot.BuqiItemCategory.Unknown)
+                {
+                    errors.Add(BuqiText.Format("{0}：物品分类 {1} 无效", where, row.Category));
+                }
                 if (row.BasePrice <= 0)
                     errors.Add(BuqiText.Format("{0}：基础价格必须大于 0", where));
                 if (row.BasePrice != ExpectedPrice(row.Size))

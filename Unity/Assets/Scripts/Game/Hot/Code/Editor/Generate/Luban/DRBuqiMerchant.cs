@@ -23,6 +23,7 @@ public sealed class DRBuqiMerchant :  Luban.EditorBeanBase
             LocalizationKey = "";
             PoolItemIds = new System.Collections.Generic.List<string>();
             Slots = new System.Collections.Generic.List<BuqiMerchantSlotConfig>();
+            Specialty = BuqiMerchantSpecialty.General;
     }
 
     public override void LoadJson(JSONObject _json)
@@ -91,6 +92,14 @@ public sealed class DRBuqiMerchant :  Luban.EditorBeanBase
             }
         }
         
+        { 
+            var _fieldJson = _json["Specialty"];
+            if (_fieldJson != null)
+            {
+                if(_fieldJson.IsString) { Specialty = (BuqiMerchantSpecialty)System.Enum.Parse(typeof(BuqiMerchantSpecialty), _fieldJson); } else if(_fieldJson.IsNumber) { Specialty = (BuqiMerchantSpecialty)(int)_fieldJson; } else { throw new SerializationException(); }  
+            }
+        }
+        
     }
 
     public override void SaveJson(JSONObject _json)
@@ -128,6 +137,9 @@ public sealed class DRBuqiMerchant :  Luban.EditorBeanBase
 
             if (Slots == null) { throw new System.ArgumentNullException(); }
             { var __cjson0 = new JSONArray(); _json["Slots"] = __cjson0; foreach(var _e0 in Slots) { JSONNode __v0; { var __bjson1 = new JSONObject();  __v0 = __bjson1; BuqiMerchantSlotConfig.SaveJsonBuqiMerchantSlotConfig(_e0, __bjson1); } __cjson0.Add(__v0); } }
+        }
+        {
+            _json["Specialty"] = new JSONNumber((int)Specialty);
         }
     }
 
@@ -182,6 +194,11 @@ public sealed class DRBuqiMerchant :  Luban.EditorBeanBase
     /// offer slot constraints
     /// </summary>
     public System.Collections.Generic.List<BuqiMerchantSlotConfig> Slots;
+
+    /// <summary>
+    /// formal merchant supply specialty
+    /// </summary>
+    public BuqiMerchantSpecialty Specialty;
 
 }
 }

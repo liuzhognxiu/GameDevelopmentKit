@@ -9,6 +9,7 @@ namespace Game.Hot.Buqi.Run.Supply
     {
         public string DefinitionId = string.Empty;
         public string ArchetypeId = string.Empty;
+        public Game.Hot.BuqiItemCategory Category = Game.Hot.BuqiItemCategory.Unknown;
         public int Size;
         public List<string> Tags = new List<string>();
     }
@@ -65,6 +66,12 @@ namespace Game.Hot.Buqi.Run.Supply
                 error = "Supply item size must be between one and three.";
                 return false;
             }
+            if (!Enum.IsDefined(typeof(Game.Hot.BuqiItemCategory), item.Category) ||
+                item.Category == Game.Hot.BuqiItemCategory.Unknown)
+            {
+                error = "Supply item category must be explicitly weapon or non-weapon.";
+                return false;
+            }
             if (!IsValidDayWindow(rule.MinimumDay, rule.MaximumDay))
             {
                 error = "Supply availability must fit within the nine-Day run.";
@@ -86,6 +93,7 @@ namespace Game.Hot.Buqi.Run.Supply
             {
                 DefinitionId = item.DefinitionId.Trim(),
                 ArchetypeId = item.ArchetypeId.Trim(),
+                Category = item.Category,
                 Role = rule.Role,
                 MinimumDay = rule.MinimumDay,
                 MaximumDay = rule.MaximumDay,

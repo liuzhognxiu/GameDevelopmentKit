@@ -104,6 +104,7 @@ namespace Game.Hot.Buqi.Config
                     UpgradeSummary = ReadString(row, "UpgradeSummary", errors),
                     UpgradeLocalizationKey = ReadString(row, "UpgradeLocalizationKey", errors),
                     LinkIds = ReadStringList(row, "LinkIds"),
+                    Category = ReadEnum(row, "Category", Game.Hot.BuqiItemCategory.Unknown, errors),
                 };
                 foreach (object effectRow in ReadObjectList(row, "Effects"))
                     item.Effects.Add(ReadEffect(effectRow, errors));
@@ -221,6 +222,7 @@ namespace Game.Hot.Buqi.Config
                     MaxDay = ReadInt(row, "MaxDay", errors),
                     Weight = ReadInt(row, "Weight", errors),
                     PoolItemIds = ReadStringList(row, "PoolItemIds"),
+                    Specialty = ReadEnum(row, "Specialty", Game.Hot.BuqiMerchantSpecialty.General, errors),
                 };
                 foreach (object slotRow in ReadObjectList(row, "Slots"))
                 {

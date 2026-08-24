@@ -9,6 +9,7 @@ namespace Game.Hot.Buqi.Run.Supply
     {
         public const int MerchantSlotCount = 4;
         public const int MerchantOfferCount = 8;
+        public const int MerchantShelfSlotCount = 10;
         public const int MaximumRefreshCount = 3;
         public const int FirstRefreshPrice = 2;
         public const int MaximumRefreshPrice = 6;
@@ -68,22 +69,48 @@ namespace Game.Hot.Buqi.Run.Supply
                 .ToList();
             int distinctCount = eligible.Select(definition => definition.DefinitionId)
                 .Distinct(StringComparer.Ordinal).Count();
-            if (distinctCount < request.CandidateCount)
+            if (request.ShelfSlotBudget == 0 && distinctCount < request.CandidateCount)
             {
                 error = "Eligible supply pool does not contain enough distinct definitions.";
                 return false;
             }
+            if (eligible.Count == 0)
+            {
+                error = "Eligible supply pool is empty.";
+                return false;
+            }
 
             BuqiSupplyState next = source.Clone();
-            var offers = new List<BuqiSupplyDefinition>(request.CandidateCount);
-            var purposes = new List<BuqiSupplySlotPurpose>(request.CandidateCount);
-            for (int slot = 0; slot < request.CandidateCount; slot++)
+            int capacity = request.ShelfSlotBudget > 0
+                ? request.ShelfSlotBudget
+                : request.CandidateCount;
+            var offers = new List<BuqiSupplyDefinition>(capacity);
+            var purposes = new List<BuqiSupplySlotPurpose>(capacity);
+            int occupiedSlotCount = 0;
+            int targetOfferCount = request.ShelfSlotBudget > 0
+                ? int.MaxValue
+                : request.CandidateCount;
+            while (offers.Count < targetOfferCount)
             {
-                BuqiSupplySlotPurpose purpose = s_MerchantPurposes[slot];
+                int remainingSlots = request.ShelfSlotBudget - occupiedSlotCount;
+                List<BuqiSupplyDefinition> candidates = request.ShelfSlotBudget > 0
+                    ? eligible.Where(definition => definition.Size <= remainingSlots).ToList()
+                    : eligible;
+                if (candidates.Count == 0)
+                    break;
+
+                BuqiSupplySlotPurpose purpose = s_MerchantPurposes[
+                    offers.Count % s_MerchantPurposes.Length];
                 int selectedIndex = DrawWeightedIndex(
-                    eligible, request, next, purpose, next.Seed, ref next.Cursor);
-                BuqiSupplyDefinition selected = eligible[selectedIndex];
-                offers.Add(selected.Clone());
+                    candidates, request, next, purpose, next.Seed, ref next.Cursor);
+                BuqiSupplyDefinition selected = candidates[selectedIndex];
+                BuqiSupplyDefinition placed = selected.Clone();
+                if (request.ShelfSlotBudget > 0)
+                {
+                    placed.AnchorSlot = occupiedSlotCount;
+                    occupiedSlotCount += placed.Size;
+                }
+                offers.Add(placed);
                 purposes.Add(purpose);
                 eligible.RemoveAll(definition => string.Equals(
                     definition.DefinitionId, selected.DefinitionId, StringComparison.Ordinal));
@@ -105,6 +132,8 @@ namespace Game.Hot.Buqi.Run.Supply
                     ? -1
                     : CalculateRefreshPrice(refreshIndex),
                 Offers = offers,
+                ShelfSlotCount = request.ShelfSlotBudget,
+                EmptySlots = CreateEmptySlots(occupiedSlotCount, request.ShelfSlotBudget),
                 SlotPurposes = purposes,
                 NextState = next,
             };
@@ -234,6 +263,13 @@ namespace Game.Hot.Buqi.Run.Supply
                 error = "Supply candidate count must be between one and four.";
                 return false;
             }
+            if (request.ShelfSlotBudget < 0 ||
+                request.ShelfSlotBudget > MerchantShelfSlotCount ||
+                request.Source != BuqiSupplySource.Merchant && request.ShelfSlotBudget != 0)
+            {
+                error = "Merchant shelf slot budget must be between zero and ten.";
+                return false;
+            }
             if (refreshIndex < 0 || refreshIndex > MaximumRefreshCount)
             {
                 error = "Supply refresh index is out of range.";
@@ -275,7 +311,15 @@ namespace Game.Hot.Buqi.Run.Supply
             {
                 return false;
             }
-            return definition.BaseWeight > 0 && definition.Size > 0;
+            return definition.BaseWeight > 0 && definition.Size >= 1 && definition.Size <= 3;
+        }
+
+        private static List<int> CreateEmptySlots(int occupiedSlotCount, int shelfSlotCount)
+        {
+            var result = new List<int>();
+            for (int slot = occupiedSlotCount; slot < shelfSlotCount; slot++)
+                result.Add(slot);
+            return result;
         }
 
         private static int DrawWeightedIndex(

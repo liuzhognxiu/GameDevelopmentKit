@@ -106,14 +106,20 @@ namespace Game.Hot.Buqi.DemoUI
         public string MerchantId = string.Empty;
         public string MerchantName = string.Empty;
         public string MerchantSpecialty = string.Empty;
+        public bool MerchantNonWeaponOnly;
         public string PreferredArchetypeId = string.Empty;
         public int Balance;
         public int RefreshCount;
         public bool CanRefresh;
         public int RefreshPrice;
         public string RefreshPriceLabel = string.Empty;
+        public int ShelfSlotCount;
+        public int SupplyRngCursor;
+        public int SupplyGeneration;
         public IReadOnlyList<string> OfferIds = Array.Empty<string>();
         public IReadOnlyList<string> PurchasedOfferIds = Array.Empty<string>();
+        public IReadOnlyList<BuqiBazaarOfferLayoutView> Offers = Array.Empty<BuqiBazaarOfferLayoutView>();
+        public IReadOnlyList<int> EmptyShelfSlots = Array.Empty<int>();
         public IReadOnlyDictionary<string, string> OfferRoles =
             new Dictionary<string, string>(StringComparer.Ordinal);
 
@@ -125,6 +131,15 @@ namespace Game.Hot.Buqi.DemoUI
                 ? role ?? string.Empty
                 : string.Empty;
         }
+    }
+
+    public sealed class BuqiBazaarOfferLayoutView
+    {
+        public string OfferId = string.Empty;
+        public int AnchorSlot;
+        public int Size;
+        public bool Purchased;
+        public Game.Hot.BuqiItemCategory Category;
     }
 
     public sealed class BuqiDemoOpponentView

@@ -5,6 +5,8 @@ using BattleQuality = Game.Hot.Buqi.Battle.BuqiQuality;
 using BattleSize = Game.Hot.Buqi.Battle.BuqiSize;
 using BattleTarget = Game.Hot.Buqi.Battle.BuqiTarget;
 using BattleTrigger = Game.Hot.Buqi.Battle.BuqiTrigger;
+using BuqiItemCategory = Game.Hot.BuqiItemCategory;
+using BuqiMerchantSpecialty = Game.Hot.BuqiMerchantSpecialty;
 
 namespace Game.Hot.Buqi.Config
 {
@@ -62,6 +64,7 @@ namespace Game.Hot.Buqi.Config
         public string UpgradeSummary = string.Empty;
         public string UpgradeLocalizationKey = string.Empty;
         public List<string> LinkIds = new List<string>();
+        public BuqiItemCategory Category = BuqiItemCategory.Unknown;
     }
 
     public sealed class BuqiEffectConfigRow
@@ -108,6 +111,7 @@ namespace Game.Hot.Buqi.Config
         public int Weight;
         public List<string> PoolItemIds = new List<string>();
         public List<BuqiMerchantSlotConfigRow> Slots = new List<BuqiMerchantSlotConfigRow>();
+        public BuqiMerchantSpecialty Specialty = BuqiMerchantSpecialty.General;
     }
 
     public sealed class BuqiMerchantSlotConfigRow

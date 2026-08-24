@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <LangVersion>9</LangVersion>
+    <DefineConstants>$(DefineConstants);BUQI_HEADLESS</DefineConstants>
+    <StartupObject>Buqi.Supply.Headless.Tests.Program</StartupObject>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <DefaultItemExcludes>$(DefaultItemExcludes);obj*/**</DefaultItemExcludes>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Battle\**\*.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Config\BuqiConfigModels.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Config\BuqiConfigValidator.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Config\BuqiContentConfigValidator.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Config\BuqiDefinitionProvider.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Generate\Luban\BuqiItemCategory.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Generate\Luban\BuqiMerchantSpecialty.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\DemoUI\Deployment\BuqiDeploymentTypes.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\DemoUI\BuqiUIDemoTypes.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\DemoUI\BuqiBazaarSupplyViewSource.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Core\BuqiRunRandom.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Core\BuqiRunRules.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Core\BuqiRunState.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Core\BuqiRunTypes.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Supply\**\*.cs" />
+    <Compile Include="..\..\Unity\Assets\Tests\GameHot\Buqi\EditMode\BuqiSupplyTestSuite.cs" />
+    <Compile Include="..\..\Unity\Assets\Tests\GameHot\Buqi\EditMode\BuqiBazaarSupplyViewSourceTestSuite.cs" />
+    <Compile Include="..\..\Unity\Assets\Tests\GameHot\Buqi\EditMode\BuqiSupplyConfigTestSuite.cs" />
+  </ItemGroup>
+</Project>

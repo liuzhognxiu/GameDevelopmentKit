@@ -70,7 +70,8 @@
         "Weight": 60,
         "Count": 1
       }
-    ]
+    ],
+    "Specialty": 0
   },
   {
     "MerchantId": "merchant-bastion",
@@ -142,7 +143,8 @@
         "Weight": 60,
         "Count": 1
       }
-    ]
+    ],
+    "Specialty": 0
   },
   {
     "MerchantId": "merchant-spring",
@@ -213,7 +215,8 @@
         "Weight": 60,
         "Count": 1
       }
-    ]
+    ],
+    "Specialty": 0
   },
   {
     "MerchantId": "merchant-measure",
@@ -282,7 +285,8 @@
         "Weight": 60,
         "Count": 1
       }
-    ]
+    ],
+    "Specialty": 1
   },
   {
     "MerchantId": "merchant-gap",
@@ -350,7 +354,8 @@
         "Weight": 60,
         "Count": 1
       }
-    ]
+    ],
+    "Specialty": 0
   },
   {
     "MerchantId": "merchant-ledger",
@@ -418,7 +423,8 @@
         "Weight": 50,
         "Count": 1
       }
-    ]
+    ],
+    "Specialty": 0
   },
   {
     "MerchantId": "merchant-grades",
@@ -490,7 +496,8 @@
         "Weight": 50,
         "Count": 1
       }
-    ]
+    ],
+    "Specialty": 0
   },
   {
     "MerchantId": "merchant-summit",
@@ -560,6 +567,7 @@
         "Weight": 50,
         "Count": 1
       }
-    ]
+    ],
+    "Specialty": 0
   }
 ]

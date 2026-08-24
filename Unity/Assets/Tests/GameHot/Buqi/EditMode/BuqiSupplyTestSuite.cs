@@ -8,7 +8,7 @@ namespace Game.Hot.Buqi.Tests
 {
     public static class BuqiSupplyTestSuite
     {
-        private const int ContractCount = 10;
+        private const int ContractCount = 13;
         private const int MonteCarloSeedCount = 10000;
         private const int BenchmarkAcquisitionBps = 8000;
 
@@ -17,8 +17,11 @@ namespace Game.Hot.Buqi.Tests
             var failures = new List<string>();
             Run("filter-contract", FilterContract, failures);
             Run("catalog-projection-contract", CatalogProjectionContract, failures);
+            Run("formal-category-contract", FormalCategoryContract, failures);
             Run("channel-integration-contract", ChannelIntegrationContract, failures);
             Run("deterministic-four-slot-contract", DeterministicFourSlotContract, failures);
+            Run("shelf-space-contract", ShelfSpaceContract, failures);
+            Run("legal-empty-space-contract", LegalEmptySpaceContract, failures);
             Run("affinity-memory-contract", AffinityMemoryContract, failures);
             Run("bounded-soft-pity-contract", BoundedSoftPityContract, failures);
             Run("repeat-suppression-contract", RepeatSuppressionContract, failures);
@@ -72,6 +75,7 @@ namespace Game.Hot.Buqi.Tests
             {
                 DefinitionId = "W8-003",
                 ArchetypeId = "fast",
+                Category = Game.Hot.BuqiItemCategory.NonWeapon,
                 Size = 2,
             };
             item.Tags.AddRange(new[] { "damage", "fast", "damage", " " });
@@ -247,6 +251,99 @@ namespace Game.Hot.Buqi.Tests
                 "Acquired tag recency was not recorded.");
             Require(buffer.TagMemory.ContainsKey("heal") == false,
                 "Affinity updates must not mutate the source state.");
+        }
+
+        private static void FormalCategoryContract()
+        {
+            var item = new BuqiSupplyCatalogItem
+            {
+                DefinitionId = "classified-item",
+                ArchetypeId = "fast",
+                Size = 1,
+                Category = Game.Hot.BuqiItemCategory.Unknown,
+            };
+            var rule = new BuqiSupplyAvailabilityRule
+            {
+                Role = BuqiSupplyProductRole.Mainline,
+                Quality = BuqiSupplyQuality.Common,
+            };
+            Require(!BuqiSupplyIntegration.TryCreateDefinition(item, rule, out _, out _),
+                "Supply projection must reject a missing formal item category.");
+
+            item.Category = Game.Hot.BuqiItemCategory.Weapon;
+            Require(BuqiSupplyIntegration.TryCreateDefinition(
+                item, rule, out BuqiSupplyDefinition definition, out string error), error);
+            Require(definition.Category == Game.Hot.BuqiItemCategory.Weapon,
+                "Supply projection must preserve the authored weapon category.");
+        }
+
+        private static void ShelfSpaceContract()
+        {
+            var service = new BuqiSupplyService(CreateGeneralCatalog());
+            var request = new BuqiSupplyRequest
+            {
+                Day = 5,
+                Source = BuqiSupplySource.Merchant,
+                MerchantPoolId = "general",
+                PreferredArchetypeId = "fast",
+                ShelfSlotBudget = BuqiSupplyService.MerchantShelfSlotCount,
+            };
+
+            Require(service.TryGenerate(request, BuqiSupplyState.CreateInitial(21991L), 0,
+                out BuqiSupplyShelf left, out string leftError), leftError);
+            Require(service.TryGenerate(request, BuqiSupplyState.CreateInitial(21991L), 0,
+                out BuqiSupplyShelf right, out string rightError), rightError);
+
+            var occupied = new bool[BuqiSupplyService.MerchantShelfSlotCount];
+            int expectedAnchor = 0;
+            foreach (BuqiSupplyDefinition offer in left.Offers)
+            {
+                Require(offer.Size >= 1 && offer.Size <= 3, "Shelf item size must be 1/2/3 slots.");
+                Require(offer.AnchorSlot == expectedAnchor,
+                    "Generated merchant offers must be compact from the left edge.");
+                Require(offer.AnchorSlot + offer.Size <= occupied.Length,
+                    "A merchant offer crossed the ten-slot shelf boundary.");
+                for (int slot = offer.AnchorSlot; slot < offer.AnchorSlot + offer.Size; slot++)
+                {
+                    Require(!occupied[slot], "Merchant offers overlapped on the shelf.");
+                    occupied[slot] = true;
+                }
+                expectedAnchor += offer.Size;
+            }
+
+            Require(expectedAnchor <= BuqiSupplyService.MerchantShelfSlotCount,
+                "Merchant shelf occupancy exceeded ten slots.");
+            Require(left.Offers.Select(offer => offer.DefinitionId)
+                    .SequenceEqual(right.Offers.Select(offer => offer.DefinitionId)) &&
+                    left.Offers.Select(offer => offer.AnchorSlot)
+                    .SequenceEqual(right.Offers.Select(offer => offer.AnchorSlot)),
+                "Same seed and request must produce identical offers and anchors.");
+        }
+
+        private static void LegalEmptySpaceContract()
+        {
+            var definitions = new List<BuqiSupplyDefinition>
+            {
+                Definition("large-a", "fast", BuqiSupplyProductRole.Mainline,
+                    1, 3, BuqiSupplyQuality.Common, BuqiSupplySource.Merchant, "sparse"),
+                Definition("large-b", "buffer", BuqiSupplyProductRole.Bridge,
+                    1, 3, BuqiSupplyQuality.Common, BuqiSupplySource.Merchant, "sparse"),
+            };
+            var request = new BuqiSupplyRequest
+            {
+                Day = 1,
+                Source = BuqiSupplySource.Merchant,
+                MerchantPoolId = "sparse",
+                ShelfSlotBudget = BuqiSupplyService.MerchantShelfSlotCount,
+            };
+
+            Require(new BuqiSupplyService(definitions).TryGenerate(
+                request, BuqiSupplyState.CreateInitial(81L), 0,
+                out BuqiSupplyShelf shelf, out string error), error);
+            Require(shelf.Offers.Count == 2 && shelf.Offers.Sum(offer => offer.Size) == 6,
+                "A short legal pool must keep its valid offers.");
+            Require(shelf.EmptySlots.SequenceEqual(new[] { 6, 7, 8, 9 }),
+                "An unfillable shelf remainder must stay as explicit legal empty slots.");
         }
 
         private static void BoundedSoftPityContract()

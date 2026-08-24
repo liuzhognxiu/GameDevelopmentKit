@@ -4,7 +4,7 @@ using Game.Hot.Buqi.Battle;
 
 namespace Game.Hot.Buqi.Config
 {
-    public sealed class BuqiDefinitionProvider : IItemDefinitionProvider
+    public sealed class BuqiDefinitionProvider : IItemDefinitionProvider, IBuqiBattleRuleProvider
     {
         private readonly Dictionary<string, BuqiItemDefinition> m_Definitions;
 
@@ -13,6 +13,14 @@ namespace Game.Hot.Buqi.Config
             if (catalog == null)
                 throw new ArgumentNullException(nameof(catalog));
             ContentVersion = catalog.Global == null ? string.Empty : catalog.Global.ContentVersion;
+            BattleRules = catalog.Global == null
+                ? new BuqiBattleRuleConfig()
+                : new BuqiBattleRuleConfig
+                {
+                    StormStartTicks = catalog.Global.StormStartTicks,
+                    StormBaseDamage = catalog.Global.StormBaseDamage,
+                    StormRampDamage = catalog.Global.StormRampDamage,
+                };
             m_Definitions = new Dictionary<string, BuqiItemDefinition>(StringComparer.Ordinal);
             foreach (BuqiItemConfigRow row in catalog.Items)
             {
@@ -23,6 +31,8 @@ namespace Game.Hot.Buqi.Config
         }
 
         public string ContentVersion { get; }
+
+        public BuqiBattleRuleConfig BattleRules { get; }
 
         public bool TryGet(string definitionId, out BuqiItemDefinition definition)
         {
@@ -43,6 +53,7 @@ namespace Game.Hot.Buqi.Config
                 DefinitionId = row.DefinitionId,
                 Size = (int)row.Size,
                 BaseCooldownTicks = row.BaseCooldownTicks,
+                AmmoCapacity = Math.Max(0, row.AmmoCapacity),
             };
             foreach (BuqiEffectConfigRow effect in row.Effects)
                 definition.Effects.Add(CopyEffect(effect));
@@ -56,6 +67,7 @@ namespace Game.Hot.Buqi.Config
                 DefinitionId = source.DefinitionId,
                 Size = source.Size,
                 BaseCooldownTicks = source.BaseCooldownTicks,
+                AmmoCapacity = source.AmmoCapacity,
             };
             foreach (BuqiEffectSpec effect in source.Effects)
                 definition.Effects.Add(CopyEffect(effect));
@@ -75,10 +87,14 @@ namespace Game.Hot.Buqi.Config
                 ConditionKind = source.ConditionKind,
                 ConditionThreshold = source.ConditionThreshold,
                 UseCountThreshold = source.UseCountThreshold,
-                ChargeReadLimit = source.ChargeReadLimit,
-                AmountPerCharge = source.AmountPerCharge,
-                ChargeConsume = source.ChargeConsume,
                 ResetCountOnReached = source.ResetCountOnReached,
+                CriticalChanceBps = source.CriticalChanceBps,
+                RepeatCount = source.RepeatCount,
+                RageThreshold = source.RageThreshold,
+                RageDurationTicks = source.RageDurationTicks,
+                RageCooldownReductionBps = source.RageCooldownReductionBps,
+                FlightDamageBonusBps = source.FlightDamageBonusBps,
+                FlightEndDamage = source.FlightEndDamage,
             };
         }
 
@@ -95,10 +111,14 @@ namespace Game.Hot.Buqi.Config
                 ConditionKind = source.ConditionKind,
                 ConditionThreshold = source.ConditionThreshold,
                 UseCountThreshold = source.UseCountThreshold,
-                ChargeReadLimit = source.ChargeReadLimit,
-                AmountPerCharge = source.AmountPerCharge,
-                ChargeConsume = source.ChargeConsume,
                 ResetCountOnReached = source.ResetCountOnReached,
+                CriticalChanceBps = source.CriticalChanceBps,
+                RepeatCount = source.RepeatCount,
+                RageThreshold = source.RageThreshold,
+                RageDurationTicks = source.RageDurationTicks,
+                RageCooldownReductionBps = source.RageCooldownReductionBps,
+                FlightDamageBonusBps = source.FlightDamageBonusBps,
+                FlightEndDamage = source.FlightEndDamage,
             };
         }
     }

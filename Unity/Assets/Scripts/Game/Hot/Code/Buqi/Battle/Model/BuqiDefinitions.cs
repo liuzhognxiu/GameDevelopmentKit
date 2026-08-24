@@ -17,7 +17,7 @@ namespace Game.Hot.Buqi.Battle
         /// <summary>目标选择器；战斗目标不使用随机。</summary>
         public BuqiTarget Target = BuqiTarget.EnemyExecution;
 
-        /// <summary>基础数值；伤害/护体/蓄力/失衡为整数，加速/延迟为 basis points。</summary>
+        /// <summary>基础数值；伤害、护体、冷却推进和资源变化均使用整数。</summary>
         public int Amount;
 
         /// <summary>加速或延迟持续 tick；其他效果忽略该字段。</summary>
@@ -29,23 +29,33 @@ namespace Game.Hot.Buqi.Battle
         /// <summary>OnFirstConditionMet 使用的条件种类。</summary>
         public BuqiConditionKind ConditionKind = BuqiConditionKind.None;
 
-        /// <summary>条件阈值，例如蓄力至少达到多少。</summary>
+        /// <summary>OnFirstConditionMet 的条件阈值。</summary>
         public int ConditionThreshold;
 
         /// <summary>OnUseCountReached 的主动使用次数阈值。</summary>
         public int UseCountThreshold;
 
-        /// <summary>声明效果时最多读取的自身蓄力；0 表示该效果不读取蓄力。</summary>
-        public int ChargeReadLimit;
-
-        /// <summary>每读取 1 点蓄力追加的基础效果量，先与 Amount 相加，再应用品质、淬炼和复写倍率。</summary>
-        public int AmountPerCharge;
-
-        /// <summary>是否在声明时消费本次读取的蓄力；只读型效果保持 false。</summary>
-        public bool ChargeConsume;
-
         /// <summary>达到次数阈值后是否扣除该阈值，允许继续循环累计。</summary>
         public bool ResetCountOnReached = true;
+
+        /// <summary>确定性暴击率，单位为万分比；命中后效果量固定翻倍。</summary>
+        public int CriticalChanceBps;
+
+        /// <summary>一次触发的独立结算次数；每次结算均占用现有事件预算。</summary>
+        public int RepeatCount = 1;
+
+        /// <summary>触发狂怒所需的怒气阈值。</summary>
+        public int RageThreshold = 100;
+
+        public int RageDurationTicks = 50;
+
+        public int RageCooldownReductionBps = 1000;
+
+        /// <summary>该 Flight 效果生效期间提供的额外 Damage 万分比。</summary>
+        public int FlightDamageBonusBps;
+
+        /// <summary>该 Flight 状态结束时对自身造成的普通伤害。</summary>
+        public int FlightEndDamage;
 
         /// <summary>
         /// 生成跨端稳定的效果语义标识，用于日志、排序和哈希。
@@ -63,14 +73,53 @@ namespace Game.Hot.Buqi.Battle
                 ConditionKind,
                 ConditionThreshold);
             string behavior = BuqiText.Format(
-                "{0}:{1}:{2}:{3}:{4}",
+                "{0}:{1}",
                 UseCountThreshold,
-                ChargeReadLimit,
-                AmountPerCharge,
-                ChargeConsume,
                 ResetCountOnReached);
-            return BuqiText.Format("{0}:{1}", identity, behavior);
+            string legacyId = BuqiText.Format("{0}:{1}", identity, behavior);
+            if (CriticalChanceBps == 0 &&
+                RepeatCount == 1 &&
+                RageThreshold == 100 &&
+                RageDurationTicks == 50 &&
+                RageCooldownReductionBps == 1000 &&
+                FlightDamageBonusBps == 0 &&
+                FlightEndDamage == 0)
+            {
+                return legacyId;
+            }
+            return BuqiText.Format(
+                "{0}:v3:{1}:{2}:{3}:{4}:{5}:{6}:{7}",
+                legacyId,
+                CriticalChanceBps,
+                RepeatCount,
+                RageThreshold,
+                RageDurationTicks,
+                RageCooldownReductionBps,
+                FlightDamageBonusBps,
+                FlightEndDamage);
         }
+    }
+
+    public sealed class BuqiBattleRuleConfig
+    {
+        public int StormStartTicks = 300;
+        public int StormBaseDamage = 1;
+        public int StormRampDamage = 1;
+
+        public BuqiBattleRuleConfig Clone()
+        {
+            return new BuqiBattleRuleConfig
+            {
+                StormStartTicks = StormStartTicks,
+                StormBaseDamage = StormBaseDamage,
+                StormRampDamage = StormRampDamage,
+            };
+        }
+    }
+
+    public interface IBuqiBattleRuleProvider
+    {
+        BuqiBattleRuleConfig BattleRules { get; }
     }
 
     /// <summary>单张法门的内容定义。</summary>
@@ -84,6 +133,9 @@ namespace Game.Hot.Buqi.Battle
 
         /// <summary>基础冷却 tick；进入运行态后再应用 A-01/A-02。</summary>
         public int BaseCooldownTicks = 30;
+
+        /// <summary>主动使用弹药上限；0 表示无限弹药。</summary>
+        public int AmmoCapacity;
 
         /// <summary>由基础原语组合的效果列表，不允许在模拟器中写卡牌特例。</summary>
         public List<BuqiEffectSpec> Effects = new List<BuqiEffectSpec>();
@@ -102,17 +154,23 @@ namespace Game.Hot.Buqi.Battle
     }
 
     /// <summary>测试和工具使用的内存字典定义提供器。</summary>
-    public sealed class DictionaryDefinitionProvider : IItemDefinitionProvider
+    public sealed class DictionaryDefinitionProvider : IItemDefinitionProvider, IBuqiBattleRuleProvider
     {
         private readonly Dictionary<string, BuqiItemDefinition> m_Definitions;
 
-        public DictionaryDefinitionProvider(string contentVersion, Dictionary<string, BuqiItemDefinition> definitions)
+        public DictionaryDefinitionProvider(
+            string contentVersion,
+            Dictionary<string, BuqiItemDefinition> definitions,
+            BuqiBattleRuleConfig battleRules = null)
         {
             ContentVersion = contentVersion;
             m_Definitions = definitions;
+            BattleRules = (battleRules ?? new BuqiBattleRuleConfig()).Clone();
         }
 
         public string ContentVersion { get; }
+
+        public BuqiBattleRuleConfig BattleRules { get; }
 
         public bool TryGet(string definitionId, out BuqiItemDefinition definition)
         {

@@ -54,7 +54,7 @@ namespace Game.Hot.Buqi.Battle
         /// <summary>双方构筑使用的内容版本。</summary>
         public string ContentVersion = string.Empty;
 
-        /// <summary>保留的战斗种子；v0.4 不消费随机数。</summary>
+        /// <summary>战斗种子；确定性暴击判定会消费其派生随机序列。</summary>
         public ulong BattleSeed;
 
         /// <summary>单局轮次索引。</summary>
@@ -63,7 +63,7 @@ namespace Game.Hot.Buqi.Battle
         /// <summary>最终胜负。</summary>
         public BattleOutcome Outcome = BattleOutcome.Draw;
 
-        /// <summary>实际运行 tick 数，正常结束最多 601（含 tick 600）。</summary>
+        /// <summary>实际运行的基础 tick 数；战斗无固定硬上限。</summary>
         public int DurationTicks;
 
         public int LeftExecution;
@@ -73,7 +73,7 @@ namespace Game.Hot.Buqi.Battle
         public int LeftNoise;
         public int RightNoise;
 
-        /// <summary>Normal、Overtime、HardCap 或 InvalidBuild。</summary>
+        /// <summary>Normal、Storm 或 InvalidBuild。</summary>
         public string TerminationReason = string.Empty;
 
         /// <summary>规范化全量结果与事件后的 SHA-256。</summary>

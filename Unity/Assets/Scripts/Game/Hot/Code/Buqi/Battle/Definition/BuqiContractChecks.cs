@@ -10,7 +10,7 @@ namespace Game.Hot.Buqi.Battle
     /// </summary>
     public static class BuqiContractChecks
     {
-        /// <summary>运行战斗契约 v0.4 的全部行为检查，并返回可读失败列表。</summary>
+        /// <summary>运行战斗契约 v0.6 的全部行为检查，并返回可读失败列表。</summary>
         public static List<string> RunAll()
         {
             var failures = new List<string>();
@@ -26,24 +26,783 @@ namespace Game.Hot.Buqi.Battle
             CheckReadyUseIsolation(provider, failures);
             CheckSameTickBuffer(provider, vectors, failures);
             CheckNoise(provider, vectors, failures);
-            CheckHealAndRegen(provider, failures);
-            CheckPoisonBypassesShield(provider, failures);
-            CheckBurnUsesShield(provider, failures);
-            CheckFreezeStopsCooldown(provider, failures);
-            CheckChargeCap(provider, vectors, failures);
-            CheckChargeDeclarationConsumption(provider, failures);
-            CheckChargeSameSourceDeclareSequence(provider, failures);
-            CheckChargeSameTickAndLogSemantics(provider, failures);
+            CheckLatestStatusSchedule(failures);
+            CheckLatestControlAndCharge(failures);
+            CheckLatestModifierScoping(failures);
+            CheckLatestHealingAndStatuses(failures);
+            CheckLatestStatusAggregation(failures);
+            CheckLatestCritical(failures);
+            CheckLatestCriticalRollUniqueness(failures);
+            CheckMultiSettlementAndCap(provider, failures);
+            CheckAmmoLifecycle(provider, failures);
+            CheckCappedAmmo(provider, failures);
+            CheckCappedAmmoReplay(provider, failures);
+            CheckChargeAmmoReservation(failures);
+            CheckFlightLifecycle(provider, failures);
+            CheckFlightRefreshSource(provider, failures);
+            CheckSingleFlightExit(provider, failures);
+            CheckFlightControlMitigation(provider, failures);
+            CheckLatestRage(failures);
+            CheckExtremeRageAndNoise(failures);
+            CheckLatestIntegerBoundaries(failures);
+            CheckLatestStorm(failures);
+            CheckLatestReplayProjection(failures);
+            CheckFlightRefreshReplay(provider, failures);
             CheckRewrite(provider, vectors, failures);
             CheckReliable(provider, vectors, failures);
             CheckUseCount(provider, vectors, failures);
             CheckAnnotationSemantics(provider, failures);
             CheckCanonicalSnapshot(provider, failures);
             CheckLoopCap(provider, vectors, failures);
-            CheckOvertime(provider, vectors, failures);
-            CheckHardCap(provider, failures);
             CheckMirror(provider, vectors, failures);
             return failures;
+        }
+
+        private static void CheckLatestStatusSchedule(List<string> failures)
+        {
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("poison-start", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Poison,
+                        BuqiTarget.EnemyExecution, 3, "schedule-poison", 30)),
+                Definition("tick-ten-use", 11,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "tick-ten-use")),
+                Definition("passive-contract", 1000));
+            BattleRequest request = ContractRequest(
+                ContractSnapshot("L", 100, 0, BuqiTestSuite.Item("poison", "poison-start", 0)),
+                ContractSnapshot("R", 100, 0, BuqiTestSuite.Item("target", "tick-ten-use", 0)),
+                11);
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out _);
+
+            int poisonTick = FindFirstReasonTick(log, "PoisonDamage");
+            int useTick = FindFirstActorReasonTick(log, "target", "tick-ten-use");
+            BattleEvent poison = FindEvent(log, "PoisonDamage", 10);
+            BattleEvent use = FindActorEvent(log, "target", "tick-ten-use", 10, BuqiEventType.Declare);
+            if (BuqiBattleSimulator.TicksPerSecond != 10 || poisonTick != 10 || useTick != 10 ||
+                poison == null || use == null || poison.Sequence >= use.Sequence ||
+                poison.Phase != BuqiEventPhase.PreTick)
+            {
+                failures.Add("Latest schedule: per-second status must tick at tick 10 before cooldown/use settlement");
+            }
+        }
+
+        private static void CheckLatestControlAndCharge(List<string> failures)
+        {
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("haste-fixed", 20,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Haste,
+                        BuqiTarget.Self, 1, "haste-fixed", 100),
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "haste-use")),
+                Definition("slow-fixed", 20,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Delay,
+                        BuqiTarget.Self, 9999, "slow-fixed", 100),
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "slow-use")),
+                Definition("mutual-control", 20,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Haste,
+                        BuqiTarget.Self, 1, "mutual-haste", 100),
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Delay,
+                        BuqiTarget.Self, 1, "mutual-slow", 100),
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "mutual-use")),
+                Definition("charge-source", 5,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Charge,
+                        BuqiTarget.ShortestCooldownEnemyItem, 10, "charge-push")),
+                Definition("freeze-source", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Freeze,
+                        BuqiTarget.ShortestCooldownEnemyItem, 20, "freeze-opening")),
+                Definition("charge-target", 30,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "charged-use")),
+                Definition("passive-contract", 1000));
+
+            int hasteTick = FirstUseTick(provider, "haste-fixed", "haste-use");
+            int slowTick = FirstUseTick(provider, "slow-fixed", "slow-use");
+            BattleRequest mutualRequest = ContractRequest(
+                ContractSnapshot("L", 1000, 0, BuqiTestSuite.Item("mutual", "mutual-control", 0)),
+                ContractSnapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive-contract", 0)), 3);
+            BuqiBattleSimulator.Simulate(
+                mutualRequest, provider, out List<BattleEvent> mutualLog, out SideState mutual, out _);
+            int mutualTick = FindFirstActorReasonTick(mutualLog, "mutual", "mutual-use");
+            bool hasHaste = HasModifier(mutual, BuqiEffect.Haste);
+            if (hasteTick != 10 || slowTick != 38 || mutualTick != 38 || hasHaste)
+            {
+                failures.Add(BuqiText.Format(
+                    "Latest control: Haste=2x, Slow=0.5x, exclusive (hasteTick={0}, slowTick={1}, mutualTick={2}, haste={3}, slow={4})",
+                    hasteTick, slowTick, mutualTick, hasHaste,
+                    CountReasonAtTick(mutualLog, "mutual-slow", 0)));
+            }
+
+            BattleRequest charged = ContractRequest(
+                ContractSnapshot("L", 1000, 0, BuqiTestSuite.Item("charger", "charge-source", 0)),
+                ContractSnapshot("R", 1000, 0, BuqiTestSuite.Item("charged", "charge-target", 0)), 4);
+            BuqiBattleSimulator.Simulate(charged, provider, out List<BattleEvent> chargedLog, out _, out _);
+            if (FindFirstActorReasonTick(chargedLog, "charged", "charged-use") != 9 ||
+                CountReasonAtTick(chargedLog, "ChargeAdvanced", 9) == 0)
+            {
+                failures.Add("Latest Charge: cooldown advancement must trigger a newly-ready item in the same tick chain");
+            }
+
+            BattleRequest frozen = ContractRequest(
+                ContractSnapshot("L", 1000, 0,
+                    BuqiTestSuite.Item("freeze", "freeze-source", 0),
+                    BuqiTestSuite.Item("charger", "charge-source", 1)),
+                ContractSnapshot("R", 1000, 0, BuqiTestSuite.Item("charged", "charge-target", 0)), 5);
+            BuqiBattleSimulator.Simulate(frozen, provider, out List<BattleEvent> frozenLog, out _, out _);
+            if (FindFirstActorReasonTick(frozenLog, "charged", "charged-use") != 29 ||
+                CountReason(frozenLog, "ChargeBlockedFrozen") == 0)
+            {
+                failures.Add(BuqiText.Format(
+                    "Latest Freeze: frozen items must neither charge nor trigger (useTick={0}, blocked={1})",
+                    FindFirstActorReasonTick(frozenLog, "charged", "charged-use"),
+                    CountReason(frozenLog, "ChargeBlockedFrozen")));
+            }
+        }
+
+        private static void CheckLatestHealingAndStatuses(List<string> failures)
+        {
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("status-source", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Poison,
+                        BuqiTarget.EnemyExecution, 10, "poison-ten", 50),
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Burn,
+                        BuqiTarget.EnemyExecution, 10, "burn-ten", 50)),
+                Definition("healer", 10,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Heal,
+                        BuqiTarget.Self, 100, "full-heal")),
+                Definition("regen-start", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Regen,
+                        BuqiTarget.Self, 5, "regen-five", 20)),
+                Definition("passive-contract", 1000));
+            BattleRequest request = ContractRequest(
+                ContractSnapshot("L", 1000, 0, BuqiTestSuite.Item("status", "status-source", 0)),
+                ContractSnapshot("R", 50, 20, BuqiTestSuite.Item("heal", "healer", 0)), 6);
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out SideState right);
+            if (SumReasonAtTick(log, "Heal", 9) != 50 ||
+                SumReasonAtTick(log, "HealOverflow", 9) != 50 ||
+                CountReasonAtTick(log, "StatusCleansed", 9) != 2 ||
+                SumReasonAtTick(log, "PoisonDamage", 10) != 9 ||
+                SumReasonAtTick(log, "BurnDamage", 10) != 1 ||
+                SumReasonAtTick(log, "BurnShieldMitigated", 10) != 1 || right.Buffer != 20)
+            {
+                failures.Add("Latest statuses: Heal must cap and cleanse 10%; Poison bypasses Shield; Shield halves Burn without consumption");
+            }
+
+            BattleRequest regen = ContractRequest(
+                ContractSnapshot("L", 50, 0, BuqiTestSuite.Item("regen", "regen-start", 0)),
+                ContractSnapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive-contract", 0)), 7);
+            BuqiBattleSimulator.Simulate(regen, provider, out List<BattleEvent> regenLog, out _, out _);
+            if (FindFirstReasonTick(regenLog, "Regen") != 10 || SumReasonAtTick(regenLog, "Regen", 10) != 5)
+                failures.Add("Latest Regen: per-second healing must settle exactly on the 10-tick boundary");
+
+            IItemDefinitionProvider phaseProvider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("regen-full", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Regen,
+                        BuqiTarget.Self, 5, "regen-after-damage", 20)),
+                Definition("regen-hit", 11,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 5, "regen-hit")));
+            BattleRequest sameTick = ContractRequest(
+                ContractSnapshot("L", 100, 0, BuqiTestSuite.Item("a-regen", "regen-full", 0)),
+                ContractSnapshot("R", 1000, 0, BuqiTestSuite.Item("z-hit", "regen-hit", 0)), 71);
+            BattleResult phaseResult = BuqiBattleSimulator.Simulate(
+                sameTick, phaseProvider, out List<BattleEvent> phaseLog, out _, out _);
+            BattleEvent damage = FindEvent(phaseLog, "Damage", 10);
+            BattleEvent healing = FindEvent(phaseLog, "Regen", 10);
+            var phaseReplay = new BattleReplayController(new BattleReplayData
+            {
+                LeftBuild = sameTick.Left,
+                RightBuild = sameTick.Right,
+                Result = phaseResult,
+                Log = phaseLog,
+                Definitions = phaseProvider,
+            });
+            phaseReplay.Advance(1f);
+            if (damage == null || healing == null || damage.Sequence >= healing.Sequence ||
+                healing.Amount != 5 || phaseReplay.Frame.Left.Execution != 100)
+                failures.Add("Latest Regen phase: tick-boundary Regen must settle after same-tick trigger damage");
+        }
+
+        private static void CheckLatestStatusAggregation(List<string> failures)
+        {
+            BuqiEffectSpec poison = Spec(
+                BuqiTrigger.OnBattleStart, BuqiEffect.Poison,
+                BuqiTarget.EnemyExecution, 1, "stacked-poison", 30);
+            poison.RepeatCount = 2;
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("stacked-poison", 1000, poison),
+                Definition("stack-cleanser", 10,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Heal,
+                        BuqiTarget.Self, 1, "stack-heal")));
+            BattleRequest request = ContractRequest(
+                ContractSnapshot("L", 1000, 0,
+                    BuqiTestSuite.Item("poison-a", "stacked-poison", 0),
+                    BuqiTestSuite.Item("poison-b", "stacked-poison", 1)),
+                ContractSnapshot("R", 99, 0,
+                    BuqiTestSuite.Item("cleanser", "stack-cleanser", 0)), 72);
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out _);
+            if (SumReasonAtTick(log, "StatusApplied", 0) != 4 ||
+                SumReasonAtTick(log, "StatusCleansed", 9) != 1 ||
+                SumReasonAtTick(log, "PoisonDamage", 10) != 3)
+            {
+                failures.Add("Latest statuses: repeated applications must stack and Heal must cleanse 10% of the total status amount");
+            }
+        }
+
+        private static void CheckLatestModifierScoping(List<string> failures)
+        {
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("global-slow", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Delay,
+                        BuqiTarget.EnemyExecution, 1, "global-slow", 100)),
+                Definition("single-haste", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Haste,
+                        BuqiTarget.ShortestCooldownEnemyItem, 1, "single-haste", 100)),
+                Definition("tempo-target", 20,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "tempo-target-use")),
+                Definition("tempo-other", 20,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "tempo-other-use")));
+            BattleRequest request = ContractRequest(
+                ContractSnapshot("L", 1000, 0,
+                    BuqiTestSuite.Item("target", "tempo-target", 0),
+                    BuqiTestSuite.Item("other", "tempo-other", 1)),
+                ContractSnapshot("R", 1000, 0,
+                    BuqiTestSuite.Item("slow", "global-slow", 0),
+                    BuqiTestSuite.Item("haste", "single-haste", 1)), 73);
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out _);
+            if (FindFirstActorReasonTick(log, "target", "tempo-target-use") != 10 ||
+                FindFirstActorReasonTick(log, "other", "tempo-other-use") != 38)
+            {
+                failures.Add("Latest control scope: an item Haste may override side Slow only for that item");
+            }
+        }
+
+        private static void CheckLatestCritical(List<string> failures)
+        {
+            BuqiEffectSpec critDamage = CriticalSpec(BuqiEffect.Damage, BuqiTarget.EnemyExecution, 3, "crit-damage", 10000);
+            BuqiEffectSpec critBuffer = CriticalSpec(BuqiEffect.Buffer, BuqiTarget.Self, 4, "crit-buffer", 10000);
+            BuqiEffectSpec critHeal = CriticalSpec(BuqiEffect.Heal, BuqiTarget.Self, 5, "crit-heal", 10000);
+            BuqiEffectSpec critRegen = CriticalSpec(BuqiEffect.Regen, BuqiTarget.Self, 6, "crit-regen", 10000, 30);
+            BuqiEffectSpec critBurn = CriticalSpec(BuqiEffect.Burn, BuqiTarget.EnemyExecution, 7, "crit-burn", 10000, 30);
+            BuqiEffectSpec critPoison = CriticalSpec(BuqiEffect.Poison, BuqiTarget.EnemyExecution, 8, "crit-poison", 10000, 30);
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("crit-a", 1000, critDamage, critBuffer, critHeal, critRegen),
+                Definition("crit-b", 1000, critBurn, critPoison),
+                Definition("crit-random", 1000,
+                    CriticalSpec(BuqiEffect.Damage, BuqiTarget.EnemyExecution, 1, "crit-random", 5000)),
+                Definition("crit-refined", 10,
+                    CriticalSpec(BuqiEffect.Damage, BuqiTarget.EnemyExecution, 10, "crit-refined", 10000,
+                        30, BuqiTrigger.OnUse)),
+                Definition("passive-contract", 1000));
+            BattleRequest all = ContractRequest(
+                ContractSnapshot("L", 50, 0,
+                    BuqiTestSuite.Item("crit-a", "crit-a", 0),
+                    BuqiTestSuite.Item("crit-b", "crit-b", 1)),
+                ContractSnapshot("R", 100, 0, BuqiTestSuite.Item("target", "passive-contract", 0)), 8);
+            BuqiBattleSimulator.Simulate(all, provider, out List<BattleEvent> allLog, out _, out _);
+            if (CountReasonAtTick(allLog, "CriticalApplied", 0) != 6 ||
+                SumActorDeclaredAtTick(allLog, "crit-a", "crit-damage", 0) != 6 ||
+                SumActorDeclaredAtTick(allLog, "crit-a", "crit-buffer", 0) != 8 ||
+                SumActorDeclaredAtTick(allLog, "crit-a", "crit-heal", 0) != 10 ||
+                SumActorDeclaredAtTick(allLog, "crit-a", "crit-regen", 0) != 12 ||
+                SumActorDeclaredAtTick(allLog, "crit-b", "crit-burn", 0) != 14 ||
+                SumActorDeclaredAtTick(allLog, "crit-b", "crit-poison", 0) != 16)
+            {
+                failures.Add("Latest Crit: 100% crit must double Damage/Heal/Shield/Regen/Burn/Poison");
+            }
+
+            bool sawHit = false;
+            bool sawMiss = false;
+            for (ulong seed = 0; seed < 64; seed++)
+            {
+                BattleRequest random = ContractRequest(
+                    ContractSnapshot("L", 100, 0, BuqiTestSuite.Item("crit", "crit-random", 0)),
+                    ContractSnapshot("R", 100, 0, BuqiTestSuite.Item("target", "passive-contract", 0)), seed);
+                BattleResult first = BuqiBattleSimulator.Simulate(random, provider, out List<BattleEvent> firstLog, out _, out _);
+                BattleResult second = BuqiBattleSimulator.Simulate(random, provider, out _, out _, out _);
+                int declared = SumActorDeclaredAtTick(firstLog, "crit", "crit-random", 0);
+                sawHit |= declared == 2;
+                sawMiss |= declared == 1;
+                if (first.BattleLogHash != second.BattleLogHash)
+                    failures.Add("Latest Crit: the same BattleSeed produced different crit outcomes");
+            }
+            if (!sawHit || !sawMiss)
+                failures.Add("Latest Crit: changing BattleSeed did not produce deterministic hit/miss variation");
+
+            BattleRequest refined = ContractRequest(
+                ContractSnapshot("L", 100, 0, BuqiTestSuite.Item("refined", "crit-refined", 0, "A-02")),
+                ContractSnapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive-contract", 0)), 9);
+            BuqiBattleSimulator.Simulate(refined, provider, out List<BattleEvent> refinedLog, out _, out _);
+            int refinedTick = FindFirstActorReasonTick(refinedLog, "refined", "crit-refined");
+            if (SumActorDeclaredAtTick(refinedLog, "refined", "crit-refined", refinedTick) != 26)
+                failures.Add("Latest Crit: refinement multiplier must be applied before the deterministic 2x crit");
+        }
+
+        private static void CheckLatestCriticalRollUniqueness(List<string> failures)
+        {
+            BuqiEffectSpec charge = Spec(
+                BuqiTrigger.OnBattleStart, BuqiEffect.Charge,
+                BuqiTarget.Self, 20, "crit-charge");
+            BuqiEffectSpec damage = CriticalSpec(
+                BuqiEffect.Damage, BuqiTarget.EnemyExecution,
+                1, "crit-charged-use", 5000, 30, BuqiTrigger.OnUse);
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("crit-charged", 10, charge, damage),
+                Definition("passive-contract", 1000));
+            bool sawSplitRolls = false;
+            for (ulong seed = 0; seed < 128 && !sawSplitRolls; seed++)
+            {
+                BattleRequest request = ContractRequest(
+                    ContractSnapshot("L", 1000, 0,
+                        BuqiTestSuite.Item("charged", "crit-charged", 0)),
+                    ContractSnapshot("R", 1000, 0,
+                        BuqiTestSuite.Item("target", "passive-contract", 0)), seed);
+                BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out _);
+                int ones = CountActorDeclarationsWithAmountAtTick(log, "charged", "crit-charged-use", 0, 1);
+                int twos = CountActorDeclarationsWithAmountAtTick(log, "charged", "crit-charged-use", 0, 2);
+                sawSplitRolls = ones == 1 && twos == 1;
+            }
+            if (!sawSplitRolls)
+                failures.Add("Latest Crit: separate same-chain activations must use distinct deterministic rolls");
+        }
+
+        private static void CheckLatestRage(List<string> failures)
+        {
+            BuqiEffectSpec rage = Spec(
+                BuqiTrigger.OnBattleStart, BuqiEffect.Rage, BuqiTarget.Self, 100, "rage-gain");
+            rage.RageThreshold = 100;
+            rage.RageDurationTicks = 50;
+            rage.RageCooldownReductionBps = 1000;
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("rage-user", 50, rage,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "rage-use")),
+                Definition("rage-control", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Delay,
+                        BuqiTarget.ShortestCooldownEnemyItem, 1, "rage-slow", 100),
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Freeze,
+                        BuqiTarget.ShortestCooldownEnemyItem, 100, "rage-freeze")),
+                Definition("passive-contract", 1000));
+            BattleRequest request = ContractRequest(
+                ContractSnapshot("L", 1000, 0, BuqiTestSuite.Item("z-control", "rage-control", 0)),
+                ContractSnapshot("R", 1000, 0, BuqiTestSuite.Item("a-rage", "rage-user", 0)), 10);
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out SideState right);
+            if (FindFirstActorReasonTick(log, "a-rage", "rage-use") != 45 ||
+                CountReasonAtTick(log, "EnrageStarted", 0) != 1 ||
+                CountReasonAtTick(log, "RageGained", 0) != 1 ||
+                right.Items[0].FrozenTicks != 0 || HasModifier(right, BuqiEffect.Delay))
+            {
+                failures.Add("Latest Rage: threshold must cleanse Freeze/Slow and grant 50 ticks of 10% cooldown reduction");
+            }
+
+            var replay = new BattleReplayController(new BattleReplayData
+            {
+                LeftBuild = request.Left,
+                RightBuild = request.Right,
+                Result = BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> replayLog, out _, out _),
+                Log = replayLog,
+                Definitions = provider,
+            });
+            replay.Advance(1f);
+            if (replay.Frame.Right.Items[0].FrozenTicks != 0)
+                failures.Add("Latest replay: EnrageStarted must project the Freeze cleanse");
+        }
+
+        private static void CheckExtremeRageAndNoise(List<string> failures)
+        {
+            BuqiEffectSpec rage = Spec(
+                BuqiTrigger.OnBattleStart, BuqiEffect.Rage,
+                BuqiTarget.Self, 1000, "rage-burst");
+            rage.RageThreshold = 1;
+            IItemDefinitionProvider rageProvider = CreateContractProvider(
+                new BuqiBattleRuleConfig(), Definition("rage-burst", 1000, rage),
+                Definition("passive-contract", 1000));
+            BattleRequest rageRequest = ContractRequest(
+                ContractSnapshot("L", 10000, 0, BuqiTestSuite.Item("rage", "rage-burst", 0)),
+                ContractSnapshot("R", 10000, 0, BuqiTestSuite.Item("target", "passive-contract", 0)), 74);
+            BuqiBattleSimulator.Simulate(rageRequest, rageProvider, out List<BattleEvent> rageLog, out SideState rageSide, out _);
+            if (CountReasonAtTick(rageLog, "EnrageStarted", 0) != 1 ||
+                CountReasonAtTick(rageLog, "RageConsumed", 0) != 1 || rageSide.Rage != 0)
+            {
+                failures.Add("Latest Rage boundary: many threshold crossings must aggregate without unbounded log expansion");
+            }
+
+            IItemDefinitionProvider noiseProvider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("noise-burst", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Noise,
+                        BuqiTarget.Self, 1000, "noise-burst")),
+                Definition("passive-contract", 1000));
+            BattleRequest noiseRequest = ContractRequest(
+                ContractSnapshot("L", 10000, 0, BuqiTestSuite.Item("noise", "noise-burst", 0)),
+                ContractSnapshot("R", 10000, 0, BuqiTestSuite.Item("target", "passive-contract", 0)), 75);
+            BuqiBattleSimulator.Simulate(noiseRequest, noiseProvider, out List<BattleEvent> noiseLog, out SideState noiseSide, out _);
+            if (CountReasonAtTick(noiseLog, "NoiseAccident", 0) != 1 ||
+                SumReasonAtTick(noiseLog, "NoiseAccident", 0) != 800 || noiseSide.Noise != 0)
+            {
+                failures.Add("Latest Noise boundary: threshold incidents must aggregate with equivalent damage and remainder");
+            }
+        }
+
+        private static void CheckChargeAmmoReservation(List<string> failures)
+        {
+            BuqiEffectSpec charge = Spec(
+                BuqiTrigger.OnBattleStart, BuqiEffect.Charge,
+                BuqiTarget.Self, 40, "ammo-charge");
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                DefinitionWithAmmo("charged-ammo", 10, 1, charge,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 3, "charged-ammo-use")),
+                Definition("passive-contract", 1000));
+            BattleRequest request = ContractRequest(
+                ContractSnapshot("L", 1000, 0,
+                    BuqiTestSuite.Item("charged", "charged-ammo", 0)),
+                ContractSnapshot("R", 1000, 0,
+                    BuqiTestSuite.Item("target", "passive-contract", 0)), 76);
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out SideState left, out _);
+            if (CountReasonAtTick(log, "AmmoConsumed", 0) != 1 ||
+                CountActorReasonAtTick(log, "charged", "charged-ammo-use", 0) != 1 ||
+                left.Items[0].AmmoRemaining != 0 || left.Items[0].IsEnabled ||
+                left.Items[0].CooldownProgress > 0)
+            {
+                failures.Add("Latest Ammo/Charge: queued charge activations must reserve and consume only available ammunition");
+            }
+        }
+
+        private static void CheckLatestIntegerBoundaries(List<string> failures)
+        {
+            IItemDefinitionProvider resourceProvider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("max-buffer", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Buffer,
+                        BuqiTarget.Self, int.MaxValue, "max-buffer")),
+                DefinitionWithAmmo("max-ammo", 1000, int.MaxValue,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Ammo,
+                        BuqiTarget.Self, int.MaxValue, "max-ammo")),
+                Definition("passive-contract", 1000));
+            BattleRequest resources = ContractRequest(
+                ContractSnapshot("L", 1000, BuqiBattleSimulator.BufferCap,
+                    BuqiTestSuite.Item("buffer", "max-buffer", 0),
+                    BuqiTestSuite.Item("ammo", "max-ammo", 1)),
+                ContractSnapshot("R", 1000, 0,
+                    BuqiTestSuite.Item("target", "passive-contract", 0)), 78);
+            BuqiBattleSimulator.Simulate(resources, resourceProvider, out _, out SideState resourceSide, out _);
+            if (resourceSide.Buffer != BuqiBattleSimulator.BufferCap ||
+                resourceSide.Items[1].AmmoRemaining != int.MaxValue ||
+                !resourceSide.Items[1].IsEnabled)
+            {
+                failures.Add("Latest integer boundary: Buffer and Ammo additions must saturate without wrapping");
+            }
+
+            IItemDefinitionProvider flightProvider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("max-flight", 1000,
+                    Spec(BuqiTrigger.OnBattleStart, BuqiEffect.Flight,
+                        BuqiTarget.Self, int.MaxValue, "max-flight", int.MaxValue)),
+                Definition("max-freeze", 10,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Freeze,
+                        BuqiTarget.ShortestCooldownEnemyItem, int.MaxValue, "max-freeze")),
+                Definition("passive-contract", 1000));
+            BattleRequest flight = ContractRequest(
+                ContractSnapshot("L", 1000, 0,
+                    BuqiTestSuite.Item("flight", "max-flight", 0)),
+                ContractSnapshot("R", 1000, 0,
+                    BuqiTestSuite.Item("freeze", "max-freeze", 0)), 79);
+            BuqiBattleSimulator.Simulate(flight, flightProvider, out List<BattleEvent> flightLog, out _, out _);
+            if (SumReasonAtTick(flightLog, "FlightFreezeMitigation", 9) != 1073741823 ||
+                SumReasonAtTick(flightLog, "FreezeApplied", 9) != 1073741824)
+            {
+                failures.Add("Latest Flight boundary: 50% control mitigation must not overflow at int.MaxValue");
+            }
+
+            IItemDefinitionProvider cooldownProvider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("max-cooldown", int.MaxValue,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "max-cooldown-use")),
+                Definition("passive-contract", 1000));
+            BattleRequest cooldown = ContractRequest(
+                ContractSnapshot("L", 1000, 0,
+                    BuqiTestSuite.Item("cooldown", "max-cooldown", 0, "A-02")),
+                ContractSnapshot("R", 1000, 0,
+                    BuqiTestSuite.Item("target", "passive-contract", 0)), 80);
+            BattleResult cooldownResult = BuqiBattleSimulator.Simulate(
+                cooldown, cooldownProvider, out List<BattleEvent> cooldownLog, out SideState cooldownSide, out _);
+            if (cooldownResult.Outcome == BattleOutcome.InvalidBuild ||
+                CountReason(cooldownLog, "max-cooldown-use") != 0 ||
+                cooldownSide.Items[0].CooldownProgress <= 0)
+            {
+                failures.Add("Latest cooldown boundary: refinement and fixed-point progress must saturate without wrapping");
+            }
+        }
+
+        private static void CheckLatestStorm(List<string> failures)
+        {
+            var rules = new BuqiBattleRuleConfig
+            {
+                StormStartTicks = 300,
+                StormBaseDamage = 1,
+                StormRampDamage = 1,
+            };
+            IItemDefinitionProvider provider = CreateContractProvider(
+                rules, Definition("passive-contract", 1000));
+            BattleRequest request = ContractRequest(
+                ContractSnapshot("L", 110000, 60, BuqiTestSuite.Item("left", "passive-contract", 0)),
+                ContractSnapshot("R", 100000, 60, BuqiTestSuite.Item("right", "passive-contract", 0)), 12);
+            BattleResult result = BuqiBattleSimulator.Simulate(
+                request, provider, out List<BattleEvent> log, out SideState left, out SideState right);
+            if (result.Outcome != BattleOutcome.LeftWin ||
+                result.TerminationReason != TerminationReason.Storm.ToString() ||
+                result.DurationTicks <= 601 || left.Buffer != 60 || right.Buffer != 60 ||
+                SumReasonAtTick(log, "StormDamage", 300) != 2 ||
+                SumReasonAtTick(log, "StormDamage", 301) != 4)
+            {
+                failures.Add("Latest Storm: no hard cap; per-tick ramping true damage must continue past tick 600 until death");
+            }
+        }
+
+        private static void CheckLatestReplayProjection(List<string> failures)
+        {
+            BuqiEffectSpec rage = Spec(
+                BuqiTrigger.OnBattleStart, BuqiEffect.Rage, BuqiTarget.Self, 100, "rage-replay");
+            rage.RageThreshold = 100;
+            IItemDefinitionProvider provider = CreateContractProvider(
+                new BuqiBattleRuleConfig { StormStartTicks = 20, StormBaseDamage = 2, StormRampDamage = 1 },
+                Definition("rage-replay", 1000, rage),
+                Definition("passive-contract", 1000));
+            BattleRequest request = ContractRequest(
+                ContractSnapshot("L", 100, 0, BuqiTestSuite.Item("rage", "rage-replay", 0)),
+                ContractSnapshot("R", 10, 0, BuqiTestSuite.Item("target", "passive-contract", 0)), 13);
+            BattleResult result = BuqiBattleSimulator.Simulate(
+                request, provider, out List<BattleEvent> log, out _, out _);
+            var replay = new BattleReplayController(new BattleReplayData
+            {
+                LeftBuild = request.Left,
+                RightBuild = request.Right,
+                Result = result,
+                Log = log,
+                Definitions = provider,
+            });
+            replay.SkipToResult();
+            if (!string.IsNullOrEmpty(replay.Frame.Error) ||
+                replay.Frame.Left.Rage != 0 || replay.Frame.Left.EnragedTicks <= 0 ||
+                replay.Frame.Right.Execution != result.RightExecution)
+            {
+                failures.Add("Latest replay: Rage/Enrage and source-less Storm damage must project to the recorded result");
+            }
+
+            string validRuleVersion = result.RuleVersion;
+            result.RuleVersion = "legacy-rule";
+            result.BattleLogHash = BuqiCrypto.BattleLogHash(result, log);
+            bool rejectedRule = ReplayRejected(request, result, log, provider);
+            result.RuleVersion = validRuleVersion;
+
+            string validSimulationVersion = result.SimulationVersion;
+            result.SimulationVersion = "legacy-simulation";
+            result.BattleLogHash = BuqiCrypto.BattleLogHash(result, log);
+            bool rejectedSimulation = ReplayRejected(request, result, log, provider);
+            result.SimulationVersion = validSimulationVersion;
+
+            string validContentVersion = result.ContentVersion;
+            result.ContentVersion = "foreign-content";
+            result.BattleLogHash = BuqiCrypto.BattleLogHash(result, log);
+            bool rejectedContent = ReplayRejected(request, result, log, provider);
+            result.ContentVersion = validContentVersion;
+
+            string validSnapshotHash = result.LeftSnapshotHash;
+            result.LeftSnapshotHash = "foreign-snapshot";
+            result.BattleLogHash = BuqiCrypto.BattleLogHash(result, log);
+            bool rejectedSnapshot = ReplayRejected(request, result, log, provider);
+            result.LeftSnapshotHash = validSnapshotHash;
+            result.BattleLogHash = BuqiCrypto.BattleLogHash(result, log);
+            if (!rejectedRule || !rejectedSimulation || !rejectedContent || !rejectedSnapshot)
+                failures.Add("Latest replay validation: incompatible rule/simulation/content/snapshot contracts must be rejected");
+        }
+
+        private static bool ReplayRejected(
+            BattleRequest request,
+            BattleResult result,
+            List<BattleEvent> log,
+            IItemDefinitionProvider provider)
+        {
+            try
+            {
+                _ = new BattleReplayController(new BattleReplayData
+                {
+                    LeftBuild = request.Left,
+                    RightBuild = request.Right,
+                    Result = result,
+                    Log = log,
+                    Definitions = provider,
+                });
+                return false;
+            }
+            catch (ArgumentException)
+            {
+                return true;
+            }
+        }
+
+        private static IItemDefinitionProvider CreateContractProvider(
+            BuqiBattleRuleConfig rules,
+            params BuqiItemDefinition[] definitions)
+        {
+            var map = new Dictionary<string, BuqiItemDefinition>(StringComparer.Ordinal);
+            foreach (BuqiItemDefinition definition in definitions)
+                map[definition.DefinitionId] = definition;
+            return new DictionaryDefinitionProvider(BuqiTestSuite.FixtureContentVersion, map, rules);
+        }
+
+        private static BuqiItemDefinition Definition(
+            string id,
+            int cooldownTicks,
+            params BuqiEffectSpec[] effects)
+        {
+            var definition = new BuqiItemDefinition
+            {
+                DefinitionId = id,
+                Size = 1,
+                BaseCooldownTicks = cooldownTicks,
+            };
+            definition.Effects.AddRange(effects);
+            return definition;
+        }
+
+        private static BuqiItemDefinition DefinitionWithAmmo(
+            string id,
+            int cooldownTicks,
+            int ammoCapacity,
+            params BuqiEffectSpec[] effects)
+        {
+            BuqiItemDefinition definition = Definition(id, cooldownTicks, effects);
+            definition.AmmoCapacity = ammoCapacity;
+            return definition;
+        }
+
+        private static BuqiEffectSpec Spec(
+            BuqiTrigger trigger,
+            BuqiEffect effect,
+            BuqiTarget target,
+            int amount,
+            string reason,
+            int durationTicks = 30)
+        {
+            return new BuqiEffectSpec
+            {
+                Trigger = trigger,
+                Effect = effect,
+                Target = target,
+                Amount = amount,
+                ReasonCode = reason,
+                DurationTicks = durationTicks,
+            };
+        }
+
+        private static BuqiEffectSpec CriticalSpec(
+            BuqiEffect effect,
+            BuqiTarget target,
+            int amount,
+            string reason,
+            int chanceBps,
+            int durationTicks = 30,
+            BuqiTrigger trigger = BuqiTrigger.OnBattleStart)
+        {
+            BuqiEffectSpec spec = Spec(trigger, effect, target, amount, reason, durationTicks);
+            spec.CriticalChanceBps = chanceBps;
+            return spec;
+        }
+
+        private static BuildSnapshot ContractSnapshot(
+            string id,
+            int execution,
+            int buffer,
+            params ItemInstance[] items)
+        {
+            return BuqiTestSuite.Snapshot(id, execution, buffer, items);
+        }
+
+        private static BattleRequest ContractRequest(
+            BuildSnapshot left,
+            BuildSnapshot right,
+            ulong seed)
+        {
+            BattleRequest request = BuqiTestSuite.Request(left, right);
+            request.BattleSeed = seed;
+            return request;
+        }
+
+        private static int FirstUseTick(
+            IItemDefinitionProvider provider,
+            string definitionId,
+            string reason)
+        {
+            BattleRequest request = ContractRequest(
+                ContractSnapshot("L", 1000, 0, BuqiTestSuite.Item("actor", definitionId, 0)),
+                ContractSnapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive-contract", 0)), 2);
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out _);
+            return FindFirstActorReasonTick(log, "actor", reason);
+        }
+
+        private static bool HasModifier(SideState side, BuqiEffect effect)
+        {
+            foreach (TimedModifier modifier in side.SideModifiers)
+            {
+                if (modifier.Effect == effect)
+                    return true;
+            }
+            foreach (ItemState item in side.Items)
+            {
+                foreach (TimedModifier modifier in item.Modifiers)
+                {
+                    if (modifier.Effect == effect)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        private static BattleEvent FindEvent(
+            List<BattleEvent> log,
+            string reason,
+            int tick)
+        {
+            foreach (BattleEvent battleEvent in log)
+            {
+                if (battleEvent.Tick == tick && battleEvent.ReasonCode == reason)
+                    return battleEvent;
+            }
+            return null;
+        }
+
+        private static BattleEvent FindActorEvent(
+            List<BattleEvent> log,
+            string actorId,
+            string reason,
+            int tick,
+            BuqiEventType type)
+        {
+            foreach (BattleEvent battleEvent in log)
+            {
+                if (battleEvent.Tick == tick && battleEvent.ActorInstanceId == actorId &&
+                    battleEvent.ReasonCode == reason && battleEvent.Type == type)
+                {
+                    return battleEvent;
+                }
+            }
+            return null;
         }
 
         private static void CheckDeterminism(
@@ -181,8 +940,8 @@ namespace Game.Hot.Buqi.Battle
                 return;
             int firstNoiseTick = FindFirstReasonTick(log, "noise");
             int accidentCount = CountReasonAtTick(log, "NoiseAccident", firstNoiseTick);
-            if (accidentCount != 2)
-                failures.Add("失衡：21 点失衡值未准确触发两次事故");
+            if (accidentCount != 1 || SumReasonAtTick(log, "NoiseAccident", firstNoiseTick) != 16)
+                failures.Add("失衡：21 点失衡值未聚合为两次事故的 16 点伤害");
         }
 
         private static void CheckHealAndRegen(IItemDefinitionProvider provider, List<string> failures)
@@ -250,138 +1009,340 @@ namespace Game.Hot.Buqi.Battle
                 failures.Add("冻结：未记录冻结施加事件");
         }
 
-        private static void CheckChargeCap(
-            IItemDefinitionProvider provider,
-            List<BuqiTestVector> vectors,
-            List<string> failures)
+        private static void CheckCriticalDamage(IItemDefinitionProvider provider, List<string> failures)
         {
-            BuqiTestVector vector = RequireVector(vectors, "charge-cap", failures);
-            if (vector == null)
-                return;
-            BuqiBattleSimulator.Simulate(vector.Request, provider, out _, out SideState left, out _);
-            if (left.Items[0].Charge != BuqiBattleSimulator.ChargeCap)
-                failures.Add("蓄力：最终蓄力值超过或未达到上限 9");
+            BattleRequest plain = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0, BuqiTestSuite.Item("critical", "critical", 0)),
+                BuqiTestSuite.Snapshot("R", 100, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(plain, provider, out List<BattleEvent> plainLog, out _, out _);
+            if (SumActorDeclaredAtTick(plainLog, "critical", "critical-strike", 0) != 20 ||
+                CountReasonAtTick(plainLog, "CriticalApplied", 0) != 1)
+            {
+                failures.Add("暴击：配置倍率未确定性放大伤害或缺少日志");
+            }
+
+            plain.Left.Items[0].AnnotationId = "A-05";
+            BuqiBattleSimulator.Simulate(plain, provider, out List<BattleEvent> annotatedLog, out _, out _);
+            if (SumActorDeclaredAtTick(annotatedLog, "critical", "critical-strike", 0) != 17)
+                failures.Add("暴击：未与既有铭刻倍率按整数规则组合");
         }
 
-        private static void CheckChargeDeclarationConsumption(
-            IItemDefinitionProvider provider,
-            List<string> failures)
+        private static void CheckCriticalOverflow(IItemDefinitionProvider provider, List<string> failures)
         {
-            BattleRequest consuming = BuqiTestSuite.Request(
-                BuqiTestSuite.Snapshot("L", 100, 0,
-                    BuqiTestSuite.Item("source", "opening-charge-source", 0),
-                    BuqiTestSuite.Item("consumer", "charge-consumer", 1)),
-                BuqiTestSuite.Snapshot("R", 100, 0,
-                    BuqiTestSuite.Item("target", "passive", 0)));
-            BuqiBattleSimulator.Simulate(
-                consuming, provider, out List<BattleEvent> consumingLog, out SideState consumingLeft, out _);
-            if (consumingLeft.Items[1].Charge != 0 ||
-                SumActorDeclaredAtTick(consumingLog, "consumer", "charge-consume-a", 0) != 7 ||
-                SumActorDeclaredAtTick(consumingLog, "consumer", "charge-consume-b", 0) != 1)
+            BattleRequest overflow = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot(
+                    "L", 10000, 0,
+                    BuqiTestSuite.Item("critical-overflow", "critical-overflow", 0, "A-02")),
+                BuqiTestSuite.Snapshot("R", 10000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(overflow, provider, out List<BattleEvent> overflowLog, out _, out _);
+            int overflowDamage = SumActorDeclaredAtTick(
+                overflowLog, "critical-overflow", "critical-overflow", 35);
+            if (overflowDamage != 1300)
             {
-                failures.Add("蓄力：声明阶段消耗不是单次且确定的");
-            }
-            if (CountReasonAtTick(consumingLog, "ChargeConsumed", 0) != 1)
-                failures.Add("蓄力：声明时未准确记录一次蓄力消耗");
-
-            BattleRequest reader = BuqiTestSuite.Request(
-                BuqiTestSuite.Snapshot("L", 100, 0,
-                    BuqiTestSuite.Item("source", "opening-charge-source", 0),
-                    BuqiTestSuite.Item("reader", "charge-reader", 1)),
-                BuqiTestSuite.Snapshot("R", 100, 0,
-                    BuqiTestSuite.Item("target", "passive", 0)));
-            BuqiBattleSimulator.Simulate(
-                reader, provider, out List<BattleEvent> readerLog, out SideState readerLeft, out _);
-            if (readerLeft.Items[1].Charge != 3 ||
-                SumActorDeclaredAtTick(readerLog, "reader", "charge-read-a", 0) != 7 ||
-                SumActorDeclaredAtTick(readerLog, "reader", "charge-read-b", 0) != 7)
-            {
-                failures.Add("蓄力：只读效果未复用同一个声明快照");
-            }
-
-            BattleRequest rewrite = BuqiTestSuite.Request(
-                BuqiTestSuite.Snapshot("L", 100, 0,
-                    BuqiTestSuite.Item("source", "opening-charge-source", 0),
-                    BuqiTestSuite.Item("rewrite", "charge-rewrite", 1, "A-03")),
-                BuqiTestSuite.Snapshot("R", 100, 0,
-                    BuqiTestSuite.Item("target", "passive", 0)));
-            BuqiBattleSimulator.Simulate(
-                rewrite, provider, out List<BattleEvent> rewriteLog, out SideState rewriteLeft, out _);
-            int rewriteTick = FindFirstActorReasonTick(rewriteLog, "rewrite", "charge-rewrite");
-            if (rewriteTick < 0 ||
-                rewriteLeft.Items[1].Charge != 0 ||
-                CountActorDeclarationsAtTick(rewriteLog, "rewrite", "charge-rewrite", rewriteTick) != 2 ||
-                SumActorDeclaredAtTick(rewriteLog, "rewrite", "charge-rewrite", rewriteTick) != 12 ||
-                CountReasonAtTick(rewriteLog, "ChargeConsumed", rewriteTick) != 1)
-            {
-                failures.Add("蓄力：A-03 复写未复用直接声明快照，或发生了重复消耗");
-            }
-
-            BattleRequest noTarget = BuqiTestSuite.Request(
-                BuqiTestSuite.Snapshot("L", 100, 0,
-                    BuqiTestSuite.Item("source", "opening-charge-source", 0),
-                    BuqiTestSuite.Item("no-target", "charge-no-target", 1)),
-                BuqiTestSuite.Snapshot("R", 100, 0,
-                    BuqiTestSuite.Item("target", "passive", 0)));
-            BuqiBattleSimulator.Simulate(
-                noTarget, provider, out List<BattleEvent> noTargetLog, out SideState noTargetLeft, out _);
-            if (noTargetLeft.Items[1].Charge != 3 ||
-                CountActorReasonAtTick(noTargetLog, "no-target", "NoValidTarget", 0) != 1 ||
-                CountReasonAtTick(noTargetLog, "ChargeConsumed", 0) != 0)
-            {
-                failures.Add("蓄力：没有有效目标的声明仍消耗或读取了蓄力");
+                failures.Add(BuqiText.Format(
+                    "Critical: maximum configured multiplier expected 1300 damage, actual {0}",
+                    overflowDamage));
             }
         }
 
-        private static void CheckChargeSameSourceDeclareSequence(
-            IItemDefinitionProvider provider,
-            List<string> failures)
+        private static void CheckSaturatedDamage(IItemDefinitionProvider provider, List<string> failures)
         {
-            BattleRequest sameActor = BuqiTestSuite.Request(
-                BuqiTestSuite.Snapshot("L", 100, 0,
-                    BuqiTestSuite.Item("sequenced", "same-actor-charge-sequence", 0)),
-                BuqiTestSuite.Snapshot("R", 100, 0,
-                    BuqiTestSuite.Item("target", "passive", 0)));
-            BuqiBattleSimulator.Simulate(
-                sameActor, provider, out List<BattleEvent> log, out SideState left, out _);
-
-            if (left.Items[0].Charge != 0 ||
-                left.Buffer != 7 ||
-                SumActorDeclaredAtTick(log, "sequenced", "a-same-actor-buffer", 0) != 7 ||
-                SumActorReasonAtTick(log, "sequenced", "ChargeConsumed", 0) != -3)
+            BattleRequest scaled = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0, BuqiTestSuite.Item("scaled", "saturated-flight", 0)),
+                BuqiTestSuite.Snapshot("R", 100, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BattleResult scaledResult = BuqiBattleSimulator.Simulate(
+                scaled, provider, out List<BattleEvent> scaledLog, out _, out _);
+            if (scaledResult.Outcome != BattleOutcome.LeftWin || scaledResult.DurationTicks != 10 ||
+                SumActorDeclaredAtTick(
+                    scaledLog, "scaled", "saturated-flight-strike", 9) != int.MaxValue)
             {
-                failures.Add("蓄力：同来源声明序列中，先前蓄力未供后续消耗声明使用");
+                failures.Add("Damage: post-saturation flight scaling overflowed the integer result");
+            }
+
+            BattleRequest repeated = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0, BuqiTestSuite.Item("multi", "saturated-multi", 0)),
+                BuqiTestSuite.Snapshot("R", 100, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BattleResult repeatedResult = BuqiBattleSimulator.Simulate(
+                repeated, provider, out _, out _, out SideState repeatedRight);
+            if (repeatedResult.Outcome != BattleOutcome.LeftWin || repeatedResult.DurationTicks != 1 ||
+                repeatedRight.Execution != int.MinValue)
+            {
+                failures.Add("Damage: repeated saturated settlements wrapped execution above zero");
             }
         }
 
-        private static void CheckChargeSameTickAndLogSemantics(
+        private static void CheckMultiSettlementAndCap(
             IItemDefinitionProvider provider,
             List<string> failures)
         {
-            BattleRequest sameTick = BuqiTestSuite.Request(
-                BuqiTestSuite.Snapshot("L", 8, 0,
-                    BuqiTestSuite.Item("left-source", "opening-charge-source", 0),
-                    BuqiTestSuite.Item("left-consumer", "charge-consumer", 1)),
-                BuqiTestSuite.Snapshot("R", 8, 0,
-                    BuqiTestSuite.Item("right-source", "opening-charge-source", 0),
-                    BuqiTestSuite.Item("right-consumer", "charge-consumer", 1)));
+            BattleRequest request = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0,
+                    BuqiTestSuite.Item("multi", "multi-ammo", 0),
+                    BuqiTestSuite.Item("response", "adjacent-response", 1)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out _);
+            if (CountActorDeclarationsAtTick(log, "multi", "multi-strike", 9) != 3 ||
+                CountActorDeclarationsAtTick(log, "response", "adjacent-response", 9) != 1)
+            {
+                failures.Add("多重：一次主动未独立结算三次，或错误重复触发相邻链");
+            }
+            if (CountReasonAtTick(log, "AmmoConsumed", 9) != 1)
+                failures.Add("多重：一次主动的多次结算错误消耗了多发弹药");
+
+            BattleRequest capped = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("cap", "multi-cap", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(capped, provider, out List<BattleEvent> cappedLog, out _, out _);
+            if (CountActorDeclarationsAtTick(cappedLog, "cap", "multi-cap", 0) != 4 ||
+                CountReasonAtTick(cappedLog, "PerItemLoopCapReached", 0) != 1)
+            {
+                failures.Add("多重：重复结算未接入单物品事件上限与截断日志");
+            }
+        }
+
+        private static void CheckAmmoLifecycle(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest exhausted = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("limited", "ammo-limited", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(
+                exhausted, provider, out List<BattleEvent> exhaustedLog, out SideState exhaustedLeft, out _);
+            if (CountActorDeclarations(exhaustedLog, "limited", "ammo-shot") != 1 ||
+                exhaustedLeft.Items[0].AmmoRemaining != 0 || exhaustedLeft.Items[0].IsEnabled)
+            {
+                failures.Add("弹药：最后一发后物品未停用或仍继续主动触发");
+            }
+
+            BattleRequest refilled = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0,
+                    BuqiTestSuite.Item("limited", "ammo-limited", 0),
+                    BuqiTestSuite.Item("refill", "ammo-refill", 1)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(refilled, provider, out List<BattleEvent> refillLog, out _, out _);
+            if (CountActorDeclarations(refillLog, "limited", "ammo-shot") < 2 ||
+                CountReason(refillLog, "AmmoRefilled") == 0)
+            {
+                failures.Add("弹药：补充效果未恢复已停用物品的后续主动使用");
+            }
+        }
+
+        private static void CheckCappedAmmo(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest capped = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 1, BuqiTestSuite.Item("capped", "ammo-capped", 0)),
+                BuqiTestSuite.Snapshot("R", 4, 0, BuqiTestSuite.Item("breaker", "buffer-breaker", 0)));
+            BattleResult cappedResult = BuqiBattleSimulator.Simulate(
+                capped, provider, out List<BattleEvent> cappedLog, out SideState cappedLeft, out _);
+            if (cappedResult.DurationTicks != 20 ||
+                CountReasonAtTick(cappedLog, "AmmoConsumed", 19) != 0 ||
+                cappedLeft.Items[0].AmmoRemaining != 1 || !cappedLeft.Items[0].IsEnabled)
+            {
+                failures.Add("Ammo: a capped active declaration consumed ammo before settlement acceptance");
+            }
+        }
+
+        private static void CheckCappedAmmoReplay(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest request = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 1, BuqiTestSuite.Item("capped", "ammo-capped", 0)),
+                BuqiTestSuite.Snapshot("R", 4, 0, BuqiTestSuite.Item("breaker", "buffer-breaker", 0)));
             BattleResult result = BuqiBattleSimulator.Simulate(
-                sameTick, provider, out List<BattleEvent> log, out SideState left, out SideState right);
-
-            if (result.Outcome != BattleOutcome.Draw ||
-                result.DurationTicks != 1 ||
-                left.Execution != 0 ||
-                right.Execution != 0)
+                request, provider, out List<BattleEvent> log, out _, out _);
+            var replay = new BattleReplayController(new BattleReplayData
             {
-                failures.Add("蓄力：同刻双方消耗声明未同时结算");
+                LeftBuild = request.Left,
+                RightBuild = request.Right,
+                Result = result,
+                Log = log,
+                Definitions = provider,
+            });
+            replay.SkipToResult();
+            BattleReplayItemFrame item = FindReplayItem(replay.Frame.Left, "capped");
+            if (item == null || item.AmmoRemaining != 1 || !item.IsEnabled)
+                failures.Add("Replay: capped ammo use diverged from simulator state");
+        }
+
+        private static void CheckFlightLifecycle(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest timed = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0, BuqiTestSuite.Item("flight", "flight", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(timed, provider, out List<BattleEvent> timedLog, out _, out _);
+            if (CountReasonAtTick(timedLog, "FlightStarted", 0) != 1 ||
+                SumActorDeclaredAtTick(timedLog, "flight", "flight-strike", 9) != 15 ||
+                CountReasonAtTick(timedLog, "FlightEnded", 11) != 1 ||
+                SumReasonAtTick(timedLog, "FlightEndDamage", 11) != 7)
+            {
+                failures.Add("飞行：进入、飞行增益、自然停飞或停飞伤害语义不完整");
             }
 
-            if (CountReasonAtTick(log, "ChargeConsumed", 0) != 2 ||
-                SumReasonAtTick(log, "ChargeConsumed", 0) != -6 ||
-                !AllReasonEventsAtTickMatch(log, "ChargeConsumed", 0, BuqiEventPhase.Declare, BuqiEventType.Effect))
+            BattleRequest explicitLeave = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0, BuqiTestSuite.Item("flight", "flight-leave", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(explicitLeave, provider, out List<BattleEvent> leaveLog, out _, out _);
+            if (CountReasonAtTick(leaveLog, "FlightEnded", 9) != 1 ||
+                SumReasonAtTick(leaveLog, "FlightEndDamage", 9) != 7)
             {
-                failures.Add("蓄力：消耗日志不是声明阶段的负资源变化");
+                failures.Add("飞行：显式停飞未结束状态或结算停飞伤害");
             }
+        }
+
+        private static void CheckFlightRefreshSource(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest refreshed = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0,
+                    BuqiTestSuite.Item("strong", "flight-source-strong", 0),
+                    BuqiTestSuite.Item("weak", "flight-source-weak", 1)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(refreshed, provider, out List<BattleEvent> refreshedLog, out _, out _);
+            if (CountActorReasonAtTick(refreshedLog, "strong", "FlightEndDamage", 20) != 1 ||
+                SumReasonAtTick(refreshedLog, "FlightEndDamage", 20) != 9)
+            {
+                failures.Add("Flight: a weaker refresh replaced the retained end-damage source");
+            }
+        }
+
+        private static void CheckSingleFlightExit(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest repeated = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot(
+                    "L", 100, 0, BuqiTestSuite.Item("flight", "flight-leave-repeat", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(repeated, provider, out List<BattleEvent> repeatedLog, out _, out _);
+            if (CountReasonAtTick(repeatedLog, "FlightEndDamage", 9) != 1 ||
+                SumReasonAtTick(repeatedLog, "FlightEndDamage", 9) != 7)
+            {
+                failures.Add("Flight: repeated leave declarations applied end damage more than once");
+            }
+
+            BattleRequest rewritten = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot(
+                    "L", 100, 0, BuqiTestSuite.Item("flight", "flight-leave", 0, "A-03")),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BuqiBattleSimulator.Simulate(rewritten, provider, out List<BattleEvent> rewriteLog, out _, out _);
+            if (CountReasonAtTick(rewriteLog, "FlightEndDamage", 9) != 1 ||
+                SumReasonAtTick(rewriteLog, "FlightEndDamage", 9) != 7)
+            {
+                failures.Add("Flight: A-03 rewritten leave applied end damage more than once");
+            }
+        }
+
+        private static void CheckFlightControlMitigation(
+            IItemDefinitionProvider provider,
+            List<string> failures)
+        {
+            BattleRequest freeze = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("flight", "flight-long", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("freeze", "freeze", 0)));
+            BuqiBattleSimulator.Simulate(freeze, provider, out List<BattleEvent> freezeLog, out _, out _);
+            if (SumReasonAtTick(freezeLog, "FreezeApplied", 39) != 5 ||
+                SumReasonAtTick(freezeLog, "FlightFreezeMitigation", 39) != 5)
+            {
+                failures.Add("飞行：冻结持续时间未按 50% 免疫向上减半");
+            }
+
+            BattleRequest delay = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("flight", "flight-long", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("delay", "delay-odd", 0)));
+            BuqiBattleSimulator.Simulate(delay, provider, out List<BattleEvent> delayLog, out _, out _);
+            if (SumReasonAtTick(delayLog, "FlightDelayMitigation", 29) != 4)
+                failures.Add("飞行：迟滞持续时间未按 50% 免疫向上减半");
+        }
+
+        private static void CheckNewMechanicReplayProjection(
+            IItemDefinitionProvider provider,
+            List<string> failures)
+        {
+            BattleRequest ammoRequest = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("limited", "ammo-limited", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BattleResult ammoResult = BuqiBattleSimulator.Simulate(
+                ammoRequest, provider, out List<BattleEvent> ammoLog, out _, out _);
+            var ammoReplay = new BattleReplayController(new BattleReplayData
+            {
+                LeftBuild = ammoRequest.Left,
+                RightBuild = ammoRequest.Right,
+                Result = ammoResult,
+                Log = ammoLog,
+                Definitions = provider,
+            });
+            ammoReplay.SkipToResult();
+            BattleReplayItemFrame ammoFrame = FindReplayItem(ammoReplay.Frame.Left, "limited");
+            if (ammoFrame == null || ammoFrame.AmmoRemaining != 0 || ammoFrame.IsEnabled ||
+                !string.IsNullOrEmpty(ammoReplay.Frame.Error))
+            {
+                failures.Add("回放：未从日志重建弹药耗尽与停用状态");
+            }
+
+            BattleRequest flightRequest = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0, BuqiTestSuite.Item("flight", "flight", 0)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BattleResult flightResult = BuqiBattleSimulator.Simulate(
+                flightRequest, provider, out List<BattleEvent> flightLog, out _, out _);
+            var flightReplay = new BattleReplayController(new BattleReplayData
+            {
+                LeftBuild = flightRequest.Left,
+                RightBuild = flightRequest.Right,
+                Result = flightResult,
+                Log = flightLog,
+                Definitions = provider,
+            });
+            flightReplay.Advance(0.5f);
+            if (!flightReplay.Frame.Left.IsFlying || flightReplay.Frame.Left.FlyingTicks != 6)
+                failures.Add("回放：飞行剩余时长未随回放时刻推进");
+            flightReplay.SkipToResult();
+            if (flightReplay.Frame.Left.IsFlying || !string.IsNullOrEmpty(flightReplay.Frame.Error))
+                failures.Add("回放：停飞状态或最终战斗投影不一致");
+        }
+
+        private static void CheckFlightRefreshReplay(IItemDefinitionProvider provider, List<string> failures)
+        {
+            BattleRequest request = BuqiTestSuite.Request(
+                BuqiTestSuite.Snapshot("L", 100, 0,
+                    BuqiTestSuite.Item("strong", "flight-source-strong", 0),
+                    BuqiTestSuite.Item("weak", "flight-source-weak", 1)),
+                BuqiTestSuite.Snapshot("R", 1000, 0, BuqiTestSuite.Item("target", "passive", 0)));
+            BattleResult result = BuqiBattleSimulator.Simulate(
+                request, provider, out List<BattleEvent> log, out _, out _);
+            BattleReplayData data = new BattleReplayData
+            {
+                LeftBuild = request.Left,
+                RightBuild = request.Right,
+                Result = result,
+                Log = log,
+                Definitions = provider,
+            };
+
+            var jumped = new BattleReplayController(data);
+            jumped.Advance(1f);
+            var stepped = new BattleReplayController(data);
+            stepped.Advance(0.5f);
+            stepped.Advance(0.5f);
+            if (jumped.Frame.Left.FlyingTicks != 10 || stepped.Frame.Left.FlyingTicks != 10)
+                failures.Add("Replay: flight refresh duration drifted during jump or incremental playback");
+
+            bool hasFlightEndFeedback = false;
+            foreach (BattleReplayFeedbackEvent feedback in jumped.FeedbackEvents)
+            {
+                if (feedback.Kind == BattleReplayFeedbackKind.Damage &&
+                    feedback.Side == BattleReplayFeedbackSide.Left && feedback.Value == 9)
+                {
+                    hasFlightEndFeedback = true;
+                    break;
+                }
+            }
+            if (!hasFlightEndFeedback)
+                failures.Add("Replay: flight-end damage did not create damage feedback");
+        }
+
+        private static BattleReplayItemFrame FindReplayItem(BattleReplaySideFrame side, string instanceId)
+        {
+            foreach (BattleReplayItemFrame item in side.Items)
+            {
+                if (item.InstanceId == instanceId)
+                    return item;
+            }
+            return null;
         }
 
         private static void CheckRewrite(
@@ -483,6 +1444,50 @@ namespace Game.Hot.Buqi.Battle
             {
                 failures.Add("快照：规范哈希受输入装备顺序影响");
             }
+
+            IItemDefinitionProvider tempoProvider = CreateContractProvider(
+                new BuqiBattleRuleConfig(),
+                Definition("temporary-tempo", 20,
+                    Spec(BuqiTrigger.OnUse, BuqiEffect.Damage,
+                        BuqiTarget.EnemyExecution, 1, "temporary-use")),
+                Definition("passive-contract", 1000));
+            BuildSnapshot tempoFirst = ContractSnapshot("tempo", 1000, 0,
+                BuqiTestSuite.Item("tempo", "temporary-tempo", 0));
+            BuildSnapshot tempoSecond = ContractSnapshot("tempo", 1000, 0,
+                BuqiTestSuite.Item("tempo", "temporary-tempo", 0));
+            tempoFirst.Items[0].TemporaryModifiers.Add(new TemporaryModifier
+            {
+                Effect = BuqiEffect.Haste,
+                SourceInstanceId = "temporary-source",
+                RemainingTicks = 100,
+                Bps = 1000,
+            });
+            tempoFirst.Items[0].TemporaryModifiers.Add(new TemporaryModifier
+            {
+                Effect = BuqiEffect.Delay,
+                SourceInstanceId = "temporary-source",
+                RemainingTicks = 100,
+                Bps = 1000,
+            });
+            tempoSecond.Items[0].TemporaryModifiers.Add(tempoFirst.Items[0].TemporaryModifiers[1]);
+            tempoSecond.Items[0].TemporaryModifiers.Add(tempoFirst.Items[0].TemporaryModifiers[0]);
+            BuildSnapshot passiveFirst = ContractSnapshot("target", 1000, 0,
+                BuqiTestSuite.Item("target", "passive-contract", 0));
+            BuildSnapshot passiveSecond = ContractSnapshot("target", 1000, 0,
+                BuqiTestSuite.Item("target", "passive-contract", 0));
+            BattleResult tempoResultFirst = BuqiBattleSimulator.Simulate(
+                ContractRequest(tempoFirst, passiveFirst, 77), tempoProvider,
+                out List<BattleEvent> tempoLogFirst, out _, out _);
+            BattleResult tempoResultSecond = BuqiBattleSimulator.Simulate(
+                ContractRequest(tempoSecond, passiveSecond, 77), tempoProvider,
+                out List<BattleEvent> tempoLogSecond, out _, out _);
+            if (BuqiCrypto.SnapshotHash(tempoFirst) != BuqiCrypto.SnapshotHash(tempoSecond) ||
+                tempoResultFirst.BattleLogHash != tempoResultSecond.BattleLogHash ||
+                FindFirstActorReasonTick(tempoLogFirst, "tempo", "temporary-use") !=
+                FindFirstActorReasonTick(tempoLogSecond, "tempo", "temporary-use"))
+            {
+                failures.Add("Snapshot determinism: temporary modifier order must not change the hash or battle result");
+            }
         }
 
         /// <summary>
@@ -498,48 +1503,6 @@ namespace Game.Hot.Buqi.Battle
                 failures.Add("循环上限：同一装备的第五个事件未被截断");
             if (CountReason(log, "PerItemLoopCapReached") != 1)
                 failures.Add("循环上限：每件装备的截断未准确记录一次");
-        }
-
-        /// <summary>验证 tick 450 双方劫火经 Aggregate 同时造成直接伤害并允许平局。</summary>
-        private static void CheckOvertime(
-            IItemDefinitionProvider provider,
-            List<BuqiTestVector> vectors,
-            List<string> failures)
-        {
-            BattleResult result = Simulate(vectors, "overtime", provider, out List<BattleEvent> log, failures);
-            if (result == null)
-                return;
-            if (result.Outcome != BattleOutcome.Draw || result.TerminationReason != TerminationReason.Overtime.ToString())
-                failures.Add("劫火：同时直接伤害未产生劫火平局");
-            if (CountReasonAtTick(log, "OvertimeDamage", BuqiBattleSimulator.NormalTickCount) != 2)
-                failures.Add("劫火：双方未在第 450 时刻承受聚合直接伤害");
-        }
-
-        /// <summary>验证 tick 600 后按执行值、护体、失衡的固定顺序裁决。</summary>
-        private static void CheckHardCap(
-            IItemDefinitionProvider provider,
-            List<string> failures)
-        {
-            BattleRequest executionRequest = BuqiTestSuite.Request(
-                BuqiTestSuite.Snapshot("L", 1000, 0, BuqiTestSuite.Item("left", "passive", 0)),
-                BuqiTestSuite.Snapshot("R", 999, 60, BuqiTestSuite.Item("right", "passive", 0)));
-            BattleResult executionResult = BuqiBattleSimulator.Simulate(
-                executionRequest, provider, out _, out _, out _);
-            if (executionResult.TerminationReason != TerminationReason.HardCap.ToString() ||
-                executionResult.Outcome != BattleOutcome.LeftWin)
-            {
-                failures.Add("硬上限：道基不是第一比较项");
-            }
-
-            BattleRequest noiseRequest = BuqiTestSuite.Request(
-                BuqiTestSuite.Snapshot("L", 1000, 5, BuqiTestSuite.Item("left", "passive", 0)),
-                BuqiTestSuite.Snapshot("R", 1000, 5, BuqiTestSuite.Item("right", "passive", 0)));
-            noiseRequest.Left.InitialNoiseDebt = 2;
-            noiseRequest.Right.InitialNoiseDebt = 4;
-            BattleResult noiseResult = BuqiBattleSimulator.Simulate(
-                noiseRequest, provider, out _, out _, out _);
-            if (noiseResult.Outcome != BattleOutcome.LeftWin)
-                failures.Add("硬上限：道基与护体相同时，较低失衡值未获胜");
         }
 
         private static void CheckMirror(
@@ -661,6 +1624,28 @@ namespace Game.Hot.Buqi.Battle
             {
                 if (battleEvent.Tick == tick && battleEvent.ActorInstanceId == actorId &&
                     battleEvent.ReasonCode == reason)
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        private static int CountActorDeclarationsWithAmountAtTick(
+            List<BattleEvent> log,
+            string actorId,
+            string reason,
+            int tick,
+            int amount)
+        {
+            int count = 0;
+            foreach (BattleEvent battleEvent in log)
+            {
+                if (battleEvent.Tick == tick &&
+                    battleEvent.ActorInstanceId == actorId &&
+                    battleEvent.ReasonCode == reason &&
+                    battleEvent.Type == BuqiEventType.Declare &&
+                    battleEvent.Amount == amount)
                 {
                     count++;
                 }

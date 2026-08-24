@@ -1,365 +1,117 @@
-# 《不器》确定性战斗契约 v0.4.1
+# 《不器》确定性战斗契约 v0.7.0
 
-> 状态：0.4.1 定型充能声明时读取/消费契约；旧六效果向量继续由该规则版本和 approved hash 保护。
+> 状态：以本仓库内 [S01 战斗系统策划案（迁回副本）](buqi-combat-system-s01.md) 为战斗系统设计真源；本文档 v0.7.0 是其 0.1s tick 实现规格（映射关系见 S01 附录）。规则、模拟、内容和批准哈希必须显式版本化；旧回放不得用当前语义静默投影。
 >
-> 内容扩展：`ContentVersion=buqi-effects-cv1` 在同一确定性内核上增加 Heal、Regen、Poison、Burn、Freeze。双方快照必须使用相同且由 definition provider 认可的内容版本。未知内容版本或旧消费者不能静默接受扩展枚举。
+> v0.7.0 变更：删除过载、怒气词条；灼烧改为"护盾减伤 50%"；改造 A-01~A-06 → A-01~A-04；棋盘 8→10 格。
 
-## 1. Contract Identity
+## 1. 契约身份
 
 - `GameId`: `buqi`
-- `RuleVersion`: `0.4.1`
-- `SimulationVersion`: `battle-core-0.4.1`
-- 1 tick = 100 ms；正常阶段 450 tick，硬上限 600 tick。
-- 模拟层只使用整数；倍率使用万分比 `basis points`。
-- 视觉层可连续插值冷却条，但不得参与结果计算。
-
-## 2. Request DTO
-
-```text
-BattleRequest {
-    string ruleVersion;
-    ulong battleSeed;
-    int roundIndex;
-    BuildSnapshot left;
-    BuildSnapshot right;
-}
-
-BuildSnapshot {
-    string snapshotId;
-    string contentVersion;
-    string archetypeId;
-    int initialExecution = 100;
-    int initialBuffer = 0;
-    int initialNoiseDebt = 0;
-    ItemInstance[] items;
-}
-
-ItemInstance {
-    string instanceId;
-    string definitionId;       // W8-001 ... W8-018
-    int quality;               // 1普通, 2改良, 3定型
-    int anchorSlot;            // 0..7，始终为最左占位
-    string annotationId;       // 空字符串或 A-01 ... A-06
-    TemporaryModifier[] temporaryModifiers;
-}
-```
-
-### 2.1 规范化与校验
-
-1. `items` 按 `anchorSlot`、`instanceId` 序数升序。
-2. 配置定义、品质、改造、临时效果和内容版本必须有效。
-3. S/M/L 分别覆盖 1/2/3 格；不得越界、重叠或重复实例 ID。
-4. 棋盘必须至少有 1 张装备。
-5. 输入不合法时返回 `InvalidBuild`，不尝试静默修复。
-6. 规范化快照使用固定字段顺序序列化，并计算 SHA-256 `SnapshotHash`。
-
-## 3. Runtime State
-
-```text
-SideState {
-    int execution;
-    int maxExecution;
-    int buffer;
-    int noise;                 // 0..9
-    TimedStatus[] statuses;    // Regen / Poison / Burn
-    ItemState[] items;
-}
-
-ItemState {
-    string instanceId;
-    int cooldownProgress;      // 剩余进度，单位为 1/10000 tick
-    int charge;                // 0..9
-    int frozenTicks;
-    int ownUseCount;
-    int adjacentUseCount;
-    bool firstConditionUsed;
-    bool firstInterferenceUsed;
-    TimedModifier[] modifiers;
-}
-```
-
-生命值、护盾、过载属于阵营；充能和触发计数属于实例。战斗结束后全部丢弃。
-
-## 4. Result and Log
-
-```text
-BattleResult {
-    BattleOutcome outcome;     // LeftWin, RightWin, Draw, InvalidBuild, Aborted
-    int durationTicks;
-    int leftExecution;
-    int rightExecution;
-    int leftBuffer;
-    int rightBuffer;
-    int leftNoise;
-    int rightNoise;
-    string terminationReason;
-    string battleLogHash;
-    string leftSnapshotHash;
-    string rightSnapshotHash;
-}
-
-BattleEvent {
-    int sequence;
-    int tick;
-    EventPhase phase;
-    int chainDepth;
-    string chainId;
-    string actorInstanceId;
-    string sourceInstanceId;
-    string targetInstanceId;
-    EventType type;
-    int amount;
-    string effectId;
-    string reasonCode;
-}
-```
+- `RuleVersion`: `0.7.0`
+- `SimulationVersion`: `battle-core-0.7.0`
+- 1 个基础/表现 tick = 0.1 秒，1 秒 = 10 tick。
+- 所有模拟数值使用确定性整数；倍率与概率使用万分比。
+- `BattleSeed` 是暴击等随机判定的唯一随机输入。
 
-日志必须区分“声明”“生效”和“空转/截断”，使 UI 能准确展示连锁和中断原因。
+## 2. 输入与校验
 
-## 5. Tick Phases
+`BattleRequest` 包含规则版本、战斗种子、轮次和左右构筑快照。构筑快照包含内容版本、初始生命/护盾以及装备实例。
 
-每个 tick 严格按以下阶段执行：
+进入模拟前必须满足：
 
-1. `PreTick`：tick 0 先声明 `OnBattleStart` 与开局过载；随后先按当前加速/延迟或冰冻推进冷却并消耗冰冻 tick，再减少临时修正持续 tick、推进既有 Regen/Poison/Burn 状态，最后从 tick 450 起每 10 tick 声明加时伤害。
-2. `Declare`：收集冷却到期的主动使用、首次条件和受干扰响应。
-3. `Resolve`：确定目标，将声明展开为当前内容版本允许的效果和计数事件。
-4. `Chain`：处理相邻装备使用、累计次数和复制追加；重复 Resolve，直到队列为空或达到上限。
-5. `Aggregate`：按新增护盾、普通伤害、灼烧、Heal/Regen、中毒、过载伤害、加时伤害、加速/延迟、持续状态、冰冻的稳定顺序应用汇总；充能已在 `Declare` 中即时读写。
-6. `PostTick`：在双方 Aggregate 都完成后检查胜负或硬上限。
+1. 请求规则版本等于当前规则版本。
+2. 双方内容版本相同，且等于 definition provider 的内容版本。
+3. 装备定义、品质、A-01 至 A-04 改造和临时效果有效。
+4. S/M/L 分别占 1/2/3 格；10 格棋盘不得越界、重叠或出现跨阵营重复实例 ID。
+5. 非法输入返回 `InvalidBuild`，不得静默修复。
+6. 快照按稳定字段顺序规范化并计算 SHA-256 `SnapshotHash`。
 
-同阶段固定排序键：
+## 3. 时间与阶段
 
-`(tick, phaseOrdinal, chainDepth, sourceAnchorSlot, sourceInstanceId, eventTypeOrdinal, sequence)`
+每个 tick 严格按以下顺序执行：
 
-容器迭代顺序、帧率、动画时长和平台区域设置均不能影响排序。
+1. 状态边界：tick 大于 0 且能被 10 整除时，先结算中毒和燃烧；再生在此生成待结算治疗，不提前修改生命。
+2. 冷却与持续时间：推进飞行、冻结、急速/减速持续时间，再推进装备冷却。
+3. 触发与连锁：收集开战、冷却到期、条件、相邻、使用次数和受干扰声明；按稳定顺序解析。
+4. 聚合结算：护盾、普通伤害、治疗/再生、控制与持续状态、飞行依次落地。
+5. 死亡判定：双方本 tick 已声明效果全部结算后再判断胜负；双方同时不大于 0 为平局。
+6. 沙暴：未死亡且到达 `StormStartTicks` 后，对双方施加本 tick 真实伤害，再次判断死亡。
 
-## 6. Cooldown
+同阶段稳定排序键为：
 
-战斗开始：
+`(tick, phaseOrdinal, originalSettlementSequence)`
 
-`cooldownProgress = baseCooldownTicks * 10000`
+触发队列和聚合桶在写日志前已按确定性来源排序；日志不得再次按来源打乱同阶段的真实结算子顺序。容器迭代顺序、帧率、动画和区域设置不得影响结果。
 
-每个 PreTick：
+## 4. 冷却与控制
 
-`cooldownProgress -= Clamp(10000 + HasteBps - DelayBps, 5000, 15000)`
+- 冷却进度单位为 `1/10000 tick`，初始化为 `baseCooldownTicks * 10000`，所有大数运算饱和到 `int`。
+- 无控制时每 tick 推进 `10000`。
+- 急速固定 2 倍，即推进 `20000`。
+- 减速固定 0.5 倍，即推进 `5000`。
+- 急速与减速互斥；装备级新效果只覆盖该装备，阵营级效果仍作用于其他装备。
+- 冻结期间不推进冷却、不能蓄能推进、不能触发主动使用。
+- A-04 继续免疫敌方减速并拒绝友方急速。
+- 到期效果在确定性时点移除，临时效果输入顺序不影响快照哈希或战果。
 
-当进度 `<= 0`：
+## 5. 治疗与持续状态
 
-1. 声明一次主动使用。
-2. 进度加回 `baseCooldownTicks * 10000`，保留负溢出，避免高频卡累计漂移。
-3. 若仍 `<= 0`，也不能在同一 tick 再次主动使用；等待下一 tick。
+- `Heal`：恢复生命但不超过 `MaxExecution`，溢出写入 `HealOverflow`。
+- 每次直接治疗按中毒总量和燃烧总量分别净化 10%，整数向上取整；按稳定来源顺序扣除。
+- `Regen`：每 10 tick 恢复配置量，在同 tick 普通伤害之后结算。
+- `Poison`：每 10 tick 造成当前总层数伤害，无视护盾。
+- `Burn`：每 10 tick 造成 2 点伤害并使层数减 1；存在护盾时伤害减半（护盾减伤 50%），不消耗护盾。
+- 同一触发的多重持续状态会累加结算量；同时施加的等价状态可合并存储，但不得丢失总量或到期语义。
 
-品质默认不修改冷却。A-01 高速和 A-02 强效在初始化时修改基础冷却，最终至少 10 tick。
+## 6. 暴击与多重
 
-## 7. Trigger Contract
+- 可暴击效果：伤害、治疗、护盾、再生、燃烧、中毒。
+- 每次结算以 `BattleSeed`、tick、chain、来源、效果、重复序号、复写标记和声明序号生成独立确定性万分比判定。
+- 命中暴击后最终效果量固定乘 2，并写入 `CriticalApplied`。
+- 品质和 A-01 至 A-04 精炼倍率先确定基础量，暴击再翻倍。
+- `RepeatCount` 表示一次触发的独立结算次数；每次都进入现有触发链、日志和回放，并占用事件预算。
+- 单实例每 tick 最多 4 个声明，全场每 tick 最多 64 个声明；达到上限记录一次截断事件。
 
-首阶段触发类型：
+## 7. 弹药与蓄能
 
-```text
-OnUse
-OnBattleStart
-OnAdjacentUse
-OnFirstConditionMet
-OnUseCountReached
-OnFirstInterfered
-```
+- `AmmoCapacity = 0` 表示无限弹药；正数表示有限弹药并以容量值开局。
+- 每次成功排队的主动使用预留 1 发，实际声明被事件上限接纳后才扣除并记录 `AmmoConsumed`。
+- 弹药耗尽后装备停用，不能主动触发或响应相邻使用。
+- `Ammo` 效果按配置量补充，最高不超过容量；补充后重新启用，记录 `AmmoRefilled`。
+- 蓄能不再是 0..9 层数资源。`Charge` 立即按配置 tick 数推进目标装备冷却；若推进后到期，可在当前链中排队主动使用，但仍受冻结、弹药和事件上限约束。
 
-规则：
+## 8. 飞行
 
-- `OnBattleStart` 在 tick 0、首次冷却推进前声明。
-- `OnAdjacentUse` 只响应主动 `OnUse`，不响应复制、计数触发或其他响应。
-- `OnFirstConditionMet` 每实例每场最多一次，在条件首次由 false 变 true 时声明。
-- `OnUseCountReached` 达阈值即声明并按配置清零或扣除计数。
-- `OnFirstInterfered` 只响应敌方施加的首个有效延迟；延迟被 A-04 抗减速免疫时不算有效。
-- A-03 复制只复制首次主动使用的直接效果，倍率 50%，不产生 `OnAdjacentUse`，不能再次被复制。
+- 正数 `Flight` 进入或刷新飞行；负数 `Flight` 离开飞行。
+- 飞行持续 tick、额外伤害万分比和停飞伤害均由配置表达。
+- 飞行期间新受到的冻结与敌方减速持续时间减半，奇数向上取整。
+- 飞行到期或主动离开时只发生一次状态转换；配置的停飞伤害只结算一次。
+- 刷新时保留更长持续时间、更高伤害增益和更高停飞伤害，并保留对应来源元数据。
 
-上限：单实例每 tick 最多 4 次主动/响应事件；全场每 tick 最多 64 个事件。超限时丢弃当前 chain 后续事件，记录 `LoopCapReached`，继续战斗。
+## 9. 沙暴
 
-## 8. Targeting
+- 沙暴默认从 tick 300（30 秒）开始，此后每个基础 tick 结算一次，不按秒降频。
+- 沙暴伤害公式：`StormBaseDamage + (tick - StormStartTicks) * StormRampDamage`。
+- 沙暴伤害无视护盾并使用饱和整数。没有 600 tick 硬上限，也不比较剩余生命、护盾；战斗持续到一方死亡。
 
-合法选择器：
+## 10. 日志、回放与哈希
 
-```text
-EnemyExecution
-Self
-LeftAdjacentItem
-RightAdjacentItem
-AllAdjacentItems
-ShortestCooldownEnemyItem
-LongestCooldownEnemyItem
-LeftmostEnemyItem
-RightmostEnemyItem
-```
+`BattleResult` 保存规则版本、模拟版本、内容版本、双方快照哈希、种子、结果、最终资源和 `BattleLogHash`。
 
-- 相邻由 8 格占位重建；空格阻断。
-- 冷却比较使用当前 `cooldownProgress`；相同按锚点、实例 ID。
-- 没有合法目标时记录 `NoValidTarget`，该分支不生效。
-- 战斗目标不使用随机。`battleSeed` 仅保留给未来规则版本，本版本不能消费 RNG。
+`BattleEvent` 保存连续 sequence、tick、阶段、chain、来源、目标、类型、整数值、效果 ID 和原因码。日志必须能够投影生命、护盾、弹药、冻结、飞行。
 
-## 9. Effect Types
+回放入口必须拒绝：
 
-9.1-9.5 是 v0.4.1 基础效果；9.6 是 `buqi-effects-cv1` 内容扩展。扩展不得改变旧内容向量的结果和 hash。
+- 非当前 `RuleVersion` 或 `SimulationVersion`；
+- 结果、双方构筑与 definition provider 内容版本不一致；
+- 重新计算的双方快照哈希与结果不一致；
+- sequence/tick 非法或日志哈希不一致。
 
-### 9.1 Damage
+修改上述语义或规范化字段后，必须先补行为契约并通过审查，再显式执行 `update-hashes`；普通 `verify` 永不写批准基线。
 
-普通伤害同 tick 汇总后应用：
+## 11. 配置与集成边界
 
-```text
-absorbed = Min(buffer, normalDamage)
-buffer -= absorbed
-execution -= normalDamage - absorbed
-execution -= directDamage
-```
-
-直接伤害只来自过载伤害和加时伤害。
-
-### 9.2 Buffer
-
-同 tick 新获得护盾在普通伤害之前加入护盾池：
-
-`buffer = Min(60, buffer + grantedBuffer)`
-
-该顺序让双方同 tick 防御声明均有效，且不依赖左右先后。战报分别记录“生成护盾”和“实际吸收”。
-
-### 9.3 Haste and Delay
-
-- 同来源重复施加同效果时刷新持续时间并取较高幅度，不叠加。
-- 不同来源可以叠加，最终分别求和，再将推进倍率限制为 50%-150%。
-- A-04 抗减速：忽略敌方延迟，且忽略友方加速；仍记录 `Immune`。
-- 到期在该 tick 冷却推进完成后移除，使显示和模拟一致。
-
-### 9.4 Charge
-
-`charge = Clamp(charge + delta, 0, 9)`
-
-充能增减、读取和消费都在稳定的 `Declare` 顺序中立即落地，事件 `amount` 记录有符号资源变化：获得为正、消费为负。这样先声明的充能来源可被同 tick 后续声明读取，同时避免同一充能被多个消费型声明重复使用。每条效果配置 `chargeReadLimit`、`amountPerCharge` 与 `chargeConsume`：先读取 `Min(currentCharge, chargeReadLimit)`，将 `amount + readCharge * amountPerCharge` 作为该声明的基础效果量；`chargeConsume=true` 时立即扣除本次读取量，后续声明只能读取剩余充能。只读效果不扣除，可在同 tick 再次读取同一当前值。A-03 复制复用原主动声明的读取快照并应用 50% 倍率，不再次消费。没有合法目标时不读取也不消费。只允许装备文本给自身或相邻卡增加充能。
-
-### 9.5 Noise
-
-过载事件按稳定事件顺序逐个处理：
-
-```text
-noise += delta
-while noise >= 10:
-    noise -= 10
-    directDamage += 8
-noise = Max(noise, 0)
-```
-
-已经跨阈值声明的事故不被同 tick 后续降噪撤销。A-05 稳定先修改来源事件的过载增量，最低为 0；A-06 超载在 tick 0 产生 3 过载。
-
-### 9.6 Heal, Regen, Poison, Burn and Freeze
-
-- `Heal`：在普通伤害与灼烧之后、Poison 之前立即恢复生命值，最高不超过 `MaxExecution`；溢出记录 `HealOverflow`。
-- `Regen`：按来源实例与效果类型维护持续状态，每 10 tick 产生一次 Heal。相同来源刷新时取较高强度与较长剩余时间，并保留当前 tick 进度。
-- `Poison`：按来源实例维护持续状态，每 10 tick 直接扣生命值，不经过护盾。
-- `Burn`：按来源实例维护持续状态，每 10 tick 产生可被护盾吸收的伤害，并参与护盾清空条件。
-- `Freeze`：作用于确定性选中的敌方装备；冻结剩余 tick 大于 0 时，该卡本 tick 不推进冷却并消耗 1 tick。相同目标刷新时取较长剩余时间。
-- 新施加的持续状态和冰冻在本 tick Aggregate 写入，从下一 tick 开始产生持续效果或阻断冷却；不会追溯取消本 tick 已声明事件。
-
-## 10. Simultaneous Resolution
-
-同 tick 的双方声明都必须进入 Aggregate 后才改变生命值。固定应用顺序：
-
-1. 新增护盾。
-2. 普通伤害由护盾吸收，剩余扣生命值。
-3. 灼烧伤害由护盾吸收，剩余扣生命值。
-4. 治疗与生命恢复恢复生命值，不超过最大值。
-5. 中毒直接扣生命值。
-6. 过载伤害与加时伤害直接扣生命值。
-7. 写入加速、延迟、持续状态和冰冻；充能已按稳定 `Declare` 顺序即时更新。
-8. PostTick 检查胜负。
-
-因此，一方在本 tick 被击至 0 也不会取消其已经声明的效果。双方均 <=0 判平局。
-
-## 11. Overtime and End Conditions
-
-- tick 0-449 为正常阶段。
-- tick 450 立即声明第一次 2 点加时伤害直接伤害，之后每 10 tick 再声明一次。
-- 伤害公式：`2 + Floor(((tick - 450) / 10) / 5)`；因此 tick 450-490 为 2 点，tick 500 起为 3 点。
-- 任一 PostTick 结束时一方生命值 <=0，按 10 节判胜负。
-- tick 600 PostTick 后仍存活，依次比较生命值、护盾、过载：前两项高者优先，过载低者优先；仍相同则 Draw。
-
-## 12. Content Semantics
-
-v0.4 基础 18 张装备只由以下原语组合：
-
-- 造成普通伤害。
-- 获得护盾。
-- 添加/读取/消耗充能。
-- 给自身或合法目标添加加速/延迟。
-- 增减己方过载。
-- 读取尺寸、标签、相邻、使用次数、护盾损失和首次干扰。
-
-`buqi-effects-cv1` 已通过通用枚举、状态模型、配置校验和确定性测试加入 Heal/Regen/Poison/Burn/Freeze，不按装备 ID 写特例。取消触发、暴击、弹药、随机目标、召唤或其它新语义仍属于规则扩容，必须先增加独立契约、内容版本与跨端测试。
-
-## 13. Determinism Tests
-
-1. 相同输入重复 100 次，`BattleResult` 和 `BattleLogHash` 完全一致。
-2. 固定测试向量在 Windows 编辑器、无头 .NET 测试和目标平台得到相同 hash。
-3. 左右镜像输入产生镜像胜负、相同持续 tick 和绝对资源变化。
-4. 打乱内部事件插入顺序不改变 Aggregate 结果。
-5. 8 格 S/M/L 占位与相邻重建正确。
-6. 同 tick 新护盾、普通伤害和直接伤害按 10 节顺序处理。
-7. 加速与延迟多来源叠加、刷新、上限和 A-04 免疫正确。
-8. 充能在同 tick 声明时按稳定事件顺序消费；同一份充能不能被多个消费型声明重复读取，A-03 复制不二次消费，且充能不超过 9。
-9. 过载跨越 10 和 20 时事故次数、余数和直接伤害正确。
-10. A-03 复制不触发相邻响应，也不能复制自身。
-11. 连锁达到 64 事件后安全截断并记录原因。
-12. 45 秒加时伤害和 60 秒比较顺序正确。
-13. 重叠、越界、未知定义、未知改造和版本不匹配全部拒绝。
-14. Heal 不超过最大生命值，溢出量可追溯。
-15. Regen、Poison、Burn 按固定 10 tick 周期结算，同来源刷新不重置 tick 进度。
-16. Poison 绕过护盾，Burn 经过护盾并可触发护盾清空条件。
-17. Freeze 阻断后续 tick 冷却推进，到期后恢复；同 tick 目标选择稳定。
-18. 旧六效果向量在 `buqi-effects-cv1` 实现加入后仍保持 approved hash。
-
-### 13.1 三端验证方式
-
-运行时模拟源码保留在 `Game.Hot.Code`，同时由 `Share/Buqi.Simulation.Headless` 的 .NET 8 控制台项目通过 MSBuild 链接编译。该验证项目不得引用 Unity、UGF、ET、资源系统或热更生命周期；只要模拟源码引入这些依赖，无头项目就必须编译失败。
-
-Unity EditMode 测试、无头 .NET 验证器和 Windows Player 使用同一组版本化 JSON 测试向量。三端分别输出规范化 `BattleResult` 与 `BattleLogHash`，逐项比较，不允许在某一端维护独立期望值。
-
-“相同输入重复 100 次”只验证确定性，不计入平衡样本量。平衡测试必须使用不同的合法构筑向量，并交换左右阵营；重复同一确定性对局不能改变胜率统计权重。
-
-## 14. Battle Log Requirements
-
-日志必须支持：
-
-- 从初始快照重建生命值、护盾、过载、充能、冷却和临时状态。
-- 按 `chainId` 定位连锁来源、目标和响应卡。
-- 区分实际伤害、护盾吸收、溢出护盾、免疫、无目标和上限截断。
-- 统计伤害贡献、有效护盾、延迟覆盖时长、充能生成/消耗、过载伤害和空转。
-- 保存规则版本、内容版本、双方快照 hash、种子和结束原因。
-
-固定序列化后的日志计算 SHA-256。字段顺序、枚举序号和空值表示法必须版本化。
-
-## 15. Unity Integration Boundary
-
-纯模拟核心只依赖 .NET 基础库和项目 DTO，不引用：
-
-- `UnityEngine`
-- UGF 或 ET 生命周期
-- `Time.deltaTime`
-- Unity Random
-- 场景对象、动画、UI、资源加载或网络
-
-推荐目录：
-
-```text
-Unity/Assets/Scripts/Game/Hot/Code/Buqi/Battle/
-    Model/
-    Rules/
-    Simulation/
-    Logging/
-    Tests/
-```
-
-Unity 表现层读取日志，以连续插值显示冷却、暂停、1x/2x/4x 和跳过；动画落后时可追赶或省略，不能反向修改模拟。
-
-## 16. Compatibility
-
-- `contentVersion` 不同先走显式迁移；没有规则则拒绝档案。
-- 改变事件顺序、目标、胜负或原语语义时递增规则主版本，旧日志只读。
-- 新增不改变旧语义的可选字段可递增次版本，规范化必须写入确定缺省值。
-- BattleLog 永久保存版本与双方 hash，不能只保存结果。
+- 模拟核心只依赖 .NET 基础库与 Battle DTO，不引用 Unity、UGF、ET、时间、场景、资源或网络。
+- Unity EditMode 与 .NET Headless 直接编译同一模拟源码和行为契约。
+- Luban 旧生成类型缺少新字段时，适配器仅提供兼容默认值；要发布可配置的新机制，必须更新工作簿/Schema 并重新导出 generated C#、Editor JSON 和 Hot bytes。
+- 生成代码、JSON 和 bytes 不得手改。

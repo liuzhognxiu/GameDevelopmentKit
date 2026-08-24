@@ -72,26 +72,26 @@ public sealed class DRBuqiGlobal :  Luban.EditorBeanBase
         }
         
         { 
-            var _fieldJson = _json["NormalDurationTicks"];
+            var _fieldJson = _json["StormStartTicks"];
             if (_fieldJson != null)
             {
-                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  NormalDurationTicks = _fieldJson;
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  StormStartTicks = _fieldJson;
             }
         }
         
         { 
-            var _fieldJson = _json["HardCapTicks"];
+            var _fieldJson = _json["StormBaseDamage"];
             if (_fieldJson != null)
             {
-                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  HardCapTicks = _fieldJson;
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  StormBaseDamage = _fieldJson;
             }
         }
         
         { 
-            var _fieldJson = _json["OvertimeStartTicks"];
+            var _fieldJson = _json["StormRampDamage"];
             if (_fieldJson != null)
             {
-                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  OvertimeStartTicks = _fieldJson;
+                if(!_fieldJson.IsNumber) { throw new SerializationException(); }  StormRampDamage = _fieldJson;
             }
         }
         
@@ -160,13 +160,13 @@ public sealed class DRBuqiGlobal :  Luban.EditorBeanBase
             _json["BoardSlotCount"] = new JSONNumber(BoardSlotCount);
         }
         {
-            _json["NormalDurationTicks"] = new JSONNumber(NormalDurationTicks);
+            _json["StormStartTicks"] = new JSONNumber(StormStartTicks);
         }
         {
-            _json["HardCapTicks"] = new JSONNumber(HardCapTicks);
+            _json["StormBaseDamage"] = new JSONNumber(StormBaseDamage);
         }
         {
-            _json["OvertimeStartTicks"] = new JSONNumber(OvertimeStartTicks);
+            _json["StormRampDamage"] = new JSONNumber(StormRampDamage);
         }
         {
             _json["MaxTickEvents"] = new JSONNumber(MaxTickEvents);
@@ -228,19 +228,19 @@ public sealed class DRBuqiGlobal :  Luban.EditorBeanBase
     public int BoardSlotCount;
 
     /// <summary>
-    /// normal duration ticks
+    /// storm start ticks
     /// </summary>
-    public int NormalDurationTicks;
+    public int StormStartTicks;
 
     /// <summary>
-    /// hard cap ticks
+    /// storm base true damage
     /// </summary>
-    public int HardCapTicks;
+    public int StormBaseDamage;
 
     /// <summary>
-    /// overtime start ticks
+    /// storm true damage gained per tick
     /// </summary>
-    public int OvertimeStartTicks;
+    public int StormRampDamage;
 
     /// <summary>
     /// max tick events

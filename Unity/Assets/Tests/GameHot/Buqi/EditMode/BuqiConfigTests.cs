@@ -24,7 +24,7 @@ namespace Game.Hot.Buqi.Tests
 
             var provider = new BuqiDefinitionProvider(catalog);
 
-            Assert.That(provider.ContentVersion, Is.EqualTo("buqi-effects-cv1"));
+            Assert.That(provider.ContentVersion, Is.EqualTo("buqi-content-cv3"));
             Assert.That(provider.TryGet("W8-003", out BuqiItemDefinition urgent), Is.True);
             Assert.That(urgent.DefinitionId, Is.EqualTo("W8-003"));
             Assert.That(urgent.Size, Is.EqualTo((int)BattleSize.S));
@@ -166,9 +166,9 @@ namespace Game.Hot.Buqi.Tests
             catalog.Global.BufferCap++;
             catalog.Global.NoiseThreshold++;
             catalog.Global.NoiseIncidentDamage++;
-            catalog.Global.NormalDurationTicks++;
-            catalog.Global.OvertimeStartTicks++;
-            catalog.Global.HardCapTicks++;
+            catalog.Global.StormStartTicks = -1;
+            catalog.Global.StormBaseDamage = 0;
+            catalog.Global.StormRampDamage = 0;
 
             List<string> errors = BuqiConfigValidator.Validate(catalog);
 
@@ -176,8 +176,9 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(Contains(errors, "全局护体上限必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
             Assert.That(Contains(errors, "全局失衡阈值必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
             Assert.That(Contains(errors, "全局失衡事故伤害必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "全局正常战斗时长必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
-            Assert.That(Contains(errors, "全局战斗硬上限必须与战斗模拟器一致"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "StormStartTicks"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "StormBaseDamage"), Is.True, string.Join("\n", errors));
+            Assert.That(Contains(errors, "StormRampDamage"), Is.True, string.Join("\n", errors));
         }
 
         private static bool Contains(List<string> errors, string fragment)
@@ -230,9 +231,9 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(actual.NoiseThreshold, Is.EqualTo(expected.NoiseThreshold));
             Assert.That(actual.NoiseIncidentDamage, Is.EqualTo(expected.NoiseIncidentDamage));
             Assert.That(actual.BoardSlotCount, Is.EqualTo(expected.BoardSlotCount));
-            Assert.That(actual.NormalDurationTicks, Is.EqualTo(expected.NormalDurationTicks));
-            Assert.That(actual.HardCapTicks, Is.EqualTo(expected.HardCapTicks));
-            Assert.That(actual.OvertimeStartTicks, Is.EqualTo(expected.OvertimeStartTicks));
+            Assert.That(actual.StormStartTicks, Is.EqualTo(expected.StormStartTicks));
+            Assert.That(actual.StormBaseDamage, Is.EqualTo(expected.StormBaseDamage));
+            Assert.That(actual.StormRampDamage, Is.EqualTo(expected.StormRampDamage));
             Assert.That(actual.MaxTickEvents, Is.EqualTo(expected.MaxTickEvents));
             Assert.That(actual.MaxItemEventsPerTick, Is.EqualTo(expected.MaxItemEventsPerTick));
         }
@@ -265,9 +266,13 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(actual.ConditionKind, Is.EqualTo(expected.ConditionKind), where);
             Assert.That(actual.ConditionThreshold, Is.EqualTo(expected.ConditionThreshold), where);
             Assert.That(actual.UseCountThreshold, Is.EqualTo(expected.UseCountThreshold), where);
-            Assert.That(actual.ChargeReadLimit, Is.EqualTo(expected.ChargeReadLimit), where);
-            Assert.That(actual.AmountPerCharge, Is.EqualTo(expected.AmountPerCharge), where);
-            Assert.That(actual.ChargeConsume, Is.EqualTo(expected.ChargeConsume), where);
+            Assert.That(actual.CriticalChanceBps, Is.EqualTo(expected.CriticalChanceBps), where);
+            Assert.That(actual.RepeatCount, Is.EqualTo(expected.RepeatCount), where);
+            Assert.That(actual.RageThreshold, Is.EqualTo(expected.RageThreshold), where);
+            Assert.That(actual.RageDurationTicks, Is.EqualTo(expected.RageDurationTicks), where);
+            Assert.That(actual.RageCooldownReductionBps, Is.EqualTo(expected.RageCooldownReductionBps), where);
+            Assert.That(actual.FlightDamageBonusBps, Is.EqualTo(expected.FlightDamageBonusBps), where);
+            Assert.That(actual.FlightEndDamage, Is.EqualTo(expected.FlightEndDamage), where);
             Assert.That(actual.ResetCountOnReached, Is.EqualTo(expected.ResetCountOnReached), where);
         }
 
@@ -350,15 +355,15 @@ namespace Game.Hot.Buqi.Tests
                 {
                     Global = new BuqiGlobalConfigRow
                     {
-                        ContentVersion = "buqi-effects-cv1",
+                        ContentVersion = "buqi-content-cv3",
                         InitialExecution = 100,
                         BufferCap = 60,
                         NoiseThreshold = 10,
                         NoiseIncidentDamage = 8,
                         BoardSlotCount = 8,
-                        NormalDurationTicks = 450,
-                        HardCapTicks = 600,
-                        OvertimeStartTicks = 450,
+                        StormStartTicks = 300,
+                        StormBaseDamage = 1,
+                        StormRampDamage = 1,
                         MaxTickEvents = 64,
                         MaxItemEventsPerTick = 4,
                     },
@@ -369,7 +374,7 @@ namespace Game.Hot.Buqi.Tests
                     Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.LeftAdjacentItem, 2000, "W8-003-haste", 30)));
                 catalog.Items.Add(Item("W8-005", BattleSize.M, 4, 70, "fast",
                     Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Charge, BattleTarget.Self, 1, "W8-005-adjacent-charge"),
-                    ChargedEffect(6, 2, 3, true, "W8-005-attack")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 6, "W8-005-attack")));
                 catalog.Items.Add(Item("W8-006", BattleSize.L, 6, 100, "fast",
                     Effect(BattleTrigger.OnBattleStart, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 1500, "W8-006-opening-haste", 50),
                     Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 16, "W8-006-attack"),
@@ -388,7 +393,7 @@ namespace Game.Hot.Buqi.Tests
                     Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Charge, BattleTarget.RightAdjacentItem, 1, "W8-013-adjacent-pass")));
                 catalog.Items.Add(Item("W8-014", BattleSize.S, 2, 60, "chain",
                     Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Charge, BattleTarget.Self, 1, "W8-014-adjacent-charge"),
-                    ChargedEffect(3, 3, 2, true, "W8-014-attack")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 3, "W8-014-attack")));
                 catalog.Items.Add(Item("W8-015", BattleSize.M, 4, 65, "chain",
                     Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Haste, BattleTarget.Self, 2000, "W8-015-adjacent-haste", 30),
                     Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 7, "W8-015-attack")));
@@ -501,25 +506,6 @@ namespace Game.Hot.Buqi.Tests
                     ReasonCode = reasonCode,
                     ResetCountOnReached = true,
                 };
-            }
-
-            public static BuqiEffectConfigRow ChargedEffect(
-                int amount,
-                int amountPerCharge,
-                int chargeReadLimit,
-                bool consume,
-                string reasonCode)
-            {
-                BuqiEffectConfigRow effect = Effect(
-                    BattleTrigger.OnUse,
-                    BattleEffect.Damage,
-                    BattleTarget.EnemyExecution,
-                    amount,
-                    reasonCode);
-                effect.AmountPerCharge = amountPerCharge;
-                effect.ChargeReadLimit = chargeReadLimit;
-                effect.ChargeConsume = consume;
-                return effect;
             }
 
             public static BuqiEffectConfigRow ConditionEffect(

@@ -21,9 +21,9 @@ public sealed partial class DRBuqiGlobal : Luban.BeanBase
         NoiseThreshold = _buf.ReadInt();
         NoiseIncidentDamage = _buf.ReadInt();
         BoardSlotCount = _buf.ReadInt();
-        NormalDurationTicks = _buf.ReadInt();
-        HardCapTicks = _buf.ReadInt();
-        OvertimeStartTicks = _buf.ReadInt();
+        StormStartTicks = _buf.ReadInt();
+        StormBaseDamage = _buf.ReadInt();
+        StormRampDamage = _buf.ReadInt();
         MaxTickEvents = _buf.ReadInt();
         MaxItemEventsPerTick = _buf.ReadInt();
         MaxChainDepth = _buf.ReadInt();
@@ -62,17 +62,17 @@ public sealed partial class DRBuqiGlobal : Luban.BeanBase
     /// </summary>
     public readonly int BoardSlotCount;
     /// <summary>
-    /// normal duration ticks
+    /// storm start ticks
     /// </summary>
-    public readonly int NormalDurationTicks;
+    public readonly int StormStartTicks;
     /// <summary>
-    /// hard cap ticks
+    /// storm base true damage
     /// </summary>
-    public readonly int HardCapTicks;
+    public readonly int StormBaseDamage;
     /// <summary>
-    /// overtime start ticks
+    /// storm true damage gained per tick
     /// </summary>
-    public readonly int OvertimeStartTicks;
+    public readonly int StormRampDamage;
     /// <summary>
     /// max tick events
     /// </summary>
@@ -110,9 +110,9 @@ public sealed partial class DRBuqiGlobal : Luban.BeanBase
         + "NoiseThreshold:" + NoiseThreshold + ","
         + "NoiseIncidentDamage:" + NoiseIncidentDamage + ","
         + "BoardSlotCount:" + BoardSlotCount + ","
-        + "NormalDurationTicks:" + NormalDurationTicks + ","
-        + "HardCapTicks:" + HardCapTicks + ","
-        + "OvertimeStartTicks:" + OvertimeStartTicks + ","
+        + "StormStartTicks:" + StormStartTicks + ","
+        + "StormBaseDamage:" + StormBaseDamage + ","
+        + "StormRampDamage:" + StormRampDamage + ","
         + "MaxTickEvents:" + MaxTickEvents + ","
         + "MaxItemEventsPerTick:" + MaxItemEventsPerTick + ","
         + "MaxChainDepth:" + MaxChainDepth + ","

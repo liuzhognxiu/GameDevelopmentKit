@@ -60,6 +60,18 @@ namespace Game.Hot
         /// freeze
         /// </summary>
         Freeze = 10,
+        /// <summary>
+        /// ammo refill
+        /// </summary>
+        Ammo = 11,
+        /// <summary>
+        /// enter or leave flight
+        /// </summary>
+        Flight = 12,
+        /// <summary>
+        /// rage accumulation
+        /// </summary>
+        Rage = 13,
     }
 
 } 

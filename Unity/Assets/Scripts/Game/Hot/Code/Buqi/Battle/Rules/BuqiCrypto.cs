@@ -106,6 +106,23 @@ namespace Game.Hot.Buqi.Battle
             return Sha256Hex(CanonicalLog(result, events));
         }
 
+        public static int DeterministicRollBps(ulong seed, string key)
+        {
+            ulong hash = 1469598103934665603UL ^ seed;
+            string value = key ?? string.Empty;
+            for (int index = 0; index < value.Length; index++)
+            {
+                hash ^= value[index];
+                hash *= 1099511628211UL;
+            }
+            hash ^= hash >> 33;
+            hash *= 0xff51afd7ed558ccdUL;
+            hash ^= hash >> 33;
+            hash *= 0xc4ceb9fe1a85ec53UL;
+            hash ^= hash >> 33;
+            return (int)(hash % 10000UL);
+        }
+
         private static int CompareItems(ItemInstance left, ItemInstance right)
         {
             if (ReferenceEquals(left, right))
@@ -137,16 +154,7 @@ namespace Game.Hot.Buqi.Battle
             var modifiers = item.TemporaryModifiers == null
                 ? new List<TemporaryModifier>()
                 : new List<TemporaryModifier>(item.TemporaryModifiers);
-            modifiers.Sort((left, right) =>
-            {
-                if (ReferenceEquals(left, right)) return 0;
-                if (left == null) return -1;
-                if (right == null) return 1;
-                int sourceComparison = string.CompareOrdinal(left.SourceInstanceId, right.SourceInstanceId);
-                if (sourceComparison != 0) return sourceComparison;
-                int tickComparison = left.RemainingTicks.CompareTo(right.RemainingTicks);
-                return tickComparison != 0 ? tickComparison : left.Bps.CompareTo(right.Bps);
-            });
+            modifiers.Sort(CompareTemporaryModifiers);
 
             AppendInt(builder, modifiers.Count);
             foreach (TemporaryModifier modifier in modifiers)
@@ -161,6 +169,19 @@ namespace Game.Hot.Buqi.Battle
                 AppendInt(builder, modifier.RemainingTicks);
                 AppendInt(builder, modifier.Bps);
             }
+        }
+
+        public static int CompareTemporaryModifiers(TemporaryModifier left, TemporaryModifier right)
+        {
+            if (ReferenceEquals(left, right)) return 0;
+            if (left == null) return -1;
+            if (right == null) return 1;
+            int sourceComparison = string.CompareOrdinal(left.SourceInstanceId, right.SourceInstanceId);
+            if (sourceComparison != 0) return sourceComparison;
+            int effectComparison = left.Effect.CompareTo(right.Effect);
+            if (effectComparison != 0) return effectComparison;
+            int tickComparison = left.RemainingTicks.CompareTo(right.RemainingTicks);
+            return tickComparison != 0 ? tickComparison : left.Bps.CompareTo(right.Bps);
         }
 
         private static void AppendInt(StringBuilder builder, int value)

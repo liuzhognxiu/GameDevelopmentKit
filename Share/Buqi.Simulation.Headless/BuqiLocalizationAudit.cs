@@ -365,7 +365,7 @@ namespace Buqi.Simulation.Headless
             {
                 Game.Hot.Buqi.Battle.BuqiBattleText.Outcome(Game.Hot.Buqi.Battle.BattleOutcome.LeftWin),
                 Game.Hot.Buqi.Battle.BuqiBattleText.Outcome(Game.Hot.Buqi.Battle.BattleOutcome.Draw),
-                Game.Hot.Buqi.Battle.BuqiBattleText.Termination("HardCap"),
+                Game.Hot.Buqi.Battle.BuqiBattleText.Termination("Storm"),
                 Game.Hot.Buqi.Battle.BuqiBattleText.EventReason("Damage"),
                 Game.Hot.Buqi.Battle.BuqiBattleText.EventReason("W8-003-attack"),
                 Game.Hot.Buqi.Battle.BuqiBattleText.Quality(Game.Hot.Buqi.Battle.BuqiQuality.Fixed),

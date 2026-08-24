@@ -151,7 +151,7 @@ namespace Game.Hot.Buqi.Run.Settlement
             }
 
             return string.Equals(reasonCode, "NoiseAccident", StringComparison.Ordinal) ||
-                   string.Equals(reasonCode, "OvertimeDamage", StringComparison.Ordinal) ||
+                   string.Equals(reasonCode, "StormDamage", StringComparison.Ordinal) ||
                    string.Equals(reasonCode, "PoisonDamage", StringComparison.Ordinal) ||
                    string.Equals(reasonCode, "BurnDamage", StringComparison.Ordinal) ||
                    reasonCode.IndexOf("Overflow", StringComparison.Ordinal) >= 0 ||

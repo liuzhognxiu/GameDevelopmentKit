@@ -68,8 +68,10 @@ namespace Game.Hot.Buqi.Battle
         /// <summary>本 tick 是否在 PreTick 后到期，只允许声明一次主动使用。</summary>
         public bool ReadyThisTick;
 
-        /// <summary>实例蓄力，严格限制在 0..9。</summary>
-        public int Charge;
+        public int ActiveUsesThisTick;
+
+        /// <summary>本 tick 已排队、尚未实际结算的有限弹药主动使用数。</summary>
+        public int AmmoReservationsThisTick;
 
         /// <summary>本场主动 OnUse 次数累计。</summary>
         public int OwnUseCount;
@@ -86,12 +88,21 @@ namespace Game.Hot.Buqi.Battle
         /// <summary>A-03 复写已经消耗，本场不可再次复制。</summary>
         public bool RewriteUsed;
 
+        /// <summary>0 表示该定义不使用有限弹药。</summary>
+        public int AmmoCapacity;
+
+        /// <summary>有限弹药剩余量；无限弹药固定为 -1。</summary>
+        public int AmmoRemaining = -1;
+
+        /// <summary>弹药耗尽后为 false；补充弹药会重新启用。</summary>
+        public bool IsEnabled = true;
+
         /// <summary>挂在实例上的限时加速/延迟。</summary>
         public List<TimedModifier> Modifiers = new List<TimedModifier>();
     }
 
     /// <summary>
-    /// 一方阵营的运行时状态。执行值、护体和失衡属于阵营；蓄力和触发计数属于实例。
+    /// 一方阵营的运行时状态。执行值、护体、失衡、飞行和怒气属于阵营。
     /// </summary>
     public sealed class SideState
     {
@@ -116,5 +127,22 @@ namespace Game.Hot.Buqi.Battle
         public List<TimedModifier> SideModifiers = new List<TimedModifier>();
 
         public List<TimedStatus> Statuses = new List<TimedStatus>();
+
+        public bool IsFlying;
+        public int FlyingTicks;
+        public int FlightDamageBonusBps;
+        public int FlightEndDamage;
+        public int FlightSourceAnchorSlot;
+        public string FlightSourceInstanceId = string.Empty;
+        public string FlightChainId = string.Empty;
+        public string FlightEffectId = string.Empty;
+        public int FlightEndDamageSourceAnchorSlot;
+        public string FlightEndDamageSourceInstanceId = string.Empty;
+        public string FlightEndDamageChainId = string.Empty;
+        public string FlightEndDamageEffectId = string.Empty;
+
+        public int Rage;
+        public int EnragedTicks;
+        public int RageCooldownReductionBps;
     }
 }

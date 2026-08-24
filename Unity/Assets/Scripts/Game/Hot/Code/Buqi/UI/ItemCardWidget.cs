@@ -49,9 +49,9 @@ namespace Game.Hot.Buqi.UI
             if (m_StatusText != null)
             {
                 m_StatusText.text = BuqiText.Format(
-                    "{0}格  充能 {1}  冻结 {2}",
+                    "{0}格  弹药 {1}  冻结 {2}",
                     frame.Size,
-                    frame.Charge,
+                    frame.AmmoRemaining,
                     frame.FrozenTicks);
             }
             if (m_CooldownFill != null)

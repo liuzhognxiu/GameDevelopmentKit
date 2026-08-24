@@ -388,10 +388,10 @@ namespace Game.Hot.Buqi.Tests
                 Right = Snapshot("right", "link-test-v1", Instance("dummy-i", "dummy", 4)),
             };
 
-            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out SideState left, out _);
+            BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out _);
 
-            ItemState listener = left.Items.Single(item => item.InstanceId == "listener-i");
-            Check(listener.Charge > 0, "Slot zero's counter-clockwise target must resolve to slot seven.");
+            Check(log.Any(item => item.TargetInstanceId == "listener-i" && item.ReasonCode == "ChargeAdvanced"),
+                "Slot zero's counter-clockwise Charge target must resolve to slot seven.");
             Check(log.Any(item => item.SourceInstanceId == "listener-i" && item.ReasonCode == "ring-listener"),
                 "Slot seven must receive slot zero's adjacent-use event across the ring boundary.");
         }
@@ -401,8 +401,8 @@ namespace Game.Hot.Buqi.Tests
 #endif
         public void BattleSimulation_DeclaresRingRuleVersion()
         {
-            Check(BuqiBattleSimulator.RuleVersion == "0.5.0", "Ring topology requires a new rule version.");
-            Check(BuqiBattleSimulator.SimulationVersion == "battle-core-0.5.0",
+            Check(BuqiBattleSimulator.RuleVersion == "0.6.0", "Latest S01 rules require a new rule version.");
+            Check(BuqiBattleSimulator.SimulationVersion == "battle-core-0.6.0",
                 "Simulation version must move with the ring rules.");
         }
 

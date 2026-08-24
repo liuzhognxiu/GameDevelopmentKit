@@ -164,6 +164,12 @@ namespace Game.Hot.Buqi.Battle
             }
 
             Frame.Tick = targetTick;
+            UpdateFlight(Frame.Left, targetTick);
+            UpdateFlight(Frame.Right, targetTick);
+            UpdateRage(Frame.Left, targetTick);
+            UpdateRage(Frame.Right, targetTick);
+            UpdateFrozen(Frame.Left, targetTick);
+            UpdateFrozen(Frame.Right, targetTick);
             UpdateCooldowns(targetTick);
             Frame.IsFinished = targetTick >= Data.Result.DurationTicks;
             if (Frame.IsFinished)
@@ -175,26 +181,83 @@ namespace Game.Hot.Buqi.Battle
             if (battleEvent.Type != BuqiEventType.Effect)
                 return;
 
+            if (battleEvent.ReasonCode == "AmmoConsumed" || battleEvent.ReasonCode == "AmmoRefilled")
+            {
+                string itemId = string.IsNullOrEmpty(battleEvent.TargetInstanceId)
+                    ? battleEvent.ActorInstanceId
+                    : battleEvent.TargetInstanceId;
+                if (m_Items.TryGetValue(itemId, out BattleReplayItemFrame ammoTarget) && ammoTarget.AmmoCapacity > 0)
+                {
+                    int delta = battleEvent.ReasonCode == "AmmoConsumed"
+                        ? -battleEvent.Amount
+                        : battleEvent.Amount;
+                    ammoTarget.AmmoRemaining = Math.Max(
+                        0,
+                        Math.Min(ammoTarget.AmmoCapacity, ammoTarget.AmmoRemaining + delta));
+                    ammoTarget.IsEnabled = ammoTarget.AmmoRemaining > 0;
+                }
+                return;
+            }
+
             if (TryGetEffect(battleEvent.EffectId, out BattleReplayEffectInfo effectInfo))
             {
                 if (effectInfo.Effect == BuqiEffect.Charge)
                 {
-                    if (m_Items.TryGetValue(battleEvent.TargetInstanceId, out BattleReplayItemFrame chargeTarget))
-                        chargeTarget.Charge += battleEvent.Amount;
                     return;
                 }
 
-                if (effectInfo.Effect == BuqiEffect.Freeze)
+                if (effectInfo.Effect == BuqiEffect.Freeze && battleEvent.ReasonCode == "FreezeApplied")
                 {
                     if (m_Items.TryGetValue(battleEvent.TargetInstanceId, out BattleReplayItemFrame freezeTarget))
-                        freezeTarget.FrozenTicks += battleEvent.Amount;
+                    {
+                        freezeTarget.FrozenTicks = battleEvent.Amount;
+                        freezeTarget.FreezeEndTick = (long)battleEvent.Tick + battleEvent.Amount;
+                    }
                     return;
                 }
             }
 
+            if (battleEvent.ReasonCode == "EnrageEnded" &&
+                string.IsNullOrEmpty(battleEvent.SourceInstanceId))
+            {
+                return;
+            }
             BattleReplaySideFrame side = GetSideFrame(ResolveTargetSide(battleEvent, effectInfo));
             switch (battleEvent.ReasonCode)
             {
+                case "RageGained":
+                    side.Rage = SaturateToInt((long)side.Rage + battleEvent.Amount);
+                    return;
+                case "RageConsumed":
+                    side.Rage = Math.Max(0, side.Rage - battleEvent.Amount);
+                    return;
+                case "RageRemainder":
+                    side.Rage = Math.Max(0, battleEvent.Amount);
+                    return;
+                case "EnrageStarted":
+                    side.EnragedTicks = battleEvent.Amount;
+                    side.EnrageEndTick = (long)battleEvent.Tick + battleEvent.Amount;
+                    foreach (BattleReplayItemFrame item in side.Items)
+                    {
+                        item.FrozenTicks = 0;
+                        item.FreezeEndTick = 0;
+                    }
+                    return;
+                case "EnrageEnded":
+                    side.EnragedTicks = 0;
+                    side.EnrageEndTick = 0;
+                    return;
+                case "FlightStarted":
+                case "FlightRefreshed":
+                    side.IsFlying = true;
+                    side.FlyingTicks = battleEvent.Amount;
+                    side.FlightEndTick = (long)battleEvent.Tick + side.FlyingTicks;
+                    return;
+                case "FlightEnded":
+                    side.IsFlying = false;
+                    side.FlyingTicks = 0;
+                    side.FlightEndTick = 0;
+                    return;
                 case "BufferGain":
                     side.Buffer += battleEvent.Amount;
                     return;
@@ -203,27 +266,33 @@ namespace Game.Hot.Buqi.Battle
                     return;
                 case "BufferAbsorb":
                 case "BurnShieldAbsorb":
+                case "FlightEndBufferAbsorb":
                     side.Buffer -= battleEvent.Amount;
                     return;
                 case "Damage":
                 case "BurnDamage":
                 case "PoisonDamage":
-                case "OvertimeDamage":
-                    side.Execution -= battleEvent.Amount;
+                case "StormDamage":
+                case "FlightEndDamage":
+                    side.Execution = SaturateToInt((long)side.Execution - battleEvent.Amount);
                     return;
                 case "NoiseChange":
-                    side.Noise += battleEvent.Amount;
+                    side.Noise = SaturateToInt((long)side.Noise + battleEvent.Amount);
                     return;
                 case "NoiseAccident":
-                    side.Noise -= BuqiBattleSimulator.NoiseThreshold;
-                    side.Execution -= battleEvent.Amount;
+                    side.Execution = SaturateToInt((long)side.Execution - battleEvent.Amount);
+                    return;
+                case "NoiseRemainder":
+                    side.Noise = Math.Max(0, battleEvent.Amount);
                     return;
             }
 
             if (effectInfo != null &&
                 (effectInfo.Effect == BuqiEffect.Heal || effectInfo.Effect == BuqiEffect.Regen))
             {
-                side.Execution = Math.Min(side.MaxExecution, side.Execution + battleEvent.Amount);
+                side.Execution = Math.Min(
+                    side.MaxExecution,
+                    SaturateToInt((long)side.Execution + battleEvent.Amount));
             }
         }
 
@@ -245,7 +314,7 @@ namespace Game.Hot.Buqi.Battle
                     : sourceSide;
             }
 
-            if (battleEvent.ReasonCode == "OvertimeDamage")
+            if (battleEvent.ReasonCode == "StormDamage")
             {
                 if (m_SourceLessTick != battleEvent.Tick)
                 {
@@ -326,6 +395,9 @@ namespace Game.Hot.Buqi.Battle
                     AnchorSlot = instance.AnchorSlot,
                     Size = size,
                     Cooldown01 = 0f,
+                    AmmoCapacity = Math.Max(0, definition.AmmoCapacity),
+                    AmmoRemaining = definition.AmmoCapacity > 0 ? definition.AmmoCapacity : -1,
+                    IsEnabled = true,
                 };
                 items.Add(item);
                 m_Items.Add(item.InstanceId, item);
@@ -461,7 +533,7 @@ namespace Game.Hot.Buqi.Battle
                     side = Opposite(side);
                 }
             }
-            else if (battleEvent.ReasonCode == "OvertimeDamage")
+            else if (battleEvent.ReasonCode == "StormDamage")
             {
                 side = sourceLessIndex++ % 2 == 0 ? ReplaySide.Left : ReplaySide.Right;
             }
@@ -558,10 +630,12 @@ namespace Game.Hot.Buqi.Battle
                 case "Damage":
                 case "BurnDamage":
                 case "PoisonDamage":
-                case "OvertimeDamage":
+                case "StormDamage":
                 case "NoiseAccident":
                 case "BufferAbsorb":
                 case "BurnShieldAbsorb":
+                case "FlightEndDamage":
+                case "FlightEndBufferAbsorb":
                     kind = BattleReplayFeedbackKind.Damage;
                     return true;
                 case "BufferGain":
@@ -624,6 +698,39 @@ namespace Game.Hot.Buqi.Battle
             }
         }
 
+        private static void UpdateFlight(BattleReplaySideFrame side, int tick)
+        {
+            if (!side.IsFlying)
+                return;
+            side.FlyingTicks = SaturateToInt(Math.Max(0L, side.FlightEndTick - tick));
+        }
+
+        private static void UpdateRage(BattleReplaySideFrame side, int tick)
+        {
+            if (side.EnragedTicks <= 0)
+                return;
+            side.EnragedTicks = SaturateToInt(Math.Max(0L, side.EnrageEndTick - tick));
+        }
+
+        private static void UpdateFrozen(BattleReplaySideFrame side, int tick)
+        {
+            foreach (BattleReplayItemFrame item in side.Items)
+            {
+                if (item.FrozenTicks <= 0)
+                    continue;
+                item.FrozenTicks = SaturateToInt(Math.Max(0L, item.FreezeEndTick - tick));
+            }
+        }
+
+        private static int SaturateToInt(long value)
+        {
+            if (value >= int.MaxValue)
+                return int.MaxValue;
+            if (value <= int.MinValue)
+                return int.MinValue;
+            return (int)value;
+        }
+
         private bool MatchesFilter(BattleEvent battleEvent)
         {
             if (m_Filter.KeyOnly && !IsKeyEvent(battleEvent))
@@ -648,7 +755,7 @@ namespace Game.Hot.Buqi.Battle
             return battleEvent.Type != BuqiEventType.Effect ||
                    battleEvent.ChainDepth > 0 ||
                    battleEvent.ReasonCode == "NoiseAccident" ||
-                   battleEvent.ReasonCode == "OvertimeDamage";
+                   battleEvent.ReasonCode == "StormDamage";
         }
 
         private static string FormatEvent(BattleEvent battleEvent)
@@ -708,7 +815,7 @@ namespace Game.Hot.Buqi.Battle
         private static bool IsRiskEvent(BattleEvent battleEvent)
         {
             return battleEvent.ReasonCode == "NoiseAccident" ||
-                   battleEvent.ReasonCode == "OvertimeDamage" ||
+                   battleEvent.ReasonCode == "StormDamage" ||
                    battleEvent.ReasonCode == "PoisonDamage" ||
                    battleEvent.ReasonCode == "BurnDamage";
         }
@@ -765,6 +872,38 @@ namespace Game.Hot.Buqi.Battle
                 throw new ArgumentException("战斗回放缺少战斗记录。"  );
             if (data.Definitions == null)
                 throw new ArgumentException("战斗回放缺少装备定义。"  );
+
+            if (!string.Equals(
+                    data.Result.RuleVersion,
+                    BuqiBattleSimulator.RuleVersion,
+                    StringComparison.Ordinal))
+            {
+                throw new ArgumentException("Replay rule version is incompatible.");
+            }
+            if (!string.Equals(
+                    data.Result.SimulationVersion,
+                    BuqiBattleSimulator.SimulationVersion,
+                    StringComparison.Ordinal))
+            {
+                throw new ArgumentException("Replay simulation version is incompatible.");
+            }
+            if (!string.Equals(data.LeftBuild.ContentVersion, data.Result.ContentVersion, StringComparison.Ordinal) ||
+                !string.Equals(data.RightBuild.ContentVersion, data.Result.ContentVersion, StringComparison.Ordinal) ||
+                !string.Equals(data.Definitions.ContentVersion, data.Result.ContentVersion, StringComparison.Ordinal))
+            {
+                throw new ArgumentException("Replay content version does not match its builds and definitions.");
+            }
+            if (!string.Equals(
+                    BuqiCrypto.SnapshotHash(data.LeftBuild),
+                    data.Result.LeftSnapshotHash,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    BuqiCrypto.SnapshotHash(data.RightBuild),
+                    data.Result.RightSnapshotHash,
+                    StringComparison.Ordinal))
+            {
+                throw new ArgumentException("Replay snapshot hash does not match its builds.");
+            }
 
             int previousTick = -1;
             for (int index = 0; index < data.Log.Count; index++)

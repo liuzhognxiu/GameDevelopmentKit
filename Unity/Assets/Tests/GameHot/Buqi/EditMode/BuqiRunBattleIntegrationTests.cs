@@ -710,6 +710,7 @@ namespace Game.Hot.Buqi.Tests
                         DisplayName = definition.DefinitionId,
                         Size = (Game.Hot.Buqi.Battle.BuqiSize)definition.Size,
                         BaseCooldownTicks = definition.BaseCooldownTicks,
+                        AmmoCapacity = definition.AmmoCapacity,
                         ArchetypeId = build.ArchetypeId,
                     };
                     foreach (BuqiEffectSpec effect in definition.Effects)
@@ -725,10 +726,14 @@ namespace Game.Hot.Buqi.Tests
                             ConditionKind = effect.ConditionKind,
                             ConditionThreshold = effect.ConditionThreshold,
                             UseCountThreshold = effect.UseCountThreshold,
-                            ChargeReadLimit = effect.ChargeReadLimit,
-                            AmountPerCharge = effect.AmountPerCharge,
-                            ChargeConsume = effect.ChargeConsume,
                             ResetCountOnReached = effect.ResetCountOnReached,
+                            CriticalChanceBps = effect.CriticalChanceBps,
+                            RepeatCount = effect.RepeatCount,
+                            RageThreshold = effect.RageThreshold,
+                            RageDurationTicks = effect.RageDurationTicks,
+                            RageCooldownReductionBps = effect.RageCooldownReductionBps,
+                            FlightDamageBonusBps = effect.FlightDamageBonusBps,
+                            FlightEndDamage = effect.FlightEndDamage,
                         });
                     }
 

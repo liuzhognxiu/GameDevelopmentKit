@@ -59,6 +59,18 @@ namespace Game.Hot.Editor
         /// freeze
         /// </summary>
         Freeze = 10,
+        /// <summary>
+        /// ammo refill
+        /// </summary>
+        Ammo = 11,
+        /// <summary>
+        /// enter or leave flight
+        /// </summary>
+        Flight = 12,
+        /// <summary>
+        /// rage accumulation
+        /// </summary>
+        Rage = 13,
     }
 
     public static class BuqiEffect_Metadata
@@ -74,6 +86,9 @@ namespace Game.Hot.Editor
         public static readonly Luban.EditorEnumItemInfo Poison = new Luban.EditorEnumItemInfo("Poison", "", 8, "poison");
         public static readonly Luban.EditorEnumItemInfo Burn = new Luban.EditorEnumItemInfo("Burn", "", 9, "burn");
         public static readonly Luban.EditorEnumItemInfo Freeze = new Luban.EditorEnumItemInfo("Freeze", "", 10, "freeze");
+        public static readonly Luban.EditorEnumItemInfo Ammo = new Luban.EditorEnumItemInfo("Ammo", "", 11, "ammo refill");
+        public static readonly Luban.EditorEnumItemInfo Flight = new Luban.EditorEnumItemInfo("Flight", "", 12, "enter or leave flight");
+        public static readonly Luban.EditorEnumItemInfo Rage = new Luban.EditorEnumItemInfo("Rage", "", 13, "rage accumulation");
 
         private static readonly System.Collections.Generic.List<Luban.EditorEnumItemInfo> __items = new System.Collections.Generic.List<Luban.EditorEnumItemInfo>
         {
@@ -88,6 +103,9 @@ namespace Game.Hot.Editor
             Poison,
             Burn,
             Freeze,
+            Ammo,
+            Flight,
+            Rage,
         };
 
         public static System.Collections.Generic.List<Luban.EditorEnumItemInfo> GetItems() => __items;

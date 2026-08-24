@@ -42,9 +42,12 @@ namespace Game.Hot.Buqi.Battle
         Poison = 8,
         Burn = 9,
         Freeze = 10,
+        Ammo = 11,
+        Flight = 12,
+        Rage = 13,
     }
 
-    /// <summary>确定性目标选择器；v0.4 不允许随机目标。</summary>
+    /// <summary>确定性目标选择器；v0.6 仍不允许随机目标。</summary>
     public enum BuqiTarget : int
     {
         EnemyExecution = 0,
@@ -98,6 +101,7 @@ namespace Game.Hot.Buqi.Battle
         HardCap = 2,
         InvalidBuild = 3,
         Aborted = 4,
+        Storm = 5,
     }
 
     /// <summary>首次条件触发使用的条件种类。</summary>

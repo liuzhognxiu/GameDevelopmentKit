@@ -1,14 +1,14 @@
 [
   {
-    "ContentVersion": "buqi-content-cv2",
+    "ContentVersion": "buqi-content-cv3",
     "InitialExecution": 100,
     "BufferCap": 60,
     "NoiseThreshold": 10,
     "NoiseIncidentDamage": 8,
     "BoardSlotCount": 8,
-    "NormalDurationTicks": 450,
-    "HardCapTicks": 600,
-    "OvertimeStartTicks": 450,
+    "StormStartTicks": 300,
+    "StormBaseDamage": 1,
+    "StormRampDamage": 1,
     "MaxTickEvents": 64,
     "MaxItemEventsPerTick": 4,
     "MaxChainDepth": 8,

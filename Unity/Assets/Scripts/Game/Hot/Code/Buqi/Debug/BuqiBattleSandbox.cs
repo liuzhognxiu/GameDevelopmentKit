@@ -229,8 +229,7 @@ namespace Game.Hot.Buqi.Battle
         public static IReadOnlyDictionary<string, BuqiSandboxItemInfo> ItemInfos => s_ItemInfos;
 
         /// <summary>
-        /// 创建九法门临时定义。蓄力动态增伤通过通用配置原语表达，
-        /// 消费发生在声明时，不在模拟器中硬编码法门 ID。
+        /// 创建九法门临时定义。Charge 直接推进冷却，不在模拟器中硬编码法门 ID。
         /// </summary>
         public static IItemDefinitionProvider CreateDefinitionProvider()
         {
@@ -241,7 +240,7 @@ namespace Game.Hot.Buqi.Battle
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Haste, BuqiTarget.LeftAdjacentItem, 2000, "W8-003-haste", 30)),
                 ["W8-005"] = Definition("W8-005", (int)BuqiSize.M, 70,
                     Effect(BuqiTrigger.OnAdjacentUse, BuqiEffect.Charge, BuqiTarget.Self, 1, "W8-005-adjacent-charge"),
-                    ChargedEffect(BuqiTrigger.OnUse, 6, 2, 3, true, "W8-005-damage")),
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 6, "W8-005-damage")),
                 ["W8-006"] = Definition("W8-006", (int)BuqiSize.L, 100,
                     Effect(BuqiTrigger.OnBattleStart, BuqiEffect.Haste, BuqiTarget.AllAdjacentItems, 1500, "W8-006-opening-haste", 50),
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 16, "W8-006-damage"),
@@ -260,7 +259,7 @@ namespace Game.Hot.Buqi.Battle
                     Effect(BuqiTrigger.OnAdjacentUse, BuqiEffect.Charge, BuqiTarget.RightAdjacentItem, 1, "W8-013-adjacent-pass")),
                 ["W8-014"] = Definition("W8-014", (int)BuqiSize.S, 60,
                     Effect(BuqiTrigger.OnAdjacentUse, BuqiEffect.Charge, BuqiTarget.Self, 1, "W8-014-adjacent-charge"),
-                    ChargedEffect(BuqiTrigger.OnUse, 3, 3, 2, true, "W8-014-damage")),
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 3, "W8-014-damage")),
                 ["W8-015"] = Definition("W8-015", (int)BuqiSize.M, 65,
                     Effect(BuqiTrigger.OnAdjacentUse, BuqiEffect.Haste, BuqiTarget.Self, 2000, "W8-015-adjacent-haste", 30),
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 7, "W8-015-damage")),
@@ -1409,26 +1408,6 @@ namespace Game.Hot.Buqi.Battle
                 ReasonCode = reasonCode,
                 DurationTicks = durationTicks,
             };
-        }
-
-        private static BuqiEffectSpec ChargedEffect(
-            BuqiTrigger trigger,
-            int baseAmount,
-            int amountPerCharge,
-            int chargeReadLimit,
-            bool consume,
-            string reasonCode)
-        {
-            BuqiEffectSpec spec = Effect(
-                trigger,
-                BuqiEffect.Damage,
-                BuqiTarget.EnemyExecution,
-                baseAmount,
-                reasonCode);
-            spec.AmountPerCharge = amountPerCharge;
-            spec.ChargeReadLimit = chargeReadLimit;
-            spec.ChargeConsume = consume;
-            return spec;
         }
 
         private static BuqiEffectSpec ConditionEffect(

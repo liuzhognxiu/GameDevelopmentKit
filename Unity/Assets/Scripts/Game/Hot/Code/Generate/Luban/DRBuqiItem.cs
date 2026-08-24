@@ -26,6 +26,7 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
         FixedUpgradeCost = _buf.ReadInt();
         RefinementCost = _buf.ReadInt();
         BaseCooldownTicks = _buf.ReadInt();
+        AmmoCapacity = _buf.ReadInt();
         ArchetypeId = (BuqiBuild)_buf.ReadInt();
         Role = _buf.ReadString();
         UnlockDay = _buf.ReadInt();
@@ -89,6 +90,10 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
     /// </summary>
     public readonly int BaseCooldownTicks;
     /// <summary>
+    /// ammo capacity; 0 means unlimited
+    /// </summary>
+    public readonly int AmmoCapacity;
+    /// <summary>
     /// build
     /// </summary>
     public readonly BuqiBuild ArchetypeId;
@@ -150,6 +155,7 @@ public sealed partial class DRBuqiItem : Luban.BeanBase
         + "FixedUpgradeCost:" + FixedUpgradeCost + ","
         + "RefinementCost:" + RefinementCost + ","
         + "BaseCooldownTicks:" + BaseCooldownTicks + ","
+        + "AmmoCapacity:" + AmmoCapacity + ","
         + "ArchetypeId:" + ArchetypeId + ","
         + "Role:" + Role + ","
         + "UnlockDay:" + UnlockDay + ","

@@ -95,7 +95,7 @@ namespace Buqi.Simulation.Headless
         }
 
         /// <summary>
-        /// 验证构筑数量、快照唯一性、棋盘合法性和硬上限终止性；不将随机对局结果解释为平衡数据。
+        /// 验证构筑数量、快照唯一性、棋盘合法性和沙暴终止性；不将随机对局结果解释为平衡数据。
         /// </summary>
         private static bool RunStress(IItemDefinitionProvider provider, int count)
         {
@@ -117,7 +117,8 @@ namespace Buqi.Simulation.Headless
                     builds[index], builds[(index + 1) % builds.Count]);
                 BattleResult result = BuqiBattleSimulator.Simulate(
                     request, provider, out _, out _, out _);
-                if (result.DurationTicks > BuqiBattleSimulator.HardCapTick + 1)
+                if (result.Outcome != BattleOutcome.InvalidBuild &&
+                    (result.Outcome == BattleOutcome.Aborted || result.DurationTicks <= 0))
                     hungCount++;
             }
             stopwatch.Stop();

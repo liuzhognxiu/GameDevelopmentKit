@@ -60,17 +60,17 @@ public partial class DTBuqiGlobal : IDataTable
     /// </summary>
     public int BoardSlotCount => _data.BoardSlotCount;
     /// <summary>
-    /// normal duration ticks
+    /// storm start ticks
     /// </summary>
-    public int NormalDurationTicks => _data.NormalDurationTicks;
+    public int StormStartTicks => _data.StormStartTicks;
     /// <summary>
-    /// hard cap ticks
+    /// storm base true damage
     /// </summary>
-    public int HardCapTicks => _data.HardCapTicks;
+    public int StormBaseDamage => _data.StormBaseDamage;
     /// <summary>
-    /// overtime start ticks
+    /// storm true damage gained per tick
     /// </summary>
-    public int OvertimeStartTicks => _data.OvertimeStartTicks;
+    public int StormRampDamage => _data.StormRampDamage;
     /// <summary>
     /// max tick events
     /// </summary>

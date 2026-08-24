@@ -29,9 +29,9 @@ namespace Game.Hot.Buqi.Config
         public int NoiseThreshold;
         public int NoiseIncidentDamage;
         public int BoardSlotCount;
-        public int NormalDurationTicks;
-        public int HardCapTicks;
-        public int OvertimeStartTicks;
+        public int StormStartTicks = 300;
+        public int StormBaseDamage = 1;
+        public int StormRampDamage = 1;
         public int MaxTickEvents;
         public int MaxItemEventsPerTick;
         public int MaxChainDepth;
@@ -52,6 +52,7 @@ namespace Game.Hot.Buqi.Config
         public int FixedUpgradeCost;
         public int RefinementCost;
         public int BaseCooldownTicks;
+        public int AmmoCapacity;
         public string ArchetypeId = string.Empty;
         public string Role = string.Empty;
         public int UnlockDay;
@@ -75,10 +76,14 @@ namespace Game.Hot.Buqi.Config
         public BattleConditionKind ConditionKind = BattleConditionKind.None;
         public int ConditionThreshold;
         public int UseCountThreshold;
-        public int ChargeReadLimit;
-        public int AmountPerCharge;
-        public bool ChargeConsume;
         public bool ResetCountOnReached = true;
+        public int CriticalChanceBps;
+        public int RepeatCount = 1;
+        public int RageThreshold = 100;
+        public int RageDurationTicks = 50;
+        public int RageCooldownReductionBps = 1000;
+        public int FlightDamageBonusBps;
+        public int FlightEndDamage;
     }
 
     public sealed class BuqiRefinementConfigRow

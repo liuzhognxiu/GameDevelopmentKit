@@ -27,9 +27,13 @@ public partial struct BuqiEffectConfig
         ConditionKind = (BuqiConditionKind)_buf.ReadInt();
         ConditionThreshold = _buf.ReadInt();
         UseCountThreshold = _buf.ReadInt();
-        ChargeReadLimit = _buf.ReadInt();
-        AmountPerCharge = _buf.ReadInt();
-        ChargeConsume = _buf.ReadBool();
+        CriticalChanceBps = _buf.ReadInt();
+        RepeatCount = _buf.ReadInt();
+        RageThreshold = _buf.ReadInt();
+        RageDurationTicks = _buf.ReadInt();
+        RageCooldownReductionBps = _buf.ReadInt();
+        FlightDamageBonusBps = _buf.ReadInt();
+        FlightEndDamage = _buf.ReadInt();
         ResetCountOnReached = _buf.ReadBool();
         PostInit();
     }
@@ -76,17 +80,33 @@ public partial struct BuqiEffectConfig
     /// </summary>
     public readonly int UseCountThreshold;
     /// <summary>
-    /// charge read limit
+    /// critical chance in basis points
     /// </summary>
-    public readonly int ChargeReadLimit;
+    public readonly int CriticalChanceBps;
     /// <summary>
-    /// amount per charge
+    /// settlement repeat count
     /// </summary>
-    public readonly int AmountPerCharge;
+    public readonly int RepeatCount;
     /// <summary>
-    /// consume charge
+    /// rage activation threshold
     /// </summary>
-    public readonly bool ChargeConsume;
+    public readonly int RageThreshold;
+    /// <summary>
+    /// rage duration ticks
+    /// </summary>
+    public readonly int RageDurationTicks;
+    /// <summary>
+    /// rage cooldown reduction in basis points
+    /// </summary>
+    public readonly int RageCooldownReductionBps;
+    /// <summary>
+    /// flight damage bonus in basis points
+    /// </summary>
+    public readonly int FlightDamageBonusBps;
+    /// <summary>
+    /// damage dealt when leaving flight
+    /// </summary>
+    public readonly int FlightEndDamage;
     /// <summary>
     /// reset count
     /// </summary>
@@ -109,9 +129,13 @@ public partial struct BuqiEffectConfig
         + "ConditionKind:" + ConditionKind + ","
         + "ConditionThreshold:" + ConditionThreshold + ","
         + "UseCountThreshold:" + UseCountThreshold + ","
-        + "ChargeReadLimit:" + ChargeReadLimit + ","
-        + "AmountPerCharge:" + AmountPerCharge + ","
-        + "ChargeConsume:" + ChargeConsume + ","
+        + "CriticalChanceBps:" + CriticalChanceBps + ","
+        + "RepeatCount:" + RepeatCount + ","
+        + "RageThreshold:" + RageThreshold + ","
+        + "RageDurationTicks:" + RageDurationTicks + ","
+        + "RageCooldownReductionBps:" + RageCooldownReductionBps + ","
+        + "FlightDamageBonusBps:" + FlightDamageBonusBps + ","
+        + "FlightEndDamage:" + FlightEndDamage + ","
         + "ResetCountOnReached:" + ResetCountOnReached + ","
         + "}";
     }

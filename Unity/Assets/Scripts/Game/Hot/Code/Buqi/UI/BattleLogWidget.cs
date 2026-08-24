@@ -51,7 +51,7 @@ namespace Game.Hot.Buqi.UI
                 case "Damage":
                 case "BurnDamage":
                 case "PoisonDamage":
-                case "OvertimeDamage":
+                case "StormDamage":
                 case "NoiseAccident":
                     return new Color32(218, 83, 75, 255);
                 case "BufferGain":

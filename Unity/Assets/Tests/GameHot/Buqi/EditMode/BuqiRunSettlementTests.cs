@@ -16,7 +16,7 @@ namespace Game.Hot.Buqi.Tests
             BattleResult result = CreateBattleResult(BattleOutcome.Draw, "hash-summary");
             var log = new List<BattleEvent>
             {
-                CreateEvent(5, 9, BuqiEventType.Effect, 9, "gamma", "target-3", "OvertimeDamage"),
+                CreateEvent(5, 9, BuqiEventType.Effect, 9, "gamma", "target-3", "StormDamage"),
                 CreateEvent(2, 3, BuqiEventType.Truncate, 0, string.Empty, string.Empty, "ChainBreak"),
                 CreateEvent(1, 2, BuqiEventType.Effect, 5, "beta", "target-1", "Damage"),
                 CreateEvent(0, 1, BuqiEventType.Declare, 0, "alpha", string.Empty, "Declare"),

@@ -95,7 +95,10 @@ namespace Game.Hot.Buqi.Battle
 
         public int AdjustNoiseAmount(int amount)
         {
-            return Math.Max(0, amount + m_NoiseAdjustment);
+            long adjusted = (long)amount + m_NoiseAdjustment;
+            return adjusted <= 0
+                ? 0
+                : adjusted >= int.MaxValue ? int.MaxValue : (int)adjusted;
         }
 
         public bool AllowsModifier(BuqiEffect effect, bool fromEnemy)
@@ -110,9 +113,14 @@ namespace Game.Hot.Buqi.Battle
         private static int RoundBps(int value, int bps)
         {
             long numerator = (long)value * bps;
-            return numerator >= 0
-                ? (int)((numerator + 5000) / 10000)
-                : (int)((numerator - 5000) / 10000);
+            long rounded = numerator >= 0
+                ? (numerator + 5000) / 10000
+                : (numerator - 5000) / 10000;
+            if (rounded >= int.MaxValue)
+                return int.MaxValue;
+            if (rounded <= int.MinValue)
+                return int.MinValue;
+            return (int)rounded;
         }
     }
 }

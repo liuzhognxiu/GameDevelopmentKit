@@ -78,12 +78,12 @@ namespace Game.Hot.Buqi.Config
                 errors.Add("全局失衡事故伤害必须与战斗模拟器一致");
             if (global.BoardSlotCount != BuqiBoardValidator.BoardSlotCount)
                 errors.Add("全局棋盘格数必须为 8");
-            if (global.NormalDurationTicks != BuqiBattleSimulator.NormalTickCount)
-                errors.Add("全局正常战斗时长必须与战斗模拟器一致");
-            if (global.HardCapTicks != BuqiBattleSimulator.HardCapTick)
-                errors.Add("全局战斗硬上限必须与战斗模拟器一致");
-            if (global.OvertimeStartTicks != BuqiBattleSimulator.NormalTickCount)
-                errors.Add("全局劫火开始时刻必须与战斗模拟器一致");
+            if (global.StormStartTicks < 0)
+                errors.Add("Global StormStartTicks must be non-negative");
+            if (global.StormBaseDamage <= 0)
+                errors.Add("Global StormBaseDamage must be positive");
+            if (global.StormRampDamage <= 0)
+                errors.Add("Global StormRampDamage must be positive");
             if (global.MaxTickEvents != BuqiBattleSimulator.MaxEventsPerTick)
                 errors.Add("全局每时刻事件上限必须与战斗模拟器一致");
             if (global.MaxItemEventsPerTick != BuqiBattleSimulator.MaxEventsPerItemPerTick)
@@ -159,6 +159,8 @@ namespace Game.Hot.Buqi.Config
                     errors.Add(BuqiText.Format("{0}：价格必须与尺寸匹配", where));
                 if (row.BaseCooldownTicks <= 0)
                     errors.Add(BuqiText.Format("{0}：冷却必须大于 0", where));
+                if (row.AmmoCapacity < 0)
+                    errors.Add(BuqiText.Format("{0}：弹药上限必须大于等于 0", where));
                 if (string.IsNullOrEmpty(row.ArchetypeId))
                     errors.Add(BuqiText.Format("{0}：构筑方向 ID 为空", where));
                 else if (!IsExpectedBuildId(row.ArchetypeId))
@@ -221,10 +223,38 @@ namespace Game.Hot.Buqi.Config
             {
                 errors.Add(BuqiText.Format("{0}：OnFirstConditionMet 需要条件类型", where));
             }
-            if (effect.ChargeConsume && effect.ChargeReadLimit <= 0)
-                errors.Add(BuqiText.Format("{0}：消耗蓄力时需要读取上限", where));
-            if (effect.ChargeReadLimit < 0 || effect.AmountPerCharge < 0)
-                errors.Add(BuqiText.Format("{0}：蓄力字段必须大于等于 0", where));
+            if (effect.RepeatCount <= 0)
+                errors.Add(BuqiText.Format("{0}：多重结算次数必须大于 0", where));
+            if (effect.RepeatCount > BuqiBattleSimulator.MaxEventsPerTick)
+                errors.Add(BuqiText.Format("{0}：多重结算次数不能超过单时刻事件上限", where));
+            if (effect.CriticalChanceBps < 0 || effect.CriticalChanceBps > 10000)
+                errors.Add(BuqiText.Format("{0}: CriticalChanceBps must be within 0..10000", where));
+            if (effect.RageThreshold <= 0 || effect.RageDurationTicks <= 0 ||
+                effect.RageCooldownReductionBps < 0 || effect.RageCooldownReductionBps >= 10000)
+            {
+                errors.Add(BuqiText.Format("{0}: Rage configuration is invalid", where));
+            }
+            if (effect.FlightDamageBonusBps > 100000)
+            {
+                errors.Add(BuqiText.Format("{0}：伤害倍率字段不能超过 100000", where));
+            }
+            if (effect.FlightDamageBonusBps < 0 || effect.FlightEndDamage < 0)
+                errors.Add(BuqiText.Format("{0}：新战斗修饰字段不能为负数", where));
+
+            if (!CanCrit(effect.Effect) && effect.CriticalChanceBps != 0)
+            {
+                errors.Add(BuqiText.Format(
+                    "{0}: CriticalChanceBps is not valid for this effect",
+                    where));
+            }
+            if (effect.Effect != BattleEffect.Damage &&
+                effect.Effect != BattleEffect.Flight &&
+                (effect.FlightDamageBonusBps != 0 || effect.FlightEndDamage != 0))
+            {
+                errors.Add(BuqiText.Format(
+                    "{0}: FlightDamageBonusBps and FlightEndDamage are only valid for Flight",
+                    where));
+            }
 
             switch (effect.Effect)
             {
@@ -233,6 +263,8 @@ namespace Game.Hot.Buqi.Config
                         errors.Add(BuqiText.Format("{0}：Damage 需要 EnemyExecution 目标", where));
                     if (effect.Amount <= 0)
                         errors.Add(BuqiText.Format("{0}：Damage 数值必须大于 0", where));
+                    if (effect.FlightDamageBonusBps != 0 || effect.FlightEndDamage != 0)
+                        errors.Add(BuqiText.Format("{0}：Damage 不能携带 Flight 专属字段", where));
                     break;
                 case BattleEffect.Buffer:
                     if (effect.Target != BattleTarget.Self)
@@ -270,8 +302,8 @@ namespace Game.Hot.Buqi.Config
                 case BattleEffect.Charge:
                     if (!IsItemTarget(effect.Target))
                         errors.Add(BuqiText.Format("{0}：Charge 需要装备目标", where));
-                    if (effect.Amount == 0)
-                        errors.Add(BuqiText.Format("{0}：Charge 数值不能为 0", where));
+                    if (effect.Amount <= 0)
+                        errors.Add(BuqiText.Format("{0}：Charge 推进时刻必须大于 0", where));
                     break;
                 case BattleEffect.Haste:
                     if (!IsItemTarget(effect.Target))
@@ -282,6 +314,26 @@ namespace Game.Hot.Buqi.Config
                     if (!IsEnemyItemTarget(effect.Target))
                         errors.Add(BuqiText.Format("{0}：Delay 需要敌方装备目标", where));
                     ValidateModifierAmount(effect, where, errors);
+                    break;
+                case BattleEffect.Ammo:
+                    if (!IsItemTarget(effect.Target))
+                        errors.Add(BuqiText.Format("{0}：Ammo 需要装备目标", where));
+                    if (effect.Amount <= 0)
+                        errors.Add(BuqiText.Format("{0}：Ammo 补充量必须大于 0", where));
+                    break;
+                case BattleEffect.Flight:
+                    if (effect.Target != BattleTarget.Self)
+                        errors.Add(BuqiText.Format("{0}：Flight 需要 Self 目标", where));
+                    if (effect.Amount == 0)
+                        errors.Add(BuqiText.Format("{0}：Flight 动作不能为 0", where));
+                    if (effect.Amount > 0 && effect.DurationTicks <= 0)
+                        errors.Add(BuqiText.Format("{0}：进入 Flight 需要正持续时刻", where));
+                    break;
+                case BattleEffect.Rage:
+                    if (effect.Target != BattleTarget.Self)
+                        errors.Add(BuqiText.Format("{0}: Rage requires Self target", where));
+                    if (effect.Amount <= 0)
+                        errors.Add(BuqiText.Format("{0}: Rage amount must be positive", where));
                     break;
                 case BattleEffect.Noise:
                     if (effect.Target != BattleTarget.Self)
@@ -530,6 +582,16 @@ namespace Game.Hot.Buqi.Config
                    target == BattleTarget.LongestCooldownEnemyItem ||
                    target == BattleTarget.LeftmostEnemyItem ||
                    target == BattleTarget.RightmostEnemyItem;
+        }
+
+        private static bool CanCrit(BattleEffect effect)
+        {
+            return effect == BattleEffect.Damage ||
+                   effect == BattleEffect.Buffer ||
+                   effect == BattleEffect.Heal ||
+                   effect == BattleEffect.Regen ||
+                   effect == BattleEffect.Burn ||
+                   effect == BattleEffect.Poison;
         }
     }
 }

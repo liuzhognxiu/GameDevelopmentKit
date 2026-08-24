@@ -64,9 +64,9 @@ namespace Game.Hot.Buqi.Config
                 NoiseThreshold = ReadInt(row, "NoiseThreshold", errors),
                 NoiseIncidentDamage = ReadInt(row, "NoiseIncidentDamage", errors),
                 BoardSlotCount = ReadInt(row, "BoardSlotCount", errors),
-                NormalDurationTicks = ReadInt(row, "NormalDurationTicks", errors),
-                HardCapTicks = ReadInt(row, "HardCapTicks", errors),
-                OvertimeStartTicks = ReadInt(row, "OvertimeStartTicks", errors),
+                StormStartTicks = ReadInt(row, "StormStartTicks", errors),
+                StormBaseDamage = ReadInt(row, "StormBaseDamage", errors),
+                StormRampDamage = ReadInt(row, "StormRampDamage", errors),
                 MaxTickEvents = ReadInt(row, "MaxTickEvents", errors),
                 MaxItemEventsPerTick = ReadInt(row, "MaxItemEventsPerTick", errors),
                 MaxChainDepth = ReadInt(row, "MaxChainDepth", errors),
@@ -96,6 +96,7 @@ namespace Game.Hot.Buqi.Config
                     FixedUpgradeCost = ReadInt(row, "FixedUpgradeCost", errors),
                     RefinementCost = ReadInt(row, "RefinementCost", errors),
                     BaseCooldownTicks = ReadInt(row, "BaseCooldownTicks", errors),
+                    AmmoCapacity = ReadOptionalInt(row, "AmmoCapacity", 0, errors),
                     ArchetypeId = ReadEnum(row, "ArchetypeId", GeneratedBuild.fast, errors).ToString(),
                     Role = ReadString(row, "Role", errors),
                     UnlockDay = ReadInt(row, "UnlockDay", errors),
@@ -139,10 +140,14 @@ namespace Game.Hot.Buqi.Config
                 ConditionKind = ReadEnum(row, "ConditionKind", BattleConditionKind.None, errors),
                 ConditionThreshold = ReadInt(row, "ConditionThreshold", errors),
                 UseCountThreshold = ReadInt(row, "UseCountThreshold", errors),
-                ChargeReadLimit = ReadInt(row, "ChargeReadLimit", errors),
-                AmountPerCharge = ReadInt(row, "AmountPerCharge", errors),
-                ChargeConsume = ReadBool(row, "ChargeConsume", errors),
                 ResetCountOnReached = ReadBool(row, "ResetCountOnReached", errors),
+                CriticalChanceBps = ReadInt(row, "CriticalChanceBps", errors),
+                RepeatCount = ReadInt(row, "RepeatCount", errors),
+                RageThreshold = ReadInt(row, "RageThreshold", errors),
+                RageDurationTicks = ReadInt(row, "RageDurationTicks", errors),
+                RageCooldownReductionBps = ReadInt(row, "RageCooldownReductionBps", errors),
+                FlightDamageBonusBps = ReadInt(row, "FlightDamageBonusBps", errors),
+                FlightEndDamage = ReadInt(row, "FlightEndDamage", errors),
             };
         }
 
@@ -428,6 +433,22 @@ namespace Game.Hot.Buqi.Config
                 return parsed;
             errors.Add(BuqiText.Format("{0}.{1} 不是整数", source.GetType().Name, name));
             return 0;
+        }
+
+        private static int ReadOptionalInt(
+            object source,
+            string name,
+            int fallback,
+            List<string> errors)
+        {
+            if (source == null || !TryGetMember(source, name, out object value) || value == null)
+                return fallback;
+            if (value is int intValue)
+                return intValue;
+            if (int.TryParse(value.ToString(), out int parsed))
+                return parsed;
+            errors.Add(BuqiText.Format("{0}.{1} 不是整数", source.GetType().Name, name));
+            return fallback;
         }
 
         private static bool ReadBool(object source, string name, List<string> errors)

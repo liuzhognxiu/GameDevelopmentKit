@@ -21,7 +21,7 @@ namespace Game.Hot.Buqi.Battle
     public static class BuqiTestSuite
     {
         /// <summary>测试定义与快照共同使用的内容版本。</summary>
-        public const string FixtureContentVersion = "buqi-test-cv1";
+        public const string FixtureContentVersion = "buqi-test-cv2";
 
         /// <summary>创建覆盖六效果、六触发、相邻关系和事件上限的代码内测试定义。</summary>
         public static IItemDefinitionProvider CreateFixtureProvider()
@@ -40,38 +40,8 @@ namespace Game.Hot.Buqi.Battle
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Haste, BuqiTarget.Self, 2000, "haste", 30)),
                 ["delay"] = CreateDefinition("delay", 1, 30,
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Delay, BuqiTarget.EnemyExecution, 2000, "delay", 30)),
-                ["charge"] = CreateDefinition("charge", 1, 10,
-                    Effect(BuqiTrigger.OnUse, BuqiEffect.Charge, BuqiTarget.Self, 2, "charge")),
-                ["opening-charge-source"] = CreateDefinition("opening-charge-source", 1, 300,
-                    Effect(BuqiTrigger.OnBattleStart, BuqiEffect.Charge, BuqiTarget.RightAdjacentItem, 3, "opening-charge")),
-                ["charge-consumer"] = CreateDefinition("charge-consumer", 1, 300,
-                    ChargedEffect(BuqiTrigger.OnBattleStart, 1, 2, 3, true, "charge-consume-a"),
-                    ChargedEffect(BuqiTrigger.OnBattleStart, 1, 2, 3, true, "charge-consume-b")),
-                ["charge-reader"] = CreateDefinition("charge-reader", 1, 300,
-                    ChargedEffect(BuqiTrigger.OnBattleStart, 1, 2, 3, false, "charge-read-a"),
-                    ChargedEffect(BuqiTrigger.OnBattleStart, 1, 2, 3, false, "charge-read-b")),
-                ["charge-rewrite"] = CreateDefinition("charge-rewrite", 1, 30,
-                    ChargedEffect(BuqiTrigger.OnUse, 2, 2, 3, true, "charge-rewrite")),
-                ["charge-no-target"] = CreateDefinition("charge-no-target", 1, 300,
-                    ChargedEffect(
-                        BuqiTrigger.OnBattleStart,
-                        BuqiTarget.RightAdjacentItem,
-                        1,
-                        2,
-                        3,
-                        true,
-                        "charge-no-target")),
-                ["same-actor-charge-sequence"] = CreateDefinition("same-actor-charge-sequence", 1, 300,
-                    Effect(BuqiTrigger.OnBattleStart, BuqiEffect.Charge, BuqiTarget.Self, 3, "z-same-actor-charge"),
-                    ChargedEffect(
-                        BuqiTrigger.OnBattleStart,
-                        BuqiEffect.Buffer,
-                        BuqiTarget.Self,
-                        1,
-                        2,
-                        3,
-                        true,
-                        "a-same-actor-buffer")),
+                ["charge-advance"] = CreateDefinition("charge-advance", 1, 10,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Charge, BuqiTarget.Self, 2, "charge-advance")),
                 ["noise"] = CreateDefinition("noise", 1, 30,
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Noise, BuqiTarget.EnemyExecution, 21, "noise")),
                 ["heal"] = CreateDefinition("heal", 1, 40,
@@ -84,6 +54,50 @@ namespace Game.Hot.Buqi.Battle
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Burn, BuqiTarget.EnemyExecution, 5, "burn", 30)),
                 ["freeze"] = CreateDefinition("freeze", 1, 40,
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Freeze, BuqiTarget.ShortestCooldownEnemyItem, 10, "freeze", 10)),
+                ["critical"] = CreateDefinition("critical", 1, 30,
+                    CriticalEffect(10, 20000, "critical-strike")),
+                ["critical-overflow"] = CreateDefinition("critical-overflow", 1, 30,
+                    CriticalEffect(100, 100000, "critical-overflow", BuqiTrigger.OnUse)),
+                ["saturated-flight"] = CreateDefinition("saturated-flight", 1, 10,
+                    FlightEffect(BuqiTrigger.OnBattleStart, 1, 100, 5000, 0, "saturated-flight-enter"),
+                    CriticalEffect(int.MaxValue, 20000, "saturated-flight-strike", BuqiTrigger.OnUse)),
+                ["saturated-multi"] = CreateDefinition("saturated-multi", 1, 300,
+                    RepeatedEffect(
+                        BuqiTrigger.OnBattleStart, BuqiEffect.Damage, BuqiTarget.EnemyExecution,
+                        int.MaxValue, 2, "saturated-multi")),
+                ["multi-ammo"] = CreateAmmoDefinition("multi-ammo", 1, 10, 2,
+                    RepeatedEffect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 2, 3, "multi-strike")),
+                ["multi-cap"] = CreateDefinition("multi-cap", 1, 300,
+                    RepeatedEffect(BuqiTrigger.OnBattleStart, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 1, 5, "multi-cap")),
+                ["ammo-limited"] = CreateAmmoDefinition("ammo-limited", 1, 10, 1,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 4, "ammo-shot")),
+                ["ammo-capped"] = CreateAmmoDefinition("ammo-capped", 1, 20, 1,
+                    ConditionEffect(BuqiConditionKind.BufferLost, 0, 1, "ammo-cap-1"),
+                    ConditionEffect(BuqiConditionKind.BufferLost, 0, 1, "ammo-cap-2"),
+                    ConditionEffect(BuqiConditionKind.BufferLost, 0, 1, "ammo-cap-3"),
+                    ConditionEffect(BuqiConditionKind.BufferLost, 0, 1, "ammo-cap-4"),
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 1, "ammo-cap-shot")),
+                ["buffer-breaker"] = CreateDefinition("buffer-breaker", 1, 19,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 1, "buffer-break")),
+                ["ammo-refill"] = CreateDefinition("ammo-refill", 1, 30,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Ammo, BuqiTarget.LeftAdjacentItem, 1, "ammo-refill")),
+                ["flight"] = CreateDefinition("flight", 1, 10,
+                    FlightEffect(BuqiTrigger.OnBattleStart, 1, 11, 5000, 7, "flight-enter"),
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 10, "flight-strike")),
+                ["flight-leave"] = CreateDefinition("flight-leave", 1, 10,
+                    FlightEffect(BuqiTrigger.OnBattleStart, 1, 100, 0, 7, "flight-enter"),
+                    FlightEffect(BuqiTrigger.OnUse, -1, 0, 0, 0, "flight-leave")),
+                ["flight-leave-repeat"] = CreateDefinition("flight-leave-repeat", 1, 10,
+                    FlightEffect(BuqiTrigger.OnBattleStart, 1, 100, 0, 7, "flight-enter"),
+                    RepeatedFlightLeave(2, "flight-leave-repeat")),
+                ["flight-long"] = CreateDefinition("flight-long", 1, 300,
+                    FlightEffect(BuqiTrigger.OnBattleStart, 1, 100, 0, 0, "flight-enter")),
+                ["flight-source-strong"] = CreateDefinition("flight-source-strong", 1, 300,
+                    FlightEffect(BuqiTrigger.OnBattleStart, 1, 20, 1000, 9, "flight-strong")),
+                ["flight-source-weak"] = CreateAmmoDefinition("flight-source-weak", 1, 10, 1,
+                    FlightEffect(BuqiTrigger.OnUse, 1, 5, 0, 1, "flight-weak")),
+                ["delay-odd"] = CreateDefinition("delay-odd", 1, 30,
+                    Effect(BuqiTrigger.OnUse, BuqiEffect.Delay, BuqiTarget.EnemyExecution, 2000, "delay-odd", 9)),
                 ["adjacent-source"] = CreateDefinition("adjacent-source", 1, 30,
                     Effect(BuqiTrigger.OnUse, BuqiEffect.Damage, BuqiTarget.EnemyExecution, 8, "adjacent-source")),
                 ["adjacent-response"] = CreateDefinition("adjacent-response", 1, 300,
@@ -112,7 +126,7 @@ namespace Game.Hot.Buqi.Battle
         }
 
         /// <summary>
-        /// 创建 15 个版本化向量，覆盖确定性、S/M/L 占位、空格阻断、同 tick 聚合、淬炼、劫火和非法构筑。
+        /// 创建 15 个版本化向量，覆盖确定性、S/M/L 占位、空格阻断、同 tick 聚合、淬炼、沙暴和非法构筑。
         /// 向量 ID 是批准哈希协议的一部分，重命名等同于变更测试基线。
         /// </summary>
         public static List<BuqiTestVector> CreateVectors()
@@ -140,8 +154,8 @@ namespace Game.Hot.Buqi.Battle
                 Vector("noise-threshold",
                     Snapshot("L", 1000, 0, Item("noise", "noise", 0)),
                     Snapshot("R", 1000, 0, Item("target", "passive", 0))),
-                Vector("charge-cap",
-                    Snapshot("L", 1000, 0, Item("charge", "charge", 0)),
+                Vector("charge-advance",
+                    Snapshot("L", 1000, 0, Item("charge", "charge-advance", 0)),
                     Snapshot("R", 1000, 0, Item("target", "passive", 0))),
                 Vector("reliable",
                     Snapshot("L", 100, 0, Item("delay", "delay", 0)),
@@ -155,7 +169,7 @@ namespace Game.Hot.Buqi.Battle
                 Vector("loop-cap",
                     Snapshot("L", 1000, 0, Item("cap", "loop-cap", 0)),
                     Snapshot("R", 1000, 0, Item("target", "passive", 0))),
-                Vector("overtime",
+                Vector("storm",
                     Snapshot("L", 2, 0, Item("left", "passive", 0)),
                     Snapshot("R", 2, 0, Item("right", "passive", 0))),
                 Vector("illegal-overlap",
@@ -228,14 +242,14 @@ namespace Game.Hot.Buqi.Battle
             var random = new DeterministicRandom(seed);
             string[] definitionIds =
             {
-                "damage", "buffer", "large", "medium", "haste", "delay", "charge",
+                "damage", "buffer", "large", "medium", "haste", "delay", "charge-advance",
                 "noise", "heal", "regen", "poison", "burn", "freeze",
                 "adjacent-source", "adjacent-response", "use-count", "battle-start-buffer",
             };
             var definitionSizes = new Dictionary<string, int>(StringComparer.Ordinal)
             {
                 ["damage"] = 1, ["buffer"] = 1, ["large"] = 3, ["medium"] = 2,
-                ["haste"] = 1, ["delay"] = 1, ["charge"] = 1, ["noise"] = 1,
+                ["haste"] = 1, ["delay"] = 1, ["charge-advance"] = 1, ["noise"] = 1,
                 ["heal"] = 1, ["regen"] = 1, ["poison"] = 1, ["burn"] = 1, ["freeze"] = 1,
                 ["adjacent-source"] = 1, ["adjacent-response"] = 1,
                 ["use-count"] = 1, ["battle-start-buffer"] = 1,
@@ -295,67 +309,6 @@ namespace Game.Hot.Buqi.Battle
             };
         }
 
-        private static BuqiEffectSpec ChargedEffect(
-            BuqiTrigger trigger,
-            int baseAmount,
-            int amountPerCharge,
-            int chargeReadLimit,
-            bool consume,
-            string reason)
-        {
-            return ChargedEffect(
-                trigger,
-                BuqiTarget.EnemyExecution,
-                baseAmount,
-                amountPerCharge,
-                chargeReadLimit,
-                consume,
-                reason);
-        }
-
-        private static BuqiEffectSpec ChargedEffect(
-            BuqiTrigger trigger,
-            BuqiTarget target,
-            int baseAmount,
-            int amountPerCharge,
-            int chargeReadLimit,
-            bool consume,
-            string reason)
-        {
-            BuqiEffectSpec spec = Effect(
-                trigger,
-                BuqiEffect.Damage,
-                target,
-                baseAmount,
-                reason);
-            spec.AmountPerCharge = amountPerCharge;
-            spec.ChargeReadLimit = chargeReadLimit;
-            spec.ChargeConsume = consume;
-            return spec;
-        }
-
-        private static BuqiEffectSpec ChargedEffect(
-            BuqiTrigger trigger,
-            BuqiEffect effect,
-            BuqiTarget target,
-            int baseAmount,
-            int amountPerCharge,
-            int chargeReadLimit,
-            bool consume,
-            string reason)
-        {
-            BuqiEffectSpec spec = Effect(
-                trigger,
-                effect,
-                target,
-                baseAmount,
-                reason);
-            spec.AmountPerCharge = amountPerCharge;
-            spec.ChargeReadLimit = chargeReadLimit;
-            spec.ChargeConsume = consume;
-            return spec;
-        }
-
         private static BuqiEffectSpec CountEffect(int threshold, int amount, string reason)
         {
             BuqiEffectSpec spec = Effect(
@@ -365,6 +318,63 @@ namespace Game.Hot.Buqi.Battle
                 amount,
                 reason);
             spec.UseCountThreshold = threshold;
+            return spec;
+        }
+
+        private static BuqiEffectSpec CriticalEffect(
+            int amount,
+            int multiplierBps,
+            string reason,
+            BuqiTrigger trigger = BuqiTrigger.OnBattleStart)
+        {
+            BuqiEffectSpec spec = Effect(
+                trigger,
+                BuqiEffect.Damage,
+                BuqiTarget.EnemyExecution,
+                amount,
+                reason);
+            spec.CriticalChanceBps = multiplierBps > 0 ? 10000 : 0;
+            return spec;
+        }
+
+        private static BuqiEffectSpec RepeatedEffect(
+            BuqiTrigger trigger,
+            BuqiEffect effect,
+            BuqiTarget target,
+            int amount,
+            int repeatCount,
+            string reason)
+        {
+            BuqiEffectSpec spec = Effect(trigger, effect, target, amount, reason);
+            spec.RepeatCount = repeatCount;
+            return spec;
+        }
+
+        private static BuqiEffectSpec FlightEffect(
+            BuqiTrigger trigger,
+            int action,
+            int durationTicks,
+            int damageBonusBps,
+            int endDamage,
+            string reason)
+        {
+            BuqiEffectSpec spec = Effect(
+                trigger,
+                BuqiEffect.Flight,
+                BuqiTarget.Self,
+                action,
+                reason,
+                durationTicks);
+            spec.FlightDamageBonusBps = damageBonusBps;
+            spec.FlightEndDamage = endDamage;
+            return spec;
+        }
+
+        private static BuqiEffectSpec RepeatedFlightLeave(int repeatCount, string reason)
+        {
+            BuqiEffectSpec spec = FlightEffect(
+                BuqiTrigger.OnUse, -1, 0, 0, 0, reason);
+            spec.RepeatCount = repeatCount;
             return spec;
         }
 
@@ -398,6 +408,18 @@ namespace Game.Hot.Buqi.Battle
                 BaseCooldownTicks = cooldownTicks,
             };
             definition.Effects.AddRange(effects);
+            return definition;
+        }
+
+        private static BuqiItemDefinition CreateAmmoDefinition(
+            string id,
+            int size,
+            int cooldownTicks,
+            int ammoCapacity,
+            params BuqiEffectSpec[] effects)
+        {
+            BuqiItemDefinition definition = CreateDefinition(id, size, cooldownTicks, effects);
+            definition.AmmoCapacity = ammoCapacity;
             return definition;
         }
 

@@ -14,6 +14,7 @@ namespace Game.Hot.Editor
         private const string BoardSlotPath = OutputFolder + "/BoardSlotWidget.prefab";
         private const string ChoiceCardPath = OutputFolder + "/ChoiceCardWidget.prefab";
         private const string OfferCardPath = OutputFolder + "/OfferCardWidget.prefab";
+        private const string ItemFramePath = "Assets/Res/UI/UISprite/Buqi/Bazaar/item-frame.png";
 
         private static readonly Color surfaceColor = new Color32(36, 43, 51, 255);
         private static readonly Color raisedColor = new Color32(57, 67, 78, 255);
@@ -119,6 +120,9 @@ namespace Game.Hot.Editor
         {
             GameObject root = CreateRoot("OfferCardWidget", new Vector2(320f, 188f));
             Image background = AddImage(root, surfaceColor);
+            background.sprite = LoadSprite(ItemFramePath);
+            background.type = Image.Type.Sliced;
+            background.color = Color.white;
             OfferCardWidget widget = root.AddComponent<OfferCardWidget>();
 
             GameObject lockOverlay = CreatePanel(root.transform, "LockOverlay", Vector2.zero, new Vector2(320f, 188f), new Color(0f, 0f, 0f, 0.64f));
@@ -211,6 +215,14 @@ namespace Game.Hot.Editor
             image.type = image.sprite == null ? Image.Type.Simple : Image.Type.Sliced;
             image.color = color;
             return image;
+        }
+
+        private static Sprite LoadSprite(string path)
+        {
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (sprite == null)
+                throw new InvalidOperationException("缺少不器界面图片：" + path);
+            return sprite;
         }
 
         private static Image CreateImage(Transform parent, string name, Color color)

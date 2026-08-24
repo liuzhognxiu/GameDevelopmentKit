@@ -86,7 +86,7 @@ namespace Game.Hot.Buqi.UI
             string itemName = item == null ? view.Id : string.IsNullOrEmpty(item.Name) ? item.Id : item.Name;
             string itemDescription = item == null
                 ? string.Empty
-                : string.Format("{0}\n{1} 格 · {2}", item.Description, Math.Max(1, item.Size),
+                : GameFramework.Utility.Text.Format("{0}\n{1} 格 · {2}", item.Description, Math.Max(1, item.Size),
                     string.IsNullOrEmpty(item.Quality) ? "普通" : item.Quality);
             bool unavailable = view.Sold;
             m_OfferId = view.Id ?? string.Empty;

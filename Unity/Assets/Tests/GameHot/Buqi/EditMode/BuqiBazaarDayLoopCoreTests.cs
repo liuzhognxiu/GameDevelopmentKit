@@ -9,6 +9,24 @@ namespace Game.Hot.Buqi.Tests
     public sealed class BuqiBazaarDayLoopCoreTests
     {
         [Test]
+        public void InitialState_UsesApprovedUnlimitedRunBaseline()
+        {
+            BuqiRunState state = BuqiRunState.CreateInitial(240824L, "content-v1");
+
+            Assert.That(BuqiRunRules.WinsToVictory, Is.EqualTo(10));
+            Assert.That(BuqiRunRules.StartingLifePool, Is.EqualTo(20));
+            Assert.That(BuqiRunRules.BoardSlotCount, Is.EqualTo(10));
+            Assert.That(BuqiRunRules.StorageSlotCount, Is.EqualTo(10));
+            Assert.That(state.Day, Is.EqualTo(1));
+            Assert.That(state.LifePool, Is.EqualTo(20));
+            Assert.That(state.Cultivation, Is.Zero);
+            Assert.That(state.Realm, Is.Zero);
+            Assert.That(state.InTribulationTrial, Is.False);
+            Assert.That(state.BoardInstanceIds, Has.Count.EqualTo(10));
+            Assert.That(state.StorageInstanceIds, Has.Count.EqualTo(10));
+        }
+
+        [Test]
         public void DailyLoop_PveLossKeepsLivesAndOpensTwoPostBattleOperations()
         {
             var controller = new BuqiRunController(BuqiRunState.CreateInitial(101L, "content-v1"));

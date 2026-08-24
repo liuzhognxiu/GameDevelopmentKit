@@ -20,5 +20,8 @@
   <ItemGroup>
     <!-- 链接同一份模拟源码，不复制实现（Program.cs 由 SDK 默认包含） -->
     <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Battle\**\*.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Config\BuqiConfigModels.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Config\BuqiDefinitionProvider.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\BattleLab\**\*.cs" />
   </ItemGroup>
 </Project>

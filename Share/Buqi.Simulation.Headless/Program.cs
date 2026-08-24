@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Game.Hot.Buqi.Battle;
+using Game.Hot.Buqi.BattleLab;
 
 namespace Buqi.Simulation.Headless
 {
@@ -28,9 +29,12 @@ namespace Buqi.Simulation.Headless
             if (mode == "localization-audit")
                 return BuqiLocalizationAudit.Run();
 
+            if (mode == "battle-lab")
+                return RunBattleLabContracts();
+
             if (mode != "verify" && mode != "stress" && mode != "all" && mode != "update-hashes")
             {
-                Console.Error.WriteLine("usage: verify | stress [count] | all [count] | update-hashes | localization-audit");
+                Console.Error.WriteLine("usage: verify | stress [count] | all [count] | update-hashes | localization-audit | battle-lab");
                 return 2;
             }
 
@@ -47,6 +51,9 @@ namespace Buqi.Simulation.Headless
                 return 1;
             }
             Console.WriteLine("[contract] all behavioral checks passed");
+
+            if ((mode == "verify" || mode == "all") && RunBattleLabContracts() != 0)
+                return 1;
 
             IItemDefinitionProvider provider = BuqiTestSuite.CreateFixtureProvider();
             if (mode == "stress")
@@ -91,6 +98,18 @@ namespace Buqi.Simulation.Headless
                 return 1;
 
             Console.WriteLine("=== ALL CHECKS PASSED ===");
+            return 0;
+        }
+
+        private static int RunBattleLabContracts()
+        {
+            List<string> failures = BuqiBattleLabContractChecks.RunAll();
+            foreach (string failure in failures)
+                Console.Error.WriteLine(BuqiText.Format("[battle-lab-fail] {0}", failure));
+            if (failures.Count > 0)
+                return 1;
+
+            Console.WriteLine("[battle-lab] all behavioral checks passed");
             return 0;
         }
 

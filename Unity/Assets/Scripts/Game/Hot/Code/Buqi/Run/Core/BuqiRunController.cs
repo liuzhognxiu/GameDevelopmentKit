@@ -54,7 +54,9 @@ namespace Game.Hot.Buqi.Run.Core
                     break;
                 case BuqiRunPeriod.Hour5Operation:
                     next.Period = BuqiRunPeriod.Hour6Pvp;
-                    next.Phase = BuqiRunPhase.PvpBattle;
+                    next.Phase = next.Wins >= BuqiRunRules.WinsToVictory - 1
+                        ? BuqiRunPhase.TribulationRoute
+                        : BuqiRunPhase.PvpBattle;
                     break;
                 default:
                     return Rejected(InvalidOperationPeriod);
@@ -111,40 +113,44 @@ namespace Game.Hot.Buqi.Run.Core
             BuqiRunState next = m_State.Clone();
             bool isPvpLoss = battleKind == BuqiRunBattleKind.Pvp &&
                              rawOutcome == BuqiRunRawBattleOutcome.OpponentWin;
-            if (isPvpLoss)
-            {
-                next.Lives = Math.Max(0, next.Lives - 1);
-                next.CurrentOmen = Math.Min(BuqiRunRules.MaxOmen, next.CurrentOmen + 1);
-            }
-            else if (rawOutcome != BuqiRunRawBattleOutcome.OpponentWin)
-            {
-                next.Wins++;
-                next.DaoSeals++;
-            }
-
+            bool isPvpWin = battleKind == BuqiRunBattleKind.Pvp &&
+                            rawOutcome == BuqiRunRawBattleOutcome.PlayerWin;
+            next.Cultivation += BuqiRunProgression.GetBattleReward(battleKind, rawOutcome);
+            next.Realm = BuqiRunProgression.GetRealm(next.Cultivation);
             next.AppliedSettlementIds.Add(settlementId);
-            if (next.Lives <= 0)
-            {
-                next.Lives = 0;
-                next.Outcome = BuqiRunOutcome.Defeat;
-                next.Phase = BuqiRunPhase.RunTerminal;
-            }
-            else if (battleKind == BuqiRunBattleKind.Pve)
+
+            if (battleKind == BuqiRunBattleKind.Pve)
             {
                 next.Period = BuqiRunPeriod.Hour4Operation;
                 next.Phase = BuqiRunPhase.Encounter;
             }
-            else if (next.Day == BuqiRunRules.RunDayCount)
+            else if (isPvpLoss && next.InTribulationTrial)
             {
-                next.Period = BuqiRunPeriod.Hour6Pvp;
-                next.Phase = BuqiRunPhase.TribulationRoute;
+                next.LifePool = 0;
+                next.Outcome = BuqiRunOutcome.Defeat;
+                next.Phase = BuqiRunPhase.RunTerminal;
+            }
+            else if (isPvpLoss)
+            {
+                next.LifePool = Math.Max(0, next.LifePool - next.Day);
+                next.CurrentOmen = Math.Min(BuqiRunRules.MaxOmen, next.CurrentOmen + 1);
+                next.InTribulationTrial = next.LifePool == 0;
+                StartNextDay(next);
+            }
+            else if (isPvpWin)
+            {
+                next.Wins++;
+                next.DaoSeals++;
+                if (next.InTribulationTrial)
+                {
+                    next.LifePool = next.Day;
+                    next.InTribulationTrial = false;
+                }
+                StartNextDay(next);
             }
             else
             {
-                next.Day++;
-                next.EncounterIndex = 0;
-                next.Period = BuqiRunPeriod.Hour1Operation;
-                next.Phase = BuqiRunPhase.Encounter;
+                StartNextDay(next);
             }
 
             next.Revision++;
@@ -216,9 +222,13 @@ namespace Game.Hot.Buqi.Run.Core
             if (next.TribulationStage >= BuqiRunRules.TribulationStageCount)
             {
                 next.TribulationStage = BuqiRunRules.TribulationStageCount;
-                next.Outcome = next.TribulationSuccesses == BuqiRunRules.TribulationStageCount
-                    ? BuqiRunOutcome.Victory
-                    : BuqiRunOutcome.Defeat;
+                bool succeeded = next.TribulationSuccesses == BuqiRunRules.TribulationStageCount;
+                if (succeeded)
+                {
+                    next.Wins = Math.Min(BuqiRunRules.WinsToVictory, next.Wins + 1);
+                    next.DaoSeals = Math.Min(BuqiRunRules.MaxDaoSeals, next.DaoSeals + 1);
+                }
+                next.Outcome = succeeded ? BuqiRunOutcome.Victory : BuqiRunOutcome.Defeat;
                 next.Phase = BuqiRunPhase.RunTerminal;
             }
             else
@@ -265,6 +275,14 @@ namespace Game.Hot.Buqi.Run.Core
         {
             state.AppliedCommandIds.Add(commandId);
             state.Revision++;
+        }
+
+        private static void StartNextDay(BuqiRunState state)
+        {
+            state.Day++;
+            state.EncounterIndex = 0;
+            state.Period = BuqiRunPeriod.Hour1Operation;
+            state.Phase = BuqiRunPhase.Encounter;
         }
 
         private BuqiRunTransitionResult Commit(BuqiRunState next)

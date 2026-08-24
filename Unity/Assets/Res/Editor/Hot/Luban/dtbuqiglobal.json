@@ -5,7 +5,7 @@
     "BufferCap": 60,
     "NoiseThreshold": 10,
     "NoiseIncidentDamage": 8,
-    "BoardSlotCount": 8,
+    "BoardSlotCount": 10,
     "StormStartTicks": 300,
     "StormBaseDamage": 1,
     "StormRampDamage": 1,

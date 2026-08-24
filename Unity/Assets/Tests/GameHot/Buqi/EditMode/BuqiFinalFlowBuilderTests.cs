@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Game.Hot.Buqi.Battle;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -239,8 +240,8 @@ namespace Game.Hot.Buqi.Tests
         {
             Transform arena = m_Root.transform.Find("BattleArena");
             Assert.That(arena, Is.Not.Null);
-            Assert.That(arena.Cast<Transform>().Count(child => child.name.EndsWith("_Left", StringComparison.Ordinal)), Is.EqualTo(8));
-            Assert.That(arena.Cast<Transform>().Count(child => child.name.EndsWith("_Right", StringComparison.Ordinal)), Is.EqualTo(8));
+            Assert.That(arena.Cast<Transform>().Count(child => child.name.EndsWith("_Left", StringComparison.Ordinal)), Is.EqualTo(BuqiBoardValidator.BoardSlotCount));
+            Assert.That(arena.Cast<Transform>().Count(child => child.name.EndsWith("_Right", StringComparison.Ordinal)), Is.EqualTo(BuqiBoardValidator.BoardSlotCount));
 
             foreach (Transform card in arena)
             {

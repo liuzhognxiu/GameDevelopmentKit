@@ -360,7 +360,7 @@ namespace Game.Hot.Buqi.Tests
                         BufferCap = 60,
                         NoiseThreshold = 10,
                         NoiseIncidentDamage = 8,
-                        BoardSlotCount = 8,
+                        BoardSlotCount = BuqiBoardValidator.BoardSlotCount,
                         StormStartTicks = 300,
                         StormBaseDamage = 1,
                         StormRampDamage = 1,
@@ -371,12 +371,12 @@ namespace Game.Hot.Buqi.Tests
 
                 catalog.Items.Add(Item("W8-003", BattleSize.S, 2, 60, "fast",
                     Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 4, "W8-003-attack"),
-                    Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.LeftAdjacentItem, 2000, "W8-003-haste", 30)));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.LeftAdjacentItem, 20000, "W8-003-haste", 30)));
                 catalog.Items.Add(Item("W8-005", BattleSize.M, 4, 70, "fast",
                     Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Charge, BattleTarget.Self, 1, "W8-005-adjacent-charge"),
                     Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 6, "W8-005-attack")));
                 catalog.Items.Add(Item("W8-006", BattleSize.L, 6, 100, "fast",
-                    Effect(BattleTrigger.OnBattleStart, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 1500, "W8-006-opening-haste", 50),
+                    Effect(BattleTrigger.OnBattleStart, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 20000, "W8-006-opening-haste", 50),
                     Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 16, "W8-006-attack"),
                     Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, 2, "W8-006-overload")));
                 catalog.Items.Add(Item("W8-007", BattleSize.S, 2, 42, "buffer",
@@ -395,7 +395,7 @@ namespace Game.Hot.Buqi.Tests
                     Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Charge, BattleTarget.Self, 1, "W8-014-adjacent-charge"),
                     Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 3, "W8-014-attack")));
                 catalog.Items.Add(Item("W8-015", BattleSize.M, 4, 65, "chain",
-                    Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Haste, BattleTarget.Self, 2000, "W8-015-adjacent-haste", 30),
+                    Effect(BattleTrigger.OnAdjacentUse, BattleEffect.Haste, BattleTarget.Self, 20000, "W8-015-adjacent-haste", 30),
                     Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 7, "W8-015-attack")));
                 catalog.Items.Add(Item("W8-016", BattleSize.S, 2, 45, "heal",
                     Effect(BattleTrigger.OnUse, BattleEffect.Heal, BattleTarget.Self, 8, "W8-016-heal")));
@@ -405,12 +405,12 @@ namespace Game.Hot.Buqi.Tests
                 catalog.Items.Add(Item("W8-018", BattleSize.L, 6, 95, "heal",
                     Effect(BattleTrigger.OnBattleStart, BattleEffect.Regen, BattleTarget.Self, 3, "W8-018-opening-regen", 60),
                     Effect(BattleTrigger.OnUse, BattleEffect.Heal, BattleTarget.Self, 15, "W8-018-heal"),
-                    Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 1200, "W8-018-haste")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 20000, "W8-018-haste")));
                 catalog.Items.Add(Item("W8-019", BattleSize.S, 2, 40, "poison",
                     Effect(BattleTrigger.OnUse, BattleEffect.Poison, BattleTarget.EnemyExecution, 3, "W8-019-poison", 40)));
                 catalog.Items.Add(Item("W8-020", BattleSize.M, 4, 65, "poison",
                     Effect(BattleTrigger.OnUse, BattleEffect.Poison, BattleTarget.EnemyExecution, 5, "W8-020-poison", 50),
-                    Effect(BattleTrigger.OnUse, BattleEffect.Delay, BattleTarget.ShortestCooldownEnemyItem, 1000, "W8-020-slow")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Delay, BattleTarget.ShortestCooldownEnemyItem, 5000, "W8-020-slow")));
                 catalog.Items.Add(Item("W8-021", BattleSize.L, 6, 90, "poison",
                     Effect(BattleTrigger.OnUse, BattleEffect.Poison, BattleTarget.EnemyExecution, 7, "W8-021-poison", 60),
                     Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, 1, "W8-021-overload")));
@@ -421,7 +421,7 @@ namespace Game.Hot.Buqi.Tests
                     Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 4, "W8-023-attack")));
                 catalog.Items.Add(Item("W8-024", BattleSize.L, 6, 95, "burn",
                     Effect(BattleTrigger.OnUse, BattleEffect.Burn, BattleTarget.EnemyExecution, 8, "W8-024-burn", 60),
-                    Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 1000, "W8-024-haste")));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Haste, BattleTarget.AllAdjacentItems, 20000, "W8-024-haste")));
                 catalog.Items.Add(Item("W8-025", BattleSize.S, 2, 50, "freeze",
                     Effect(BattleTrigger.OnUse, BattleEffect.Freeze, BattleTarget.ShortestCooldownEnemyItem, 8, "W8-025-freeze", 8)));
                 catalog.Items.Add(Item("W8-026", BattleSize.M, 4, 75, "freeze",
@@ -429,7 +429,7 @@ namespace Game.Hot.Buqi.Tests
                     Effect(BattleTrigger.OnUse, BattleEffect.Damage, BattleTarget.EnemyExecution, 4, "W8-026-attack")));
                 catalog.Items.Add(Item("W8-027", BattleSize.L, 6, 110, "freeze",
                     Effect(BattleTrigger.OnUse, BattleEffect.Freeze, BattleTarget.ShortestCooldownEnemyItem, 16, "W8-027-freeze", 16),
-                    Effect(BattleTrigger.OnUse, BattleEffect.Delay, BattleTarget.ShortestCooldownEnemyItem, 1000, "W8-027-slow", 40)));
+                    Effect(BattleTrigger.OnUse, BattleEffect.Delay, BattleTarget.ShortestCooldownEnemyItem, 5000, "W8-027-slow", 40)));
                 catalog.Items.Add(Item("W8-028", BattleSize.S, 2, 36, "overload",
                     Effect(BattleTrigger.OnUse, BattleEffect.Charge, BattleTarget.Self, 2, "W8-028-charge"),
                     Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, 2, "W8-028-overload")));
@@ -441,12 +441,12 @@ namespace Game.Hot.Buqi.Tests
                     Effect(BattleTrigger.OnUse, BattleEffect.Charge, BattleTarget.RightAdjacentItem, 2, "W8-030-pass-charge"),
                     Effect(BattleTrigger.OnUse, BattleEffect.Noise, BattleTarget.Self, -3, "W8-030-vent")));
 
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-01", DisplayName = "加急", Summary = "冷却缩短 15%；每次主动使用增加 1 点失衡。" });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-02", DisplayName = "激化", Summary = "冷却延长 20%；非开战效果提高 30%。" });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-03", DisplayName = "复写", Summary = "每场战斗首次主动使用时，以 50% 效果额外结算一次。" });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-04", DisplayName = "可靠", Summary = "免疫敌方减速，但不受友方加速。" });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-05", DisplayName = "稳流", Summary = "伤害与护体降低 15%；本器物造成的失衡减少 1 点。" });
-                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-06", DisplayName = "超载", Summary = "开战增加 3 点失衡；伤害与护体提高 35%。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-01", DisplayName = "快速改造", Summary = "冷却缩短 15%；每次主动使用增加 1 点过载。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-02", DisplayName = "强效改造", Summary = "冷却延长 20%；非开场效果提高 30%。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-03", DisplayName = "首次重复触发", Summary = "每场战斗首次主动使用时，以 50% 效果额外结算一次。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-04", DisplayName = "稳定改造", Summary = "免疫敌方减速，但不受友方加速。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-05", DisplayName = "低负载改造", Summary = "伤害与护盾降低 15%；本装备造成的过载减少 1 点。" });
+                catalog.Refinements.Add(new BuqiRefinementConfigRow { RefinementId = "A-06", DisplayName = "高风险强化", Summary = "开场增加 3 点过载；伤害与护盾提高 35%。" });
 
                 catalog.Echoes.Add(Echo("echo-fast-lesson", "fast", Instance("efl-deadline", "W8-006", BattleQuality.Fixed, 0, "A-06"), Instance("efl-board-a", "W8-005", BattleQuality.Fixed, 3, "A-06"), Instance("efl-board-b", "W8-005", BattleQuality.Improved, 5, "A-02"), Instance("efl-urgent", "W8-003", BattleQuality.Fixed, 7, "A-01")));
                 catalog.Echoes.Add(Echo("echo-fast-early", "fast", Instance("efe-deadline", "W8-006", BattleQuality.Fixed, 0, "A-06"), Instance("efe-board-a", "W8-005", BattleQuality.Fixed, 3, "A-06"), Instance("efe-board-b", "W8-005", BattleQuality.Improved, 5, "A-02"), Instance("efe-urgent", "W8-003", BattleQuality.Fixed, 7, "A-01")));

@@ -48,7 +48,7 @@ namespace Game.Hot.Buqi.Battle
 
     public sealed class BuqiLinkBoard
     {
-        public const int SlotCount = 8;
+        public const int SlotCount = BuqiBoardValidator.BoardSlotCount;
         private readonly List<BuqiLinkItem> m_Items;
 
         public BuqiLinkBoard(IEnumerable<BuqiLinkItem> items)

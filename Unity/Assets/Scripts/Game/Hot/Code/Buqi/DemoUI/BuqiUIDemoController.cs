@@ -744,7 +744,7 @@ namespace Game.Hot.Buqi.DemoUI
                         state.Economy.Run.Day,
                         PeriodLabel(state.Economy.Run.Period));
                 case BuqiUIDemoPhase.TribulationRoute:
-                    return "最终挑战路线 · 九日试炼";
+                    return "最终挑战路线 · 九胜渡劫";
                 case BuqiUIDemoPhase.TribulationStage:
                     return $"最终挑战 · 天劫 {state.Economy.Run.TribulationStage}/3";
                 case BuqiUIDemoPhase.Shop:
@@ -783,7 +783,7 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoPhase.PeriodTransition:
                     return "确认后进入下一时段，路线候选会重新冻结。";
                 case BuqiUIDemoPhase.TribulationRoute:
-                    return $"九日试炼已完成。当前结算点数 {state.Economy.Run.DaoSeals}，挑战强度 {state.Economy.Run.CurrentOmen}。";
+                    return $"已累计九场异步对战胜利。当前道印 {state.Economy.Run.DaoSeals}，挑战强度 {state.Economy.Run.CurrentOmen}。";
                 case BuqiUIDemoPhase.TribulationStage:
                     return "确认后开始当前阶段挑战。";
                 case BuqiUIDemoPhase.Shop:

@@ -3,6 +3,7 @@ using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Settlement;
 using NUnit.Framework;
 
@@ -101,7 +102,11 @@ namespace Game.Hot.Buqi.Tests
         {
             var source = new BuqiConfigCatalog
             {
-                Global = new BuqiGlobalConfigRow { ContentVersion = "final-flow-v1", BoardSlotCount = 8 },
+                Global = new BuqiGlobalConfigRow
+                {
+                    ContentVersion = "final-flow-v1",
+                    BoardSlotCount = BuqiRunRules.BoardSlotCount,
+                },
             };
             for (int index = 1; index <= 8; index++)
             {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.UI;
 using UnityEditor;
 using UnityEngine;
@@ -42,22 +43,22 @@ namespace Game.Hot.Editor
 
         private static void BuildItemCard()
         {
-            GameObject root = CreateRoot("ItemCardWidget", new Vector2(150f, 164f));
+            GameObject root = CreateRoot("ItemCardWidget", new Vector2(128f, 164f));
             Image background = AddImage(root, surfaceColor);
             ItemCardWidget widget = root.AddComponent<ItemCardWidget>();
 
             Text name = CreateText(root.transform, "Name_Text", "W8-000", 19, TextAnchor.UpperLeft, inkColor);
-            SetRect(name.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -24f), new Vector2(126f, 28f));
+            SetRect(name.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -24f), new Vector2(108f, 28f));
             name.fontStyle = FontStyle.Bold;
 
             Text effect = CreateText(root.transform, "Effect_Text", "伤害", 16, TextAnchor.MiddleLeft, accentColor);
-            SetRect(effect.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -59f), new Vector2(126f, 28f));
+            SetRect(effect.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -59f), new Vector2(108f, 28f));
 
             Text status = CreateText(root.transform, "Status_Text", "1格  充能 0  冻结 0", 14, TextAnchor.MiddleLeft, mutedColor);
-            SetRect(status.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 28f), new Vector2(126f, 25f));
+            SetRect(status.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 28f), new Vector2(108f, 25f));
 
             Image cooldownTrack = CreateImage(root.transform, "CooldownTrack", raisedColor);
-            SetRect(cooldownTrack.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 10f), new Vector2(126f, 8f));
+            SetRect(cooldownTrack.rectTransform, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 10f), new Vector2(108f, 8f));
             Image cooldownFill = CreateImage(cooldownTrack.transform, "CooldownFill_Image", jadeColor);
             Stretch(cooldownFill.rectTransform, Vector2.zero, Vector2.zero);
             cooldownFill.type = Image.Type.Filled;
@@ -142,11 +143,11 @@ namespace Game.Hot.Editor
             Text rightStats = CreateText(arena.transform, "RightStats_Text", "生命值 --  护盾 --  过载 --", 17, TextAnchor.MiddleRight, mutedColor);
             SetRect(rightStats.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-330f, -42f), new Vector2(620f, 38f));
 
-            var leftCards = new List<ItemCardWidget>(8);
-            var rightCards = new List<ItemCardWidget>(8);
-            for (int slot = 0; slot < 8; slot++)
+            var leftCards = new List<ItemCardWidget>(BuqiBoardValidator.BoardSlotCount);
+            var rightCards = new List<ItemCardWidget>(BuqiBoardValidator.BoardSlotCount);
+            for (int slot = 0; slot < BuqiBoardValidator.BoardSlotCount; slot++)
             {
-                float x = -567f + slot * 162f;
+                float x = -585f + slot * 130f;
                 leftCards.Add(AddItemCard(itemPrefab, arena.transform, string.Format("Slot{0:00}_Left", slot + 1), new Vector2(x, -180f)));
                 rightCards.Add(AddItemCard(itemPrefab, arena.transform, string.Format("Slot{0:00}_Right", slot + 1), new Vector2(x, 235f)));
             }
@@ -243,7 +244,7 @@ namespace Game.Hot.Editor
             GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
             instance.name = name;
             instance.transform.SetParent(parent, false);
-            SetRect(instance.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), position, new Vector2(150f, 164f));
+            SetRect(instance.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), position, new Vector2(128f, 164f));
             return instance.GetComponent<ItemCardWidget>();
         }
 

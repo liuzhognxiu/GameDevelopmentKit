@@ -4,7 +4,7 @@
 
 **Goal:** Replace the nine-day/eight-slot run core with the approved unlimited-day, ten-win, ten-slot run and a deliberately incompatible save schema.
 
-**Architecture:** Keep the existing six-period state machine and settlement coordinator, but replace day-based termination with victory/life state transitions. Put realm math in a pure progression helper, keep old `Lives`/`StartingLives` members as temporary source-compatible aliases, and make save v5 the only accepted schema so the existing orchestrator recovery path deletes incompatible saves and starts a clean run.
+**Architecture:** Keep the existing six-period state machine and settlement coordinator, but replace day-based termination with victory/life state transitions. Put realm math in a pure progression helper, keep old `Lives`/`StartingLives` members as temporary source-compatible aliases, enforce the one-time `HeartTrialUsed` heart trial, and make save v5 the only accepted schema so the existing orchestrator recovery path deletes incompatible saves and starts a clean run.
 
 **Tech Stack:** Unity 6000.3, C# GameHot hot-reload assembly, NUnit EditMode tests, Luban-backed runtime content, UGF save integration.
 
@@ -15,7 +15,7 @@
 - Extend `Unity/Assets/Scripts/Game/Hot/Code/Buqi/Run/Core/BuqiRunRules.cs` with the pure `BuqiRunProgression` helper so the ignored Unity-generated project file does not need manual edits.
 - Modify `Unity/Assets/Tests/GameHot/Buqi/EditMode/BuqiBazaarDayLoopCoreTests.cs`: add new-baseline contract cases before replacing its old nine-day expectations.
 - Modify `BuqiRunRules.cs`: new constants, ten-slot capacity, and finite content-schedule clamp.
-- Modify `BuqiRunState.cs`: hero, cultivation, realm, life-pool, and heart-trial state.
+- Modify `BuqiRunState.cs`: hero, cultivation, realm, life-pool, and one-time heart-trial state (`InTribulationTrial` plus `HeartTrialUsed`).
 - Modify `BuqiRunController.cs`: battle rewards, day-scaled life loss, heart trial, and nine-win tribulation entry.
 - Modify `BuqiRunSaveData.cs` and `BuqiRunSaveCodec.cs`: save v5 schema, validation, and old-save rejection.
 - Modify `BuqiRunDemoIntegration.cs`: keep unsupported-save automatic recovery and project new fields into the demo state.
@@ -160,11 +160,12 @@ public static class BuqiRunProgression
 }
 ```
 
-Add `HeroId`, `Cultivation`, `Realm`, `LifePool`, and `InTribulationTrial` to `BuqiRunState`; initialize and clone all five. Keep `Lives` as a temporary property forwarding to `LifePool` so existing UI and tests compile while their names are migrated:
+Add `HeroId`, `Cultivation`, `Realm`, `LifePool`, `InTribulationTrial`, and `HeartTrialUsed` to `BuqiRunState`; initialize and clone all six. `HeartTrialUsed` must remain true after entering or clearing the first heart trial, so a later life-pool depletion cannot open a second trial. Keep `Lives` as a temporary property forwarding to `LifePool` so existing UI and tests compile while their names are migrated:
 
 ```csharp
 public int LifePool;
 public bool InTribulationTrial;
+public bool HeartTrialUsed;
 public int Lives
 {
     get => LifePool;
@@ -336,6 +337,7 @@ public int Cultivation;
 public int Realm;
 public int LifePool;
 public bool InTribulationTrial;
+public bool HeartTrialUsed;
 ```
 
 Map them in `FromState` and `TryToState`. Remove the day upper bound. Validate `HeroId` in `0..4`, non-negative cultivation, exact realm derivation, life in `0..20`, ten board slots, ten storage slots, and these phase invariants:

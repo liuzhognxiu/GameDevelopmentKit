@@ -364,7 +364,7 @@ namespace Game.Hot.Buqi.UI
                 return;
             }
 
-            SetText(m_TitleText, "不器 · 九日试炼");
+            SetText(m_TitleText, "不器 · 无限问道");
             SetText(m_ContextTitleText, view.ContextTitle);
             SetText(m_ContextBodyText, view.ContextBody);
             SetText(m_PrimaryLabel, view.PrimaryCommandLabel);

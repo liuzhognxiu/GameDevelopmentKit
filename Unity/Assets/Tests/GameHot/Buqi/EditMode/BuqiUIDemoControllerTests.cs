@@ -4,6 +4,7 @@ using System.Linq;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.DemoUI.Deployment;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Settlement;
 using NUnit.Framework;
 using BattleSize = Game.Hot.Buqi.Battle.BuqiSize;
@@ -50,8 +51,8 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.StarterSelection));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.OpponentIntel));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.Prediction));
-            Assert.That(controller.View.BoardSlots.Count, Is.EqualTo(8));
-            Assert.That(controller.View.StorageSlots.Count, Is.EqualTo(8));
+            Assert.That(controller.View.BoardSlots.Count, Is.EqualTo(BuqiRunRules.BoardSlotCount));
+            Assert.That(controller.View.StorageSlots.Count, Is.EqualTo(BuqiRunRules.StorageSlotCount));
         }
 
         [Test]
@@ -143,13 +144,13 @@ namespace Game.Hot.Buqi.Tests
 
             string[] choiceIds = controller.View.Choices.Select(choice => choice.Id).ToArray();
             BuqiDemoItemView source = controller.View.BoardSlots.First(slot => !slot.Empty);
-            var board = EmptySlots(8);
+            var board = EmptySlots(BuqiRunRules.BoardSlotCount);
             board[3] = source.Id;
 
             BuqiUIDemoCommandResult deployment = controller.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.ApplyDeployment,
-                Deployment = new BuqiDeploymentSnapshot(board, EmptySlots(8)),
+                Deployment = new BuqiDeploymentSnapshot(board, EmptySlots(BuqiRunRules.StorageSlotCount)),
             });
 
             Assert.That(deployment.Accepted, Is.True, deployment.Reason);
@@ -348,8 +349,8 @@ namespace Game.Hot.Buqi.Tests
             BuqiUIDemoController controller = CreateController(store);
             BuqiDemoItemView source = controller.View.BoardSlots.First(slot => !slot.Empty);
             string instanceId = source.Id;
-            var board = EmptySlots(8);
-            var storage = EmptySlots(8);
+            var board = EmptySlots(BuqiRunRules.BoardSlotCount);
+            var storage = EmptySlots(BuqiRunRules.StorageSlotCount);
             board[3] = instanceId;
             for (int offset = 1; offset < source.Size; offset++)
                 board[3 + offset] = instanceId;
@@ -555,7 +556,7 @@ namespace Game.Hot.Buqi.Tests
                 Global = new BuqiGlobalConfigRow
                 {
                     ContentVersion = "test-content-v1",
-                    BoardSlotCount = 8,
+                    BoardSlotCount = BuqiRunRules.BoardSlotCount,
                 },
             };
 

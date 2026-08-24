@@ -1223,7 +1223,7 @@ namespace Game.Hot.Buqi.Run.Integration
                          !BuqiRunDemoCodec.IsSettledBattle(runState, battle.BattleId)))
                     {
                         presentation = default;
-                        error = "Only the settled day nine PVP battle can remain at route choice.";
+                        error = "Only the settled ninth-win PVP battle can remain at route choice.";
                         return false;
                     }
 
@@ -2480,7 +2480,7 @@ namespace Game.Hot.Buqi.Run.Integration
             if (run.Phase == BuqiRunPhase.TribulationRoute &&
                 (kind != BuqiRunBattleKind.Pvp || !settled))
             {
-                error = "Only the settled day nine PVP battle is valid during route choice.";
+                error = "Only the settled ninth-win PVP battle is valid during route choice.";
                 return false;
             }
             if (run.Phase == BuqiRunPhase.TribulationStage)

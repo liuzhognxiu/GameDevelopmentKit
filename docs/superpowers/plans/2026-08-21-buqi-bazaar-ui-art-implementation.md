@@ -8,7 +8,7 @@
 
 **Tech Stack:** PixAI Codex Bridge, PNG, Unity `TextureImporter` sprite metadata, Unity UI `Image`, C# editor builders, PowerShell static contract verification.
 
-**Implementation note (2026-08-24):** PixAI generated the backdrop, shelf frame, and player-board panel successfully. Two direct item-frame attempts failed upstream (`502 upstream_error`, then `503 No available compatible accounts`), so `item-frame.png` was mechanically composed from the successful original shelf-frame output to keep the set consistent and the Unity integration complete. No external art source was substituted.
+**Implementation note (2026-08-25):** PixAI generated all four source assets successfully. Two item-frame attempts on 2026-08-24 failed upstream (`502 upstream_error`, then `503 No available compatible accounts`), so the first integration temporarily used a mechanical composition of the original shelf-frame output. A later independent PixAI request succeeded as `history_49dfb67c-aed7-4098-b12e-696362402633`; that direct result now supplies `item-frame.png`. No external art source was substituted.
 
 ---
 

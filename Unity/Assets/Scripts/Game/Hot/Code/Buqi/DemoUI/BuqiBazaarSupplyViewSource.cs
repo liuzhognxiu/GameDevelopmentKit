@@ -127,11 +127,43 @@ namespace Game.Hot.Buqi.DemoUI
                 }
             }
 
+            List<string> uncoveredDefinitionIds = items.Keys
+                .Where(definitionId => !poolMembership.ContainsKey(definitionId))
+                .OrderBy(definitionId => definitionId, StringComparer.Ordinal)
+                .ToList();
+            // Legacy merchant rows are curated anchors; matching slot builds project later catalog additions.
+            foreach (string definitionId in uncoveredDefinitionIds)
+            {
+                ItemProfile item = items[definitionId];
+                List<MerchantProfile> matchingMerchants = merchants
+                    .Where(merchant => merchant.Slots.Any(slot =>
+                        slot.Builds.Contains(item.Row.ArchetypeId)))
+                    .ToList();
+                if (matchingMerchants.Count == 0)
+                {
+                    error = $"装备“{definitionId}”没有匹配流派的商人货位。";
+                    return false;
+                }
+
+                List<MerchantProfile> availableOnUnlockDay = matchingMerchants
+                    .Where(merchant => merchant.Row.MinDay <= item.Row.UnlockDay)
+                    .ToList();
+                if (availableOnUnlockDay.Count > 0)
+                    matchingMerchants = availableOnUnlockDay;
+
+                var pools = new List<string>(matchingMerchants.Count);
+                foreach (MerchantProfile merchant in matchingMerchants)
+                {
+                    merchant.PoolItemIds.Add(definitionId);
+                    pools.Add(merchant.Row.MerchantId);
+                }
+                poolMembership.Add(definitionId, pools);
+            }
+
             var definitions = new List<BuqiSupplyDefinition>(items.Count * 3);
             foreach (ItemProfile item in items.Values.OrderBy(value => value.Row.DefinitionId, StringComparer.Ordinal))
             {
-                if (!poolMembership.TryGetValue(item.Row.DefinitionId, out List<string> pools) || pools.Count == 0)
-                    continue;
+                List<string> pools = poolMembership[item.Row.DefinitionId];
                 foreach (BuqiSupplyQuality quality in Enum.GetValues(typeof(BuqiSupplyQuality)))
                 {
                     var definition = new BuqiSupplyDefinition
@@ -222,9 +254,9 @@ namespace Game.Hot.Buqi.DemoUI
             IReadOnlyList<string> offerDefinitionIds,
             out string error)
         {
-            if (offerDefinitionIds == null || offerDefinitionIds.Count != BuqiSupplyService.MerchantSlotCount)
+            if (offerDefinitionIds == null || offerDefinitionIds.Count != BuqiSupplyService.MerchantOfferCount)
             {
-                error = "恢复的货架必须包含 4 件商品。";
+                error = $"恢复的货架必须包含 {BuqiSupplyService.MerchantOfferCount} 件商品。";
                 return false;
             }
             string previousEncounterKey = m_EncounterKey;
@@ -430,34 +462,42 @@ namespace Game.Hot.Buqi.DemoUI
             }
 
             BuqiSupplyState state = source.Clone();
-            var offers = new List<BuqiSupplyDefinition>(BuqiSupplyService.MerchantSlotCount);
-            var purposes = new List<BuqiSupplySlotPurpose>(BuqiSupplyService.MerchantSlotCount);
+            var offers = new List<BuqiSupplyDefinition>(BuqiSupplyService.MerchantOfferCount);
+            var purposes = new List<BuqiSupplySlotPurpose>(BuqiSupplyService.MerchantOfferCount);
             var selectedIds = new HashSet<string>(StringComparer.Ordinal);
             var remainingCounts = activeSlots.ToDictionary(
                 slot => slot,
                 slot => Math.Max(1, slot.Row.Count));
 
-            for (int index = 0; index < BuqiSupplyService.MerchantSlotCount; index++)
+            for (int index = 0; index < BuqiSupplyService.MerchantOfferCount; index++)
             {
-                SlotProfile selectedSlot = index == 0
-                    ? activeSlots[0]
-                    : DrawSlot(activeSlots, remainingCounts, state.Seed, ref state.Cursor);
-                if (remainingCounts[selectedSlot] > 0)
-                    remainingCounts[selectedSlot]--;
-
-                List<BuqiSupplyDefinition> candidates = FilterDefinitions(
-                    merchant, selectedSlot, day, selectedIds);
-                if (candidates.Count == 0)
+                SlotProfile selectedSlot = null;
+                List<BuqiSupplyDefinition> candidates;
+                if (index < BuqiSupplyService.MerchantSlotCount)
                 {
-                    selectedSlot = activeSlots.FirstOrDefault(slot =>
-                        FilterDefinitions(merchant, slot, day, selectedIds).Count > 0);
-                    candidates = selectedSlot == null
-                        ? FilterFallbackDefinitions(merchant, day, selectedIds)
-                        : FilterDefinitions(merchant, selectedSlot, day, selectedIds);
+                    selectedSlot = index == 0
+                        ? activeSlots[0]
+                        : DrawSlot(activeSlots, remainingCounts, state.Seed, ref state.Cursor);
+                    if (remainingCounts[selectedSlot] > 0)
+                        remainingCounts[selectedSlot]--;
+
+                    candidates = FilterDefinitions(merchant, selectedSlot, day, selectedIds);
+                    if (candidates.Count == 0)
+                    {
+                        selectedSlot = activeSlots.FirstOrDefault(slot =>
+                            FilterDefinitions(merchant, slot, day, selectedIds).Count > 0);
+                        candidates = selectedSlot == null
+                            ? FilterFallbackDefinitions(merchant, day, selectedIds)
+                            : FilterDefinitions(merchant, selectedSlot, day, selectedIds);
+                    }
+                }
+                else
+                {
+                    candidates = FilterFallbackDefinitions(merchant, day, selectedIds);
                 }
                 if (candidates.Count == 0)
                 {
-                    error = "商人货位无法生成 4 件不同商品。";
+                    error = $"商人货位无法生成 {BuqiSupplyService.MerchantOfferCount} 件不同商品。";
                     return false;
                 }
 
@@ -484,7 +524,9 @@ namespace Game.Hot.Buqi.DemoUI
                 offers.Add(offer);
                 purposes.Add(MapPurpose(offer.Role));
                 selectedIds.Add(offer.DefinitionId);
-                roles[offer.DefinitionId] = BuildOfferRole(selectedSlot, offer);
+                roles[offer.DefinitionId] = selectedSlot == null
+                    ? $"广域货架 · {BuildOfferRole(null, offer)}"
+                    : BuildOfferRole(selectedSlot, offer);
                 state = selected.NextState;
             }
 
@@ -545,7 +587,7 @@ namespace Game.Hot.Buqi.DemoUI
                                    merchant.Row.MaxDay >= context.Day &&
                                    merchant.PoolItemIds.Count(definitionId =>
                                        m_Items[definitionId].Row.UnlockDay <= context.Day) >=
-                                   BuqiSupplyService.MerchantSlotCount)
+                                   BuqiSupplyService.MerchantOfferCount)
                 .ToList();
             if (eligible.Count == 0)
                 return null;

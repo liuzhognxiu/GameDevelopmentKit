@@ -111,7 +111,7 @@ namespace Game.Hot.Buqi.DemoUI
                     return Accepted();
 
                 case BuqiUIDemoCommandType.BuyOffer:
-                    if (!m_Orchestrator.TryPurchase(command.PrimaryId, out string buyError))
+                    if (!m_Orchestrator.TryPurchase(command.PrimaryId, command.Slot, out string buyError))
                         return Rejected(buyError);
                     RefreshView();
                     return Accepted();
@@ -243,6 +243,8 @@ namespace Game.Hot.Buqi.DemoUI
 
                 BuqiUIDemoItemDefinition definition = m_Catalog.FindItem(item.DefinitionId);
                 int size = definition?.Size ?? 1;
+                BuqiRunSellQuote sellQuote = m_EconomyService.QuoteBoardSale(economy, instanceId);
+                int sellPrice = sellQuote.Success ? sellQuote.ExpectedRefund : 0;
                 for (int offset = 0; offset < size && slot + offset < result.Length; offset++)
                 {
                     result[slot + offset] = new BuqiDemoItemView
@@ -252,6 +254,18 @@ namespace Game.Hot.Buqi.DemoUI
                         Description = BuildItemDescription(item, definition),
                         Size = size,
                         Price = definition?.Price ?? 0,
+                        SellPrice = sellPrice,
+                        CooldownTicks = definition?.CooldownTicks ?? 0,
+                        EffectDescription = definition?.EffectDescription ?? string.Empty,
+                        Quality = item.Quality.ToString(),
+                        ArchetypeId = definition?.ArchetypeId ?? string.Empty,
+                        Role = definition?.Role ?? string.Empty,
+                        PositionHint = definition?.PositionHint ?? string.Empty,
+                        UpgradeSummary = definition?.UpgradeSummary ?? string.Empty,
+                        Tags = definition?.Tags == null
+                            ? new List<string>()
+                            : new List<string>(definition.Tags),
+                        AnchorSlot = slot,
                         Slot = slot + offset,
                     };
                 }
@@ -381,6 +395,7 @@ namespace Game.Hot.Buqi.DemoUI
                     Id = definitionId,
                     Item = BuqiUIDemoCatalog.ItemView(definition),
                     Price = definition.Price,
+                    Span = definition.Size,
                     Sold = state.Encounter.PurchasedCandidateIds.Contains(definitionId),
                 });
             }
@@ -527,7 +542,7 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoPhase.TribulationStage:
                     return "确认后开始当前阶段挑战。";
                 case BuqiUIDemoPhase.Shop:
-                    return "选择商品并确认购买，或直接离开商店。";
+                    return "点击固定商品预览；将商品拖到棋盘合法位置完成购买，或直接离开商店。";
                 case BuqiUIDemoPhase.Event:
                     return "选择一个事件结果，选择后立即结算。";
                 case BuqiUIDemoPhase.BattleReplay:

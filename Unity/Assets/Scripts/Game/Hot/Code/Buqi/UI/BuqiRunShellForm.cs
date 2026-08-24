@@ -4,7 +4,6 @@ using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.DemoUI.Deployment;
-using Game.Hot.Buqi.DemoUI.Interaction;
 using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
@@ -82,7 +81,6 @@ namespace Game.Hot.Buqi.UI
         private IBuqiBazaarSupplyRuntime m_BazaarSupplyRuntime;
         private BuqiStageWidgetRegistry m_Registry;
         private bool m_OpeningBattle;
-        private int? m_ItemDetailSerialId;
 
 #if UNITY_2017_3_OR_NEWER
         protected override void OnInit(object userData)
@@ -106,13 +104,11 @@ namespace Game.Hot.Buqi.UI
         {
             base.OnOpen(userData);
             m_OpeningBattle = false;
-            m_ItemDetailSerialId = null;
             m_DemoCatalog = null;
             IBuqiBazaarSupplyViewSource supplySource =
                 (userData as BuqiRunShellOpenData)?.BazaarSupplySource;
             m_BazaarSupplyRuntime = supplySource as IBuqiBazaarSupplyRuntime;
             BindBazaarSupplySource(supplySource);
-            BindShopItemDetails(ShowItemDetails, HideItemDetails);
             if (!TryResolveCatalog(userData, out m_Catalog, out string error))
             {
                 m_Controller = null;
@@ -166,7 +162,6 @@ namespace Game.Hot.Buqi.UI
         protected internal override void OnClose(bool isShutdown, object userData)
 #endif
         {
-            HideItemDetails();
             m_Registry?.Clear();
             foreach (ResourceChipWidget chip in m_ResourceChips)
                 chip?.Clear();
@@ -177,7 +172,6 @@ namespace Game.Hot.Buqi.UI
             m_Catalog = null;
             m_BazaarSupplyRuntime = null;
             BindBazaarSupplySource(null);
-            BindShopItemDetails(null, null);
             m_OpeningBattle = false;
             SetText(m_StatusText, string.Empty);
             base.OnClose(isShutdown, userData);
@@ -197,13 +191,13 @@ namespace Game.Hot.Buqi.UI
             if (m_Controller == null)
                 return;
 
-            if (command != null && command.Type == BuqiUIDemoCommandType.BuyOffer)
-            {
-                OpenPurchaseConfirmation(command);
-                return;
-            }
-
             ExecuteCommand(command);
+        }
+
+        private void Update()
+        {
+            if (m_BackButton != null)
+                m_BackButton.interactable = !IsShopDragging();
         }
 
         private void ExecuteCommand(BuqiUIDemoCommand command)
@@ -226,38 +220,11 @@ namespace Game.Hot.Buqi.UI
             }
 
             Render();
-        }
-
-        private void OpenPurchaseConfirmation(BuqiUIDemoCommand command)
-        {
-            BuqiDemoOfferView selectedOffer = null;
-            foreach (BuqiDemoOfferView offer in m_Controller.View.ShopOffers)
+            if (command.Type == BuqiUIDemoCommandType.BuyOffer ||
+                command.Type == BuqiUIDemoCommandType.SellItem)
             {
-                if (string.Equals(offer.Id, command.PrimaryId, StringComparison.Ordinal))
-                {
-                    selectedOffer = offer;
-                    break;
-                }
+                NotifyShopTransactionSuccess();
             }
-
-            if (selectedOffer == null)
-            {
-                ShowError("所选商品当前不可购买。"  );
-                return;
-            }
-
-            string itemName = selectedOffer.Item?.Name ?? selectedOffer.Id;
-            GameEntry.UI.OpenUIForm(UIFormId.BuqiConfirmForm, new BuqiConfirmOpenData
-            {
-                Title = "确认购买",
-                Message = GameFramework.Utility.Text.Format(
-                    "花费 {1} 金币购买“{0}”？",
-                    itemName,
-                    selectedOffer.Price),
-                ConfirmLabel = "购买",
-                CancelLabel = "继续购物",
-                Confirm = () => ExecuteCommand(command),
-            });
         }
 
         private void OpenDragDeploy()
@@ -296,6 +263,11 @@ namespace Game.Hot.Buqi.UI
 
         private void GoBack()
         {
+            if (IsShopDragging())
+            {
+                SetText(m_StatusText, "请先结束或取消当前拖拽。");
+                return;
+            }
             Close();
         }
 
@@ -379,6 +351,8 @@ namespace Game.Hot.Buqi.UI
                 m_PrimaryButton.gameObject.SetActive(!string.IsNullOrEmpty(view.PrimaryCommandLabel));
             if (m_DeployButton != null)
                 m_DeployButton.gameObject.SetActive(CanConfigureDeployment(view));
+            if (m_BackButton != null)
+                m_BackButton.interactable = !IsShopDragging();
             m_PhaseRail?.SetActive(view.Phase != BuqiUIDemoPhase.PveSelection);
             RenderResources(view);
             RenderPhaseRail(view);
@@ -393,6 +367,25 @@ namespace Game.Hot.Buqi.UI
             return view != null && BuqiUIDemoController.CanConfigureDeployment(view.Phase);
         }
 
+        private bool IsShopDragging()
+        {
+            foreach (MonoBehaviour component in m_StageComponents)
+            {
+                if (component is ShopWidget shop)
+                    return shop.IsDragging;
+            }
+            return false;
+        }
+
+        private void NotifyShopTransactionSuccess()
+        {
+            foreach (MonoBehaviour component in m_StageComponents)
+            {
+                if (component is ShopWidget shop)
+                    shop.NotifyTransactionSuccess();
+            }
+        }
+
         private void BindBazaarSupplySource(IBuqiBazaarSupplyViewSource supplySource)
         {
             foreach (MonoBehaviour component in m_StageComponents)
@@ -400,37 +393,6 @@ namespace Game.Hot.Buqi.UI
                 if (component is ShopWidget shop)
                     shop.BindSupplySource(supplySource);
             }
-        }
-
-        private void BindShopItemDetails(Action<BuqiDemoItemView> show, Action hide)
-        {
-            foreach (MonoBehaviour component in m_StageComponents)
-            {
-                if (component is ShopWidget shop)
-                    shop.BindItemDetails(show, hide);
-            }
-        }
-
-        private void ShowItemDetails(BuqiDemoItemView item)
-        {
-            if (item == null)
-                return;
-
-            HideItemDetails();
-            m_ItemDetailSerialId = GameEntry.UI.OpenUIForm(UIFormId.BuqiItemDetailForm, new BuqiItemDetailOpenData
-            {
-                Item = item,
-                FullEffectText = item.Description,
-            });
-        }
-
-        private void HideItemDetails()
-        {
-            if (!m_ItemDetailSerialId.HasValue)
-                return;
-
-            GameEntry.UI.TryCloseUIForm(m_ItemDetailSerialId.Value);
-            m_ItemDetailSerialId = null;
         }
 
         private void RenderResources(BuqiUIDemoView view)

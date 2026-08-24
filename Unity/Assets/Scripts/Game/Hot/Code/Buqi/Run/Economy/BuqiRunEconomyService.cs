@@ -59,6 +59,56 @@ namespace Game.Hot.Buqi.Run.Economy
             return Success(working, instanceId);
         }
 
+        public BuqiRunEconomyResult PurchaseToBoard(
+            BuqiRunEconomySnapshot source,
+            string definitionId,
+            int anchorSlot)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+
+            BuqiRunEconomySnapshot working = source.Clone();
+            if (!HasDefinedQualities(working))
+                return Fail(source, "Item quality is invalid.");
+            if (!TryResolveDefinition(definitionId, out BuqiRunItemDefinition definition))
+                return Fail(source, "Item definition was not found.");
+            if (!IsPositiveSize(definition.Size))
+                return Fail(source, "Item definition size must be positive.");
+            if (!IsNonNegativePrice(definition.BuyPrice))
+                return Fail(source, "Buy price must be non-negative.");
+            if (working.Run.Coins < definition.BuyPrice)
+                return Fail(source, "Not enough coins.");
+
+            string instanceId = FindMergeTarget(working, definitionId, BuqiRunItemQuality.Common);
+            if (!string.IsNullOrEmpty(instanceId))
+                RemoveInstanceFromSlots(working, instanceId);
+
+            if (!CanPlaceOnBoard(working, definition.Size, anchorSlot, out string placementError))
+                return Fail(source, placementError);
+
+            if (string.IsNullOrEmpty(instanceId))
+            {
+                instanceId = working.CreateInstanceId();
+                working.Items[instanceId] = new BuqiRunItemInstance
+                {
+                    InstanceId = instanceId,
+                    DefinitionId = definitionId,
+                    Quality = BuqiRunItemQuality.Common,
+                };
+            }
+            else
+            {
+                BuqiRunItemInstance mergedItem = working.Items[instanceId];
+                if (mergedItem.Quality == BuqiRunItemQuality.Finalized)
+                    return Fail(source, "Item is already finalized.");
+                mergedItem.Quality = AdvanceQuality(mergedItem.Quality);
+            }
+
+            working.Run.BoardInstanceIds[anchorSlot] = instanceId;
+            working.Run.Coins -= definition.BuyPrice;
+            return Success(working, instanceId);
+        }
+
         public BuqiRunEconomyResult GrantFreeItem(BuqiRunEconomySnapshot source, string definitionId)
         {
             if (source == null)
@@ -311,6 +361,64 @@ namespace Game.Hot.Buqi.Run.Economy
             }
 
             return -1;
+        }
+
+        private bool CanPlaceOnBoard(
+            BuqiRunEconomySnapshot snapshot,
+            int size,
+            int anchorSlot,
+            out string error)
+        {
+            int slotCount = snapshot.Run.BoardInstanceIds.Count;
+            if (anchorSlot < 0 || anchorSlot + size > slotCount)
+            {
+                error = "Item does not fit on the board.";
+                return false;
+            }
+
+            var occupied = new bool[slotCount];
+            var seen = new HashSet<string>(StringComparer.Ordinal);
+            for (int slot = 0; slot < slotCount; slot++)
+            {
+                string existingInstanceId = snapshot.Run.BoardInstanceIds[slot];
+                if (string.IsNullOrEmpty(existingInstanceId))
+                    continue;
+                if (!seen.Add(existingInstanceId)
+                    || !TryResolveItem(
+                        snapshot,
+                        existingInstanceId,
+                        out _,
+                        out BuqiRunItemDefinition existingDefinition)
+                    || !IsPositiveSize(existingDefinition.Size)
+                    || slot + existingDefinition.Size > slotCount)
+                {
+                    error = "Existing board placement is invalid.";
+                    return false;
+                }
+
+                for (int offset = 0; offset < existingDefinition.Size; offset++)
+                {
+                    int occupiedSlot = slot + offset;
+                    if (occupied[occupiedSlot])
+                    {
+                        error = "Existing board placement is invalid.";
+                        return false;
+                    }
+                    occupied[occupiedSlot] = true;
+                }
+            }
+
+            for (int slot = anchorSlot; slot < anchorSlot + size; slot++)
+            {
+                if (occupied[slot])
+                {
+                    error = "Target board slots are occupied.";
+                    return false;
+                }
+            }
+
+            error = string.Empty;
+            return true;
         }
 
         private static void RemoveInstanceFromSlots(BuqiRunEconomySnapshot snapshot, string instanceId)

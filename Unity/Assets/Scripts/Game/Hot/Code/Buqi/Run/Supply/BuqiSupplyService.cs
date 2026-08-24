@@ -8,6 +8,7 @@ namespace Game.Hot.Buqi.Run.Supply
     public sealed class BuqiSupplyService
     {
         public const int MerchantSlotCount = 4;
+        public const int MerchantOfferCount = 8;
         public const int MaximumRefreshCount = 3;
         public const int FirstRefreshPrice = 2;
         public const int MaximumRefreshPrice = 6;

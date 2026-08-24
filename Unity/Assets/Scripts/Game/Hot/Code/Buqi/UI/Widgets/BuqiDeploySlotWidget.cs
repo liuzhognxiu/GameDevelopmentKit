@@ -50,6 +50,14 @@ namespace Game.Hot.Buqi.UI.Widgets
         private Action<BuqiDeploymentSlotRef, bool> m_Hover;
         private Action<BuqiDeploymentSlotRef> m_Drop;
 
+        public void BindVisuals(Image background, Text indexText, Text itemText, Text stateText)
+        {
+            m_Background = background;
+            m_IndexText = indexText;
+            m_ItemText = itemText;
+            m_StateText = stateText;
+        }
+
         public void Render(
             BuqiDeploymentSlotRef slot,
             string itemName,

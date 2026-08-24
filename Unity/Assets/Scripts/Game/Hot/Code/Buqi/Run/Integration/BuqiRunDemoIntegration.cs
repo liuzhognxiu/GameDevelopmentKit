@@ -234,6 +234,11 @@ namespace Game.Hot.Buqi.Run.Integration
 
         public bool TryPurchase(string definitionId, out string error)
         {
+            return TryPurchase(definitionId, -1, out error);
+        }
+
+        public bool TryPurchase(string definitionId, int targetBoardSlot, out string error)
+        {
             if (!IsEncounterShop(m_State))
             {
                 error = "Current phase is not a shop encounter.";
@@ -251,7 +256,9 @@ namespace Game.Hot.Buqi.Run.Integration
                 return false;
             }
 
-            BuqiRunEconomyResult purchase = m_EconomyService.Purchase(m_State.Economy, definitionId);
+            BuqiRunEconomyResult purchase = targetBoardSlot >= 0
+                ? m_EconomyService.PurchaseToBoard(m_State.Economy, definitionId, targetBoardSlot)
+                : m_EconomyService.Purchase(m_State.Economy, definitionId);
             if (!purchase.Success)
             {
                 error = purchase.FailureReason;
@@ -630,7 +637,7 @@ namespace Game.Hot.Buqi.Run.Integration
             if (m_BazaarSupplyRuntime == null)
                 return;
             if (!IsEncounterShop(state) ||
-                state.Encounter.CandidateIds.Count != BuqiSupplyService.MerchantSlotCount)
+                state.Encounter.CandidateIds.Count != BuqiSupplyService.MerchantOfferCount)
             {
                 m_BazaarSupplyRuntime.Reset();
                 return;
@@ -645,7 +652,7 @@ namespace Game.Hot.Buqi.Run.Integration
         private bool ValidateBazaarOffers(IReadOnlyList<string> offers)
         {
             return offers != null &&
-                   offers.Count == BuqiSupplyService.MerchantSlotCount &&
+                   offers.Count == BuqiSupplyService.MerchantOfferCount &&
                    offers.Distinct(StringComparer.Ordinal).Count() == offers.Count &&
                    offers.All(id => m_Catalog.FindItem(id) != null);
         }

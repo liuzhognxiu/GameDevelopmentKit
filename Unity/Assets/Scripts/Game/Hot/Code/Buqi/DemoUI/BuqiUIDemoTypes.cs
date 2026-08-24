@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Game.Hot.Buqi.DemoUI.Deployment;
 using Game.Hot.Buqi.Run.Core;
+using Game.Hot.Buqi.Run.Integration;
 
 namespace Game.Hot.Buqi.DemoUI
 {
@@ -23,6 +24,9 @@ namespace Game.Hot.Buqi.DemoUI
         PveSelection,
         TribulationRoute,
         TribulationStage,
+        Training,
+        RewardSelection,
+        PeriodTransition,
     }
 
     public enum BuqiUIDemoCommandType
@@ -46,6 +50,14 @@ namespace Game.Hot.Buqi.DemoUI
         SelectPveDifficulty,
         SelectTribulationRoute,
         ResolveTribulationStage,
+        SelectRouteNode,
+        ExecuteTraining,
+        PreviewReward,
+        ClaimReward,
+        ContinueBattleResult,
+        PauseRun,
+        ResumeRun,
+        ExitRun,
     }
 
     public sealed class BuqiUIDemoCommand
@@ -95,6 +107,7 @@ namespace Game.Hot.Buqi.DemoUI
         public int Cost;
         public bool Selected;
         public bool Disabled;
+        public string TargetId = string.Empty;
     }
 
     public sealed class BuqiDemoOfferView
@@ -158,6 +171,30 @@ namespace Game.Hot.Buqi.DemoUI
         public int Tick;
     }
 
+    public sealed class BuqiDemoRouteNodeView
+    {
+        public string Id = string.Empty;
+        public string Title = string.Empty;
+        public string Benefit = string.Empty;
+        public string Cost = string.Empty;
+        public string Condition = string.Empty;
+        public bool Available;
+        public bool Selected;
+    }
+
+    public sealed class BuqiDemoRewardView
+    {
+        public string Id = string.Empty;
+        public string Title = string.Empty;
+        public string Description = string.Empty;
+        public BuqiRunRewardKind Kind;
+        public int Amount;
+        public bool Selected;
+        public bool Claimed;
+        public bool LevelUp;
+        public string TargetId = string.Empty;
+    }
+
     public sealed class BuqiUIDemoView
     {
         public BuqiUIDemoPhase Phase;
@@ -184,5 +221,15 @@ namespace Game.Hot.Buqi.DemoUI
         public IReadOnlyList<BuqiDemoOfferView> ShopOffers = Array.Empty<BuqiDemoOfferView>();
         public BuqiDemoOpponentView Opponent;
         public IReadOnlyList<BuqiDemoFactView> Facts = Array.Empty<BuqiDemoFactView>();
+        public IReadOnlyList<BuqiDemoRouteNodeView> RouteNodes = Array.Empty<BuqiDemoRouteNodeView>();
+        public IReadOnlyList<BuqiDemoRewardView> Rewards = Array.Empty<BuqiDemoRewardView>();
+        public bool IsPaused;
+        public bool ExitRequested;
+        public bool BattleResultVisible;
+        public string BattleResultLabel = string.Empty;
+        public bool PeriodTransitionVisible;
+        public bool InputLocked;
+        public int Level;
+        public bool LevelUp;
     }
 }

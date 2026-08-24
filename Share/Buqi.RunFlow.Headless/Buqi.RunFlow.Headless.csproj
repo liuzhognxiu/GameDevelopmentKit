@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>Buqi.RunFlow.Headless</AssemblyName>
+    <RootNamespace>Buqi.RunFlow.Headless</RootNamespace>
+    <LangVersion>9</LangVersion>
+    <DefineConstants>$(DefineConstants);BUQI_HEADLESS</DefineConstants>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Battle\Rules\BuqiText.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Battle\Model\BuqiTypes.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Battle\Model\BuqiBattleDtos.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Battle\Model\BuqiBattleResults.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Core\*.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Economy\BuqiRunEconomyTypes.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Economy\BuqiRunEconomySnapshot.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Economy\BuqiRunEconomyService.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Encounter\BuqiRunEventDefinitions.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Encounter\BuqiRunEventRuntimeState.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Encounter\BuqiRunEventSelector.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Encounter\BuqiRunEventExecutor.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Encounter\BuqiRunEventTransitions.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Encounter\BuqiRunEventSaveCodec.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Encounter\BuqiRunOperationFlowAdapter.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Training\*.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Integration\BuqiRunRouteService.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Integration\BuqiRunBattleModifierProjector.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Integration\BuqiRunRewardService.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Integration\BuqiRunAuthoredOperationCatalog.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Run\Settlement\*.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Buqi\Config\BuqiConfigModels.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Generate\Luban\BuqiEventConditionKind.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Generate\Luban\BuqiEventCostKind.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Generate\Luban\BuqiEventOutcomeKind.cs" />
+    <Compile Include="..\..\Unity\Assets\Scripts\Game\Hot\Code\Generate\Luban\BuqiTrainingEffectKind.cs" />
+  </ItemGroup>
+</Project>

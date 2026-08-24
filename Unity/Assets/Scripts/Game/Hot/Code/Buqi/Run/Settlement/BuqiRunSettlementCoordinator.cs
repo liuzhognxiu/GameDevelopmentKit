@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Run.Core;
+using Game.Hot.Buqi.Run.Encounter;
 
 namespace Game.Hot.Buqi.Run.Settlement
 {
@@ -71,45 +72,52 @@ namespace Game.Hot.Buqi.Run.Settlement
 
             BuqiRunBattleSummary summary = BuqiRunBattleSummaryBuilder.Build(battleResult, battleLog);
 
-            if (state.AppliedSettlementIds.Contains(settlementId))
+            bool persistedRead = TryReadState(
+                out BuqiRunSaveData persistedSave,
+                out BuqiRunState persistedState,
+                out string replayReadError);
+            if (!persistedRead &&
+                !string.Equals(replayReadError, "Save file does not exist.", StringComparison.Ordinal))
             {
-                if (!TryReadState(out BuqiRunSaveData persistedSave, out BuqiRunState persistedState, out string replayReadError))
-                {
-                    return Rejected(replayReadError, state, summary, rawOutcome);
-                }
-
-                if (!persistedState.AppliedSettlementIds.Contains(settlementId) ||
-                    persistedState.Revision < state.Revision)
+                return Rejected(replayReadError, state, summary, rawOutcome);
+            }
+            if (persistedRead && persistedState.AppliedSettlementIds.Contains(settlementId))
+            {
+                if (persistedState.Revision < state.Revision)
                 {
                     return Rejected("Persisted settlement state does not match the replay.", state, summary, rawOutcome);
                 }
 
-                if (persistedState.Revision == state.Revision &&
-                    (!string.Equals(persistedSave.EconomyPayload, economyPayload ?? string.Empty, StringComparison.Ordinal) ||
-                     !string.Equals(persistedSave.EncounterPayload, encounterPayload ?? string.Empty, StringComparison.Ordinal) ||
-                     !string.Equals(persistedSave.BattlePayload, battlePayload ?? string.Empty, StringComparison.Ordinal) ||
-                     persistedSave.LastAppliedSettlement == null ||
-                     !string.Equals(persistedSave.LastAppliedSettlement.SettlementId, settlementId, StringComparison.Ordinal) ||
-                     persistedSave.LastAppliedSettlement.RawOutcome != (int)rawOutcome ||
-                     !string.Equals(
-                         persistedSave.LastAppliedSettlement.BattleLogHash,
-                         summary.BattleLogHash,
-                         StringComparison.Ordinal)))
+                BuqiRunPendingSettlement receipt = persistedSave.LastAppliedSettlement;
+                bool matchingReceipt = receipt != null &&
+                                       string.Equals(receipt.SettlementId, settlementId, StringComparison.Ordinal);
+                if (matchingReceipt &&
+                    (receipt.RawOutcome != (int)rawOutcome ||
+                     !string.Equals(receipt.BattleLogHash, summary.BattleLogHash, StringComparison.Ordinal)))
                 {
                     return Rejected("Replay payload does not match the persisted settlement.", persistedState, summary, rawOutcome);
                 }
 
-                if (persistedState.Revision == state.Revision)
+                if (persistedState.Revision == state.Revision &&
+                    (!matchingReceipt ||
+                     !string.Equals(persistedSave.EconomyPayload, economyPayload ?? string.Empty, StringComparison.Ordinal) ||
+                     !string.Equals(persistedSave.EncounterPayload, encounterPayload ?? string.Empty, StringComparison.Ordinal) ||
+                     !string.Equals(persistedSave.BattlePayload, battlePayload ?? string.Empty, StringComparison.Ordinal)))
                 {
-                    BuqiRunPendingSettlement receipt = persistedSave.LastAppliedSettlement;
-                    return Succeeded(
-                        persistedState,
-                        receipt.Summary,
-                        (BuqiRunRawBattleOutcome)receipt.RawOutcome,
-                        true);
+                    return Rejected("Replay payload does not match the persisted settlement.", persistedState, summary, rawOutcome);
                 }
 
+                if (matchingReceipt)
+                    return Succeeded(persistedState, receipt.Summary, (BuqiRunRawBattleOutcome)receipt.RawOutcome, true);
+
                 return Succeeded(persistedState, summary, rawOutcome, true);
+            }
+
+            if (state.AppliedSettlementIds.Contains(settlementId))
+            {
+                if (!persistedRead)
+                    return Rejected(replayReadError, state, summary, rawOutcome);
+                return Rejected("Persisted settlement state does not match the replay.", state, summary, rawOutcome);
             }
 
             if (!TryMapPhaseToBattleKind(state.Phase, out BuqiRunBattleKind battleKind))
@@ -251,6 +259,9 @@ namespace Game.Hot.Buqi.Run.Settlement
                     battlePayload,
                     pendingSettlement,
                     lastAppliedSettlement);
+                PreserveExtendedState(saveData);
+                if (lastAppliedSettlement != null)
+                    FinalizeExtendedBattleState(saveData, state);
                 if (!BuqiRunSaveCodec.TryToState(saveData, out _, out error))
                 {
                     return false;
@@ -264,6 +275,55 @@ namespace Game.Hot.Buqi.Run.Settlement
                 error = exception.Message;
                 return false;
             }
+        }
+
+        private void PreserveExtendedState(BuqiRunSaveData target)
+        {
+            if (!m_Store.TryRead(out string json, out _) ||
+                !BuqiRunSaveCodec.TryFromJson(json, out BuqiRunSaveData source, out _))
+            {
+                return;
+            }
+
+            target.HasOperationRuntime = source.HasOperationRuntime;
+            target.OperationRuntime = source.OperationRuntime;
+            target.HasRoute = source.HasRoute;
+            target.Route = source.Route;
+            target.HasReward = source.HasReward;
+            target.Reward = source.Reward;
+            target.IsPaused = source.IsPaused;
+            target.ExitRequested = false;
+            target.BattleResultVisible = source.BattleResultVisible;
+            target.PeriodTransitionVisible = source.PeriodTransitionVisible;
+        }
+
+        private static void FinalizeExtendedBattleState(BuqiRunSaveData saveData, BuqiRunState settledState)
+        {
+            if (saveData.HasOperationRuntime && saveData.OperationRuntime != null)
+            {
+                BuqiRunEventSaveData runtime = saveData.OperationRuntime;
+                if (runtime.TemporaryModifiers != null)
+                {
+                    for (int index = runtime.TemporaryModifiers.Count - 1; index >= 0; index--)
+                    {
+                        runtime.TemporaryModifiers[index].RemainingBattles--;
+                        if (runtime.TemporaryModifiers[index].RemainingBattles <= 0)
+                            runtime.TemporaryModifiers.RemoveAt(index);
+                    }
+                }
+
+                runtime.RunSeed = settledState.RunSeed;
+                runtime.ContentVersion = settledState.ContentVersion;
+                runtime.RuleVersion = settledState.RuleVersion;
+                runtime.RngCursor = settledState.RngCursor;
+                runtime.Revision = settledState.Revision;
+                runtime.Day = settledState.Day;
+                runtime.Period = settledState.Period;
+            }
+
+            saveData.BattleResultVisible = true;
+            saveData.PeriodTransitionVisible = false;
+            saveData.ExitRequested = false;
         }
 
         private bool TryReadState(

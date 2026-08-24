@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Economy;
 
 namespace Game.Hot.Buqi.Run.Encounter
@@ -123,6 +124,9 @@ namespace Game.Hot.Buqi.Run.Encounter
             {
                 case BuqiRunEventActionKind.GrantCoins:
                     return TryAddCoins(state, action.Amount, out error);
+
+                case BuqiRunEventActionKind.RestoreLife:
+                    return TryRestoreLife(state, action.Amount, out error);
 
                 case BuqiRunEventActionKind.GrantItem:
                     return TryGrantItem(state, action.ItemDefinitionId, out error);
@@ -388,6 +392,20 @@ namespace Game.Hot.Buqi.Run.Encounter
                 return false;
             }
             state.Economy.Run.Coins = (int)value;
+            error = string.Empty;
+            return true;
+        }
+
+        private static bool TryRestoreLife(BuqiRunEventRuntimeState state, int amount, out string error)
+        {
+            long value = (long)state.Economy.Run.Lives + amount;
+            if (amount < 0 || value > BuqiRunRules.StartingLives)
+            {
+                error = "Life result is out of range.";
+                return false;
+            }
+
+            state.Economy.Run.Lives = (int)value;
             error = string.Empty;
             return true;
         }

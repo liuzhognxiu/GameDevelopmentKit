@@ -98,6 +98,7 @@ namespace Game.Hot.Buqi.Run.Encounter
         public BuqiRunModifierKind Kind;
         public int Value;
         public int RemainingBattles;
+        public int DurationTicks;
 
         public BuqiRunTemporaryModifier Clone()
         {

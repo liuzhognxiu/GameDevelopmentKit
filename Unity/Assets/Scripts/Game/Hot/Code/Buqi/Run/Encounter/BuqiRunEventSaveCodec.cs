@@ -187,7 +187,7 @@ namespace Game.Hot.Buqi.Run.Encounter
                 for (int index = 0; index < save.TemporaryModifiers.Count; index++)
                 {
                     BuqiRunTemporaryModifier modifier = save.TemporaryModifiers[index];
-                    if (modifier == null || modifier.RemainingBattles < 1 ||
+                    if (modifier == null || modifier.RemainingBattles < 1 || modifier.DurationTicks < 0 ||
                         !Enum.IsDefined(typeof(BuqiRunModifierKind), modifier.Kind))
                     {
                         error = "Saved temporary modifier is invalid.";

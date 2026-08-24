@@ -285,8 +285,8 @@ namespace Game.Hot.Buqi.UI
                     : 0f;
             }
 
-            RenderTrack(m_LeftCards, frame.Left, data.Definitions);
-            RenderTrack(m_RightCards, frame.Right, data.Definitions);
+            RenderTrack(m_LeftCards, frame.Left, data.Definitions, frame.CurrentEvent);
+            RenderTrack(m_RightCards, frame.Right, data.Definitions, frame.CurrentEvent);
             RenderFeedback();
             RenderSpeedState();
             if (string.IsNullOrEmpty(frame.Error))
@@ -298,14 +298,18 @@ namespace Game.Hot.Buqi.UI
         private static void RenderTrack(
             ItemCardWidget[] cards,
             BattleReplaySideFrame side,
-            IItemDefinitionProvider definitions)
+            IItemDefinitionProvider definitions,
+            BattleEvent currentEvent)
         {
             foreach (ItemCardWidget card in cards)
                 card?.Clear();
             foreach (BattleReplayItemFrame item in side.Items)
             {
                 if (item.AnchorSlot >= 0 && item.AnchorSlot < cards.Length)
-                    cards[item.AnchorSlot]?.Render(item, definitions);
+                    cards[item.AnchorSlot]?.Render(
+                        item,
+                        definitions,
+                        currentEvent != null && string.Equals(currentEvent.SourceInstanceId, item.InstanceId, StringComparison.Ordinal));
             }
         }
 

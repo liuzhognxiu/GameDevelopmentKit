@@ -56,6 +56,8 @@ namespace Game.Hot.Buqi.Run.Training
             }
             if (!BuqiRunEventRuntimeRules.IsEligible(definition.Eligibility, source, m_Items))
                 return Fail(source, "Training conditions are not satisfied.");
+            if (definition.MaxPerRun > 0 && CountAppliedTraining(source, definition.TrainingId) >= definition.MaxPerRun)
+                return Fail(source, "Training project has reached its run limit.");
 
             BuqiRunEventRuntimeState working = source.Clone();
             if (!TryPayCosts(working, definition, out string paymentError))
@@ -129,6 +131,7 @@ namespace Game.Hot.Buqi.Run.Training
                             Kind = definition.ModifierKind,
                             Value = definition.ModifierValue,
                             RemainingBattles = definition.ModifierDurationBattles,
+                            DurationTicks = definition.ModifierDurationTicks,
                         });
                     }
                     error = string.Empty;
@@ -301,13 +304,28 @@ namespace Game.Hot.Buqi.Run.Training
                 target);
         }
 
+        private static int CountAppliedTraining(BuqiRunEventRuntimeState state, string trainingId)
+        {
+            int count = 0;
+            for (int index = 0; index < state.AppliedResolutions.Count; index++)
+            {
+                BuqiRunResolutionRecord resolution = state.AppliedResolutions[index];
+                if (string.Equals(resolution.SourceKind, TrainingSourceKind, StringComparison.Ordinal) &&
+                    string.Equals(resolution.ContentId, trainingId, StringComparison.Ordinal))
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
         private static bool IsValidDefinition(BuqiRunTrainingDefinition definition)
         {
             if (definition == null || string.IsNullOrWhiteSpace(definition.TrainingId) ||
                 definition.Eligibility == null || definition.CoinCost < 0 ||
                 definition.CounterCost < 0 || definition.CoinReward < 0 ||
                 definition.ExperienceReward < 0 || definition.RewardCounterAmount < 0 ||
-                definition.ModifierDurationBattles < 0 ||
+                definition.ModifierDurationBattles < 0 || definition.MaxPerRun < 0 ||
                 !Enum.IsDefined(typeof(BuqiRunTrainingKind), definition.Kind) ||
                 !Enum.IsDefined(typeof(BuqiRunModifierKind), definition.ModifierKind) ||
                 (definition.CounterCost > 0 && string.IsNullOrWhiteSpace(definition.CounterCostId)))

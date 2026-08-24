@@ -22,12 +22,14 @@ namespace Game.Hot.Buqi.UI
     [DisallowMultipleComponent]
     public sealed class BuqiRunShellForm : StarForceUIForm
     {
-        private static readonly string[] s_RailLabelKeys =
+        private static readonly string[] s_RailLabels =
         {
-            "Buqi.RunShell.MorningOperation",
-            "Buqi.RunShell.NoonOperation",
-            "Buqi.RunShell.DuskPve",
-            "Buqi.RunShell.NightPvp",
+            "一时 · 晨 · 经营",
+            "二时 · 午 · 经营",
+            "三时 · 昏 · 电脑对战",
+            "四时 · 暮 · 经营",
+            "五时 · 夜 · 经营",
+            "六时 · 子 · 异步对战",
         };
 
         [SerializeField]
@@ -67,10 +69,19 @@ namespace Game.Hot.Buqi.UI
         private Button m_DeployButton = null;
 
         [SerializeField]
+        private Button m_PauseButton = null;
+
+        [SerializeField]
         private Button m_RestartButton = null;
 
         [SerializeField]
         private GameObject m_ErrorPanel = null;
+
+        [SerializeField]
+        private BuqiRunPauseOverlay m_PauseOverlay = null;
+
+        [SerializeField]
+        private BuqiBattleResultOverlay m_BattleResultOverlay = null;
 
         [SerializeField]
         private Text m_ErrorText = null;
@@ -92,6 +103,7 @@ namespace Game.Hot.Buqi.UI
             m_BackButton?.onClick.AddListener(GoBack);
             m_PrimaryButton?.onClick.AddListener(Advance);
             m_DeployButton?.onClick.AddListener(OpenDeployment);
+            m_PauseButton?.onClick.AddListener(Pause);
             m_RestartButton?.onClick.AddListener(Restart);
             m_Registry = new BuqiStageWidgetRegistry(m_StageComponents);
         }
@@ -182,6 +194,7 @@ namespace Game.Hot.Buqi.UI
             m_BackButton?.onClick.RemoveListener(GoBack);
             m_PrimaryButton?.onClick.RemoveListener(Advance);
             m_DeployButton?.onClick.RemoveListener(OpenDeployment);
+            m_PauseButton?.onClick.RemoveListener(Pause);
             m_RestartButton?.onClick.RemoveListener(Restart);
             base.OnDestroy();
         }
@@ -261,6 +274,11 @@ namespace Game.Hot.Buqi.UI
             Submit(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.OpenDragDeploy });
         }
 
+        private void Pause()
+        {
+            Submit(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.PauseRun });
+        }
+
         private void GoBack()
         {
             if (IsShopDragging())
@@ -335,6 +353,11 @@ namespace Game.Hot.Buqi.UI
                 return;
 
             BuqiUIDemoView view = m_Controller.View;
+            if (view.ExitRequested)
+            {
+                Close();
+                return;
+            }
             if (view.Phase == BuqiUIDemoPhase.BattleReplay)
             {
                 OpenBattleReplay();
@@ -353,13 +376,17 @@ namespace Game.Hot.Buqi.UI
                 m_DeployButton.gameObject.SetActive(CanConfigureDeployment(view));
             if (m_BackButton != null)
                 m_BackButton.interactable = !IsShopDragging();
-            m_PhaseRail?.SetActive(view.Phase != BuqiUIDemoPhase.PveSelection);
+            if (m_PauseButton != null)
+                m_PauseButton.gameObject.SetActive(!view.IsPaused && view.Phase != BuqiUIDemoPhase.RunTerminal);
+            m_PhaseRail?.SetActive(true);
             RenderResources(view);
             RenderPhaseRail(view);
             if (!m_Registry.Show(view, Submit))
             {
                 ShowError("当前阶段界面不可用。"  );
             }
+            m_PauseOverlay?.Render(view, Submit);
+            m_BattleResultOverlay?.Render(view, Submit);
         }
 
         private static bool CanConfigureDeployment(BuqiUIDemoView view)
@@ -419,7 +446,7 @@ namespace Game.Hot.Buqi.UI
 
         private void RenderPhaseRail(BuqiUIDemoView view)
         {
-            int count = Math.Min(m_PhaseSteps.Length, s_RailLabelKeys.Length);
+            int count = Math.Min(m_PhaseSteps.Length, s_RailLabels.Length);
             int currentIndex = ResolveRailIndex(view);
             for (int index = 0; index < count; index++)
             {
@@ -427,7 +454,7 @@ namespace Game.Hot.Buqi.UI
                 {
                     Phase = ResolveRailPhase(index),
                     Index = index + 1,
-                    Label = GameEntry.Localization.GetString(s_RailLabelKeys[index]),
+                    Label = s_RailLabels[index],
                     IsCurrent = index == currentIndex,
                     IsVisited = index <= currentIndex,
                     IsLocked = index > currentIndex,
@@ -476,7 +503,7 @@ namespace Game.Hot.Buqi.UI
 
         private static int ResolveRailIndex(BuqiUIDemoView view)
         {
-            return Mathf.Clamp((int)view.Period, 0, s_RailLabelKeys.Length - 1);
+            return Mathf.Clamp((int)view.Period, 0, s_RailLabels.Length - 1);
         }
 
         private static BuqiUIDemoPhase ResolveRailPhase(int index)
@@ -489,6 +516,9 @@ namespace Game.Hot.Buqi.UI
                 case 2:
                     return BuqiUIDemoPhase.PveSelection;
                 case 3:
+                case 4:
+                    return BuqiUIDemoPhase.OperationChoice;
+                case 5:
                     return BuqiUIDemoPhase.BattleReplay;
                 default:
                     return BuqiUIDemoPhase.RunTerminal;

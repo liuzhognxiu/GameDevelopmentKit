@@ -1,11 +1,13 @@
+using System.Text;
 using Game.Hot.Buqi.Battle;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Game.Hot.Buqi.UI
 {
     [DisallowMultipleComponent]
-    public sealed class ItemCardWidget : MonoBehaviour
+    public sealed class ItemCardWidget : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField]
         private Image m_Background = null;
@@ -25,7 +27,18 @@ namespace Game.Hot.Buqi.UI
         [SerializeField]
         private GameObject m_FrozenMarker = null;
 
+        [SerializeField]
+        private GameObject m_DetailPanel = null;
+
+        [SerializeField]
+        private Text m_DetailText = null;
+
         public void Render(BattleReplayItemFrame frame, IItemDefinitionProvider definitions)
+        {
+            Render(frame, definitions, false);
+        }
+
+        public void Render(BattleReplayItemFrame frame, IItemDefinitionProvider definitions, bool triggered)
         {
             if (frame == null)
             {
@@ -43,6 +56,8 @@ namespace Game.Hot.Buqi.UI
                 definition.Effects.Count > 0)
             {
                 primaryEffect = definition.Effects[0].Effect.ToString();
+                if (m_DetailText != null)
+                    m_DetailText.text = FormatEffects(definition);
             }
             if (m_EffectText != null)
                 m_EffectText.text = primaryEffect;
@@ -59,12 +74,38 @@ namespace Game.Hot.Buqi.UI
             if (m_FrozenMarker != null)
                 m_FrozenMarker.SetActive(frame.FrozenTicks > 0);
             if (m_Background != null)
-                m_Background.color = SizeColor(frame.Size);
+                m_Background.color = triggered ? new Color32(229, 176, 71, 255) : SizeColor(frame.Size);
+            m_DetailPanel?.SetActive(false);
         }
 
         public void Clear()
         {
+            m_DetailPanel?.SetActive(false);
             gameObject.SetActive(false);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            m_DetailPanel?.SetActive(true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            m_DetailPanel?.SetActive(false);
+        }
+
+        private static string FormatEffects(BuqiItemDefinition definition)
+        {
+            var builder = new StringBuilder();
+            for (int index = 0; index < definition.Effects.Count; index++)
+            {
+                BuqiEffectSpec effect = definition.Effects[index];
+                if (index > 0) builder.Append('\n');
+                builder.Append(effect.Trigger).Append(" | ")
+                    .Append(effect.Effect).Append(' ').Append(effect.Amount)
+                    .Append(" | ").Append(effect.Target);
+            }
+            return builder.ToString();
         }
 
         private static Color SizeColor(int size)

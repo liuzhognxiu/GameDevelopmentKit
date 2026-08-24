@@ -24,6 +24,10 @@ namespace Game.Hot.Buqi.DemoUI
         public IReadOnlyList<string> PveOpponentIds;
         public IReadOnlyList<string> PvpOpponentIds;
         public IBuqiBazaarSupplyRuntime BazaarSupplyRuntime;
+        public int RewardCandidateCount = 3;
+        public int RewardCoinAmount = 3;
+        public int RewardExperienceAmount = 3;
+        public int RewardExperiencePerLevel = 5;
     }
 }
 
@@ -40,6 +44,9 @@ namespace Game.Hot.Buqi.Run.Integration
         TribulationStage = 6,
         OperationChoice = 7,
         PveSelection = 8,
+        Training = 9,
+        RewardSelection = 10,
+        PeriodTransition = 11,
     }
 
     internal sealed class BuqiRunDemoState
@@ -53,6 +60,13 @@ namespace Game.Hot.Buqi.Run.Integration
         public BuqiRunDemoPresentation Presentation;
         public string LastResolutionId = string.Empty;
         public List<BuqiUIDemoPhase> VisitedPhases = new List<BuqiUIDemoPhase>();
+        public BuqiRunEventRuntimeState OperationRuntime;
+        public BuqiRunRouteState Route;
+        public BuqiRunRewardState Reward;
+        public bool IsPaused;
+        public bool ExitRequested;
+        public bool BattleResultVisible;
+        public bool PeriodTransitionVisible;
 
         public BuqiRunDemoState Clone()
         {
@@ -67,6 +81,13 @@ namespace Game.Hot.Buqi.Run.Integration
                 Presentation = Presentation,
                 LastResolutionId = LastResolutionId,
                 VisitedPhases = new List<BuqiUIDemoPhase>(VisitedPhases),
+                OperationRuntime = OperationRuntime?.Clone(),
+                Route = Route?.Clone(),
+                Reward = Reward?.Clone(),
+                IsPaused = IsPaused,
+                ExitRequested = ExitRequested,
+                BattleResultVisible = BattleResultVisible,
+                PeriodTransitionVisible = PeriodTransitionVisible,
             };
         }
     }
@@ -104,6 +125,10 @@ namespace Game.Hot.Buqi.Run.Integration
         private readonly BuqiRunEconomyService m_EconomyService;
         private readonly BuqiRunEncounterService m_EncounterService;
         private readonly BuqiRunEventResolver m_EventResolver;
+        private readonly BuqiRunAuthoredOperationCatalog m_OperationCatalog;
+        private readonly BuqiRunOperationFlowAdapter m_OperationFlow;
+        private readonly BuqiRunRouteService m_RouteService = new BuqiRunRouteService();
+        private readonly BuqiRunRewardService m_RewardService;
         private readonly BuqiRunBattleService m_BattleService;
         private readonly BuqiRunSettlementCoordinator m_SettlementCoordinator;
         private readonly IBuqiRunStore m_Store;
@@ -120,6 +145,9 @@ namespace Game.Hot.Buqi.Run.Integration
 
             m_Definitions = new BuqiDefinitionProvider(catalog.SourceCatalog);
             m_ItemCatalog = new BuqiRunItemCatalogAdapter(catalog.SourceCatalog);
+            m_OperationCatalog = new BuqiRunAuthoredOperationCatalog(catalog.SourceCatalog);
+            m_OperationFlow = new BuqiRunOperationFlowAdapter(m_OperationCatalog, m_OperationCatalog, m_OperationCatalog);
+            m_RewardService = new BuqiRunRewardService(m_ItemCatalog, CreateRewardSettings(catalog, m_Options));
             m_EconomyService = new BuqiRunEconomyService(m_ItemCatalog);
             m_EncounterService = new BuqiRunEncounterService(catalog);
             m_EventResolver = new BuqiRunEventResolver(catalog);
@@ -130,6 +158,18 @@ namespace Game.Hot.Buqi.Run.Integration
         }
 
         public BuqiRunDemoState State => m_State.Clone();
+
+        public BuqiRunOperationView BuildOperationView()
+        {
+            return m_State.OperationRuntime == null
+                ? null
+                : m_OperationFlow.Compose(m_State.OperationRuntime);
+        }
+
+        public int BuildLevel()
+        {
+            return m_RewardService.LevelForExperience(m_State.OperationRuntime?.Experience ?? 0);
+        }
 
         public bool TryInitialize(out string error)
         {
@@ -402,6 +442,69 @@ namespace Game.Hot.Buqi.Run.Integration
 
         public bool TryResolveEvent(string eventId, out string error)
         {
+            return TryResolveEvent(eventId, string.Empty, out error);
+        }
+
+        public bool TryResolveEvent(string eventId, string targetInstanceId, out string error)
+        {
+            if (m_State.Presentation == BuqiRunDemoPresentation.Encounter &&
+                m_State.OperationRuntime != null &&
+                m_State.OperationRuntime.PendingEvent != null &&
+                m_State.OperationRuntime.PendingEvent.IsActive)
+            {
+                BuqiRunPendingEvent pending = m_State.OperationRuntime.PendingEvent;
+                var request = new BuqiRunEventChoiceRequest
+                {
+                    ResolutionId = CreateCommandId(m_State.Economy.Run, "event", eventId),
+                    EventId = pending.EventId,
+                    OptionId = eventId,
+                };
+                BuqiRunOperationView operationView = m_OperationFlow.Compose(m_State.OperationRuntime);
+                BuqiRunOperationEventOptionView selectedOption = operationView.Event?.Options
+                    .FirstOrDefault(option => string.Equals(option.OptionId, eventId, StringComparison.Ordinal));
+                if (selectedOption?.Targets != null)
+                {
+                    foreach (BuqiRunOperationTargetRequirement requirement in selectedOption.Targets)
+                    {
+                        if (requirement.CandidateInstanceIds.Count > 0)
+                        {
+                            request.Targets.Add(new BuqiRunEventTargetSelection
+                            {
+                                ActionId = requirement.ActionId,
+                                InstanceId = string.IsNullOrWhiteSpace(targetInstanceId)
+                                    ? requirement.CandidateInstanceIds[0]
+                                    : targetInstanceId,
+                            });
+                        }
+                    }
+                }
+                if (!string.IsNullOrWhiteSpace(targetInstanceId) && request.Targets.Count == 0)
+                {
+                    request.Targets.Add(new BuqiRunEventTargetSelection
+                    {
+                        ActionId = string.Empty,
+                        InstanceId = targetInstanceId,
+                    });
+                }
+
+                BuqiRunOperationFlowResult executed = m_OperationFlow.ExecuteEvent(m_State.OperationRuntime, request);
+                if (!executed.Success)
+                {
+                    error = executed.FailureReason;
+                    return false;
+                }
+
+                BuqiRunDemoState formalWorking = m_State.Clone();
+                formalWorking.OperationRuntime = executed.State;
+                formalWorking.Economy = executed.State.Economy.Clone();
+                formalWorking.LastResolutionId = request.ResolutionId;
+                return TryResolveEncounterCommand(
+                    formalWorking,
+                    CreateCommandId(m_State.Economy.Run, "event-resolve", eventId),
+                    request.ResolutionId,
+                    out error);
+            }
+
             if (!IsEncounterEvent(m_State))
             {
                 error = "Current phase is not an event encounter.";
@@ -455,6 +558,108 @@ namespace Game.Hot.Buqi.Run.Integration
                 out error);
         }
 
+        public bool TryExecuteTraining(string trainingId, string targetInstanceId, out string error)
+        {
+            if (m_State.Presentation != BuqiRunDemoPresentation.Training ||
+                m_State.OperationRuntime == null)
+            {
+                error = "Current phase is not training.";
+                return false;
+            }
+
+            BuqiRunOperationFlowResult trained = m_OperationFlow.ExecuteTraining(
+                m_State.OperationRuntime,
+                new BuqiRunTrainingRequest
+                {
+                    TrainingId = trainingId,
+                    TargetInstanceId = targetInstanceId ?? string.Empty,
+                });
+            if (!trained.Success)
+            {
+                error = trained.FailureReason;
+                return false;
+            }
+
+            BuqiRunDemoState working = m_State.Clone();
+            working.OperationRuntime = trained.State;
+            working.Economy = trained.State.Economy.Clone();
+            working.LastResolutionId = CreateCommandId(m_State.Economy.Run, "training", trainingId);
+            return TryResolveEncounterCommand(
+                working,
+                CreateCommandId(m_State.Economy.Run, "training-resolve", trainingId),
+                working.LastResolutionId,
+                out error);
+        }
+
+        public bool TrySelectRouteNode(string nodeId, out string error)
+        {
+            string operationId = string.Equals(nodeId, "training", StringComparison.Ordinal)
+                ? "training"
+                : nodeId;
+            return TrySelectOperation(operationId, out error);
+        }
+
+        public bool TryPreviewReward(string candidateId, out string error)
+        {
+            if (m_State.Presentation != BuqiRunDemoPresentation.RewardSelection || m_State.Reward == null)
+            {
+                error = "Current phase is not reward selection.";
+                return false;
+            }
+
+            BuqiRunDemoState working = m_State.Clone();
+            working.Reward = m_RewardService.Preview(working.Reward, candidateId);
+            if (!string.Equals(working.Reward.SelectedCandidateId, candidateId, StringComparison.Ordinal))
+            {
+                error = "Reward candidate is unavailable.";
+                return false;
+            }
+            return TryCommitState(working, out error);
+        }
+
+        public bool TryClaimReward(string targetInstanceId, out string error)
+        {
+            if (m_State.Presentation != BuqiRunDemoPresentation.RewardSelection ||
+                m_State.Reward == null || m_State.OperationRuntime == null)
+            {
+                error = "Current phase is not reward selection.";
+                return false;
+            }
+
+            BuqiRunDemoState working = m_State.Clone();
+            string commandId = BuqiText.Format("cmd:reward:{0}", working.Reward.StageId);
+            BuqiRunRewardResult claimed = m_RewardService.Claim(
+                working.OperationRuntime,
+                working.Reward,
+                commandId,
+                targetInstanceId ?? string.Empty);
+            if (!claimed.Success)
+            {
+                error = claimed.FailureReason;
+                return false;
+            }
+            working.OperationRuntime = claimed.Runtime;
+            working.Economy = claimed.Runtime.Economy.Clone();
+            working.Reward = claimed.Reward;
+            working.LastResolutionId = commandId;
+            return TryCommitState(working, out error);
+        }
+
+        public bool TrySetPaused(bool paused, out string error)
+        {
+            BuqiRunDemoState working = m_State.Clone();
+            working.IsPaused = paused;
+            return TryCommitState(working, out error);
+        }
+
+        public bool TryExit(out string error)
+        {
+            BuqiRunDemoState working = m_State.Clone();
+            working.ExitRequested = true;
+            working.IsPaused = false;
+            return TryCommitState(working, out error);
+        }
+
         public bool TryApplyDeployment(BuqiDeploymentSnapshot deployment, out string error)
         {
             if (deployment == null)
@@ -492,6 +697,9 @@ namespace Game.Hot.Buqi.Run.Integration
 
         public bool TryAdvance(out string error)
         {
+            if (m_State.BattleResultVisible)
+                return TryAdvanceAfterBattleSummary(out error);
+
             switch (m_State.Presentation)
             {
                 case BuqiRunDemoPresentation.Encounter:
@@ -513,6 +721,23 @@ namespace Game.Hot.Buqi.Run.Integration
 
                 case BuqiRunDemoPresentation.BattleSummary:
                     return TryAdvanceAfterBattleSummary(out error);
+
+                case BuqiRunDemoPresentation.RewardSelection:
+                    if (m_State.Reward == null || !m_State.Reward.Claimed)
+                    {
+                        error = "Reward must be previewed and claimed before continuing.";
+                        return false;
+                    }
+                    return TryAdvanceAfterBattleSummary(out error);
+
+                case BuqiRunDemoPresentation.PeriodTransition:
+                    {
+                        BuqiRunDemoState transition = m_State.Clone();
+                        transition.PeriodTransitionVisible = false;
+                        if (!EnsureCurrentContent(transition, true, out error))
+                            return false;
+                        return TryCommitState(transition, out error);
+                    }
 
                 case BuqiRunDemoPresentation.DaySettlement:
                     return TryCompleteDay(out error);
@@ -545,10 +770,34 @@ namespace Game.Hot.Buqi.Run.Integration
                 return false;
             }
 
+            string routeNodeId = string.Equals(operationId, "meditate", StringComparison.Ordinal)
+                ? "training"
+                : operationId;
+            BuqiRunDemoState operationState = m_State.Clone();
+            if (operationState.Route != null && string.IsNullOrEmpty(operationState.Route.SelectedNodeId))
+            {
+                BuqiRunRouteResult selected = m_RouteService.Select(
+                    operationState.Route,
+                    routeNodeId,
+                    CreateCommandId(m_State.Economy.Run, "route", routeNodeId));
+                if (!selected.Success)
+                {
+                    error = selected.FailureReason;
+                    return false;
+                }
+                operationState.Route = selected.State;
+            }
+            else if (operationState.Route != null &&
+                     !string.Equals(operationState.Route.SelectedNodeId, routeNodeId, StringComparison.Ordinal))
+            {
+                error = "Selected route node does not match the requested operation.";
+                return false;
+            }
+
             if (string.Equals(operationId, "meditate", StringComparison.Ordinal))
             {
                 return TryResolveEncounterCommand(
-                    m_State.Clone(),
+                    operationState,
                     CreateCommandId(m_State.Economy.Run, "operation-meditate"),
                     "meditate",
                     out error);
@@ -559,13 +808,48 @@ namespace Game.Hot.Buqi.Run.Integration
                 kind = BuqiRunEncounterKind.Shop;
             else if (string.Equals(operationId, "event", StringComparison.Ordinal))
                 kind = BuqiRunEncounterKind.Event;
+            else if (string.Equals(operationId, "training", StringComparison.Ordinal))
+            {
+                BuqiRunEventRuntimeState trainingRuntime = operationState.OperationRuntime ??
+                                                           m_OperationFlow.CreateState(operationState.Economy);
+                BuqiRunOperationView trainingView = m_OperationFlow.Compose(trainingRuntime);
+                if (trainingView.TrainingOffers == null ||
+                    !trainingView.TrainingOffers.Any(offer => offer.Available))
+                {
+                    return TryResolveEncounterCommand(
+                        operationState,
+                        CreateCommandId(m_State.Economy.Run, "operation-training-fallback"),
+                        "meditate",
+                        out error);
+                }
+                BuqiRunDemoState training = operationState;
+                training.OperationRuntime = trainingRuntime;
+                training.Presentation = BuqiRunDemoPresentation.Training;
+                return TryCommitState(training, out error);
+            }
             else
             {
                 error = "Operation choice is invalid.";
                 return false;
             }
 
-            BuqiRunDemoState working = m_State.Clone();
+            BuqiRunDemoState working = operationState;
+            if (kind == BuqiRunEncounterKind.Event && m_OperationCatalog.Definitions.Count > 0)
+            {
+                if (working.OperationRuntime == null)
+                    working.OperationRuntime = m_OperationFlow.CreateState(working.Economy);
+                BuqiRunOperationFlowResult opened = m_OperationFlow.OpenEvent(working.OperationRuntime);
+                if (!opened.Success)
+                {
+                    error = opened.FailureReason;
+                    return false;
+                }
+                working.OperationRuntime = opened.State;
+                working.Economy = opened.State.Economy.Clone();
+                working.Encounter = null;
+                working.Presentation = BuqiRunDemoPresentation.Encounter;
+                return TryCommitState(working, out error);
+            }
             if (!m_EncounterService.TryGetOrCreateForKind(
                     working.Economy.Run,
                     null,
@@ -675,7 +959,7 @@ namespace Game.Hot.Buqi.Run.Integration
             }
 
             BuqiRunDemoState working = m_State.Clone();
-            if (!TryBuildPlayerSnapshot(working.Economy, out BuildSnapshot playerBuild, out error))
+            if (!TryBuildPlayerSnapshot(working, out BuildSnapshot playerBuild, out error))
                 return false;
             if (!m_BattleService.TrySelectPveDifficultyAndSimulate(
                     working.Economy.Run,
@@ -786,7 +1070,10 @@ namespace Game.Hot.Buqi.Run.Integration
                 Battle = null,
                 BattleSummary = new BuqiRunBattleSummary(),
                 LastRawOutcome = default,
-                Presentation = BuqiRunDemoPresentation.OperationChoice,
+                Presentation = BuqiRunDemoPresentation.PeriodTransition,
+                OperationRuntime = m_OperationFlow.CreateState(economy),
+                Route = m_RouteService.Open(economy.Run),
+                PeriodTransitionVisible = true,
             };
             if (!EnsureCurrentContent(working, true, out error))
                 return false;
@@ -804,7 +1091,35 @@ namespace Game.Hot.Buqi.Run.Integration
                 return false;
             if (!BuqiRunDemoCodec.TryDecodeBattle(runState, saveData.BattlePayload, m_Definitions, out BuqiRunBattleSession battle, out error))
                 return false;
-            if (!TryRestorePresentation(runState, encounter, battle, out BuqiRunDemoPresentation presentation, out error))
+            BuqiRunEventRuntimeState operationRuntime;
+            if (saveData.HasOperationRuntime && saveData.OperationRuntime != null)
+            {
+                if (!m_OperationFlow.TryRestore(economy, saveData.OperationRuntime, out operationRuntime, out error))
+                    return false;
+            }
+            else
+            {
+                operationRuntime = m_OperationFlow.CreateState(economy);
+            }
+            BuqiRunRouteState route = saveData.HasRoute && saveData.Route != null
+                ? saveData.Route.Clone()
+                : m_RouteService.Open(runState);
+            BuqiRunRewardState reward = null;
+            if (saveData.HasReward && saveData.Reward != null)
+            {
+                if (!m_RewardService.TryRestore(operationRuntime, saveData.Reward, out reward, out error))
+                    return false;
+            }
+            if (!TryRestorePresentation(
+                    runState,
+                    encounter,
+                    battle,
+                    operationRuntime,
+                    route,
+                    reward,
+                    saveData.PeriodTransitionVisible,
+                    out BuqiRunDemoPresentation presentation,
+                    out error))
                 return false;
 
             var working = new BuqiRunDemoState
@@ -818,6 +1133,13 @@ namespace Game.Hot.Buqi.Run.Integration
                     ? new BuqiRunBattleSummary()
                     : BuqiRunBattleSummaryBuilder.Build(battle.Result, battle.Log),
                 LastRawOutcome = battle == null ? default : battle.RawOutcome,
+                OperationRuntime = operationRuntime,
+                Route = route,
+                Reward = reward,
+                IsPaused = saveData.IsPaused,
+                ExitRequested = false,
+                BattleResultVisible = saveData.BattleResultVisible,
+                PeriodTransitionVisible = saveData.PeriodTransitionVisible,
             };
 
             if (!EnsureCurrentContent(working, false, out error))
@@ -833,22 +1155,36 @@ namespace Game.Hot.Buqi.Run.Integration
             BuqiRunState runState,
             BuqiRunEncounterState encounter,
             BuqiRunBattleSession battle,
+            BuqiRunEventRuntimeState operationRuntime,
+            BuqiRunRouteState route,
+            BuqiRunRewardState reward,
+            bool periodTransitionVisible,
             out BuqiRunDemoPresentation presentation,
             out string error)
         {
             switch (runState.Phase)
             {
                 case BuqiRunPhase.Encounter:
-                    presentation = encounter == null
-                        ? BuqiRunDemoPresentation.OperationChoice
-                        : BuqiRunDemoPresentation.Encounter;
+                    presentation = periodTransitionVisible
+                        ? BuqiRunDemoPresentation.PeriodTransition
+                        : reward != null && !reward.Claimed
+                            ? BuqiRunDemoPresentation.RewardSelection
+                            : encounter != null || HasPendingFormalEvent(operationRuntime)
+                                ? BuqiRunDemoPresentation.Encounter
+                                : string.Equals(route?.SelectedNodeId, "training", StringComparison.Ordinal)
+                                    ? BuqiRunDemoPresentation.Training
+                                    : BuqiRunDemoPresentation.OperationChoice;
                     error = string.Empty;
                     return true;
 
                 case BuqiRunPhase.PveBattle:
-                    presentation = battle == null
-                        ? BuqiRunDemoPresentation.PveSelection
-                        : BuqiRunDemoPresentation.BattleReplay;
+                    presentation = periodTransitionVisible
+                        ? BuqiRunDemoPresentation.PeriodTransition
+                        : reward != null && !reward.Claimed
+                            ? BuqiRunDemoPresentation.RewardSelection
+                            : battle == null
+                                ? BuqiRunDemoPresentation.PveSelection
+                                : BuqiRunDemoPresentation.BattleReplay;
                     error = string.Empty;
                     return true;
 
@@ -860,16 +1196,22 @@ namespace Game.Hot.Buqi.Run.Integration
                         return false;
                     }
 
-                    presentation = runState.Phase == BuqiRunPhase.PvpBattle &&
-                                   battle.Kind == BuqiRunBattleKind.Pve &&
-                                   BuqiRunDemoCodec.IsSettledBattle(runState, battle.BattleId)
-                        ? BuqiRunDemoPresentation.BattleSummary
-                        : BuqiRunDemoPresentation.BattleReplay;
+                    presentation = periodTransitionVisible
+                        ? BuqiRunDemoPresentation.PeriodTransition
+                        : reward != null && !reward.Claimed
+                            ? BuqiRunDemoPresentation.RewardSelection
+                            : runState.Phase == BuqiRunPhase.PvpBattle &&
+                                      battle.Kind == BuqiRunBattleKind.Pve &&
+                                      BuqiRunDemoCodec.IsSettledBattle(runState, battle.BattleId)
+                                ? BuqiRunDemoPresentation.BattleSummary
+                                : BuqiRunDemoPresentation.BattleReplay;
                     error = string.Empty;
                     return true;
 
                 case BuqiRunPhase.DaySettlement:
-                    presentation = battle == null
+                    presentation = reward != null && !reward.Claimed
+                        ? BuqiRunDemoPresentation.RewardSelection
+                        : battle == null
                         ? BuqiRunDemoPresentation.DaySettlement
                         : BuqiRunDemoPresentation.BattleSummary;
                     error = string.Empty;
@@ -885,7 +1227,9 @@ namespace Game.Hot.Buqi.Run.Integration
                         return false;
                     }
 
-                    presentation = battle == null
+                    presentation = reward != null && !reward.Claimed
+                        ? BuqiRunDemoPresentation.RewardSelection
+                        : battle == null
                         ? BuqiRunDemoPresentation.TribulationRoute
                         : BuqiRunDemoPresentation.BattleSummary;
                     error = string.Empty;
@@ -922,19 +1266,32 @@ namespace Game.Hot.Buqi.Run.Integration
                 case BuqiRunPhase.Encounter:
                     state.Battle = null;
                     state.PveSelection = null;
-                    state.Presentation = state.Encounter == null
-                        ? BuqiRunDemoPresentation.OperationChoice
-                        : BuqiRunDemoPresentation.Encounter;
+                    if (state.PeriodTransitionVisible)
+                        state.Presentation = BuqiRunDemoPresentation.PeriodTransition;
+                    else if (state.Reward != null && !state.Reward.Claimed)
+                        state.Presentation = BuqiRunDemoPresentation.RewardSelection;
+                    else if (state.Encounter != null || HasPendingFormalEvent(state.OperationRuntime))
+                        state.Presentation = BuqiRunDemoPresentation.Encounter;
+                    else if (string.Equals(state.Route?.SelectedNodeId, "training", StringComparison.Ordinal))
+                        state.Presentation = BuqiRunDemoPresentation.Training;
+                    else
+                        state.Presentation = BuqiRunDemoPresentation.OperationChoice;
+                    if (state.Route == null || state.Route.Day != state.Economy.Run.Day || state.Route.Period != state.Economy.Run.Period)
+                        state.Route = m_RouteService.Open(state.Economy.Run);
                     break;
 
                 case BuqiRunPhase.PveBattle:
                     state.Encounter = null;
-                    state.Presentation = state.Battle == null
-                        ? BuqiRunDemoPresentation.PveSelection
-                        : BuqiRunDemoPresentation.BattleReplay;
+                    state.Presentation = state.PeriodTransitionVisible
+                        ? BuqiRunDemoPresentation.PeriodTransition
+                        : state.Reward != null && !state.Reward.Claimed
+                            ? BuqiRunDemoPresentation.RewardSelection
+                            : state.Battle == null
+                                ? BuqiRunDemoPresentation.PveSelection
+                                : BuqiRunDemoPresentation.BattleReplay;
                     if (state.Battle == null)
                     {
-                        if (!TryBuildPlayerSnapshot(state.Economy, out BuildSnapshot playerBuild, out error))
+                        if (!TryBuildPlayerSnapshot(state, out BuildSnapshot playerBuild, out error))
                             return false;
                         if (!m_BattleService.TryGetOrCreatePveSelection(
                                 state.Economy.Run,
@@ -952,13 +1309,17 @@ namespace Game.Hot.Buqi.Run.Integration
                 case BuqiRunPhase.PvpBattle:
                     state.Encounter = null;
                     state.PveSelection = null;
-                    state.Presentation = state.Battle != null &&
-                                         state.Battle.Kind == BuqiRunBattleKind.Pve &&
-                                         BuqiRunDemoCodec.IsSettledBattle(
-                                             state.Economy.Run,
-                                             state.Battle.BattleId)
-                        ? BuqiRunDemoPresentation.BattleSummary
-                        : BuqiRunDemoPresentation.BattleReplay;
+                    state.Presentation = state.PeriodTransitionVisible
+                        ? BuqiRunDemoPresentation.PeriodTransition
+                        : state.Reward != null && !state.Reward.Claimed
+                            ? BuqiRunDemoPresentation.RewardSelection
+                            : state.Battle != null &&
+                                             state.Battle.Kind == BuqiRunBattleKind.Pve &&
+                                             BuqiRunDemoCodec.IsSettledBattle(
+                                                 state.Economy.Run,
+                                                 state.Battle.BattleId)
+                                ? BuqiRunDemoPresentation.BattleSummary
+                                : BuqiRunDemoPresentation.BattleReplay;
                     if (state.Battle == null)
                     {
                         if (!allowGeneration)
@@ -974,7 +1335,9 @@ namespace Game.Hot.Buqi.Run.Integration
 
                 case BuqiRunPhase.DaySettlement:
                     state.Encounter = null;
-                    state.Presentation = state.Battle == null
+                    state.Presentation = state.Reward != null && !state.Reward.Claimed
+                        ? BuqiRunDemoPresentation.RewardSelection
+                        : state.Battle == null
                         ? BuqiRunDemoPresentation.DaySettlement
                         : BuqiRunDemoPresentation.BattleSummary;
                     break;
@@ -1008,7 +1371,7 @@ namespace Game.Hot.Buqi.Run.Integration
             BuqiRunBattleKind kind,
             out string error)
         {
-            if (!TryBuildPlayerSnapshot(state.Economy, out BuildSnapshot playerBuild, out error))
+            if (!TryBuildPlayerSnapshot(state, out BuildSnapshot playerBuild, out error))
                 return false;
 
             if (!m_BattleService.TryCreateAndSimulate(
@@ -1050,29 +1413,70 @@ namespace Game.Hot.Buqi.Run.Integration
                 error = settlement.FailureReason;
                 return false;
             }
+            if (settlement.Replayed)
+                return TryReloadPersistedState(out error);
 
             BuqiRunDemoState working = m_State.Clone();
             working.Economy.Run = settlement.State.Clone();
             working.BattleSummary = settlement.Summary;
             working.LastRawOutcome = settlement.RawOutcome;
+            working.BattleResultVisible = true;
+            if (working.OperationRuntime == null)
+                working.OperationRuntime = m_OperationFlow.CreateState(working.Economy);
+            else
+                working.OperationRuntime.Economy = working.Economy.Clone();
+            working.OperationRuntime = BuqiRunEventTransitions.AfterBattle(working.OperationRuntime);
+            working.Economy = working.OperationRuntime.Economy.Clone();
             working.Presentation = settlement.State.Phase == BuqiRunPhase.RunTerminal
                 ? BuqiRunDemoPresentation.RunTerminal
                 : BuqiRunDemoPresentation.BattleSummary;
             EnsureVisitedPhase(working, CurrentViewPhase(working));
-            m_State = working;
-            error = string.Empty;
-            return true;
+            return TryCommitState(working, out error);
         }
 
         private bool TryAdvanceAfterBattleSummary(out string error)
         {
-            if (m_State.Economy.Run.Phase == BuqiRunPhase.DaySettlement)
-                return TryCompleteDay(out error);
+            BuqiRunDemoState source = m_State;
+            if (source.BattleResultVisible)
+            {
+                BuqiRunDemoState continued = source.Clone();
+                continued.BattleResultVisible = false;
+                if (continued.Economy.Run.Phase == BuqiRunPhase.RunTerminal)
+                {
+                    continued.Presentation = BuqiRunDemoPresentation.RunTerminal;
+                    return TryCommitState(continued, out error);
+                }
+                source = continued;
+            }
 
-            BuqiRunDemoState working = m_State.Clone();
+            if (source.Reward == null || !source.Reward.Claimed)
+            {
+                BuqiRunDemoState rewardWorking = source.Clone();
+                if (rewardWorking.OperationRuntime == null)
+                    rewardWorking.OperationRuntime = m_OperationFlow.CreateState(rewardWorking.Economy);
+                rewardWorking.Reward = m_RewardService.Open(
+                    rewardWorking.OperationRuntime,
+                    BuqiText.Format("battle:{0}", rewardWorking.Battle?.BattleId ?? rewardWorking.Economy.Run.Revision.ToString()));
+                rewardWorking.Presentation = BuqiRunDemoPresentation.RewardSelection;
+                return TryCommitState(rewardWorking, out error);
+            }
+
+            if (source.Economy.Run.Phase == BuqiRunPhase.DaySettlement)
+            {
+                if (!ReferenceEquals(source, m_State))
+                {
+                    if (!TryCommitState(source, out error))
+                        return false;
+                }
+                return TryCompleteDay(out error);
+            }
+
+            BuqiRunDemoState working = source.Clone();
             working.Battle = null;
+            working.Reward = null;
             working.BattleSummary = new BuqiRunBattleSummary();
             working.LastRawOutcome = default;
+            working.BattleResultVisible = false;
 
             if (working.Economy.Run.Phase == BuqiRunPhase.RunTerminal)
             {
@@ -1080,6 +1484,8 @@ namespace Game.Hot.Buqi.Run.Integration
                 return TryCommitState(working, out error);
             }
 
+            if (working.Economy.Run.Phase == BuqiRunPhase.Encounter)
+                working.PeriodTransitionVisible = true;
             if (!EnsureCurrentContent(working, true, out error))
                 return false;
 
@@ -1101,12 +1507,42 @@ namespace Game.Hot.Buqi.Run.Integration
 
             working.Economy.Run = result.State.Clone();
             working.Battle = null;
+            working.Reward = null;
             working.BattleSummary = new BuqiRunBattleSummary();
             working.LastRawOutcome = default;
+            working.BattleResultVisible = false;
+            working.PeriodTransitionVisible = true;
             if (!EnsureCurrentContent(working, true, out error))
                 return false;
+            working.Presentation = BuqiRunDemoPresentation.PeriodTransition;
+            working.Route = m_RouteService.Open(working.Economy.Run);
 
             return TryCommitState(working, out error);
+        }
+
+        private bool TryReloadPersistedState(out string error)
+        {
+            if (!m_Store.TryRead(out string json, out _))
+            {
+                error = "读取存档失败，为避免丢失进度，原存档已保留。";
+                return false;
+            }
+            if (!BuqiRunSaveCodec.TryFromJson(json, out BuqiRunSaveData saveData, out _) ||
+                saveData.PendingSettlement != null ||
+                !TryValidateContentVersion(saveData.ContentVersion) ||
+                !TryLoadFromSave(saveData, out _))
+            {
+                error = "当前存档校验失败，为避免丢失进度，原存档已保留。";
+                return false;
+            }
+            if (!TryRestoreBazaarSupply(m_State, out _))
+            {
+                error = "当前存档校验失败，为避免丢失进度，原存档已保留。";
+                return false;
+            }
+
+            error = string.Empty;
+            return true;
         }
 
         private bool TryResolveEncounterCommand(
@@ -1115,6 +1551,8 @@ namespace Game.Hot.Buqi.Run.Integration
             string resolutionId,
             out string error)
         {
+            int previousDay = working.Economy.Run.Day;
+            BuqiRunPeriod previousPeriod = working.Economy.Run.Period;
             var controller = new BuqiRunController(working.Economy.Run);
             BuqiRunTransitionResult result = controller.ResolveEncounter(
                 commandId,
@@ -1138,6 +1576,8 @@ namespace Game.Hot.Buqi.Run.Integration
             }
 
             working.LastResolutionId = resolutionId ?? string.Empty;
+            working.PeriodTransitionVisible = working.Economy.Run.Day != previousDay ||
+                                              working.Economy.Run.Period != previousPeriod;
             if (!EnsureCurrentContent(working, true, out error))
                 return false;
 
@@ -1149,12 +1589,39 @@ namespace Game.Hot.Buqi.Run.Integration
             try
             {
                 EnsureVisitedPhase(working, CurrentViewPhase(working));
+                BuqiRunPendingSettlement lastAppliedSettlement = null;
+                if (m_Store.TryRead(out string existingJson, out _) &&
+                    BuqiRunSaveCodec.TryFromJson(existingJson, out BuqiRunSaveData existingSave, out _, out _, out _))
+                {
+                    BuqiRunPendingSettlement receipt = existingSave.LastAppliedSettlement;
+                    if (receipt != null && receipt.ExpectedRevision + 1 == working.Economy.Run.Revision)
+                        lastAppliedSettlement = receipt;
+                }
                 BuqiRunSaveData saveData = BuqiRunSaveCodec.FromState(
                     working.Economy.Run,
                     BuqiRunDemoCodec.EncodeEconomy(working.Economy),
                     BuqiRunDemoCodec.EncodeEncounter(working.Encounter),
                     BuqiRunDemoCodec.EncodeBattle(working.Battle),
-                    null);
+                    null,
+                    lastAppliedSettlement);
+                if (working.OperationRuntime == null)
+                    working.OperationRuntime = m_OperationFlow.CreateState(working.Economy);
+                else
+                    working.OperationRuntime.Economy = working.Economy.Clone();
+                saveData.HasOperationRuntime = working.OperationRuntime != null;
+                saveData.OperationRuntime = working.OperationRuntime == null
+                    ? null
+                    : m_OperationFlow.CaptureSave(working.OperationRuntime);
+                saveData.HasRoute = working.Route != null;
+                saveData.Route = working.Route?.Clone();
+                saveData.HasReward = working.Reward != null;
+                saveData.Reward = working.Reward == null
+                    ? null
+                    : m_RewardService.Capture(working.Reward);
+                saveData.IsPaused = working.IsPaused;
+                saveData.ExitRequested = false;
+                saveData.BattleResultVisible = working.BattleResultVisible;
+                saveData.PeriodTransitionVisible = working.PeriodTransitionVisible;
                 string json = BuqiRunSaveCodec.ToJson(saveData);
                 if (!m_Store.TryWrite(json, out error))
                     return false;
@@ -1203,10 +1670,11 @@ namespace Game.Hot.Buqi.Run.Integration
         }
 
         private bool TryBuildPlayerSnapshot(
-            BuqiRunEconomySnapshot economy,
+            BuqiRunDemoState state,
             out BuildSnapshot snapshot,
             out string error)
         {
+            BuqiRunEconomySnapshot economy = state.Economy;
             snapshot = new BuildSnapshot
             {
                 SnapshotId = $"run-{economy.Run.RunSeed}-day-{economy.Run.Day}-{economy.Run.Phase.ToString().ToLowerInvariant()}",
@@ -1233,15 +1701,18 @@ namespace Game.Hot.Buqi.Run.Integration
                     return false;
                 }
 
-                snapshot.Items.Add(new ItemInstance
+                var item = new ItemInstance
                 {
                     InstanceId = placement.Item.InstanceId,
                     DefinitionId = placement.Item.DefinitionId,
                     Quality = quality,
                     AnchorSlot = placement.AnchorSlot,
                     AnnotationId = placement.Item.RefinementId ?? string.Empty,
-                });
+                };
+                snapshot.Items.Add(item);
             }
+
+            BuqiRunBattleModifierProjector.Apply(snapshot, state.OperationRuntime, m_OperationCatalog);
 
             if (snapshot.Items.Count == 0)
             {
@@ -1510,6 +1981,36 @@ namespace Game.Hot.Buqi.Run.Integration
             return new BuqiLocalOpponentProvider(pool);
         }
 
+        private static BuqiRunRewardSettings CreateRewardSettings(
+            BuqiUIDemoCatalog catalog,
+            BuqiUIDemoControllerOptions options)
+        {
+            var settings = new BuqiRunRewardSettings
+            {
+                CandidateCount = options.RewardCandidateCount,
+                CoinAmount = options.RewardCoinAmount,
+                ExperienceAmount = options.RewardExperienceAmount,
+                ExperiencePerLevel = options.RewardExperiencePerLevel,
+            };
+            if (catalog?.SourceCatalog?.Items != null)
+            {
+                foreach (BuqiItemConfigRow item in catalog.SourceCatalog.Items)
+                {
+                    if (item != null && !string.IsNullOrWhiteSpace(item.DefinitionId))
+                        settings.ItemDefinitionIds.Add(item.DefinitionId);
+                }
+            }
+            if (catalog?.SourceCatalog?.Refinements != null)
+            {
+                foreach (BuqiRefinementConfigRow refinement in catalog.SourceCatalog.Refinements)
+                {
+                    if (refinement != null && !string.IsNullOrWhiteSpace(refinement.RefinementId))
+                        settings.RefinementIds.Add(refinement.RefinementId);
+                }
+            }
+            return settings;
+        }
+
         private static IBuqiRunStore CreateDefaultStore()
         {
             string root = Application.persistentDataPath;
@@ -1528,8 +2029,13 @@ namespace Game.Hot.Buqi.Run.Integration
         private static bool IsEncounterEvent(BuqiRunDemoState state)
         {
             return state.Presentation == BuqiRunDemoPresentation.Encounter &&
-                   state.Encounter != null &&
-                   state.Encounter.Kind == BuqiRunEncounterKind.Event;
+                   (HasPendingFormalEvent(state.OperationRuntime) ||
+                    state.Encounter != null && state.Encounter.Kind == BuqiRunEncounterKind.Event);
+        }
+
+        private static bool HasPendingFormalEvent(BuqiRunEventRuntimeState runtime)
+        {
+            return runtime?.PendingEvent != null && runtime.PendingEvent.IsActive;
         }
 
         private static BuqiUIDemoPhase CurrentViewPhase(BuqiRunDemoState state)
@@ -1538,6 +2044,12 @@ namespace Game.Hot.Buqi.Run.Integration
             {
                 case BuqiRunDemoPresentation.OperationChoice:
                     return BuqiUIDemoPhase.OperationChoice;
+                case BuqiRunDemoPresentation.Training:
+                    return BuqiUIDemoPhase.Training;
+                case BuqiRunDemoPresentation.RewardSelection:
+                    return BuqiUIDemoPhase.RewardSelection;
+                case BuqiRunDemoPresentation.PeriodTransition:
+                    return BuqiUIDemoPhase.PeriodTransition;
                 case BuqiRunDemoPresentation.Encounter:
                     return IsEncounterEvent(state) ? BuqiUIDemoPhase.Event : BuqiUIDemoPhase.Shop;
                 case BuqiRunDemoPresentation.PveSelection:

@@ -10,18 +10,13 @@ namespace Game.Hot.Buqi.Run.Encounter
                 throw new ArgumentNullException(nameof(source));
 
             BuqiRunEventRuntimeState working = source.Clone();
-            bool changed = false;
             for (int index = working.TemporaryModifiers.Count - 1; index >= 0; index--)
             {
                 BuqiRunTemporaryModifier modifier = working.TemporaryModifiers[index];
                 modifier.RemainingBattles--;
-                changed = true;
                 if (modifier.RemainingBattles <= 0)
                     working.TemporaryModifiers.RemoveAt(index);
             }
-
-            if (changed)
-                working.Economy.Run.Revision++;
             return working;
         }
 

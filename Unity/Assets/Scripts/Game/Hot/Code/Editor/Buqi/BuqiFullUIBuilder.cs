@@ -47,6 +47,9 @@ namespace Game.Hot.Editor
             BuildStage<PveSelectionStageWidget>("PveSelectionStageWidget", "PVE 选关", "选择初阶、进阶或险阶后直接进入战斗。");
             BuildStage<TribulationRouteWidget>("TribulationRouteWidget", "渡劫路线", "九日夜战后选择一条渡劫路线。");
             BuildStage<TribulationStageWidget>("TribulationStageWidget", "三阶段天劫", "应劫并推进当前阶段。");
+            BuildStage<TrainingWidget>("TrainingWidget", "训练", "选择配置驱动的训练项目并应用到当前构筑。");
+            BuildStage<RewardSelectionWidget>("RewardSelectionWidget", "战斗奖励", "预览候选奖励，确认后领取一次。");
+            BuildStage<PeriodTransitionWidget>("PeriodTransitionWidget", "时段过场", "确认后进入下一时段并冻结新的路线候选。");
             BuildShell();
             BuildBattleFormIntegration();
             AssetDatabase.SaveAssets();
@@ -80,6 +83,7 @@ namespace Game.Hot.Editor
                                          typeof(T) == typeof(PveSelectionStageWidget);
             var buttons = new List<Button>(8);
             var labels = new List<Text>(8);
+            var routeCards = new List<BuqiRouteNodeCardWidget>(3);
             for (int index = 0; index < 8; index++)
             {
                 int columnCount = includesReadOnlyBoard ? 3 : 2;
@@ -94,6 +98,25 @@ namespace Game.Hot.Editor
                 button.gameObject.SetActive(false);
                 buttons.Add(button);
                 labels.Add(label);
+                if (typeof(T) == typeof(OperationChoiceWidget) && index < 3)
+                {
+                    BuqiRouteNodeCardWidget routeCard = button.gameObject.AddComponent<BuqiRouteNodeCardWidget>();
+                    GameObject details = CreatePanel(
+                        button.transform,
+                        "HoverDetails",
+                        new Vector2(0f, -88f),
+                        new Vector2(size.x - 20f, 92f),
+                        surfaceColor);
+                    Text detailText = CreateText(details.transform, "Detail_Text", string.Empty, 14, TextAnchor.UpperLeft, inkColor);
+                    Stretch(detailText.rectTransform, new Vector2(10f, 8f), new Vector2(-10f, -8f));
+                    detailText.horizontalOverflow = HorizontalWrapMode.Wrap;
+                    details.SetActive(false);
+                    Assign(routeCard, "m_TitleText", label);
+                    Assign(routeCard, "m_DetailText", detailText);
+                    Assign(routeCard, "m_HoverDetails", details);
+                    Assign(routeCard, "m_Button", button);
+                    routeCards.Add(routeCard);
+                }
             }
 
             if (includesReadOnlyBoard)
@@ -104,6 +127,8 @@ namespace Game.Hot.Editor
             Assign(widget, "m_MetaText", meta);
             AssignArray(widget, "m_ActionButtons", buttons);
             AssignArray(widget, "m_ActionLabels", labels);
+            if (widget is OperationChoiceWidget)
+                AssignArray(widget, "m_RouteCards", routeCards);
             buildContent?.Invoke(root.transform, widget);
             SavePrefab(root, StageFolder + "/" + name + ".prefab");
         }
@@ -250,6 +275,7 @@ namespace Game.Hot.Editor
             {
                 "ShopWidget", "EventWidget", "BattleSummaryWidget", "RoundSettlementWidget", "RunTerminalWidget",
                 "OperationChoiceWidget", "PveSelectionStageWidget", "TribulationRouteWidget", "TribulationStageWidget",
+                "TrainingWidget", "RewardSelectionWidget", "PeriodTransitionWidget",
             };
 
             GameObject root = CreateRoot("BuqiRunShellForm", new Vector2(1920f, 1080f));
@@ -270,8 +296,8 @@ namespace Game.Hot.Editor
             }
 
             GameObject phaseRail = CreatePanel(root.transform, "PhaseRail", new Vector2(-824f, 0f), new Vector2(208f, 824f), surfaceColor);
-            var phaseSteps = new List<PhaseStepWidget>(4);
-            for (int index = 0; index < 4; index++)
+            var phaseSteps = new List<PhaseStepWidget>(6);
+            for (int index = 0; index < 6; index++)
             {
                 GameObject step = Instantiate(phasePrefab, phaseRail.transform, "PhaseStep" + (index + 1).ToString("00"));
                 SetRect(step.GetComponent<RectTransform>(), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -28f - index * 66f), new Vector2(208f, 48f));
@@ -312,6 +338,7 @@ namespace Game.Hot.Editor
             GameObject commands = CreatePanel(root.transform, "CommandBar", new Vector2(0f, -472f), new Vector2(1856f, 88f), surfaceColor);
             Button back = CreateButton(commands.transform, "Back", "<", new Vector2(-850f, 0f), new Vector2(64f, 52f), raisedColor, out _);
             Button deploy = CreateButton(commands.transform, "ConfigureBoard", "Buqi.Deploy.Title", new Vector2(550f, 0f), new Vector2(180f, 52f), raisedColor, out _);
+            Button pause = CreateButton(commands.transform, "Pause", "暂停", new Vector2(386f, 0f), new Vector2(132f, 52f), raisedColor, out _);
             Button restart = CreateButton(commands.transform, "Restart", "Buqi.RunShell.RestartTag", new Vector2(706f, 0f), new Vector2(124f, 52f), raisedColor, out _);
             restart.gameObject.SetActive(false);
             Button primary = CreateButton(commands.transform, "Primary", "继续", new Vector2(840f, 0f), new Vector2(132f, 52f), jadeColor, out Text primaryLabel);
@@ -321,6 +348,9 @@ namespace Game.Hot.Editor
             Stretch(errorText.rectTransform, new Vector2(30f, 24f), new Vector2(-30f, -24f));
             errorText.horizontalOverflow = HorizontalWrapMode.Wrap;
             errorPanel.SetActive(false);
+
+            BuqiRunPauseOverlay pauseOverlay = CreatePauseOverlay(root.transform, out GameObject pausePanel);
+            BuqiBattleResultOverlay resultOverlay = CreateBattleResultOverlay(root.transform, out GameObject resultPanel);
 
             Assign(form, "m_TitleText", title);
             Assign(form, "m_ContextTitleText", contextTitle);
@@ -334,10 +364,43 @@ namespace Game.Hot.Editor
             Assign(form, "m_BackButton", back);
             Assign(form, "m_PrimaryButton", primary);
             Assign(form, "m_DeployButton", deploy);
+            Assign(form, "m_PauseButton", pause);
             Assign(form, "m_RestartButton", restart);
             Assign(form, "m_ErrorPanel", errorPanel);
             Assign(form, "m_ErrorText", errorText);
+            Assign(form, "m_PauseOverlay", pauseOverlay);
+            Assign(form, "m_BattleResultOverlay", resultOverlay);
             SavePrefab(root, ShellPath);
+        }
+
+        private static BuqiRunPauseOverlay CreatePauseOverlay(Transform parent, out GameObject panel)
+        {
+            panel = CreatePanel(parent, "PauseOverlay", Vector2.zero, new Vector2(1920f, 1080f), new Color32(15, 20, 24, 248));
+            BuqiRunPauseOverlay overlay = panel.AddComponent<BuqiRunPauseOverlay>();
+            Text title = CreateText(panel.transform, "Title_Text", "单局暂停", 30, TextAnchor.MiddleCenter, inkColor);
+            SetRect(title.rectTransform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(24f, 72f), new Vector2(-48f, 56f));
+            Button continueButton = CreateButton(panel.transform, "Continue", "继续", new Vector2(-150f, -50f), new Vector2(220f, 64f), jadeColor, out _);
+            Button exitButton = CreateButton(panel.transform, "Exit", "退出本局", new Vector2(150f, -50f), new Vector2(220f, 64f), raisedColor, out _);
+            Assign(overlay, "m_Panel", panel);
+            Assign(overlay, "m_Title", title);
+            Assign(overlay, "m_ContinueButton", continueButton);
+            Assign(overlay, "m_ExitButton", exitButton);
+            panel.SetActive(false);
+            return overlay;
+        }
+
+        private static BuqiBattleResultOverlay CreateBattleResultOverlay(Transform parent, out GameObject panel)
+        {
+            panel = CreatePanel(parent, "BattleResultOverlay", Vector2.zero, new Vector2(1920f, 1080f), new Color32(15, 20, 24, 248));
+            BuqiBattleResultOverlay overlay = panel.AddComponent<BuqiBattleResultOverlay>();
+            Text result = CreateText(panel.transform, "Result_Text", "战斗结果", 28, TextAnchor.MiddleCenter, inkColor);
+            SetRect(result.rectTransform, new Vector2(0f, 0.5f), new Vector2(1f, 0.5f), new Vector2(24f, 72f), new Vector2(-48f, 56f));
+            Button continueButton = CreateButton(panel.transform, "Continue", "继续", new Vector2(0f, -50f), new Vector2(240f, 64f), jadeColor, out _);
+            Assign(overlay, "m_Panel", panel);
+            Assign(overlay, "m_ResultText", result);
+            Assign(overlay, "m_ContinueButton", continueButton);
+            panel.SetActive(false);
+            return overlay;
         }
 
         private static GameObject CreateFinalFlowStructure()
@@ -452,7 +515,7 @@ namespace Game.Hot.Editor
                     GameObject card = CreatePanel(
                         arena.transform,
                         "Slot" + slot.ToString("00") + suffix,
-                        new Vector2(-560f + (slot - 1) * 160f, side == 0 ? 170f : -170f),
+                        new Vector2(-560f + (slot - 1) * 160f, side == 0 ? -170f : 170f),
                         new Vector2(148f, 164f),
                         raisedColor);
                     CreateBattleFloatAnchor(card.transform, null);
@@ -496,6 +559,12 @@ namespace Game.Hot.Editor
                 var rightFloats = new List<MonoBehaviour>(rightCards.Count);
                 for (int slot = 0; slot < leftCards.Count; slot++)
                 {
+                    RectTransform playerCard = leftCards[slot] as RectTransform;
+                    RectTransform enemyCard = rightCards[slot] as RectTransform;
+                    if (playerCard != null)
+                        playerCard.anchoredPosition = new Vector2(playerCard.anchoredPosition.x, -170f);
+                    if (enemyCard != null)
+                        enemyCard.anchoredPosition = new Vector2(enemyCard.anchoredPosition.x, 170f);
                     leftFloats.Add(PrepareBattleFloat(leftCards[slot], floatWidgetType));
                     rightFloats.Add(PrepareBattleFloat(rightCards[slot], floatWidgetType));
                 }

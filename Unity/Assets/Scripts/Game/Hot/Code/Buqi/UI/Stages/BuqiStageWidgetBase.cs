@@ -94,6 +94,11 @@ namespace Game.Hot.Buqi.UI.Stages
 
         protected void AddAction(string label, BuqiUIDemoCommandType type, string primaryId = "", int slot = -1)
         {
+            AddAction(label, type, primaryId, string.Empty, slot);
+        }
+
+        protected void AddAction(string label, BuqiUIDemoCommandType type, string primaryId, string secondaryId, int slot = -1)
+        {
             if (m_Commands.Count >= m_ActionButtons.Length)
                 return;
             m_Labels.Add(label ?? string.Empty);
@@ -101,6 +106,7 @@ namespace Game.Hot.Buqi.UI.Stages
             {
                 Type = type,
                 PrimaryId = primaryId ?? string.Empty,
+                SecondaryId = secondaryId ?? string.Empty,
                 Slot = slot,
             });
         }

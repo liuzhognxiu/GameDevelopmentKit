@@ -5,13 +5,14 @@ using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.Run.Core;
+using Game.Hot.Buqi.Run.Supply;
 using BattleSize = Game.Hot.Buqi.Battle.BuqiSize;
 
 namespace Game.Hot.Buqi.Tests
 {
     public static class BuqiBazaarSupplyViewSourceTestSuite
     {
-        private const int ContractCount = 9;
+        private const int ContractCount = 10;
 
         public static List<string> RunAll()
         {
@@ -25,6 +26,7 @@ namespace Game.Hot.Buqi.Tests
             Run("merchant-availability-contract", MerchantAvailabilityContract, failures);
             Run("purchase-view-contract", PurchaseViewContract, failures);
             Run("restore-rollback-contract", RestoreRollbackContract, failures);
+            Run("infinite-day-schedule-contract", InfiniteDayScheduleContract, failures);
             return failures;
         }
 
@@ -254,6 +256,27 @@ namespace Game.Hot.Buqi.Tests
                 Require(view.MerchantId != constrained.MerchantId,
                     "A merchant with fewer than four day-unlocked pool items must be ineligible.");
             }
+        }
+
+        private static void InfiniteDayScheduleContract()
+        {
+            Require(BuqiBazaarSupplyViewSource.TryCreate(
+                CreateCatalog(), out BuqiBazaarSupplyViewSource source, out string error), error);
+            BuqiBazaarSupplyContext context = Context(
+                14811,
+                BuqiRunRules.ContentScheduleDayCount + 1,
+                0,
+                50,
+                "fast-01",
+                "fast-02");
+
+            Require(source.TryOpen(context, out IReadOnlyList<string> offers, out error), error);
+            Require(offers.Count == BuqiSupplyService.MerchantOfferCount &&
+                    offers.Distinct(StringComparer.Ordinal).Count() == offers.Count,
+                "The bazaar must keep offering a complete distinct shelf after Day nine.");
+            Require(source.TryRefresh(context, out IReadOnlyList<string> refreshed, out int cost, out error), error);
+            Require(cost == BuqiSupplyService.FirstRefreshPrice && refreshed.Count == offers.Count,
+                "Post-schedule bazaar shelves must remain refreshable.");
         }
 
         private static BuqiBazaarSupplyContext Context(

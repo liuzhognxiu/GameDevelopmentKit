@@ -17,7 +17,7 @@ namespace Game.Hot.Buqi.Run.Supply
     {
         public BuqiSupplyProductRole Role;
         public int MinimumDay = 1;
-        public int MaximumDay = BuqiRunRules.RunDayCount;
+        public int MaximumDay = BuqiRunRules.ContentScheduleDayCount;
         public BuqiSupplyQuality Quality;
         public BuqiSupplySource Sources = BuqiSupplySource.All;
         public int BaseWeight = 100;
@@ -31,7 +31,7 @@ namespace Game.Hot.Buqi.Run.Supply
         public BuqiSupplySource Source = BuqiSupplySource.Merchant;
         public string MerchantPoolId = string.Empty;
         public int UnlockDay = 1;
-        public int RetireDay = BuqiRunRules.RunDayCount;
+        public int RetireDay = BuqiRunRules.ContentScheduleDayCount;
         public BuqiSupplyQuality MinimumQuality = BuqiSupplyQuality.Common;
         public BuqiSupplyQuality MaximumQuality = BuqiSupplyQuality.Finalized;
         public int CandidateCount = BuqiSupplyService.MerchantSlotCount;
@@ -119,13 +119,13 @@ namespace Game.Hot.Buqi.Run.Supply
                 error = "Supply channel must identify one consumer.";
                 return false;
             }
-            if (!IsValidDayWindow(profile.UnlockDay, profile.RetireDay) ||
-                runDay < 1 || runDay > BuqiRunRules.RunDayCount)
+            if (!IsValidDayWindow(profile.UnlockDay, profile.RetireDay) || runDay < 1)
             {
                 error = "Supply channel Day window is invalid.";
                 return false;
             }
-            if (runDay < profile.UnlockDay || runDay > profile.RetireDay)
+            int contentDay = BuqiRunRules.GetContentScheduleDay(runDay);
+            if (contentDay < profile.UnlockDay || contentDay > profile.RetireDay)
             {
                 error = "Supply channel is not unlocked for the current Day.";
                 return false;
@@ -225,7 +225,7 @@ namespace Game.Hot.Buqi.Run.Supply
         private static bool IsValidDayWindow(int minimumDay, int maximumDay)
         {
             return minimumDay >= 1 && minimumDay <= maximumDay &&
-                   maximumDay <= BuqiRunRules.RunDayCount;
+                   maximumDay <= BuqiRunRules.ContentScheduleDayCount;
         }
 
         private static bool IsValidSources(BuqiSupplySource sources)

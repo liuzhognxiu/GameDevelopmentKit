@@ -8,7 +8,7 @@ namespace Game.Hot.Buqi.Tests
 {
     public static class BuqiSupplyTestSuite
     {
-        private const int ContractCount = 10;
+        private const int ContractCount = 11;
         private const int MonteCarloSeedCount = 10000;
         private const int BenchmarkAcquisitionBps = 8000;
 
@@ -18,6 +18,7 @@ namespace Game.Hot.Buqi.Tests
             Run("filter-contract", FilterContract, failures);
             Run("catalog-projection-contract", CatalogProjectionContract, failures);
             Run("channel-integration-contract", ChannelIntegrationContract, failures);
+            Run("infinite-day-schedule-contract", InfiniteDayScheduleContract, failures);
             Run("deterministic-four-slot-contract", DeterministicFourSlotContract, failures);
             Run("affinity-memory-contract", AffinityMemoryContract, failures);
             Run("bounded-soft-pity-contract", BoundedSoftPityContract, failures);
@@ -145,13 +146,19 @@ namespace Game.Hot.Buqi.Tests
                     request.AllowedArchetypeIds.SequenceEqual(new[] { "fast", "buffer" }) &&
                     request.AllowedRoles.SequenceEqual(profile.AllowedRoles),
                 "Merchant filters did not cross the narrow integration boundary.");
-            Require(!BuqiSupplyIntegration.TryCreateRequest(
-                    BuqiRunRules.RunDayCount + 1, profile, "fast", out _, out _),
-                "Supply requests outside the nine-Day run must fail closed.");
+            profile.RetireDay = BuqiRunRules.ContentScheduleDayCount;
+            Require(BuqiSupplyIntegration.TryCreateRequest(
+                    BuqiRunRules.ContentScheduleDayCount + 1,
+                    profile,
+                    "fast",
+                    out BuqiSupplyRequest infiniteRequest,
+                    out error), error);
+            Require(infiniteRequest.Day == BuqiRunRules.ContentScheduleDayCount + 1,
+                "Supply requests must preserve the real run Day after the authored schedule ends.");
 
             profile.Source = BuqiSupplySource.Pve;
             profile.UnlockDay = 1;
-            profile.RetireDay = BuqiRunRules.RunDayCount;
+            profile.RetireDay = BuqiRunRules.ContentScheduleDayCount;
             profile.CandidateCount = 2;
             Require(!BuqiSupplyIntegration.TryCreateRequest(
                     6, profile, "buffer", out _, out _),
@@ -189,6 +196,27 @@ namespace Game.Hot.Buqi.Tests
             Require(BuqiSupplyIntegration.GetOfferDefinitionIds(shelf)
                     .SequenceEqual(new[] { "W8-003", "W8-007" }),
                 "Supply offers must bridge to formal encounter CandidateIds in order.");
+        }
+
+        private static void InfiniteDayScheduleContract()
+        {
+            var service = new BuqiSupplyService(CreateGeneralCatalog());
+            var request = new BuqiSupplyRequest
+            {
+                Day = BuqiRunRules.ContentScheduleDayCount + 1,
+                Source = BuqiSupplySource.Merchant,
+                MerchantPoolId = "general",
+                PreferredArchetypeId = "fast",
+            };
+
+            Require(service.TryGenerate(
+                request,
+                BuqiSupplyState.CreateInitial(99173L),
+                0,
+                out BuqiSupplyShelf shelf,
+                out string error), error);
+            Require(shelf.Day == request.Day && shelf.Offers.Count == BuqiSupplyService.MerchantSlotCount,
+                "Post-schedule supply must reuse the final content pool while preserving the real run Day.");
         }
 
         private static void DeterministicFourSlotContract()

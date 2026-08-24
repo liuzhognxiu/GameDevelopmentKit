@@ -76,12 +76,20 @@ namespace Game.Hot.Editor
             frozenMarker.transform.SetAsLastSibling();
             frozenMarker.SetActive(false);
 
+            GameObject detailPanel = CreatePanel(root.transform, "DetailPanel", new Vector2(0f, 188f), new Vector2(260f, 132f), new Color32(15, 20, 24, 248));
+            Text detailText = CreateText(detailPanel.transform, "Detail_Text", string.Empty, 13, TextAnchor.UpperLeft, inkColor);
+            Stretch(detailText.rectTransform, new Vector2(10f, 8f), new Vector2(-10f, -8f));
+            detailText.horizontalOverflow = HorizontalWrapMode.Wrap;
+            detailPanel.SetActive(false);
+
             Assign(widget, "m_Background", background);
             Assign(widget, "m_CooldownFill", cooldownFill);
             Assign(widget, "m_NameText", name);
             Assign(widget, "m_EffectText", effect);
             Assign(widget, "m_StatusText", status);
             Assign(widget, "m_FrozenMarker", frozenMarker);
+            Assign(widget, "m_DetailPanel", detailPanel);
+            Assign(widget, "m_DetailText", detailText);
             SavePrefab(root, ItemCardPath);
         }
 
@@ -124,23 +132,23 @@ namespace Game.Hot.Editor
             SetRect(outcome.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(150f, 0f), new Vector2(260f, 42f));
 
             GameObject arena = CreatePanel(root.transform, "Arena", new Vector2(-220f, 8f), new Vector2(1430f, 820f), new Color32(24, 31, 36, 255));
-            Text leftName = CreateText(arena.transform, "LeftName_Text", "左侧构筑", 23, TextAnchor.MiddleLeft, inkColor);
-            SetRect(leftName.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(180f, -42f), new Vector2(330f, 38f));
+            Text leftName = CreateText(arena.transform, "LeftName_Text", "玩家构筑", 23, TextAnchor.MiddleLeft, inkColor);
+            SetRect(leftName.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(180f, -55f), new Vector2(330f, 38f));
             Text leftStats = CreateText(arena.transform, "LeftStats_Text", "生命值 --  护盾 --  过载 --", 17, TextAnchor.MiddleRight, mutedColor);
-            SetRect(leftStats.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-330f, -42f), new Vector2(620f, 38f));
+            SetRect(leftStats.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-330f, -55f), new Vector2(620f, 38f));
 
-            Text rightName = CreateText(arena.transform, "RightName_Text", "右侧构筑", 23, TextAnchor.MiddleLeft, inkColor);
-            SetRect(rightName.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(180f, -55f), new Vector2(330f, 38f));
+            Text rightName = CreateText(arena.transform, "RightName_Text", "敌方构筑", 23, TextAnchor.MiddleLeft, inkColor);
+            SetRect(rightName.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(180f, -42f), new Vector2(330f, 38f));
             Text rightStats = CreateText(arena.transform, "RightStats_Text", "生命值 --  护盾 --  过载 --", 17, TextAnchor.MiddleRight, mutedColor);
-            SetRect(rightStats.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-330f, -55f), new Vector2(620f, 38f));
+            SetRect(rightStats.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-330f, -42f), new Vector2(620f, 38f));
 
             var leftCards = new List<ItemCardWidget>(8);
             var rightCards = new List<ItemCardWidget>(8);
             for (int slot = 0; slot < 8; slot++)
             {
                 float x = -567f + slot * 162f;
-                leftCards.Add(AddItemCard(itemPrefab, arena.transform, string.Format("Slot{0:00}_Left", slot + 1), new Vector2(x, 235f)));
-                rightCards.Add(AddItemCard(itemPrefab, arena.transform, string.Format("Slot{0:00}_Right", slot + 1), new Vector2(x, -180f)));
+                leftCards.Add(AddItemCard(itemPrefab, arena.transform, string.Format("Slot{0:00}_Left", slot + 1), new Vector2(x, -180f)));
+                rightCards.Add(AddItemCard(itemPrefab, arena.transform, string.Format("Slot{0:00}_Right", slot + 1), new Vector2(x, 235f)));
             }
 
             Text currentEvent = CreateText(arena.transform, "CurrentEvent_Text", "尚无事件", 20, TextAnchor.MiddleCenter, accentColor);

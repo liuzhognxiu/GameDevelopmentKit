@@ -202,6 +202,12 @@ namespace Game.Hot.Buqi.DemoUI
         public int Coins;
         public int Wins;
         public int Lives;
+        public int LifePool;
+        public int HeroId;
+        public int Cultivation;
+        public int Realm;
+        public bool InTribulationTrial;
+        public bool HeartTrialUsed;
         public int Round;
         public int DaoSeals;
         public int TribulationOmen;

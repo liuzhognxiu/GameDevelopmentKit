@@ -1961,10 +1961,16 @@ namespace Game.Hot.Buqi.Run.Integration
 
         private bool TryRecoverIncompatibleSave(out string error)
         {
+            if (!m_Store.TryDelete(out _))
+            {
+                error = "旧存档与当前版本不兼容，但删除旧存档失败。";
+                return false;
+            }
+
             if (TryStartNewRun(out error))
                 return true;
 
-            error = "旧存档与当前版本不兼容，但创建新游戏失败；原存档已保留。";
+            error = "旧存档已舍弃，但创建新游戏失败，请检查存储空间和文件权限。";
             return false;
         }
 

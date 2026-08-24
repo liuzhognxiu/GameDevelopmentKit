@@ -377,7 +377,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(freshSave.ContentVersion, Is.EqualTo("test-content-v1"));
             Assert.That(freshSave.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
             Assert.That(freshSave.PendingSettlement, Is.Null);
-            Assert.That(store.Deletes, Is.EqualTo(0));
+            Assert.That(store.Deletes, Is.EqualTo(1));
             Assert.That(reloaded.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.NextPhase,
@@ -412,7 +412,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
             Assert.That(ReadSave(store).SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
             Assert.That(ReadSave(store).RunSeed, Is.EqualTo(1L));
-            Assert.That(store.Deletes, Is.EqualTo(0));
+            Assert.That(store.Deletes, Is.EqualTo(1));
         }
 
         [Test]
@@ -443,14 +443,12 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void TryCreate_SupportedV3SaveMigratesAndKeepsRunIdentity()
+        public void TryCreate_PreviousV4SaveIsDiscardedAndReplaced()
         {
             BuqiUIDemoCatalog catalog = CreateCatalog();
             var store = new MemoryRunStore();
             CreateController(store);
             BuqiRunSaveData save = ReadSave(store);
-            long runSeed = save.RunSeed;
-            string starterId = save.BoardInstanceIds.Single(id => !string.IsNullOrEmpty(id));
             save.SaveVersion = BuqiRunSaveData.PreviousSaveVersion;
             save.RuleVersion = BuqiRunState.PreviousRuleVersion;
             store.SetJson(BuqiRunSaveCodec.ToJson(save));
@@ -464,11 +462,12 @@ namespace Game.Hot.Buqi.Tests
                 Is.True,
                 error);
 
-            BuqiRunSaveData migrated = ReadSave(store);
+            BuqiRunSaveData replacement = ReadSave(store);
             Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
-            Assert.That(migrated.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
-            Assert.That(migrated.RunSeed, Is.EqualTo(runSeed));
-            Assert.That(migrated.BoardInstanceIds, Does.Contain(starterId));
+            Assert.That(replacement.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
+            Assert.That(replacement.RuleVersion, Is.EqualTo(BuqiRunState.CurrentRuleVersion));
+            Assert.That(replacement.BoardInstanceIds, Has.Count.EqualTo(BuqiRunRules.BoardSlotCount));
+            Assert.That(store.Deletes, Is.EqualTo(1));
         }
 
         [Test]
@@ -496,7 +495,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void TryCreate_ContentReplacementWriteFailurePreservesOldSave()
+        public void TryCreate_ContentReplacementWriteFailureLeavesDiscardedSaveDeleted()
         {
             BuqiUIDemoCatalog catalog = CreateCatalog();
             var store = new MemoryRunStore();
@@ -516,8 +515,9 @@ namespace Game.Hot.Buqi.Tests
                 Is.False);
 
             Assert.That(reloaded, Is.Null);
-            Assert.That(error, Does.Contain("旧存档"));
-            Assert.That(store.CurrentJson, Is.EqualTo(originalJson));
+            Assert.That(error, Does.Contain("已舍弃"));
+            Assert.That(store.CurrentJson, Is.Null);
+            Assert.That(store.Deletes, Is.EqualTo(1));
         }
 
         [Test]

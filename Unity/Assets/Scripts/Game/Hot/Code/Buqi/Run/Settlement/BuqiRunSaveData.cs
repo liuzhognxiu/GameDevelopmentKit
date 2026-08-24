@@ -13,8 +13,9 @@ namespace Game.Hot.Buqi.Run.Settlement
     public sealed class BuqiRunSaveData
     {
         public const string LegacySaveVersion = "buqi-run-save-v2";
-        public const string PreviousSaveVersion = "buqi-run-save-v3";
-        public const string CurrentSaveVersion = "buqi-run-save-v4";
+        public const string OlderSaveVersion = "buqi-run-save-v3";
+        public const string PreviousSaveVersion = "buqi-run-save-v4";
+        public const string CurrentSaveVersion = "buqi-run-save-v5";
 
         public string SaveVersion = CurrentSaveVersion;
         public string ContentVersion = string.Empty;
@@ -27,11 +28,16 @@ namespace Game.Hot.Buqi.Run.Settlement
         public int Period;
         public int Phase;
         public int Outcome;
+        public int HeroId;
         public int Coins;
         public int Wins;
         public int DaoSeals;
         public int CurrentOmen;
-        public int Lives;
+        public int Cultivation;
+        public int Realm;
+        public int LifePool;
+        public bool InTribulationTrial;
+        public bool HeartTrialUsed;
         public int TribulationRoute;
         public int TribulationDaoSealsSpent;
         public int TribulationStage;

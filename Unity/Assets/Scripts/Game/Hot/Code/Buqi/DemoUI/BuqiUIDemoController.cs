@@ -200,7 +200,13 @@ namespace Game.Hot.Buqi.DemoUI
                 Period = state.Economy.Run.Period,
                 Coins = state.Economy.Run.Coins,
                 Wins = state.Economy.Run.Wins,
-                Lives = state.Economy.Run.Lives,
+                Lives = state.Economy.Run.LifePool,
+                LifePool = state.Economy.Run.LifePool,
+                HeroId = state.Economy.Run.HeroId,
+                Cultivation = state.Economy.Run.Cultivation,
+                Realm = state.Economy.Run.Realm,
+                InTribulationTrial = state.Economy.Run.InTribulationTrial,
+                HeartTrialUsed = state.Economy.Run.HeartTrialUsed,
                 Round = state.Economy.Run.Day,
                 DaoSeals = state.Economy.Run.DaoSeals,
                 TribulationOmen = state.Economy.Run.CurrentOmen,
@@ -551,10 +557,10 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoPhase.BattleSummary:
                     return state.Battle == null || state.Battle.Kind == Game.Hot.Buqi.Run.Core.BuqiRunBattleKind.Pve
                         ? (state.LastRawOutcome == BuqiRunRawBattleOutcome.Draw
-                            ? "电脑对战结果为平局，本局按玩家胜利结算。"
+                            ? "电脑对战结果为平局，不累计胜场。"
                             : "电脑对战回放与战斗记录总结。")
                         : (state.LastRawOutcome == BuqiRunRawBattleOutcome.Draw
-                            ? "异步对战结果为平局，本局按玩家胜利结算。"
+                            ? "异步对战结果为平局，不累计胜场。"
                             : "异步对战回放与战斗记录总结。");
                 case BuqiUIDemoPhase.RoundSettlement:
                     return BuqiText.Format(

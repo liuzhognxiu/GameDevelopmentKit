@@ -83,6 +83,10 @@ namespace Game.Hot.Buqi.Tests
             state.RunSeed = 9001L;
             state.RngCursor = 13;
             state.Day = 5;
+            state.HeroId = 2;
+            state.Cultivation = 44;
+            state.Realm = 4;
+            state.HeartTrialUsed = true;
             state.Coins = 27;
             state.BoardInstanceIds = CreateSlots("board-a", "board-b");
             state.StorageInstanceIds = CreateSlots("storage-a", "storage-b", "storage-c");
@@ -146,8 +150,8 @@ namespace Game.Hot.Buqi.Tests
             state.EncounterIndex = BuqiRunRules.OperationsPerDay;
             state.Period = BuqiRunPeriod.NightPvp;
             state.Phase = BuqiRunPhase.TribulationStage;
-            state.Wins = 11;
-            state.DaoSeals = 8;
+            state.Wins = BuqiRunRules.WinsToVictory - 1;
+            state.DaoSeals = state.Wins - 3;
             state.CurrentOmen = 1;
             state.TribulationRoute = BuqiTribulationRoute.QuestionHeart;
             state.TribulationDaoSealsSpent = 3;
@@ -168,65 +172,49 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void BuqiNineDay_TryFromJsonMigratesSupportedV2NightSaveAndRejectsUnknownVersion()
+        public void TryFromJson_RejectsEveryPreV5SaveVersion()
         {
-            BuqiRunState legacyState = CreateBattleState(BuqiRunPhase.PvpBattle, revision: 6, wins: 4, lives: 2);
-            legacyState.Day = 5;
-            BuqiRunSaveData legacy = BuqiRunSaveCodec.FromState(legacyState);
-            legacy.SaveVersion = "buqi-run-save-v2";
-            legacy.RuleVersion = "buqi-day-run-rule-v1";
-            legacy.EncounterIndex = 3;
+            foreach (string version in new[]
+                     {
+                         BuqiRunSaveData.LegacySaveVersion,
+                         BuqiRunSaveData.OlderSaveVersion,
+                         BuqiRunSaveData.PreviousSaveVersion,
+                         "buqi-run-save-v0",
+                     })
+            {
+                BuqiRunSaveData old = BuqiRunSaveCodec.FromState(
+                    BuqiRunState.CreateInitial(702L, "content-2026-08-07"));
+                old.SaveVersion = version;
 
-            Assert.That(
-                BuqiRunSaveCodec.TryFromJson(
-                    BuqiRunSaveCodec.ToJson(legacy),
-                    out BuqiRunSaveData migrated,
-                    out string migrationError),
-                Is.True,
-                migrationError);
-            Assert.That(migrated.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
-            Assert.That(migrated.RuleVersion, Is.EqualTo(BuqiRunState.CurrentRuleVersion));
-            Assert.That(BuqiRunSaveCodec.TryToState(migrated, out BuqiRunState state, out string stateError), Is.True, stateError);
-            Assert.That(state.EncounterIndex, Is.EqualTo(BuqiRunRules.OperationsPerDay));
-            Assert.That(state.Period, Is.EqualTo(BuqiRunPeriod.NightPvp));
-            Assert.That(state.DaoSeals, Is.EqualTo(4));
-            Assert.That(state.CurrentOmen, Is.EqualTo(1));
-
-            legacy.PendingSettlement = CreatePendingSettlement(
-                "legacy-pending",
-                legacy.Revision,
-                BuqiRunBattleKind.Pvp,
-                BuqiRunRawBattleOutcome.PlayerWin,
-                "legacy-pending-hash");
-            string rawLegacyPendingJson = BuqiRunSaveCodec.ToJson(legacy)
-                .Replace("\"HasPendingSettlement\":false,", string.Empty);
-            Assert.That(rawLegacyPendingJson, Does.Not.Contain("HasPendingSettlement"));
-            Assert.That(
-                BuqiRunSaveCodec.TryFromJson(rawLegacyPendingJson, out BuqiRunSaveData pendingMigration, out _),
-                Is.True);
-            Assert.That(pendingMigration.HasPendingSettlement, Is.True);
-            Assert.That(pendingMigration.PendingSettlement, Is.Not.Null);
-
-            legacy.HasPendingSettlement = false;
-            legacy.PendingSettlement = null;
-            legacy.Wins = 9;
-            Assert.That(BuqiRunSaveCodec.TryFromJson(BuqiRunSaveCodec.ToJson(legacy), out _, out _), Is.False);
-
-            legacy.SaveVersion = "buqi-run-save-v0";
-            Assert.That(BuqiRunSaveCodec.TryFromJson(BuqiRunSaveCodec.ToJson(legacy), out _, out _), Is.False);
+                Assert.That(
+                    BuqiRunSaveCodec.TryFromJson(
+                        BuqiRunSaveCodec.ToJson(old),
+                        out _,
+                        out _,
+                        out BuqiRunSaveFailureKind failureKind),
+                    Is.False,
+                    version);
+                Assert.That(failureKind, Is.EqualTo(BuqiRunSaveFailureKind.UnsupportedVersion), version);
+            }
         }
 
         [Test]
-        public void BuqiNineDay_TryToStateRejectsImpossibleSealAndOmenRelationships()
+        public void TryToStateRejectsImpossibleSealRealmAndHeartTrialRelationships()
         {
             BuqiRunState state = CreateBattleState(BuqiRunPhase.PveBattle, revision: 2, wins: 4, lives: 2);
             BuqiRunSaveData impossibleSeals = BuqiRunSaveCodec.FromState(state);
             impossibleSeals.DaoSeals--;
             AssertRejected(impossibleSeals);
 
-            BuqiRunSaveData impossibleOmen = BuqiRunSaveCodec.FromState(state);
-            impossibleOmen.CurrentOmen--;
-            AssertRejected(impossibleOmen);
+            BuqiRunSaveData impossibleRealm = BuqiRunSaveCodec.FromState(state);
+            impossibleRealm.Realm = 1;
+            AssertRejected(impossibleRealm);
+
+            BuqiRunSaveData impossibleHeartTrial = BuqiRunSaveCodec.FromState(state);
+            impossibleHeartTrial.LifePool = 0;
+            impossibleHeartTrial.InTribulationTrial = true;
+            impossibleHeartTrial.HeartTrialUsed = false;
+            AssertRejected(impossibleHeartTrial);
         }
 
         [Test]
@@ -381,8 +369,10 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(result.Success, Is.True, result.FailureReason);
             Assert.That(observedPendingBeforeCore, Is.True);
-            Assert.That(result.State.Wins, Is.EqualTo(3));
-            Assert.That(result.State.Phase, Is.EqualTo(BuqiRunPhase.PvpBattle));
+            Assert.That(result.State.Wins, Is.EqualTo(2));
+            Assert.That(result.State.Cultivation, Is.EqualTo(3));
+            Assert.That(result.State.Phase, Is.EqualTo(BuqiRunPhase.Encounter));
+            Assert.That(result.State.Period, Is.EqualTo(BuqiRunPeriod.Hour4Operation));
             Assert.That(result.Summary.TopSourceInstanceId, Is.EqualTo("source-x"));
             Assert.That(store.Writes, Has.Count.EqualTo(2));
             Assert.That(
@@ -455,7 +445,8 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(resumed.Success, Is.True, resumed.FailureReason);
             Assert.That(resumed.Replayed, Is.False);
-            Assert.That(resumed.State.Wins, Is.EqualTo(1));
+            Assert.That(resumed.State.Wins, Is.Zero);
+            Assert.That(resumed.State.Cultivation, Is.EqualTo(3));
             Assert.That(resumed.State.AppliedSettlementIds, Does.Contain("settle-resume"));
             Assert.That(
                 BuqiRunSaveCodec.TryFromJson(store.CurrentJson, out BuqiRunSaveData finalSave, out string finalError),
@@ -468,11 +459,11 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(secondResume.Success, Is.False);
             Assert.That(secondResume.FailureReason, Does.Contain("No pending settlement"));
-            Assert.That(resumed.State.Wins, Is.EqualTo(1));
+            Assert.That(resumed.State.Wins, Is.Zero);
         }
 
         [Test]
-        public void Coordinator_PreservesDrawOutcomeInSummaryAndPayloadButAwardsPlayerWinInCore()
+        public void Coordinator_PreservesDrawOutcomeWithoutAwardingPvpProgress()
         {
             var store = new SpyRunStore();
             BuqiRunState state = CreateBattleState(BuqiRunPhase.PveBattle, revision: 2, wins: 7, lives: 3);
@@ -490,8 +481,9 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(result.Success, Is.True, result.FailureReason);
             Assert.That(result.RawOutcome, Is.EqualTo(BuqiRunRawBattleOutcome.Draw));
             Assert.That(result.Summary.RawOutcome, Is.EqualTo(BattleOutcome.Draw));
-            Assert.That(result.State.Wins, Is.EqualTo(8));
-            Assert.That(result.State.Phase, Is.EqualTo(BuqiRunPhase.PvpBattle));
+            Assert.That(result.State.Wins, Is.EqualTo(7));
+            Assert.That(result.State.Cultivation, Is.EqualTo(1));
+            Assert.That(result.State.Phase, Is.EqualTo(BuqiRunPhase.Encounter));
             Assert.That(
                 BuqiRunSaveCodec.TryFromJson(store.CurrentJson, out BuqiRunSaveData save, out string error),
                 Is.True,
@@ -618,6 +610,8 @@ namespace Game.Hot.Buqi.Tests
             state.EncounterIndex = BuqiRunRules.OperationsPerDay;
             state.Period = BuqiRunPeriod.NightPvp;
             state.Phase = BuqiRunPhase.TribulationRoute;
+            state.Wins = BuqiRunRules.WinsToVictory - 1;
+            state.DaoSeals = state.Wins;
             var controller = new BuqiRunController(state);
             Assert.That(controller.SelectTribulationRoute(
                 "route", 0, BuqiTribulationRoute.ShatterArtifact, 0).Success, Is.True);
@@ -663,11 +657,16 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(actual.Period, Is.EqualTo(expected.Period));
             Assert.That(actual.Phase, Is.EqualTo(expected.Phase));
             Assert.That(actual.Outcome, Is.EqualTo(expected.Outcome));
+            Assert.That(actual.HeroId, Is.EqualTo(expected.HeroId));
             Assert.That(actual.Coins, Is.EqualTo(expected.Coins));
             Assert.That(actual.Wins, Is.EqualTo(expected.Wins));
             Assert.That(actual.DaoSeals, Is.EqualTo(expected.DaoSeals));
             Assert.That(actual.CurrentOmen, Is.EqualTo(expected.CurrentOmen));
-            Assert.That(actual.Lives, Is.EqualTo(expected.Lives));
+            Assert.That(actual.Cultivation, Is.EqualTo(expected.Cultivation));
+            Assert.That(actual.Realm, Is.EqualTo(expected.Realm));
+            Assert.That(actual.LifePool, Is.EqualTo(expected.LifePool));
+            Assert.That(actual.InTribulationTrial, Is.EqualTo(expected.InTribulationTrial));
+            Assert.That(actual.HeartTrialUsed, Is.EqualTo(expected.HeartTrialUsed));
             Assert.That(actual.TribulationRoute, Is.EqualTo(expected.TribulationRoute));
             Assert.That(actual.TribulationDaoSealsSpent, Is.EqualTo(expected.TribulationDaoSealsSpent));
             Assert.That(actual.TribulationStage, Is.EqualTo(expected.TribulationStage));
@@ -797,7 +796,11 @@ namespace Game.Hot.Buqi.Tests
             state.RngCursor = 11;
             state.Revision = revision;
             state.Day = 3;
-            state.EncounterIndex = phase == BuqiRunPhase.Encounter ? 0 : BuqiRunRules.EncountersPerDay;
+            state.EncounterIndex = phase == BuqiRunPhase.Encounter
+                ? 0
+                : phase == BuqiRunPhase.PveBattle
+                    ? BuqiRunRules.OperationsBeforePve
+                    : BuqiRunRules.OperationsPerDay;
             state.Period = phase == BuqiRunPhase.Encounter
                 ? BuqiRunPeriod.MorningOperation
                 : phase == BuqiRunPhase.PveBattle
@@ -808,7 +811,7 @@ namespace Game.Hot.Buqi.Tests
             state.Coins = 18;
             state.Wins = wins;
             state.DaoSeals = wins;
-            state.CurrentOmen = Math.Max(0, BuqiRunRules.StartingLives - lives);
+            state.CurrentOmen = lives < BuqiRunRules.StartingLifePool ? 1 : 0;
             state.Lives = lives;
             state.BoardInstanceIds = CreateSlots("board-main");
             state.StorageInstanceIds = CreateSlots("storage-main");

@@ -398,8 +398,8 @@ namespace Game.Hot.Buqi.UI
         private void RenderResources(BuqiUIDemoView view)
         {
             RenderChip(0, "金币", view.Coins.ToString(), "+", ResourceChipState.Normal);
-            RenderChip(1, "回合", GameFramework.Utility.Text.Format("{0}/9", view.Round), "日", ResourceChipState.Normal);
-            RenderChip(2, "生命", GameFramework.Utility.Text.Format("{0}/3", view.Lives), "命", view.Lives <= 1 ? ResourceChipState.Warning : ResourceChipState.Normal);
+            RenderChip(1, "天数", view.Round.ToString(), "日", ResourceChipState.Normal);
+            RenderChip(2, "生命", GameFramework.Utility.Text.Format("{0}/{1}", view.LifePool, BuqiRunRules.StartingLifePool), "命", view.LifePool <= view.Round ? ResourceChipState.Warning : ResourceChipState.Normal);
             RenderChip(3, "结算点/强度", GameFramework.Utility.Text.Format("{0}/{1}", view.DaoSeals, view.TribulationOmen), "点", ResourceChipState.Normal);
         }
 

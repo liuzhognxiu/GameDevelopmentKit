@@ -4,8 +4,8 @@ namespace Game.Hot.Buqi.Run.Core
 {
     public sealed class BuqiRunState
     {
-        public const string PreviousRuleVersion = "buqi-nine-day-run-rule-v2";
-        public const string CurrentRuleVersion = "buqi-nine-day-run-rule-v3";
+        public const string PreviousRuleVersion = "buqi-nine-day-run-rule-v3";
+        public const string CurrentRuleVersion = "buqi-infinite-run-rule-v1";
 
         public string ContentVersion = string.Empty;
         public string RuleVersion = CurrentRuleVersion;
@@ -26,6 +26,7 @@ namespace Game.Hot.Buqi.Run.Core
         public int Realm;
         public int LifePool;
         public bool InTribulationTrial;
+        public bool HeartTrialUsed;
         public int Lives
         {
             get => LifePool;
@@ -60,6 +61,7 @@ namespace Game.Hot.Buqi.Run.Core
                 Realm = 0,
                 LifePool = BuqiRunRules.StartingLifePool,
                 InTribulationTrial = false,
+                HeartTrialUsed = false,
                 TribulationRoute = BuqiTribulationRoute.None,
                 TribulationDaoSealsSpent = 0,
                 TribulationStage = 0,
@@ -92,6 +94,7 @@ namespace Game.Hot.Buqi.Run.Core
                 Realm = Realm,
                 LifePool = LifePool,
                 InTribulationTrial = InTribulationTrial,
+                HeartTrialUsed = HeartTrialUsed,
                 TribulationRoute = TribulationRoute,
                 TribulationDaoSealsSpent = TribulationDaoSealsSpent,
                 TribulationStage = TribulationStage,

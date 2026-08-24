@@ -730,11 +730,16 @@ namespace Game.Hot.Buqi.Run.Encounter
                    left.Period == right.Period &&
                    left.Phase == right.Phase &&
                    left.Outcome == right.Outcome &&
+                   left.HeroId == right.HeroId &&
                    left.Coins == right.Coins &&
                    left.Wins == right.Wins &&
                    left.DaoSeals == right.DaoSeals &&
                    left.CurrentOmen == right.CurrentOmen &&
-                   left.Lives == right.Lives &&
+                   left.Cultivation == right.Cultivation &&
+                   left.Realm == right.Realm &&
+                   left.LifePool == right.LifePool &&
+                   left.InTribulationTrial == right.InTribulationTrial &&
+                   left.HeartTrialUsed == right.HeartTrialUsed &&
                    left.TribulationRoute == right.TribulationRoute &&
                    left.TribulationDaoSealsSpent == right.TribulationDaoSealsSpent &&
                    left.TribulationStage == right.TribulationStage &&

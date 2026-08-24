@@ -134,8 +134,17 @@ namespace Game.Hot.Buqi.Run.Core
             {
                 next.LifePool = Math.Max(0, next.LifePool - next.Day);
                 next.CurrentOmen = Math.Min(BuqiRunRules.MaxOmen, next.CurrentOmen + 1);
-                next.InTribulationTrial = next.LifePool == 0;
-                StartNextDay(next);
+                if (next.LifePool == 0 && next.HeartTrialUsed)
+                {
+                    next.Outcome = BuqiRunOutcome.Defeat;
+                    next.Phase = BuqiRunPhase.RunTerminal;
+                }
+                else
+                {
+                    next.InTribulationTrial = next.LifePool == 0;
+                    next.HeartTrialUsed |= next.InTribulationTrial;
+                    StartNextDay(next);
+                }
             }
             else if (isPvpWin)
             {

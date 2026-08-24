@@ -53,6 +53,7 @@ namespace Game.Hot.Buqi.Run.Encounter
         public bool Affordable;
         public bool HasEligibleTarget;
         public bool Available;
+        public List<string> CandidateInstanceIds = new List<string>();
     }
 
     public sealed class BuqiRunOperationView
@@ -291,7 +292,10 @@ namespace Game.Hot.Buqi.Run.Encounter
                                       definition.Kind == BuqiRunTrainingKind.DirectedStrengthening;
                 bool eligible = IsEligible(definition.Eligibility, source);
                 bool affordable = CanPay(source, definition);
-                bool hasTarget = !requiresTarget || HasEligibleTarget(source, definition);
+                List<string> targetIds = requiresTarget
+                    ? GetEligibleTargetIds(source, definition)
+                    : new List<string>();
+                bool hasTarget = !requiresTarget || targetIds.Count > 0;
                 bool available = eligible && affordable && hasTarget &&
                                  CanExecuteTraining(source, definition, requiresTarget);
                 target.Add(new BuqiRunOperationTrainingOffer
@@ -307,6 +311,7 @@ namespace Game.Hot.Buqi.Run.Encounter
                     Affordable = affordable,
                     HasEligibleTarget = hasTarget,
                     Available = available,
+                    CandidateInstanceIds = targetIds,
                 });
             }
         }
@@ -545,10 +550,11 @@ namespace Game.Hot.Buqi.Run.Encounter
             return true;
         }
 
-        private bool HasEligibleTarget(
+        private List<string> GetEligibleTargetIds(
             BuqiRunEventRuntimeState state,
             BuqiRunTrainingDefinition definition)
         {
+            var result = new List<string>();
             foreach (BuqiRunItemInstance item in state.Economy.Items.Values)
             {
                 if (!string.IsNullOrWhiteSpace(definition.RequiredBuildTag) &&
@@ -561,7 +567,7 @@ namespace Game.Hot.Buqi.Run.Encounter
                 {
                     long quality = (long)item.Quality + definition.QualitySteps;
                     if (quality <= (int)BuqiRunItemQuality.Finalized)
-                        return true;
+                        result.Add(item.InstanceId);
                     continue;
                 }
 
@@ -572,10 +578,11 @@ namespace Game.Hot.Buqi.Run.Encounter
                     continue;
                 }
 
-                return true;
+                result.Add(item.InstanceId);
             }
 
-            return false;
+            result.Sort(StringComparer.Ordinal);
+            return result;
         }
 
         private bool HasOwnedBuildTag(BuqiRunEventRuntimeState state, string buildTag)

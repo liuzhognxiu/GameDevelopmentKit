@@ -94,6 +94,24 @@ namespace Game.Hot.Buqi.DemoUI
             if (command == null)
                 return Rejected("操作指令不可用。"  );
 
+            if (View.IsPaused &&
+                command.Type != BuqiUIDemoCommandType.ResumeRun &&
+                command.Type != BuqiUIDemoCommandType.ExitRun &&
+                command.Type != BuqiUIDemoCommandType.Restart)
+            {
+                return Rejected("Run is paused.");
+            }
+            if (View.BattleResultVisible &&
+                command.Type != BuqiUIDemoCommandType.ContinueBattleResult &&
+                command.Type != BuqiUIDemoCommandType.NextPhase &&
+                command.Type != BuqiUIDemoCommandType.PauseRun &&
+                command.Type != BuqiUIDemoCommandType.ResumeRun &&
+                command.Type != BuqiUIDemoCommandType.ExitRun &&
+                command.Type != BuqiUIDemoCommandType.Restart)
+            {
+                return Rejected("Battle result must be continued before other actions.");
+            }
+
             switch (command.Type)
             {
                 case BuqiUIDemoCommandType.OpenDragDeploy:
@@ -129,7 +147,7 @@ namespace Game.Hot.Buqi.DemoUI
                     return Accepted();
 
                 case BuqiUIDemoCommandType.SelectChoice:
-                    if (!m_Orchestrator.TryResolveEvent(command.PrimaryId, out string eventError))
+                    if (!m_Orchestrator.TryResolveEvent(command.PrimaryId, command.SecondaryId, out string eventError))
                         return Rejected(eventError);
                     RefreshView();
                     return Accepted();
@@ -160,6 +178,54 @@ namespace Game.Hot.Buqi.DemoUI
                     RefreshView();
                     return Accepted();
 
+                case BuqiUIDemoCommandType.SelectRouteNode:
+                    if (!m_Orchestrator.TrySelectRouteNode(command.PrimaryId, out string nodeError))
+                        return Rejected(nodeError);
+                    RefreshView();
+                    return Accepted();
+
+                case BuqiUIDemoCommandType.ExecuteTraining:
+                    if (!m_Orchestrator.TryExecuteTraining(command.PrimaryId, command.SecondaryId, out string trainingError))
+                        return Rejected(trainingError);
+                    RefreshView();
+                    return Accepted();
+
+                case BuqiUIDemoCommandType.PreviewReward:
+                    if (!m_Orchestrator.TryPreviewReward(command.PrimaryId, out string previewError))
+                        return Rejected(previewError);
+                    RefreshView();
+                    return Accepted();
+
+                case BuqiUIDemoCommandType.ClaimReward:
+                    if (!m_Orchestrator.TryClaimReward(command.SecondaryId, out string claimError))
+                        return Rejected(claimError);
+                    RefreshView();
+                    return Accepted();
+
+                case BuqiUIDemoCommandType.ContinueBattleResult:
+                    if (!m_Orchestrator.TryAdvance(out string battleContinueError))
+                        return Rejected(battleContinueError);
+                    RefreshView();
+                    return Accepted();
+
+                case BuqiUIDemoCommandType.PauseRun:
+                    if (!m_Orchestrator.TrySetPaused(true, out string pauseError))
+                        return Rejected(pauseError);
+                    RefreshView();
+                    return Accepted();
+
+                case BuqiUIDemoCommandType.ResumeRun:
+                    if (!m_Orchestrator.TrySetPaused(false, out string resumeError))
+                        return Rejected(resumeError);
+                    RefreshView();
+                    return Accepted();
+
+                case BuqiUIDemoCommandType.ExitRun:
+                    if (!m_Orchestrator.TryExit(out string exitError))
+                        return Rejected(exitError);
+                    RefreshView();
+                    return Accepted();
+
                 case BuqiUIDemoCommandType.ApplyDeployment:
                     if (!m_Orchestrator.TryApplyDeployment(command.Deployment, out string deploymentError))
                         return Rejected(deploymentError);
@@ -182,6 +248,7 @@ namespace Game.Hot.Buqi.DemoUI
             return phase == BuqiUIDemoPhase.OperationChoice
                 || phase == BuqiUIDemoPhase.Shop
                 || phase == BuqiUIDemoPhase.Event
+                || phase == BuqiUIDemoPhase.Training
                 || phase == BuqiUIDemoPhase.PveSelection
                 || phase == BuqiUIDemoPhase.TribulationRoute
                 || phase == BuqiUIDemoPhase.TribulationStage;
@@ -207,7 +274,9 @@ namespace Game.Hot.Buqi.DemoUI
                 TribulationStage = state.Economy.Run.TribulationStage,
                 ContextTitle = BuildTitle(state, phase),
                 ContextBody = BuildBody(state, phase),
-                PrimaryCommandLabel = BuildPrimaryLabel(phase),
+                PrimaryCommandLabel = phase == BuqiUIDemoPhase.RewardSelection && state.Reward?.Claimed == true
+                    ? "继续"
+                    : BuildPrimaryLabel(phase),
                 SecondaryCommandLabel = string.Empty,
                 VisitedPhases = new List<BuqiUIDemoPhase>(state.VisitedPhases),
                 BoardSlots = BuildBoardSlots(state.Economy),
@@ -216,6 +285,16 @@ namespace Game.Hot.Buqi.DemoUI
                 ShopOffers = BuildOffers(state, phase),
                 Opponent = BuildOpponent(state),
                 Facts = BuildFacts(state),
+                RouteNodes = BuildRouteNodes(state),
+                Rewards = BuildRewards(state),
+                IsPaused = state.IsPaused,
+                ExitRequested = state.ExitRequested,
+                BattleResultVisible = state.BattleResultVisible,
+                BattleResultLabel = state.BattleResultVisible ? OutcomeTitle(state) : string.Empty,
+                PeriodTransitionVisible = state.PeriodTransitionVisible,
+                InputLocked = state.IsPaused || state.BattleResultVisible,
+                Level = m_Orchestrator.BuildLevel(),
+                LevelUp = state.Reward?.LevelUp ?? false,
             };
 
             View = view;
@@ -305,6 +384,17 @@ namespace Game.Hot.Buqi.DemoUI
         {
             if (phase == BuqiUIDemoPhase.OperationChoice)
             {
+                if (state.Route != null && state.Route.Nodes.Count > 0)
+                {
+                    return state.Route.Nodes.Select(node => new BuqiDemoChoiceView
+                    {
+                        Id = node.NodeId,
+                        Title = node.Title,
+                        Description = BuqiPlayerText.Format("{0} | {1} | {2}", node.Benefit, node.Cost, node.Condition),
+                        Disabled = !node.Available || !string.IsNullOrEmpty(state.Route.SelectedNodeId),
+                        Selected = string.Equals(node.NodeId, state.Route.SelectedNodeId, StringComparison.Ordinal),
+                    }).ToList();
+                }
                 return new[]
                 {
                     new BuqiDemoChoiceView { Id = "bazaar", Title = "商店", Description = "查看并购买装备，也可直接离开。" },
@@ -327,6 +417,23 @@ namespace Game.Hot.Buqi.DemoUI
                 }).ToList();
             }
 
+            if (phase == BuqiUIDemoPhase.Training && state.OperationRuntime != null)
+            {
+                return BuildTrainingChoices();
+            }
+
+            if (phase == BuqiUIDemoPhase.RewardSelection)
+            {
+                return BuildRewards(state).Select(reward => new BuqiDemoChoiceView
+                {
+                    Id = reward.Id,
+                    Title = reward.Title,
+                    Description = reward.Description,
+                    Selected = reward.Selected,
+                    Disabled = reward.Claimed,
+                }).ToList();
+            }
+
             if (phase == BuqiUIDemoPhase.TribulationRoute)
             {
                 return new[]
@@ -343,6 +450,20 @@ namespace Game.Hot.Buqi.DemoUI
                 {
                     new BuqiDemoChoiceView { Id = "resolve", Title = "开始挑战 · 应劫", Description = $"推进第 {state.Economy.Run.TribulationStage}/3 阶挑战。" },
                 };
+            }
+
+            if (phase == BuqiUIDemoPhase.Event && state.OperationRuntime != null &&
+                state.OperationRuntime.PendingEvent != null && state.OperationRuntime.PendingEvent.IsActive)
+            {
+                BuqiRunOperationView operation = m_Orchestrator.BuildOperationView();
+                return operation?.Event?.Options?.Select(option => new BuqiDemoChoiceView
+                {
+                    Id = option.OptionId,
+                    Title = ResolveEventOptionTitle(option.OptionId),
+                    Description = ResolveEventOptionDescription(option),
+                    Cost = option.CoinCost,
+                    Disabled = !option.Eligible || !option.Affordable || !option.HasRequiredTargets,
+                }).ToList() ?? (IReadOnlyList<BuqiDemoChoiceView>)Array.Empty<BuqiDemoChoiceView>();
             }
 
             if (phase != BuqiUIDemoPhase.Event || state.Encounter == null)
@@ -362,6 +483,100 @@ namespace Game.Hot.Buqi.DemoUI
             }
 
             return result;
+        }
+
+        private string ResolveEventOptionTitle(string optionId)
+        {
+            BuqiEventOptionConfigRow authored = m_Catalog.SourceCatalog?.EventOptions?
+                .FirstOrDefault(row => row != null && string.Equals(row.OptionId, optionId, StringComparison.Ordinal));
+            return BuqiPlayerText.Sanitize(authored?.DisplayName, optionId);
+        }
+
+        private string ResolveEventOptionDescription(BuqiRunOperationEventOptionView option)
+        {
+            BuqiEventOptionConfigRow authored = m_Catalog.SourceCatalog?.EventOptions?
+                .FirstOrDefault(row => row != null && string.Equals(row.OptionId, option.OptionId, StringComparison.Ordinal));
+            string summary = BuqiPlayerText.Sanitize(authored?.Summary, "选择后立即结算。");
+            string availability = option.Eligible && option.Affordable && option.HasRequiredTargets
+                ? "可选择"
+                : "条件不满足";
+            return BuqiPlayerText.Format("{0} | 花费 {1} | {2}", summary, option.CoinCost, availability);
+        }
+
+        private IReadOnlyList<BuqiDemoChoiceView> BuildTrainingChoices()
+        {
+            BuqiRunOperationView operation = m_Orchestrator.BuildOperationView();
+            if (operation == null)
+                return Array.Empty<BuqiDemoChoiceView>();
+            return operation.TrainingOffers.Select(offer =>
+            {
+                BuqiTrainingProjectConfigRow authored = m_Catalog.SourceCatalog?.TrainingProjects?
+                    .FirstOrDefault(row => row != null && string.Equals(row.ProjectId, offer.TrainingId, StringComparison.Ordinal));
+                return new BuqiDemoChoiceView
+                {
+                    Id = offer.TrainingId,
+                    Title = BuqiPlayerText.Sanitize(authored?.DisplayName, offer.TrainingId),
+                    Description = BuqiPlayerText.Format(
+                        "{0} | 花费 {1} | {2}",
+                        BuqiPlayerText.Sanitize(authored?.Summary, "训练当前构筑。"),
+                        offer.CoinCost,
+                        offer.RequiresTarget ? "需要目标" : "无需目标"),
+                    Cost = offer.CoinCost,
+                    Disabled = !offer.Available,
+                    TargetId = offer.RequiresTarget
+                        ? offer.CandidateInstanceIds.FirstOrDefault() ?? string.Empty
+                        : string.Empty,
+                };
+            }).ToList();
+        }
+
+        private static IReadOnlyList<BuqiDemoRouteNodeView> BuildRouteNodes(BuqiRunDemoState state)
+        {
+            if (state.Route == null)
+                return Array.Empty<BuqiDemoRouteNodeView>();
+            return state.Route.Nodes.Select(node => new BuqiDemoRouteNodeView
+            {
+                Id = node.NodeId,
+                Title = node.Title,
+                Benefit = node.Benefit,
+                Cost = node.Cost,
+                Condition = node.Condition,
+                Available = node.Available &&
+                            (string.IsNullOrEmpty(state.Route.SelectedNodeId) ||
+                             string.Equals(node.NodeId, state.Route.SelectedNodeId, StringComparison.Ordinal)),
+                Selected = string.Equals(node.NodeId, state.Route.SelectedNodeId, StringComparison.Ordinal),
+            }).ToList();
+        }
+
+        private static IReadOnlyList<BuqiDemoRewardView> BuildRewards(BuqiRunDemoState state)
+        {
+            if (state.Reward == null)
+                return Array.Empty<BuqiDemoRewardView>();
+            return state.Reward.Candidates.Select(candidate => new BuqiDemoRewardView
+            {
+                Id = candidate.CandidateId,
+                Title = candidate.Title,
+                Description = candidate.Description,
+                Kind = candidate.Kind,
+                Amount = candidate.Amount,
+                Selected = string.Equals(candidate.CandidateId, state.Reward.SelectedCandidateId, StringComparison.Ordinal),
+                Claimed = state.Reward.Claimed,
+                LevelUp = state.Reward.LevelUp,
+                TargetId = ResolveRewardTarget(state, candidate),
+            }).ToList();
+        }
+
+        private static string ResolveRewardTarget(BuqiRunDemoState state, BuqiRunRewardCandidate candidate)
+        {
+            if (candidate.Kind != BuqiRunRewardKind.Upgrade && candidate.Kind != BuqiRunRewardKind.Refinement)
+                return string.Empty;
+            return state.Economy.Items.Values
+                .Where(item => candidate.Kind == BuqiRunRewardKind.Upgrade
+                    ? item.Quality < BuqiRunItemQuality.Finalized
+                    : string.IsNullOrWhiteSpace(item.RefinementId))
+                .Select(item => item.InstanceId)
+                .OrderBy(value => value, StringComparer.Ordinal)
+                .FirstOrDefault() ?? string.Empty;
         }
 
         private IReadOnlyList<BuqiDemoOfferView> BuildOffers(BuqiRunDemoState state, BuqiUIDemoPhase phase)
@@ -458,8 +673,15 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 case BuqiRunDemoPresentation.OperationChoice:
                     return BuqiUIDemoPhase.OperationChoice;
+                case BuqiRunDemoPresentation.Training:
+                    return BuqiUIDemoPhase.Training;
+                case BuqiRunDemoPresentation.RewardSelection:
+                    return BuqiUIDemoPhase.RewardSelection;
+                case BuqiRunDemoPresentation.PeriodTransition:
+                    return BuqiUIDemoPhase.PeriodTransition;
                 case BuqiRunDemoPresentation.Encounter:
-                    return state.Encounter != null && state.Encounter.Kind == BuqiRunEncounterKind.Event
+                    return (state.OperationRuntime?.PendingEvent != null && state.OperationRuntime.PendingEvent.IsActive) ||
+                           (state.Encounter != null && state.Encounter.Kind == BuqiRunEncounterKind.Event)
                         ? BuqiUIDemoPhase.Event
                         : BuqiUIDemoPhase.Shop;
                 case BuqiRunDemoPresentation.BattleReplay:
@@ -485,10 +707,21 @@ namespace Game.Hot.Buqi.DemoUI
             switch (phase)
             {
                 case BuqiUIDemoPhase.OperationChoice:
-                    string period = state.Economy.Run.Period == BuqiRunPeriod.MorningOperation ? "晨" : "昼";
-                    return BuqiPlayerText.Format("第 {0} 日 · {1} · 经营", state.Economy.Run.Day, period);
+                    return BuqiPlayerText.Format(
+                        "第 {0} 日 · {1} · 经营",
+                        state.Economy.Run.Day,
+                        PeriodLabel(state.Economy.Run.Period));
                 case BuqiUIDemoPhase.PveSelection:
                     return $"第 {state.Economy.Run.Day} 日 · 昏 · 电脑对战选择";
+                case BuqiUIDemoPhase.Training:
+                    return BuqiPlayerText.Format("第 {0} 日 · 训练", state.Economy.Run.Day);
+                case BuqiUIDemoPhase.RewardSelection:
+                    return "战斗奖励";
+                case BuqiUIDemoPhase.PeriodTransition:
+                    return BuqiPlayerText.Format(
+                        "第 {0} 日 · {1}",
+                        state.Economy.Run.Day,
+                        PeriodLabel(state.Economy.Run.Period));
                 case BuqiUIDemoPhase.TribulationRoute:
                     return "最终挑战路线 · 九日试炼";
                 case BuqiUIDemoPhase.TribulationStage:
@@ -522,6 +755,12 @@ namespace Game.Hot.Buqi.DemoUI
                     return "选择本阶段的经营行动；当前装备栏保持可见。";
                 case BuqiUIDemoPhase.PveSelection:
                     return "选择初级、中级或高难挑战；点击后直接进入战斗，当前装备栏只读。";
+                case BuqiUIDemoPhase.Training:
+                    return "选择一个训练项目，确认后应用升级、改造或经验收益。";
+                case BuqiUIDemoPhase.RewardSelection:
+                    return "先预览奖励，再领取一个候选；领取前不会改变资源。";
+                case BuqiUIDemoPhase.PeriodTransition:
+                    return "确认后进入下一时段，路线候选会重新冻结。";
                 case BuqiUIDemoPhase.TribulationRoute:
                     return $"九日试炼已完成。当前结算点数 {state.Economy.Run.DaoSeals}，挑战强度 {state.Economy.Run.CurrentOmen}。";
                 case BuqiUIDemoPhase.TribulationStage:
@@ -568,7 +807,12 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoPhase.PveSelection:
                 case BuqiUIDemoPhase.TribulationRoute:
                 case BuqiUIDemoPhase.TribulationStage:
+                case BuqiUIDemoPhase.Training:
                     return string.Empty;
+                case BuqiUIDemoPhase.RewardSelection:
+                    return string.Empty;
+                case BuqiUIDemoPhase.PeriodTransition:
+                    return "继续";
                 case BuqiUIDemoPhase.Shop:
                     return "离开商店";
                 case BuqiUIDemoPhase.Event:
@@ -577,6 +821,27 @@ namespace Game.Hot.Buqi.DemoUI
                     return "重新开始";
                 default:
                     return "继续";
+            }
+        }
+
+        private static string PeriodLabel(BuqiRunPeriod period)
+        {
+            switch (period)
+            {
+                case BuqiRunPeriod.Hour1Operation:
+                    return "一时 · 晨";
+                case BuqiRunPeriod.Hour2Operation:
+                    return "二时 · 午";
+                case BuqiRunPeriod.Hour3Pve:
+                    return "三时 · 昏";
+                case BuqiRunPeriod.Hour4Operation:
+                    return "四时 · 暮";
+                case BuqiRunPeriod.Hour5Operation:
+                    return "五时 · 夜";
+                case BuqiRunPeriod.Hour6Pvp:
+                    return "六时 · 子";
+                default:
+                    return string.Empty;
             }
         }
 

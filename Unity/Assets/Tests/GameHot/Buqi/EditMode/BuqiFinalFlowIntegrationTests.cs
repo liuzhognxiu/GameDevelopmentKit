@@ -18,7 +18,7 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
             Assert.That(controller.View.Choices.Select(choice => choice.Id),
-                Is.EqualTo(new[] { "bazaar", "event", "meditate" }));
+                Is.EqualTo(new[] { "bazaar", "event", "training" }));
             Assert.That(controller.View.BoardSlots.Any(slot => !slot.Empty), Is.True);
             Assert.That(ReadSave(store).EncounterPayload, Is.Empty);
         }
@@ -68,6 +68,11 @@ namespace Game.Hot.Buqi.Tests
                 PrimaryId = id,
             });
             Assert.That(result.Accepted, Is.True, result.Reason);
+            if (controller.View.Phase == BuqiUIDemoPhase.PeriodTransition)
+            {
+                result = controller.Execute(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase });
+                Assert.That(result.Accepted, Is.True, result.Reason);
+            }
         }
 
         private static BuqiUIDemoController CreateController(MemoryStore store)
@@ -83,6 +88,12 @@ namespace Game.Hot.Buqi.Tests
                 },
                 out BuqiUIDemoController controller,
                 out string error), Is.True, error);
+            if (controller.View.Phase == BuqiUIDemoPhase.PeriodTransition)
+            {
+                BuqiUIDemoCommandResult continued = controller.Execute(
+                    new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase });
+                Assert.That(continued.Accepted, Is.True, continued.Reason);
+            }
             return controller;
         }
 

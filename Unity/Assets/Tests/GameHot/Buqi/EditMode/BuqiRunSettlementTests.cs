@@ -611,6 +611,38 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void Coordinator_TransientReplayReadFailureFailsClosedWithoutWriting()
+        {
+            var store = new SpyRunStore();
+            var coordinator = new BuqiRunSettlementCoordinator(store);
+            BuqiRunState state = CreateBattleState(BuqiRunPhase.PveBattle, revision: 10, wins: 5, lives: 2);
+            BuqiRunSettlementResult first = coordinator.SettleBattle(
+                state,
+                "settlement:read-failure",
+                CreateBattleResult(BattleOutcome.LeftWin, "read-failure-hash"),
+                CreateSummaryLog(),
+                "eco",
+                "enc",
+                "battle");
+            Assert.That(first.Success, Is.True, first.FailureReason);
+            int writesBeforeReplay = store.Writes.Count;
+            store.FailNextRead = true;
+
+            BuqiRunSettlementResult replay = coordinator.SettleBattle(
+                state,
+                "settlement:read-failure",
+                CreateBattleResult(BattleOutcome.LeftWin, "read-failure-hash"),
+                CreateSummaryLog(),
+                "eco",
+                "enc",
+                "battle");
+
+            Assert.That(replay.Success, Is.False);
+            Assert.That(replay.FailureReason, Does.Contain("read failed"));
+            Assert.That(store.Writes, Has.Count.EqualTo(writesBeforeReplay));
+        }
+
+        [Test]
         public void Tribulation_SaveCodecPersistsTerminalStateAndLoadedStateCannotAdvance()
         {
             BuqiRunState state = BuqiRunState.CreateInitial(909L, "content-2026-08-07");
@@ -832,12 +864,21 @@ namespace Game.Hot.Buqi.Tests
 
             public int FailWriteAtCall = -1;
 
+            public bool FailNextRead;
+
             public string CurrentJson = string.Empty;
 
             public bool HasSave;
 
             public bool TryRead(out string json, out string error)
             {
+                if (FailNextRead)
+                {
+                    FailNextRead = false;
+                    json = string.Empty;
+                    error = "read failed";
+                    return false;
+                }
                 if (!HasSave)
                 {
                     json = string.Empty;

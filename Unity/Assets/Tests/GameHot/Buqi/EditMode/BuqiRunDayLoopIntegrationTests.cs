@@ -18,7 +18,7 @@ namespace Game.Hot.Buqi.Tests
     public sealed class BuqiRunDayLoopIntegrationTests
     {
         [Test]
-        public void Create_StartsAtOperationChoiceWithDeterministicStarterAndEightStorageSlots()
+        public void Create_StartsAtPeriodTransitionThenShowsDeterministicOperationChoice()
         {
             BuqiUIDemoCatalog catalog = CreateCatalog();
 
@@ -31,6 +31,10 @@ namespace Game.Hot.Buqi.Tests
                 Is.True,
                 error);
 
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
+            BuqiUIDemoCommandResult continued = controller.Execute(
+                new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase });
+            Assert.That(continued.Accepted, Is.True, continued.Reason);
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
             Assert.That(controller.View.Choices.Count, Is.EqualTo(3));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.StarterSelection));
@@ -63,12 +67,12 @@ namespace Game.Hot.Buqi.Tests
                 BuqiUIDemoCommand command = SelectProgressCommand(controller.View);
                 BuqiUIDemoCommandResult result = controller.Execute(command);
                 Assert.That(result.Accepted, Is.True, result.Reason);
-                if (controller.View.Round == 1)
-                    seenPhases.Add(controller.View.Phase);
+                seenPhases.Add(controller.View.Phase);
             }
 
             Assert.That(controller.View.Round, Is.EqualTo(2));
-            Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.OperationChoice), Is.EqualTo(2));
+            Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.OperationChoice), Is.EqualTo(4));
+            Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.PeriodTransition), Is.GreaterThanOrEqualTo(4));
             Assert.That(seenPhases.Contains(BuqiUIDemoPhase.PveSelection), Is.True);
             Assert.That(seenPhases.Contains(BuqiUIDemoPhase.BattleReplay), Is.True);
             Assert.That(seenPhases.Count(phase => phase == BuqiUIDemoPhase.BattleSummary), Is.EqualTo(2));
@@ -101,10 +105,16 @@ namespace Game.Hot.Buqi.Tests
 
             BuqiUIDemoCommandResult confirmed = controller.Execute(new BuqiUIDemoCommand
             {
-                Type = BuqiUIDemoCommandType.NextPhase,
+                Type = BuqiUIDemoCommandType.ContinueBattleResult,
             });
 
             Assert.That(confirmed.Accepted, Is.True, confirmed.Reason);
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.RewardSelection));
+            while (controller.View.Phase != BuqiUIDemoPhase.TribulationRoute)
+            {
+                BuqiUIDemoCommandResult rewardStep = controller.Execute(SelectProgressCommand(controller.View));
+                Assert.That(rewardStep.Accepted, Is.True, rewardStep.Reason);
+            }
             Assert.That(ReadSave(store).BattlePayload, Is.Empty);
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.TribulationRoute));
 
@@ -181,7 +191,7 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(result.Accepted, Is.True, result.Reason);
             Assert.That(controller.View.Coins, Is.EqualTo(coinsBefore));
-            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
         }
 
         [Test]
@@ -351,12 +361,16 @@ namespace Game.Hot.Buqi.Tests
                 Is.True,
                 error);
 
-            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
             BuqiRunSaveData freshSave = ReadSave(store);
             Assert.That(freshSave.ContentVersion, Is.EqualTo("test-content-v1"));
             Assert.That(freshSave.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
             Assert.That(freshSave.PendingSettlement, Is.Null);
             Assert.That(store.Deletes, Is.EqualTo(0));
+            Assert.That(reloaded.Execute(new BuqiUIDemoCommand
+            {
+                Type = BuqiUIDemoCommandType.NextPhase,
+            }).Accepted, Is.True);
             Assert.That(reloaded.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.SelectOperation,
@@ -384,7 +398,7 @@ namespace Game.Hot.Buqi.Tests
                 Is.True,
                 error);
 
-            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
             Assert.That(ReadSave(store).SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
             Assert.That(ReadSave(store).RunSeed, Is.EqualTo(1L));
             Assert.That(store.Deletes, Is.EqualTo(0));
@@ -440,7 +454,7 @@ namespace Game.Hot.Buqi.Tests
                 error);
 
             BuqiRunSaveData migrated = ReadSave(store);
-            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
             Assert.That(migrated.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
             Assert.That(migrated.RunSeed, Is.EqualTo(runSeed));
             Assert.That(migrated.BoardInstanceIds, Does.Contain(starterId));
@@ -465,7 +479,7 @@ namespace Game.Hot.Buqi.Tests
                 Is.True,
                 error);
 
-            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
             Assert.That(store.Writes, Is.EqualTo(writesBeforeReload));
             Assert.That(store.CurrentJson, Is.EqualTo(jsonBeforeReload));
         }
@@ -607,7 +621,7 @@ namespace Game.Hot.Buqi.Tests
                 Is.True,
                 restartError);
 
-            Assert.That(restarted.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(restarted.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
             Assert.That(store.CurrentJson, Is.Not.EqualTo(invalidJson));
             Assert.That(ReadSave(store).ContentVersion, Is.EqualTo("test-content-v1"));
         }
@@ -827,6 +841,23 @@ namespace Game.Hot.Buqi.Tests
 
         private static BuqiUIDemoCommand SelectProgressCommand(BuqiUIDemoView view)
         {
+            if (view.BattleResultVisible)
+                return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.ContinueBattleResult };
+            if (view.Phase == BuqiUIDemoPhase.RewardSelection)
+            {
+                BuqiDemoRewardView reward = view.Rewards[0];
+                if (!reward.Selected)
+                    return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.PreviewReward, PrimaryId = reward.Id };
+                if (!reward.Claimed)
+                {
+                    return new BuqiUIDemoCommand
+                    {
+                        Type = BuqiUIDemoCommandType.ClaimReward,
+                        PrimaryId = reward.Id,
+                        SecondaryId = reward.TargetId,
+                    };
+                }
+            }
             if (view.Phase == BuqiUIDemoPhase.OperationChoice)
             {
                 return new BuqiUIDemoCommand
@@ -1042,6 +1073,12 @@ namespace Game.Hot.Buqi.Tests
 
         private static void SelectOperation(BuqiUIDemoController controller, string operationId)
         {
+            if (controller.View.Phase == BuqiUIDemoPhase.PeriodTransition)
+            {
+                BuqiUIDemoCommandResult continued = controller.Execute(
+                    new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase });
+                Assert.That(continued.Accepted, Is.True, continued.Reason);
+            }
             BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
             {
                 Type = BuqiUIDemoCommandType.SelectOperation,

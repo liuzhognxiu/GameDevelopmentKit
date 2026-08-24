@@ -25,10 +25,12 @@ namespace Game.Hot.Buqi.Run.Training
         public BuqiRunModifierKind ModifierKind;
         public int ModifierValue;
         public int ModifierDurationBattles;
+        public int ModifierDurationTicks;
         public int CoinReward;
         public int ExperienceReward;
         public string RewardCounterId = string.Empty;
         public int RewardCounterAmount;
+        public int MaxPerRun;
     }
 
     public interface IBuqiRunTrainingCatalog

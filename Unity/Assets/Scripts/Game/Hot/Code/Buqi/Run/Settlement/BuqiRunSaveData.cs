@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Game.Hot.Buqi.Run.Encounter;
+using Game.Hot.Buqi.Run.Integration;
 
 namespace Game.Hot.Buqi.Run.Settlement
 {
@@ -47,5 +49,15 @@ namespace Game.Hot.Buqi.Run.Settlement
         public BuqiRunPendingSettlement PendingSettlement;
         public bool HasLastAppliedSettlement;
         public BuqiRunPendingSettlement LastAppliedSettlement;
+        public bool HasOperationRuntime;
+        public BuqiRunEventSaveData OperationRuntime;
+        public bool HasRoute;
+        public BuqiRunRouteState Route;
+        public bool HasReward;
+        public BuqiRunRewardSaveData Reward;
+        public bool IsPaused;
+        public bool ExitRequested;
+        public bool BattleResultVisible;
+        public bool PeriodTransitionVisible;
     }
 }

@@ -27,6 +27,7 @@ namespace Game.Hot.Buqi.Run.Encounter
         AddExperience = 9,
         ScheduleReturn = 10,
         ApplyRefinement = 11,
+        RestoreLife = 12,
     }
 
     public enum BuqiRunModifierKind

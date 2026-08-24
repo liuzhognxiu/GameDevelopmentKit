@@ -86,6 +86,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(CanConfigure(BuqiUIDemoPhase.OperationChoice), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.Shop), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.Event), Is.True);
+            Assert.That(CanConfigure(BuqiUIDemoPhase.Training), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.PveSelection), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.TribulationRoute), Is.True);
             Assert.That(CanConfigure(BuqiUIDemoPhase.TribulationStage), Is.True);
@@ -369,7 +370,7 @@ namespace Game.Hot.Buqi.Tests
                     out string error),
                 Is.True,
                 error);
-            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.OperationChoice));
+            Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
         }
 
         private static BuqiUIDemoController CreateController(
@@ -391,6 +392,12 @@ namespace Game.Hot.Buqi.Tests
                     out string error),
                 Is.True,
                 error);
+            if (controller.View.Phase == BuqiUIDemoPhase.PeriodTransition)
+            {
+                BuqiUIDemoCommandResult continued = controller.Execute(
+                    new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase });
+                Assert.That(continued.Accepted, Is.True, continued.Reason);
+            }
             return controller;
         }
 
@@ -423,6 +430,11 @@ namespace Game.Hot.Buqi.Tests
                 PrimaryId = operationId,
             });
             Assert.That(result.Accepted, Is.True, result.Reason);
+            if (controller.View.Phase == BuqiUIDemoPhase.PeriodTransition)
+            {
+                result = controller.Execute(new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.NextPhase });
+                Assert.That(result.Accepted, Is.True, result.Reason);
+            }
         }
 
         private static void AssertDeploymentLocked(BuqiUIDemoController controller)
@@ -453,6 +465,23 @@ namespace Game.Hot.Buqi.Tests
 
         private static BuqiUIDemoCommand SelectProgressCommand(BuqiUIDemoView view)
         {
+            if (view.BattleResultVisible)
+                return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.ContinueBattleResult };
+            if (view.Phase == BuqiUIDemoPhase.RewardSelection)
+            {
+                BuqiDemoRewardView reward = view.Rewards[0];
+                if (!reward.Selected)
+                    return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.PreviewReward, PrimaryId = reward.Id };
+                if (!reward.Claimed)
+                {
+                    return new BuqiUIDemoCommand
+                    {
+                        Type = BuqiUIDemoCommandType.ClaimReward,
+                        PrimaryId = reward.Id,
+                        SecondaryId = reward.TargetId,
+                    };
+                }
+            }
             if (view.Phase == BuqiUIDemoPhase.OperationChoice)
                 return new BuqiUIDemoCommand { Type = BuqiUIDemoCommandType.SelectOperation, PrimaryId = "meditate" };
             if (view.Phase == BuqiUIDemoPhase.PveSelection)

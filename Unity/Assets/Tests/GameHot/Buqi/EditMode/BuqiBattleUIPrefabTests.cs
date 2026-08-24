@@ -1,4 +1,5 @@
 using System.Linq;
+using Game.Hot.Buqi.Battle;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace Game.Hot.Buqi.Tests
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(BattleFormPath);
             Assert.That(prefab, Is.Not.Null, BattleFormPath);
 
-            for (int slot = 1; slot <= 8; slot++)
+            for (int slot = 1; slot <= BuqiBoardValidator.BoardSlotCount; slot++)
             {
                 AssertChild(prefab, $"Slot{slot:00}_Left");
                 AssertChild(prefab, $"Slot{slot:00}_Right");
@@ -65,8 +66,8 @@ namespace Game.Hot.Buqi.Tests
             foreach (string propertyName in references)
                 AssertReference(serialized, propertyName);
 
-            AssertArray(serialized, "m_LeftCards", 8);
-            AssertArray(serialized, "m_RightCards", 8);
+            AssertArray(serialized, "m_LeftCards", BuqiBoardValidator.BoardSlotCount);
+            AssertArray(serialized, "m_RightCards", BuqiBoardValidator.BoardSlotCount);
             AssertArray(serialized, "m_LogRows", 12);
             AssertArray(serialized, "m_FactTexts", 3);
             Assert.That(UIFormId.BattleForm, Is.EqualTo(103));

@@ -18,7 +18,7 @@ namespace Game.Hot.Buqi.Tests
     public sealed class BuqiRunDayLoopIntegrationTests
     {
         [Test]
-        public void Create_StartsAtOperationChoiceWithDeterministicStarterAndEightStorageSlots()
+        public void Create_StartsAtOperationChoiceWithDeterministicStarterAndTenStorageSlots()
         {
             BuqiUIDemoCatalog catalog = CreateCatalog();
 
@@ -37,7 +37,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.OpponentIntel));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.Prediction));
             Assert.That(controller.View.BoardSlots.Count(slot => !slot.Empty), Is.EqualTo(1));
-            Assert.That(controller.View.StorageSlots.Count, Is.EqualTo(8));
+            Assert.That(controller.View.StorageSlots.Count, Is.EqualTo(BuqiRunRules.StorageSlotCount));
             Assert.That(controller.View.StorageSlots.All(slot => slot.Empty), Is.True);
         }
 
@@ -782,8 +782,8 @@ namespace Game.Hot.Buqi.Tests
                 error);
 
             string boardInstanceId = controller.View.BoardSlots.Single(slot => !slot.Empty).Id;
-            var board = Slots(8);
-            var storage = Slots(8);
+            var board = Slots(BuqiRunRules.BoardSlotCount);
+            var storage = Slots(BuqiRunRules.StorageSlotCount);
             board[0] = boardInstanceId;
             board[1] = boardInstanceId;
             BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
@@ -982,7 +982,7 @@ namespace Game.Hot.Buqi.Tests
                 Global = new BuqiGlobalConfigRow
                 {
                     ContentVersion = "test-content-v1",
-                    BoardSlotCount = 8,
+                    BoardSlotCount = BuqiRunRules.BoardSlotCount,
                 },
             };
 

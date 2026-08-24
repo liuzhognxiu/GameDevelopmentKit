@@ -4,13 +4,13 @@ using System.Text.RegularExpressions;
 namespace Game.Hot.Buqi.Battle
 {
     /// <summary>
-    /// 8 格构筑快照的纯 C# 合法性校验器。
+    /// 10 格构筑快照的纯 C# 合法性校验器。
     /// Unity Editor、正式 GameHot 业务层与无头验证器共用同一实现，因此不得依赖 Unity、UGF 或 ET 生命周期。
     /// </summary>
     public static class BuqiBoardValidator
     {
-        /// <summary>首阶段棋盘固定格数。</summary>
-        public const int BoardSlotCount = 8;
+        /// <summary>当前棋盘固定格数。</summary>
+        public const int BoardSlotCount = 10;
 
         // 首阶段只批准 A-01 至 A-06；使用 CultureInvariant 避免不同运行环境产生差异。
         private static readonly Regex s_AnnotationRegex =

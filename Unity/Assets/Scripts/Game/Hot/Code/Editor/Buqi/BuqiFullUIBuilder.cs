@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Game.Hot.Buqi.Battle;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI;
 using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
@@ -223,14 +225,14 @@ namespace Game.Hot.Editor
             SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(24f, -30f), new Vector2(-48f, 36f));
             title.fontStyle = FontStyle.Bold;
 
-            var labels = new List<Text>(8);
-            for (int index = 0; index < 8; index++)
+            var labels = new List<Text>(BuqiRunRules.BoardSlotCount);
+            for (int index = 0; index < BuqiRunRules.BoardSlotCount; index++)
             {
                 GameObject slot = CreatePanel(
                     board.transform,
                     "ReadOnlyBoardSlot" + (index + 1).ToString("00"),
-                    new Vector2(-420f + index * 120f, -38f),
-                    new Vector2(112f, 136f),
+                    new Vector2(-456f + index * 101f, -38f),
+                    new Vector2(94f, 136f),
                     raisedColor);
                 Text label = CreateText(slot.transform, "Label", string.Empty, 16, TextAnchor.MiddleCenter, inkColor);
                 Stretch(label.rectTransform, new Vector2(8f, 8f), new Vector2(-8f, -8f));
@@ -489,8 +491,9 @@ namespace Game.Hot.Editor
 
                 List<Transform> leftCards = ReadComponentTransforms(form, "m_LeftCards");
                 List<Transform> rightCards = ReadComponentTransforms(form, "m_RightCards");
-                if (leftCards.Count != 8 || rightCards.Count != 8)
-                    throw new InvalidOperationException("BattleForm must expose eight serialized item cards per side.");
+                if (leftCards.Count != BuqiBoardValidator.BoardSlotCount ||
+                    rightCards.Count != BuqiBoardValidator.BoardSlotCount)
+                    throw new InvalidOperationException("BattleForm must expose ten serialized item cards per side.");
 
                 var leftFloats = new List<MonoBehaviour>(leftCards.Count);
                 var rightFloats = new List<MonoBehaviour>(rightCards.Count);

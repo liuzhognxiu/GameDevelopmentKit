@@ -1,5 +1,7 @@
 using System;
 using NUnit.Framework;
+using Game.Hot.Buqi.Battle;
+using Game.Hot.Buqi.DemoUI.Deployment;
 using Game.Hot.Buqi.Run.Core;
 
 namespace Game.Hot.Buqi.Tests
@@ -16,6 +18,10 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(BuqiRunRules.StartingLifePool, Is.EqualTo(20));
             Assert.That(BuqiRunRules.BoardSlotCount, Is.EqualTo(10));
             Assert.That(BuqiRunRules.StorageSlotCount, Is.EqualTo(10));
+            Assert.That(BuqiBoardValidator.BoardSlotCount, Is.EqualTo(BuqiRunRules.BoardSlotCount));
+            Assert.That(BuqiLinkBoard.SlotCount, Is.EqualTo(BuqiRunRules.BoardSlotCount));
+            Assert.That(BuqiDragDeployController.BoardSlotCount, Is.EqualTo(BuqiRunRules.BoardSlotCount));
+            Assert.That(BuqiDragDeployController.StorageSlotCount, Is.EqualTo(BuqiRunRules.StorageSlotCount));
             Assert.That(BuqiRunRules.StartingCoins, Is.EqualTo(12));
         }
 

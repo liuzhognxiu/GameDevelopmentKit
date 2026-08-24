@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI.Stages;
 using NUnit.Framework;
 using UnityEditor;
@@ -169,13 +170,13 @@ namespace Game.Hot.Buqi.Tests
 
         [TestCase("OperationChoiceWidget")]
         [TestCase("PveSelectionStageWidget")]
-        public void FinalFlowChoiceStages_ShowEightReadOnlyBoardSlots(string stageName)
+        public void FinalFlowChoiceStages_ShowTenReadOnlyBoardSlots(string stageName)
         {
             GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(StageFolder + stageName + ".prefab");
 
             Assert.That(prefab, Is.Not.Null, stageName);
             List<Transform> slots = Children(prefab, "ReadOnlyBoardSlot");
-            Assert.That(slots.Count, Is.EqualTo(8), stageName);
+            Assert.That(slots.Count, Is.EqualTo(BuqiRunRules.BoardSlotCount), stageName);
             Assert.That(slots.All(slot => slot.GetComponent<Button>() == null), Is.True, stageName);
         }
 
@@ -192,7 +193,7 @@ namespace Game.Hot.Buqi.Tests
                 {
                     Phase = phase,
                     ContextTitle = "Choice",
-                    BoardSlots = Enumerable.Range(0, 8)
+                    BoardSlots = Enumerable.Range(0, BuqiRunRules.BoardSlotCount)
                         .Select(slot => new BuqiDemoItemView
                         {
                             Empty = slot != 0,

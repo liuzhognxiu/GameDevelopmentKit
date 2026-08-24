@@ -11,7 +11,7 @@ namespace Game.Hot.Buqi.Battle
             Right,
         }
 
-        private const int BoardSlotCount = 8;
+        private const int BoardSlotCount = BuqiBoardValidator.BoardSlotCount;
         private const float TickSeconds = 0.1f;
 
         private readonly Dictionary<string, ReplaySide> m_InstanceSides =

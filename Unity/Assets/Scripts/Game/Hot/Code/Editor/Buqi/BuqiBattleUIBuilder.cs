@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.UI;
 using UnityEditor;
 using UnityEngine;
@@ -134,11 +135,11 @@ namespace Game.Hot.Editor
             Text rightStats = CreateText(arena.transform, "RightStats_Text", "生命值 --  护盾 --  过载 --", 17, TextAnchor.MiddleRight, mutedColor);
             SetRect(rightStats.rectTransform, new Vector2(1f, 0.5f), new Vector2(1f, 0.5f), new Vector2(-330f, -55f), new Vector2(620f, 38f));
 
-            var leftCards = new List<ItemCardWidget>(8);
-            var rightCards = new List<ItemCardWidget>(8);
-            for (int slot = 0; slot < 8; slot++)
+            var leftCards = new List<ItemCardWidget>(BuqiBoardValidator.BoardSlotCount);
+            var rightCards = new List<ItemCardWidget>(BuqiBoardValidator.BoardSlotCount);
+            for (int slot = 0; slot < BuqiBoardValidator.BoardSlotCount; slot++)
             {
-                float x = -567f + slot * 162f;
+                float x = -600f + slot * (1200f / (BuqiBoardValidator.BoardSlotCount - 1));
                 leftCards.Add(AddItemCard(itemPrefab, arena.transform, string.Format("Slot{0:00}_Left", slot + 1), new Vector2(x, 235f)));
                 rightCards.Add(AddItemCard(itemPrefab, arena.transform, string.Format("Slot{0:00}_Right", slot + 1), new Vector2(x, -180f)));
             }

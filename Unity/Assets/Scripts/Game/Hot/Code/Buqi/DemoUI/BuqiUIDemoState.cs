@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Game.Hot.Buqi.Run.Core;
 
 namespace Game.Hot.Buqi.DemoUI
 {
@@ -7,7 +8,7 @@ namespace Game.Hot.Buqi.DemoUI
         public BuqiUIDemoPhase Phase = BuqiUIDemoPhase.StarterSelection;
         public int Coins = 12;
         public int Wins;
-        public int Lives = 3;
+        public int Lives = BuqiRunRules.StartingLifePool;
         public int Round = 1;
         public bool ShopLocked;
         public int ShopRefreshCount;
@@ -15,8 +16,8 @@ namespace Game.Hot.Buqi.DemoUI
         public string SelectedId = string.Empty;
         public string SelectedBoardSourceId = string.Empty;
         public string Prediction = string.Empty;
-        public List<string> Board = EmptySlots(8);
-        public List<string> Storage = EmptySlots(8);
+        public List<string> Board = EmptySlots(BuqiRunRules.BoardSlotCount);
+        public List<string> Storage = EmptySlots(BuqiRunRules.StorageSlotCount);
         public HashSet<string> SoldOffers = new HashSet<string>();
         public List<BuqiUIDemoPhase> Visited = new List<BuqiUIDemoPhase> { BuqiUIDemoPhase.StarterSelection };
 

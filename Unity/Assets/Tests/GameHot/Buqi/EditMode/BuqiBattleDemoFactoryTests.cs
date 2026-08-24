@@ -72,7 +72,7 @@ namespace Game.Hot.Buqi.Tests
                     BufferCap = BuqiBattleSimulator.BufferCap,
                     NoiseThreshold = BuqiBattleSimulator.NoiseThreshold,
                     NoiseIncidentDamage = BuqiBattleSimulator.NoiseAccidentDamage,
-                    BoardSlotCount = 8,
+                    BoardSlotCount = BuqiBoardValidator.BoardSlotCount,
                     NormalDurationTicks = BuqiBattleSimulator.NormalTickCount,
                     HardCapTicks = BuqiBattleSimulator.HardCapTick + 1,
                     OvertimeStartTicks = BuqiBattleSimulator.NormalTickCount,

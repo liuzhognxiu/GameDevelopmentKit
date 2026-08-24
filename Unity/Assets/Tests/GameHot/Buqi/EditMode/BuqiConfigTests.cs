@@ -355,7 +355,7 @@ namespace Game.Hot.Buqi.Tests
                         BufferCap = 60,
                         NoiseThreshold = 10,
                         NoiseIncidentDamage = 8,
-                        BoardSlotCount = 8,
+                        BoardSlotCount = BuqiBoardValidator.BoardSlotCount,
                         NormalDurationTicks = 450,
                         HardCapTicks = 600,
                         OvertimeStartTicks = 450,

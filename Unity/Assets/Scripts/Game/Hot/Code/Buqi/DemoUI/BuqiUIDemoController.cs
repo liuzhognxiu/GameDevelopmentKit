@@ -510,7 +510,7 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoPhase.PveSelection:
                     return $"第 {state.Economy.Run.Day} 日 · 昏 · 电脑对战选择";
                 case BuqiUIDemoPhase.TribulationRoute:
-                    return "最终挑战路线 · 九日试炼";
+                    return "最终挑战路线 · 九胜渡劫";
                 case BuqiUIDemoPhase.TribulationStage:
                     return $"最终挑战 · 天劫 {state.Economy.Run.TribulationStage}/3";
                 case BuqiUIDemoPhase.Shop:
@@ -543,7 +543,7 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoPhase.PveSelection:
                     return "选择初级、中级或高难挑战；点击后直接进入战斗，当前装备栏只读。";
                 case BuqiUIDemoPhase.TribulationRoute:
-                    return $"九日试炼已完成。当前结算点数 {state.Economy.Run.DaoSeals}，挑战强度 {state.Economy.Run.CurrentOmen}。";
+                    return $"已累计九场异步对战胜利。当前道印 {state.Economy.Run.DaoSeals}，挑战强度 {state.Economy.Run.CurrentOmen}。";
                 case BuqiUIDemoPhase.TribulationStage:
                     return "确认后开始当前阶段挑战。";
                 case BuqiUIDemoPhase.Shop:

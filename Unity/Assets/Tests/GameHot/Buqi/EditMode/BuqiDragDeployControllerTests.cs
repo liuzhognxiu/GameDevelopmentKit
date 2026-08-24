@@ -12,9 +12,9 @@ namespace Game.Hot.Buqi.Tests
         public void Create_NormalizesMultiSlotPlacementAndCopiesInput()
         {
             BuqiUIDemoCatalog catalog = CreateCatalog();
-            var board = Slots(8);
+            var board = Board();
             board[0] = "item-m";
-            BuqiDragDeployController controller = BuqiDragDeployController.Create(catalog, board, Slots(8));
+            BuqiDragDeployController controller = BuqiDragDeployController.Create(catalog, board, Storage());
             board[0] = "item-s";
 
             Assert.That(controller.View.BoardSlots[0], Is.EqualTo("item-m"));
@@ -26,7 +26,7 @@ namespace Game.Hot.Buqi.Tests
         public void Preview_MultiSlotStorageToBoardReturnsEveryCoveredSlot()
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
-                CreateCatalog(), Slots(8), new List<string> { "item-m", "item-s", "", "", "", "", "", "" });
+                CreateCatalog(), Board(), Storage("item-m", "item-s"));
 
             BuqiDeploymentTargetPreview preview = controller.Preview(
                 BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(3));
@@ -40,7 +40,7 @@ namespace Game.Hot.Buqi.Tests
         public void TryMove_OccupiedContinuationSwapsAtomically()
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
-                CreateCatalog(), Slots(8), new List<string> { "item-m", "item-s", "", "", "", "", "", "" });
+                CreateCatalog(), Board(), Storage("item-m", "item-s"));
             Assert.That(controller.TryMove(BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(1)).Accepted,
                 Is.True);
             BuqiDeploymentCommandResult result = controller.TryMove(
@@ -56,11 +56,11 @@ namespace Game.Hot.Buqi.Tests
         public void TryMove_OutOfRangeIsRejectedWithoutMutation()
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
-                CreateCatalog(), Slots(8), new List<string> { "item-l", "", "", "", "", "", "", "" });
+                CreateCatalog(), Board(), Storage("item-l"));
             BuqiDeploymentSnapshot before = controller.View;
 
             BuqiDeploymentCommandResult result = controller.TryMove(
-                BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(6));
+                BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(8));
 
             Assert.That(result.Accepted, Is.False);
             Assert.That(result.Reason, Is.EqualTo("装备超出棋盘范围"));
@@ -71,7 +71,7 @@ namespace Game.Hot.Buqi.Tests
         public void TryMove_UnknownAreaIsRejectedWithoutMutation()
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
-                CreateCatalog(), Slots(8), new List<string> { "item-s", "", "", "", "", "", "", "" });
+                CreateCatalog(), Board(), Storage("item-s"));
             BuqiDeploymentSnapshot before = controller.View;
 
             BuqiDeploymentCommandResult result = controller.TryMove(
@@ -87,7 +87,7 @@ namespace Game.Hot.Buqi.Tests
         public void TryMove_BoardToBoardAndBoardToStorageAreAtomic()
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
-                CreateCatalog(), new List<string> { "item-m", "", "", "", "", "", "", "" }, Slots(8));
+                CreateCatalog(), Board("item-m"), Storage());
 
             Assert.That(controller.TryMove(BuqiDeploymentSlotRef.Board(1), BuqiDeploymentSlotRef.Board(4)).Accepted,
                 Is.True);
@@ -106,7 +106,7 @@ namespace Game.Hot.Buqi.Tests
         public void TryMove_OccupiedStorageSlotsSwapAtomically()
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
-                CreateCatalog(), Slots(8), new List<string> { "item-s", "item-m", "", "", "", "", "", "" });
+                CreateCatalog(), Board(), Storage("item-s", "item-m"));
 
             BuqiDeploymentCommandResult result = controller.TryMove(
                 BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Storage(1));
@@ -121,8 +121,8 @@ namespace Game.Hot.Buqi.Tests
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
                 CreateCatalog(),
-                new List<string> { "item-s", "", "", "item-m", "", "", "", "" },
-                Slots(8));
+                Board("item-s", "", "", "item-m"),
+                Storage());
 
             BuqiDeploymentCommandResult result = controller.TryMove(
                 BuqiDeploymentSlotRef.Board(0), BuqiDeploymentSlotRef.Board(3));
@@ -139,8 +139,8 @@ namespace Game.Hot.Buqi.Tests
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
                 CreateCatalog(),
-                new List<string> { "", "", "", "item-m", "", "", "", "" },
-                new List<string> { "item-s", "", "", "", "", "", "", "" });
+                Board("", "", "", "item-m"),
+                Storage("item-s"));
 
             BuqiDeploymentCommandResult result = controller.TryMove(
                 BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(3));
@@ -156,17 +156,17 @@ namespace Game.Hot.Buqi.Tests
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
                 CreateCatalog(),
-                new List<string> { "", "", "", "", "", "", "item-s", "" },
-                new List<string> { "item-l", "", "", "", "", "", "", "" });
+                Board("", "", "", "", "", "", "", "", "item-s"),
+                Storage("item-l"));
             BuqiDeploymentSnapshot before = controller.View;
 
             BuqiDeploymentCommandResult result = controller.TryMove(
-                BuqiDeploymentSlotRef.Board(6), BuqiDeploymentSlotRef.Storage(0));
+                BuqiDeploymentSlotRef.Board(8), BuqiDeploymentSlotRef.Storage(0));
 
             Assert.That(result.Accepted, Is.False);
             Assert.That(result.Reason, Is.EqualTo("交换后装备超出棋盘范围"));
             Assert.That(controller.View, Is.SameAs(before));
-            Assert.That(controller.View.BoardSlots[6], Is.EqualTo("item-s"));
+            Assert.That(controller.View.BoardSlots[8], Is.EqualTo("item-s"));
             Assert.That(controller.View.StorageSlots[0], Is.EqualTo("item-l"));
         }
 
@@ -174,7 +174,7 @@ namespace Game.Hot.Buqi.Tests
         public void Reset_RestoresOpeningSnapshotInstance()
         {
             BuqiDragDeployController controller = BuqiDragDeployController.Create(
-                CreateCatalog(), Slots(8), new List<string> { "item-m", "", "", "", "", "", "", "" });
+                CreateCatalog(), Board(), Storage("item-m"));
             BuqiDeploymentSnapshot opening = controller.View;
             Assert.That(controller.TryMove(BuqiDeploymentSlotRef.Storage(0), BuqiDeploymentSlotRef.Board(2)).Accepted,
                 Is.True);
@@ -210,15 +210,15 @@ namespace Game.Hot.Buqi.Tests
             };
             System.Reflection.ConstructorInfo constructor = typeof(BuqiDeploymentSnapshot).GetConstructor(signature);
             Assert.That(constructor, Is.Not.Null);
-            var board = Slots(8);
-            var storage = Slots(8);
+            var board = Board();
+            var storage = Storage();
             board[0] = "item-s";
 
             var snapshot = (BuqiDeploymentSnapshot)constructor.Invoke(new object[] { board, storage });
             board[0] = "changed";
 
             Assert.That(snapshot.BoardSlots[0], Is.EqualTo("item-s"));
-            Assert.That(snapshot.StorageSlots.Count, Is.EqualTo(8));
+            Assert.That(snapshot.StorageSlots.Count, Is.EqualTo(BuqiDragDeployController.StorageSlotCount));
         }
 
         private static BuqiUIDemoCatalog CreateCatalog()
@@ -235,6 +235,24 @@ namespace Game.Hot.Buqi.Tests
             var slots = new List<string>(count);
             for (int index = 0; index < count; index++)
                 slots.Add(string.Empty);
+            return slots;
+        }
+
+        private static List<string> Board(params string[] itemIds)
+        {
+            return FixedSlots(BuqiDragDeployController.BoardSlotCount, itemIds);
+        }
+
+        private static List<string> Storage(params string[] itemIds)
+        {
+            return FixedSlots(BuqiDragDeployController.StorageSlotCount, itemIds);
+        }
+
+        private static List<string> FixedSlots(int count, IReadOnlyList<string> itemIds)
+        {
+            List<string> slots = Slots(count);
+            for (int index = 0; index < itemIds.Count; index++)
+                slots[index] = itemIds[index] ?? string.Empty;
             return slots;
         }
     }

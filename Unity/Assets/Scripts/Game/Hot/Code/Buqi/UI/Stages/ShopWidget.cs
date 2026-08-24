@@ -616,7 +616,7 @@ namespace Game.Hot.Buqi.UI.Stages
             string tags = item.Tags == null || item.Tags.Count == 0
                 ? "无"
                 : string.Join(" / ", item.Tags);
-            m_DetailText.text = string.Format(
+            m_DetailText.text = GameFramework.Utility.Text.Format(
                 "{0}\n品质：{1}\n购买价：{2} 金币\n出售价：{3} 金币\n尺寸：{4} 格\n冷却：{5} 时间单位\n作用：{6}\n类型：{7}  ·  流派：{8}\n标签：{9}\n位置：{10}\n改造：{11}",
                 item.Name,
                 string.IsNullOrEmpty(item.Quality) ? "普通" : item.Quality,
@@ -705,7 +705,7 @@ namespace Game.Hot.Buqi.UI.Stages
             return null;
         }
 
-        private static void PositionBoardItem(BuqiDraggableItemWidget widget, int anchorSlot, int span)
+        private void PositionBoardItem(BuqiDraggableItemWidget widget, int anchorSlot, int span)
         {
             if (widget == null || !(widget.transform is RectTransform rect) || anchorSlot < 0)
                 return;

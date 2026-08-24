@@ -328,8 +328,7 @@ namespace Game.Hot.Buqi.DemoUI
 
                 BuqiUIDemoItemDefinition definition = m_Catalog.FindItem(item.DefinitionId);
                 int size = definition?.Size ?? 1;
-                BuqiRunSellQuote sellQuote = m_EconomyService.QuoteBoardSale(economy, instanceId);
-                int sellPrice = sellQuote.Success ? sellQuote.ExpectedRefund : 0;
+                int sellPrice = definition?.SellPrice ?? 0;
                 for (int offset = 0; offset < size && slot + offset < result.Length; offset++)
                 {
                     result[slot + offset] = new BuqiDemoItemView

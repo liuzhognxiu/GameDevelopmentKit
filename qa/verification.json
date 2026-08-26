@@ -1,0 +1,29 @@
+{
+  "target": "Unity 6000.3.21f1 Editor",
+  "date": "2026-08-26",
+  "result": "PASS_WITH_NOT_RUN",
+  "automated": {
+    "unityEditMode": {
+      "runId": "test-run-160ffb6e25c4422b935bcaf8869d100b",
+      "total": 417,
+      "passed": 417,
+      "failed": 0
+    },
+    "buqiTestsBuild": "PASS_WITH_1_PREEXISTING_WARNING",
+    "editorBuild": "PASS",
+    "headlessContracts": "PASS"
+  },
+  "runtimeSmoke": {
+    "launch": "PASS",
+    "sixPeriodRail": "PASS",
+    "tenSlotBoard": "PASS",
+    "tenSlotStorage": "PASS",
+    "pveRewardAdvance": "PASS",
+    "consoleErrors": 0,
+    "visibleNoKeyMarkers": 0
+  },
+  "notRun": [
+    "independent first-time-player onboarding session",
+    "manual play-through of all nine PVP wins and all three tribulation stages"
+  ]
+}

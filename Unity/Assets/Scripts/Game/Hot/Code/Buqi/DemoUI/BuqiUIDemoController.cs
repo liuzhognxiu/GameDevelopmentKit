@@ -75,9 +75,6 @@ namespace Game.Hot.Buqi.DemoUI
                     : orchestrator.TryInitialize(out error);
                 if (!initialized)
                     return false;
-                if (!orchestrator.TrySynchronizeBazaar(out error))
-                    return false;
-
                 controller = new BuqiUIDemoController(catalog, orchestrator);
                 error = string.Empty;
                 return true;
@@ -269,9 +266,13 @@ namespace Game.Hot.Buqi.DemoUI
                 Wins = state.Economy.Run.Wins,
                 Lives = state.Economy.Run.Lives,
                 Round = state.Economy.Run.Day,
+                Cultivation = state.Economy.Run.Cultivation,
+                Realm = state.Economy.Run.Realm,
                 DaoSeals = state.Economy.Run.DaoSeals,
                 TribulationOmen = state.Economy.Run.CurrentOmen,
                 TribulationStage = state.Economy.Run.TribulationStage,
+                InHeartTrial = state.Economy.Run.InTribulationTrial,
+                HeartTrialUsed = state.Economy.Run.HeartTrialUsed,
                 ContextTitle = BuildTitle(state, phase),
                 ContextBody = BuildBody(state, phase),
                 PrimaryCommandLabel = phase == BuqiUIDemoPhase.RewardSelection && state.Reward?.Claimed == true
@@ -322,7 +323,7 @@ namespace Game.Hot.Buqi.DemoUI
 
                 BuqiUIDemoItemDefinition definition = m_Catalog.FindItem(item.DefinitionId);
                 int size = definition?.Size ?? 1;
-                BuqiRunSellQuote sellQuote = m_EconomyService.QuoteBoardSale(economy, instanceId);
+                BuqiRunSellQuote sellQuote = m_Orchestrator.QuoteBoardSale(economy, instanceId);
                 int sellPrice = sellQuote.Success ? sellQuote.ExpectedRefund : 0;
                 for (int offset = 0; offset < size && slot + offset < result.Length; offset++)
                 {
@@ -738,7 +739,7 @@ namespace Game.Hot.Buqi.DemoUI
                         state.Economy.Run.Day,
                         PeriodLabel(state.Economy.Run.Period));
                 case BuqiUIDemoPhase.TribulationRoute:
-                    return "最终挑战路线 · 九日试炼";
+                    return "最终挑战路线 · 第十胜";
                 case BuqiUIDemoPhase.TribulationStage:
                     return $"最终挑战 · 天劫 {state.Economy.Run.TribulationStage}/3";
                 case BuqiUIDemoPhase.Shop:
@@ -777,7 +778,7 @@ namespace Game.Hot.Buqi.DemoUI
                 case BuqiUIDemoPhase.PeriodTransition:
                     return "确认后进入下一时段，路线候选会重新冻结。";
                 case BuqiUIDemoPhase.TribulationRoute:
-                    return $"九日试炼已完成。当前结算点数 {state.Economy.Run.DaoSeals}，挑战强度 {state.Economy.Run.CurrentOmen}。";
+                    return $"已获得 9 场胜利。选择最终挑战路线；当前结算点数 {state.Economy.Run.DaoSeals}，挑战强度 {state.Economy.Run.CurrentOmen}。";
                 case BuqiUIDemoPhase.TribulationStage:
                     return "确认后开始当前阶段挑战。";
                 case BuqiUIDemoPhase.Shop:
@@ -804,11 +805,11 @@ namespace Game.Hot.Buqi.DemoUI
                         state.Economy.Run.Wins,
                         BuqiRunRules.WinsToVictory,
                         state.Economy.Run.Lives,
-                        BuqiRunRules.StartingLives);
+                        BuqiRunRules.StartingLifePool);
                 case BuqiUIDemoPhase.RunTerminal:
                     return state.Economy.Run.Outcome == BuqiRunOutcome.Victory
-                        ? "已达到目标胜场。"
-                        : "本局生命已归零。";
+                        ? "最终挑战完成，取得第 10 场胜利。"
+                        : "生命池耗尽，且本局的绝境试炼机会已经用完。";
                 default:
                     return string.Empty;
             }

@@ -1083,7 +1083,7 @@ namespace Game.Hot.Buqi.Battle
                    string.Equals(scenarioId, "fast-space-choice-buffer-plus-a02", StringComparison.Ordinal);
         }
 
-        /// <summary>运行指定场景并生成终态、完整日志与双方 8 格文本布局。</summary>
+        /// <summary>运行指定场景并生成终态、完整日志与双方固定棋盘文本布局。</summary>
         public static BuqiSandboxRunResult Run(BuqiSandboxScenario scenario)
         {
             if (scenario == null)
@@ -1258,7 +1258,7 @@ namespace Game.Hot.Buqi.Battle
             return result;
         }
 
-        /// <summary>将一侧构筑展开为固定 8 格文本；多格法门在后续占位格显示续接符。</summary>
+        /// <summary>将一侧构筑展开为固定棋盘文本；多格法门在后续占位格显示续接符。</summary>
         public static string FormatBoard(BuildSnapshot snapshot, IItemDefinitionProvider provider)
         {
             var slots = new string[BuqiBoardValidator.BoardSlotCount];

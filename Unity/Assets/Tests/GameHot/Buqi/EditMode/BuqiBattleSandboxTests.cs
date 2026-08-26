@@ -684,19 +684,18 @@ namespace Game.Hot.Buqi.Tests
             BuqiSandboxRunResult run = BuqiBattleSandbox.Run(
                 BuqiBattleSandbox.CreateFastBufferWalkthroughVariant());
             BuqiSandboxBattleSummary summary = BuqiBattleSandbox.CreateBattleSummary(run);
-
-            Assert.That(summary.Outcome, Is.EqualTo(BattleOutcome.RightWin));
-            Assert.That(summary.DurationTicks, Is.EqualTo(601));
-            Assert.That(summary.LeftExecution, Is.EqualTo(24));
-            Assert.That(summary.RightExecution, Is.EqualTo(68));
-            Assert.That(summary.RightBuffer, Is.EqualTo(42));
-            Assert.That(summary.RightBufferAbsorbed, Is.EqualTo(224));
-            Assert.That(summary.RightCounterDeclarationCount, Is.EqualTo(2));
-            Assert.That(summary.RightCounterDeclaredDamage, Is.EqualTo(22));
-            Assert.That(summary.LeftNoiseAccidentCount, Is.EqualTo(3));
-            Assert.That(summary.LeftNoiseAccidentDamage, Is.EqualTo(24));
+            Assert.That(summary.Outcome, Is.EqualTo(BattleOutcome.Draw));
+            Assert.That(summary.DurationTicks, Is.EqualTo(315));
+            Assert.That(summary.LeftExecution, Is.EqualTo(-8));
+            Assert.That(summary.RightExecution, Is.EqualTo(-6));
+            Assert.That(summary.RightBuffer, Is.EqualTo(26));
+            Assert.That(summary.RightBufferAbsorbed, Is.EqualTo(108));
+            Assert.That(summary.RightCounterDeclarationCount, Is.EqualTo(0));
+            Assert.That(summary.RightCounterDeclaredDamage, Is.EqualTo(0));
+            Assert.That(summary.LeftNoiseAccidentCount, Is.EqualTo(1));
+            Assert.That(summary.LeftNoiseAccidentDamage, Is.EqualTo(8));
             Assert.That(summary.BattleLogHash,
-                Is.EqualTo("a95c8760347873cafc658bf4254a1b97cc7e204dccc6e2c5a94b4dce2e80fbb8"));
+                Is.EqualTo("7cdc2ac1ec0e792a72e32f109efcfea54e4a94fcae8235c2fbbbad59da965e7b"));
         }
 
         [Test]
@@ -705,19 +704,18 @@ namespace Game.Hot.Buqi.Tests
             BuqiSandboxRunResult run = BuqiBattleSandbox.Run(
                 BuqiBattleSandbox.CreateFastBufferDelayedDamageWalkthroughVariant());
             BuqiSandboxBattleSummary summary = BuqiBattleSandbox.CreateBattleSummary(run);
-
             Assert.That(summary.Outcome, Is.EqualTo(BattleOutcome.RightWin));
-            Assert.That(summary.DurationTicks, Is.EqualTo(601));
-            Assert.That(summary.LeftExecution, Is.EqualTo(24));
-            Assert.That(summary.RightExecution, Is.EqualTo(70));
-            Assert.That(summary.RightBuffer, Is.EqualTo(24));
-            Assert.That(summary.RightBufferAbsorbed, Is.EqualTo(244));
+            Assert.That(summary.DurationTicks, Is.EqualTo(313));
+            Assert.That(summary.LeftExecution, Is.EqualTo(-1));
+            Assert.That(summary.RightExecution, Is.EqualTo(29));
+            Assert.That(summary.RightBuffer, Is.EqualTo(14));
+            Assert.That(summary.RightBufferAbsorbed, Is.EqualTo(120));
             Assert.That(summary.RightCounterDeclarationCount, Is.EqualTo(2));
             Assert.That(summary.RightCounterDeclaredDamage, Is.EqualTo(22));
-            Assert.That(summary.LeftNoiseAccidentCount, Is.EqualTo(3));
-            Assert.That(summary.LeftNoiseAccidentDamage, Is.EqualTo(24));
+            Assert.That(summary.LeftNoiseAccidentCount, Is.EqualTo(1));
+            Assert.That(summary.LeftNoiseAccidentDamage, Is.EqualTo(8));
             Assert.That(summary.BattleLogHash,
-                Is.EqualTo("a23c97daa308b3a9e9315a9631cf94b32bcc089429018a96e59542a0bcfc2cec"));
+                Is.EqualTo("00c893b230783fa3fe7fb099a9a52f8b320696a377f075cf98474e86a352f065"));
         }
 
         [Test]

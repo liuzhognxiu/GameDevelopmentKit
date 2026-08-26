@@ -17,7 +17,7 @@ namespace Game.Hot.Editor
 /// <summary>
 /// single battle effect config
 /// </summary>
-public sealed class BuqiEffectConfig :  Luban.EditorBeanBase
+public sealed class BuqiEffectConfig :  Luban.EditorBeanBase 
 {
     public BuqiEffectConfig()
     {
@@ -30,142 +30,142 @@ public sealed class BuqiEffectConfig :  Luban.EditorBeanBase
 
     public override void LoadJson(JSONObject _json)
     {
-        {
+        { 
             var _fieldJson = _json["Trigger"];
             if (_fieldJson != null)
             {
-                if(_fieldJson.IsString) { Trigger = (BuqiTrigger)System.Enum.Parse(typeof(BuqiTrigger), _fieldJson); } else if(_fieldJson.IsNumber) { Trigger = (BuqiTrigger)(int)_fieldJson; } else { throw new SerializationException(); }
+                if(_fieldJson.IsString) { Trigger = (BuqiTrigger)System.Enum.Parse(typeof(BuqiTrigger), _fieldJson); } else if(_fieldJson.IsNumber) { Trigger = (BuqiTrigger)(int)_fieldJson; } else { throw new SerializationException(); }  
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["Effect"];
             if (_fieldJson != null)
             {
-                if(_fieldJson.IsString) { Effect = (BuqiEffect)System.Enum.Parse(typeof(BuqiEffect), _fieldJson); } else if(_fieldJson.IsNumber) { Effect = (BuqiEffect)(int)_fieldJson; } else { throw new SerializationException(); }
+                if(_fieldJson.IsString) { Effect = (BuqiEffect)System.Enum.Parse(typeof(BuqiEffect), _fieldJson); } else if(_fieldJson.IsNumber) { Effect = (BuqiEffect)(int)_fieldJson; } else { throw new SerializationException(); }  
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["Target"];
             if (_fieldJson != null)
             {
-                if(_fieldJson.IsString) { Target = (BuqiTarget)System.Enum.Parse(typeof(BuqiTarget), _fieldJson); } else if(_fieldJson.IsNumber) { Target = (BuqiTarget)(int)_fieldJson; } else { throw new SerializationException(); }
+                if(_fieldJson.IsString) { Target = (BuqiTarget)System.Enum.Parse(typeof(BuqiTarget), _fieldJson); } else if(_fieldJson.IsNumber) { Target = (BuqiTarget)(int)_fieldJson; } else { throw new SerializationException(); }  
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["Amount"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  Amount = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["DurationTicks"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  DurationTicks = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["ReasonCode"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  ReasonCode = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["ConditionKind"];
             if (_fieldJson != null)
             {
-                if(_fieldJson.IsString) { ConditionKind = (BuqiConditionKind)System.Enum.Parse(typeof(BuqiConditionKind), _fieldJson); } else if(_fieldJson.IsNumber) { ConditionKind = (BuqiConditionKind)(int)_fieldJson; } else { throw new SerializationException(); }
+                if(_fieldJson.IsString) { ConditionKind = (BuqiConditionKind)System.Enum.Parse(typeof(BuqiConditionKind), _fieldJson); } else if(_fieldJson.IsNumber) { ConditionKind = (BuqiConditionKind)(int)_fieldJson; } else { throw new SerializationException(); }  
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["ConditionThreshold"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  ConditionThreshold = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["UseCountThreshold"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  UseCountThreshold = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["CriticalChanceBps"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  CriticalChanceBps = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["RepeatCount"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  RepeatCount = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["RageThreshold"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  RageThreshold = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["RageDurationTicks"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  RageDurationTicks = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["RageCooldownReductionBps"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  RageCooldownReductionBps = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["FlightDamageBonusBps"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  FlightDamageBonusBps = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["FlightEndDamage"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  FlightEndDamage = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["ResetCountOnReached"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsBoolean) { throw new SerializationException(); }  ResetCountOnReached = _fieldJson;
             }
         }
-
+        
     }
 
     public override void SaveJson(JSONObject _json)
@@ -231,7 +231,7 @@ public sealed class BuqiEffectConfig :  Luban.EditorBeanBase
         obj.LoadJson((JSONObject)_json);
         return obj;
     }
-
+        
     public static void SaveJsonBuqiEffectConfig(BuqiEffectConfig _obj, JSONNode _json)
     {
         _obj.SaveJson((JSONObject)_json);

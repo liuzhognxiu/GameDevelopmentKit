@@ -11,12 +11,12 @@ namespace Game.Hot.Buqi.Tests
     public sealed class BuqiRunEconomyTests
     {
         [Test]
-        public void CreateInitialUsesCoreEightSlotStorageAndNoSharedCollections()
+        public void CreateInitialUsesCoreTenSlotStorageAndNoSharedCollections()
         {
             BuqiRunEconomySnapshot snapshot = BuqiRunEconomySnapshot.CreateInitial(700);
             BuqiRunEconomySnapshot clone = snapshot.Clone();
 
-            Assert.That(snapshot.Run.StorageInstanceIds, Has.Count.EqualTo(8));
+            Assert.That(snapshot.Run.StorageInstanceIds, Has.Count.EqualTo(BuqiRunRules.StorageSlotCount));
             Assert.That(snapshot.Items, Is.Empty);
             clone.Run.StorageInstanceIds[0] = "changed";
             Assert.That(snapshot.Run.StorageInstanceIds[0], Is.Empty);
@@ -90,7 +90,7 @@ namespace Game.Hot.Buqi.Tests
             var service = new BuqiRunEconomyService(TestCatalog.With("blade", 2, 4));
 
             BuqiRunEconomyResult overlap = service.PurchaseToBoard(state, "blade", 2);
-            BuqiRunEconomyResult overflow = service.PurchaseToBoard(state, "blade", 7);
+            BuqiRunEconomyResult overflow = service.PurchaseToBoard(state, "blade", 9);
 
             Assert.That(overlap.Success, Is.False);
             Assert.That(overflow.Success, Is.False);
@@ -146,8 +146,8 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(result.AffectedInstanceId, Is.EqualTo("storage-blade"));
             Assert.That(result.Snapshot.Items[result.AffectedInstanceId].Quality,
                 Is.EqualTo(BuqiRunItemQuality.Improved));
-            Assert.That(result.Snapshot.Run.StorageInstanceIds, Has.Count.EqualTo(8));
-            Assert.That(result.Snapshot.Items, Has.Count.EqualTo(8));
+            Assert.That(result.Snapshot.Run.StorageInstanceIds, Has.Count.EqualTo(BuqiRunRules.StorageSlotCount));
+            Assert.That(result.Snapshot.Items, Has.Count.EqualTo(BuqiRunRules.StorageSlotCount));
         }
 
         [Test]
@@ -700,27 +700,30 @@ namespace Game.Hot.Buqi.Tests
         {
             BuqiRunEconomySnapshot state = BuqiRunEconomySnapshot.CreateInitial(seed);
             PutInStorage(state, 0, "storage-blade", "blade", BuqiRunItemQuality.Common);
-            PutInStorage(state, 1, "storage-filler-1", "shield", BuqiRunItemQuality.Common);
-            PutInStorage(state, 2, "storage-filler-2", "orb", BuqiRunItemQuality.Common);
-            PutInStorage(state, 3, "storage-filler-3", "hammer", BuqiRunItemQuality.Common);
-            PutInStorage(state, 4, "storage-filler-4", "helm", BuqiRunItemQuality.Common);
-            PutInStorage(state, 5, "storage-filler-5", "ring", BuqiRunItemQuality.Common);
-            PutInStorage(state, 6, "storage-filler-6", "boots", BuqiRunItemQuality.Common);
-            PutInStorage(state, 7, "storage-filler-7", "cloak", BuqiRunItemQuality.Common);
+            for (int index = 1; index < BuqiRunRules.StorageSlotCount; index++)
+            {
+                PutInStorage(
+                    state,
+                    index,
+                    $"storage-filler-{index}",
+                    $"filler-{index}",
+                    BuqiRunItemQuality.Common);
+            }
             return state;
         }
 
         private static BuqiRunEconomySnapshot FilledStorageWithoutMerge(long seed)
         {
             BuqiRunEconomySnapshot state = BuqiRunEconomySnapshot.CreateInitial(seed);
-            PutInStorage(state, 0, "storage-filler-0", "shield", BuqiRunItemQuality.Common);
-            PutInStorage(state, 1, "storage-filler-1", "orb", BuqiRunItemQuality.Common);
-            PutInStorage(state, 2, "storage-filler-2", "hammer", BuqiRunItemQuality.Common);
-            PutInStorage(state, 3, "storage-filler-3", "helm", BuqiRunItemQuality.Common);
-            PutInStorage(state, 4, "storage-filler-4", "ring", BuqiRunItemQuality.Common);
-            PutInStorage(state, 5, "storage-filler-5", "boots", BuqiRunItemQuality.Common);
-            PutInStorage(state, 6, "storage-filler-6", "cloak", BuqiRunItemQuality.Common);
-            PutInStorage(state, 7, "storage-filler-7", "amulet", BuqiRunItemQuality.Common);
+            for (int index = 0; index < BuqiRunRules.StorageSlotCount; index++)
+            {
+                PutInStorage(
+                    state,
+                    index,
+                    $"storage-filler-{index}",
+                    $"filler-{index}",
+                    BuqiRunItemQuality.Common);
+            }
             return state;
         }
 

@@ -1,0 +1,32 @@
+Buqi infinite-run baseline verification — 2026-08-26
+
+Unity EditMode
+- Assembly: Game.Hot.Buqi.Tests
+- Run ID: test-run-160ffb6e25c4422b935bcaf8869d100b
+- Result: Passed
+- Total: 417; Passed: 417; Failed: 0; Skipped: 0; Inconclusive: 0
+- Duration: 53.1763793 seconds
+- Full result: qa/evidence/buqi-infinite-baseline/editmode-417.xml
+
+.NET builds
+- dotnet build Unity/Game.Hot.Buqi.Tests.csproj --no-restore
+  Result: 0 errors, 1 pre-existing CS0414 warning in TutorialForm.m_SkipButton.
+- dotnet build Unity/Game.Hot.Editor.csproj --no-restore
+  Result: 0 errors, 0 warnings.
+
+Headless contract and determinism
+- dotnet run --project Share/Buqi.Simulation.Headless/Buqi.Simulation.Headless.csproj --no-restore -- verify
+- Result: all behavioral checks passed; all approved hashes matched; ALL CHECKS PASSED.
+
+Runtime smoke
+- Clean Unity 6000.3.21f1 launch from Assets/Launcher.unity.
+- Started/continued a real run, observed six-period rail and ten board positions.
+- Opened deployment: 10 board positions and 10 storage positions rendered.
+- Completed a PVE reward selection and advanced into period four in the preceding clean run.
+- Final Console query: 0 error entries after runtime smoke.
+- No visible <NoKey> marker after the guarded localization fix.
+- Screenshots: final-operation-screen.png and final-ten-slot-deploy.png.
+
+Save safety
+- User save restored after QA.
+- Restored SHA256: 2A90D59570FE1CD63626CB4664F4397EB267DCEA2226E19C194D3E0931916A30.

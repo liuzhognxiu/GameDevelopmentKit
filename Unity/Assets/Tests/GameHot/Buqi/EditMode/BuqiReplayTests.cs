@@ -58,7 +58,8 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(GetPublicField(left, "Execution"), Is.EqualTo(request.Left.InitialExecution));
             Assert.That(GetPublicField(left, "Buffer"), Is.EqualTo(request.Left.InitialBuffer));
             Assert.That(GetPublicField(left, "Noise"), Is.EqualTo(request.Left.InitialNoiseDebt));
-            Assert.That(((IReadOnlyList<string>)GetPublicField(left, "Slots")).Count, Is.EqualTo(8));
+            Assert.That(((IReadOnlyList<string>)GetPublicField(left, "Slots")).Count,
+                Is.EqualTo(BuqiBoardValidator.BoardSlotCount));
             Assert.That(GetPublicField(frame, "CurrentEvent"), Is.Null);
         }
 

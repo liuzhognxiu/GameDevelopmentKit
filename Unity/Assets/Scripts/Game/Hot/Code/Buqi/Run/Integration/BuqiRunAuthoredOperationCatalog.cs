@@ -194,10 +194,10 @@ namespace Game.Hot.Buqi.Run.Integration
             {
                 option.Actions.Add(new BuqiRunEventActionDefinition
                 {
-                    ActionId = row.OptionId + ".follow-up",
+                    ActionId = GameFramework.Utility.Text.Format("{0}.follow-up", row.OptionId),
                     Kind = BuqiRunEventActionKind.ScheduleReturn,
                     ReturnEventId = row.FollowUpEventId,
-                    ScheduleId = row.OptionId + ".schedule",
+                    ScheduleId = GameFramework.Utility.Text.Format("{0}.schedule", row.OptionId),
                     MinDayOffset = Math.Max(1, row.FollowUpDelayDays),
                     MaxDayOffset = Math.Max(1, row.FollowUpDelayDays),
                 });
@@ -212,7 +212,7 @@ namespace Game.Hot.Buqi.Run.Integration
         {
             if (row == null)
                 return null;
-            string actionId = optionId + "." + row.ReasonCode;
+            string actionId = GameFramework.Utility.Text.Format("{0}.{1}", optionId, row.ReasonCode);
             if (IsKind(row.Kind, BuqiEventOutcomeKind.Coins))
                 return Action(actionId, BuqiRunEventActionKind.GrantCoins, row.Amount);
             if (IsKind(row.Kind, BuqiEventOutcomeKind.Life))
@@ -316,7 +316,7 @@ namespace Game.Hot.Buqi.Run.Integration
                 if (!string.IsNullOrWhiteSpace(values[index]))
                     option.Actions.Add(new BuqiRunEventActionDefinition
                     {
-                        ActionId = option.OptionId + "." + kind + "." + index,
+                        ActionId = GameFramework.Utility.Text.Format("{0}.{1}.{2}", option.OptionId, kind, index),
                         Kind = kind,
                         FlagId = values[index],
                     });

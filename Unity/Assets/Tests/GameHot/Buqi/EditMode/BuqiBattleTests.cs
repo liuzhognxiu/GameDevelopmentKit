@@ -48,6 +48,21 @@ namespace Game.Hot.Buqi.Tests
             }
         }
 
+        [Test]
+        public void NamedIllegalOutOfBoundsVectorIsRejectedOnTenSlotBoard()
+        {
+            IItemDefinitionProvider provider = BuqiTestSuite.CreateFixtureProvider();
+            BuqiTestVector vector = BuqiTestSuite.FindVector(
+                BuqiTestSuite.CreateVectors(),
+                "illegal-out-of-bounds");
+
+            Assert.That(vector, Is.Not.Null);
+            BattleResult result = BuqiBattleSimulator.Simulate(
+                vector.Request, provider, out _, out _, out _);
+
+            Assert.That(result.Outcome, Is.EqualTo(BattleOutcome.InvalidBuild));
+        }
+
         private static Dictionary<string, string> ParseHashes(string json)
         {
             var result = new Dictionary<string, string>(StringComparer.Ordinal);

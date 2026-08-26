@@ -60,8 +60,9 @@
 | D06 | `2026-08-06-buqi-drag-deploy-ui-design.md` 拖拽布阵 UI | ⏳ |
 | D07 | `2026-08-06-buqi-full-demo-ui-system-design.md` 完整 Demo UI 系统 | ⏳ |
 | D08 | `2026-08-07-buqi-bazaar-v6-research-prototype-design.md` 大巴扎研究原型 | ⏳ |
-| D09 | `2026-08-07-buqi-day-run-demo-design.md` 九日 Demo 设计 | ⚠️ 3 遭遇/9 胜，与实现（6 时段/18 胜）脱节 | ⏳ |
+| D09 | `2026-08-07-buqi-day-run-demo-design.md` 九日 Demo 设计 | ❌ 被 D11 无限天新玩法基线取代 | ✅ 已归档 |
 | D10 | `2026-08-09-buqi-save-recovery-design.md` 存档恢复设计 | ✅ 与实现一致 | ⏳ |
+| D11 | `2026-08-24-buqi-new-gameplay-baseline-design.md` 新玩法基线 | ✅ 无限天/六时段/10 格/20 单局生命/九胜后渡劫；当前实施真源 | ✅ 已批准 |
 
 ### E 组｜剧情、研究与输出物
 

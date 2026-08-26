@@ -256,7 +256,8 @@ namespace Game.Hot.Buqi.Run.Supply
 
         private static bool IsEligible(BuqiSupplyDefinition definition, BuqiSupplyRequest request)
         {
-            if (definition.MinimumDay > request.Day || definition.MaximumDay < request.Day)
+            int contentDay = BuqiRunRules.GetContentScheduleDay(request.Day);
+            if (definition.MinimumDay > contentDay || definition.MaximumDay < contentDay)
                 return false;
             if (definition.Quality < request.MinimumQuality || definition.Quality > request.MaximumQuality)
                 return false;

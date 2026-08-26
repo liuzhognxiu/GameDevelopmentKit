@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Game.Hot.Buqi.DemoUI;
 using Game.Hot.Buqi.Run.Economy;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI;
 using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
@@ -155,7 +156,7 @@ namespace Game.Hot.Buqi.Tests
                 BindingFlags.Static | BindingFlags.NonPublic);
             Assert.That(canDrop, Is.Not.Null, "Shop needs one shared legality rule for preview and drop.");
 
-            var board = Enumerable.Range(0, 8)
+            var board = Enumerable.Range(0, BuqiRunRules.BoardSlotCount)
                 .Select(index => new BuqiDemoItemView
                 {
                     Empty = index != 0,
@@ -171,7 +172,7 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(canDrop.Invoke(null, new object[] { board, offer, 3 }), Is.True);
             Assert.That(canDrop.Invoke(null, new object[] { board, offer, 0 }), Is.False);
-            Assert.That(canDrop.Invoke(null, new object[] { board, offer, 7 }), Is.False);
+            Assert.That(canDrop.Invoke(null, new object[] { board, offer, 9 }), Is.False);
         }
 
         [Test]
@@ -343,7 +344,7 @@ namespace Game.Hot.Buqi.Tests
             var cardOwner = new GameObject("Offer", typeof(RectTransform));
             cardOwner.transform.SetParent(owner.transform, false);
             var card = cardOwner.AddComponent<OfferCardWidget>();
-            var slots = new BuqiDeploySlotWidget[8];
+            var slots = new BuqiDeploySlotWidget[BuqiRunRules.BoardSlotCount];
             BuqiUIDemoCommand submitted = null;
             try
             {
@@ -371,7 +372,7 @@ namespace Game.Hot.Buqi.Tests
                             Price = 2,
                         },
                     },
-                    BoardSlots = Enumerable.Range(0, 8)
+                    BoardSlots = Enumerable.Range(0, BuqiRunRules.BoardSlotCount)
                         .Select(index => new BuqiDemoItemView
                         {
                             Empty = index != 0,
@@ -410,7 +411,7 @@ namespace Game.Hot.Buqi.Tests
             var itemOwner = new GameObject("BoardItem", typeof(RectTransform));
             itemOwner.transform.SetParent(owner.transform, false);
             var itemWidget = itemOwner.AddComponent<BuqiDraggableItemWidget>();
-            var slots = new BuqiDeploySlotWidget[8];
+            var slots = new BuqiDeploySlotWidget[BuqiRunRules.BoardSlotCount];
             BuqiUIDemoCommand submitted = null;
             try
             {
@@ -427,7 +428,7 @@ namespace Game.Hot.Buqi.Tests
                 widget.Render(new BuqiUIDemoView
                 {
                     Phase = BuqiUIDemoPhase.Shop,
-                    BoardSlots = Enumerable.Range(0, 8)
+                    BoardSlots = Enumerable.Range(0, BuqiRunRules.BoardSlotCount)
                         .Select(index => new BuqiDemoItemView
                         {
                             Id = index < 2 ? "owned-wide" : string.Empty,
@@ -452,7 +453,7 @@ namespace Game.Hot.Buqi.Tests
                 Assert.That(submitted.Deployment.BoardSlots, Is.EqualTo(new[]
                 {
                     string.Empty, string.Empty, string.Empty, "owned-wide", "owned-wide",
-                    string.Empty, string.Empty, string.Empty,
+                    string.Empty, string.Empty, string.Empty, string.Empty, string.Empty,
                 }));
             }
             finally

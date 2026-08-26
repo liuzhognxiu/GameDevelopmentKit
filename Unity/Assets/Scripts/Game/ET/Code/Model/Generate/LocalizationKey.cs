@@ -4234,7 +4234,7 @@ namespace ET
         public const string Key_Buqi_Deploy_ConfirmDeploy = "Buqi.Deploy.ConfirmDeploy";
 
         /// <summary>
-        /// 第 3 回合 | 金币 12 | 胜场 4 | 生命 2 | 对手 训练对手
+        /// 第 3 日 | 金币 12 | 胜场 4 | 生命池 20 | 对手 训练对手
         /// </summary>
         public const string Key_Buqi_Deploy_Context = "Buqi.Deploy.Context";
 
@@ -4249,7 +4249,7 @@ namespace ET
         public const string Key_Buqi_Deploy_DragHint = "Buqi.Deploy.DragHint";
 
         /// <summary>
-        /// 仓库 > 八格装备栏 | 拖动调整位置 | 拖回仓库卸下
+        /// 仓库 > 十格装备栏 | 拖动调整位置 | 拖回仓库卸下
         /// </summary>
         public const string Key_Buqi_Deploy_Header = "Buqi.Deploy.Header";
 
@@ -4279,12 +4279,12 @@ namespace ET
         public const string Key_Buqi_Deploy_SelectHint = "Buqi.Deploy.SelectHint";
 
         /// <summary>
-        /// 01  02  03  04  05  06  07  08
+        /// 01  02  03  04  05  06  07  08  09  10
         /// </summary>
         public const string Key_Buqi_Deploy_SlotNumbers = "Buqi.Deploy.SlotNumbers";
 
         /// <summary>
-        /// 八格装备栏
+        /// 十格装备栏
         /// </summary>
         public const string Key_Buqi_Deploy_Title = "Buqi.Deploy.Title";
 
@@ -4409,7 +4409,7 @@ namespace ET
         public const string Key_Buqi_Opponent_Empty = "Buqi.Opponent.Empty";
 
         /// <summary>
-        /// 连续 8 格构筑  ·  公开情报
+        /// 连续 10 格构筑 · 公开情报
         /// </summary>
         public const string Key_Buqi_Opponent_Intel = "Buqi.Opponent.Intel";
 
@@ -4484,22 +4484,22 @@ namespace ET
         public const string Key_Buqi_RunShell_DayRecord = "Buqi.RunShell.DayRecord";
 
         /// <summary>
-        /// 昏 · 电脑对战
+        /// 三时 · 昏 · 电脑对战
         /// </summary>
         public const string Key_Buqi_RunShell_DuskPve = "Buqi.RunShell.DuskPve";
 
         /// <summary>
-        /// 晨 · 经营阶段
+        /// 一时 · 晨 · 经营
         /// </summary>
         public const string Key_Buqi_RunShell_MorningOperation = "Buqi.RunShell.MorningOperation";
 
         /// <summary>
-        /// 夜 · 异步对战
+        /// 六时 · 子 · 异步对战
         /// </summary>
         public const string Key_Buqi_RunShell_NightPvp = "Buqi.RunShell.NightPvp";
 
         /// <summary>
-        /// 昼 · 经营阶段
+        /// 二时 · 午 · 经营
         /// </summary>
         public const string Key_Buqi_RunShell_NoonOperation = "Buqi.RunShell.NoonOperation";
 
@@ -4509,7 +4509,7 @@ namespace ET
         public const string Key_Buqi_RunShell_RestartTag = "Buqi.RunShell.RestartTag";
 
         /// <summary>
-        /// 不器 · 九日试炼
+        /// 不器 · 修行试炼
         /// </summary>
         public const string Key_Buqi_RunShell_Title = "Buqi.RunShell.Title";
 
@@ -4539,7 +4539,7 @@ namespace ET
         public const string Key_Buqi_Stage_BattleSummary_Title = "Buqi.Stage.BattleSummary.Title";
 
         /// <summary>
-        /// 点选装备，再选择 8 格棋盘中的目标位。
+        /// 点选装备，再选择 10 格棋盘中的目标位。
         /// </summary>
         public const string Key_Buqi_Stage_BoardEditor_Description = "Buqi.Stage.BoardEditor.Description";
 
@@ -4614,7 +4614,7 @@ namespace ET
         public const string Key_Buqi_Stage_PveSelection_Title = "Buqi.Stage.PveSelection.Title";
 
         /// <summary>
-        /// 结算胜场、单局生命与金币变化。
+        /// 结算胜场、生命池与金币变化。
         /// </summary>
         public const string Key_Buqi_Stage_RoundSettlement_Description = "Buqi.Stage.RoundSettlement.Description";
 
@@ -4654,12 +4654,12 @@ namespace ET
         public const string Key_Buqi_Stage_StarterSelection_Description = "Buqi.Stage.StarterSelection.Description";
 
         /// <summary>
-        /// 第九回合战斗后选择一条最终挑战路线。
+        /// 获得 9 场异步对战胜利后，选择一条最终挑战路线。
         /// </summary>
         public const string Key_Buqi_Stage_TribulationRoute_Description = "Buqi.Stage.TribulationRoute.Description";
 
         /// <summary>
-        /// 最终挑战路线 · 九日试炼
+        /// 最终挑战路线 · 天劫
         /// </summary>
         public const string Key_Buqi_Stage_TribulationRoute_Title = "Buqi.Stage.TribulationRoute.Title";
 
@@ -4714,7 +4714,7 @@ namespace ET
         public const string Key_Game_Description = "Game.Description";
 
         /// <summary>
-        /// 在九个回合中购买、强化并部署装备，通过自动战斗完成挑战。
+        /// 在无限天数的六时段循环中购买、强化并部署装备，获得 9 场异步对战胜利后渡过三重天劫。
         /// </summary>
         public const string Key_Game_Introduction = "Game.Introduction";
 

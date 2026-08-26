@@ -41,7 +41,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.OpponentIntel));
             Assert.That(controller.View.Phase, Is.Not.EqualTo(BuqiUIDemoPhase.Prediction));
             Assert.That(controller.View.BoardSlots.Count(slot => !slot.Empty), Is.EqualTo(1));
-            Assert.That(controller.View.StorageSlots.Count, Is.EqualTo(8));
+            Assert.That(controller.View.StorageSlots.Count, Is.EqualTo(BuqiRunRules.StorageSlotCount));
             Assert.That(controller.View.StorageSlots.All(slot => slot.Empty), Is.True);
         }
 
@@ -83,24 +83,29 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void BuqiNineDay_DayNineNightReplayMustBeConfirmedBeforeTribulationRouteGate()
+        public void NinthPvpWin_OpensTribulationAtTheNextHourSixGate()
         {
             var store = new MemoryRunStore();
-            BuqiUIDemoController controller = CreateController(store);
+            BuqiUIDemoController controller = CreateWinningController(store);
             int guard = 0;
 
-            while (ReadSave(store).Phase != (int)BuqiRunPhase.TribulationRoute && guard++ < 120)
+            while ((controller.View.Wins < BuqiRunRules.WinsToVictory - 1 ||
+                    controller.View.Phase != BuqiUIDemoPhase.BattleSummary) && guard++ < 512)
             {
                 BuqiUIDemoCommandResult result = controller.Execute(SelectProgressCommand(controller.View));
                 Assert.That(result.Accepted, Is.True, result.Reason);
             }
 
-            BuqiRunSaveData settledNight = ReadSave(store);
-            Assert.That(guard, Is.LessThan(120));
-            Assert.That(settledNight.Day, Is.EqualTo(BuqiRunRules.RunDayCount));
-            Assert.That(settledNight.Period, Is.EqualTo((int)BuqiRunPeriod.NightPvp));
-            Assert.That(settledNight.Phase, Is.EqualTo((int)BuqiRunPhase.TribulationRoute));
-            Assert.That(settledNight.BattlePayload, Is.Not.Empty);
+            BuqiRunSaveData ninthWin = ReadSave(store);
+            Assert.That(
+                guard,
+                Is.LessThan(512),
+                $"wins={controller.View.Wins}, day={controller.View.Round}, period={controller.View.Period}, phase={controller.View.Phase}");
+            Assert.That(ninthWin.Wins, Is.EqualTo(BuqiRunRules.WinsToVictory - 1));
+            Assert.That(ninthWin.Day, Is.EqualTo(BuqiRunRules.WinsToVictory));
+            Assert.That(ninthWin.Period, Is.EqualTo((int)BuqiRunPeriod.Hour1Operation));
+            Assert.That(ninthWin.Phase, Is.EqualTo((int)BuqiRunPhase.Encounter));
+            Assert.That(ninthWin.BattlePayload, Is.Not.Empty);
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.BattleSummary));
 
             BuqiUIDemoCommandResult confirmed = controller.Execute(new BuqiUIDemoCommand
@@ -110,13 +115,22 @@ namespace Game.Hot.Buqi.Tests
 
             Assert.That(confirmed.Accepted, Is.True, confirmed.Reason);
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.RewardSelection));
-            while (controller.View.Phase != BuqiUIDemoPhase.TribulationRoute)
+            while (controller.View.Phase != BuqiUIDemoPhase.PeriodTransition)
             {
                 BuqiUIDemoCommandResult rewardStep = controller.Execute(SelectProgressCommand(controller.View));
                 Assert.That(rewardStep.Accepted, Is.True, rewardStep.Reason);
             }
             Assert.That(ReadSave(store).BattlePayload, Is.Empty);
+
+            guard = 0;
+            while (controller.View.Phase != BuqiUIDemoPhase.TribulationRoute && guard++ < 64)
+            {
+                BuqiUIDemoCommandResult result = controller.Execute(SelectProgressCommand(controller.View));
+                Assert.That(result.Accepted, Is.True, result.Reason);
+            }
+            Assert.That(guard, Is.LessThan(64));
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.TribulationRoute));
+            Assert.That(controller.View.Period, Is.EqualTo(BuqiRunPeriod.Hour6Pvp));
 
             BuqiUIDemoCommandResult route = controller.Execute(new BuqiUIDemoCommand
             {
@@ -140,9 +154,9 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(controller.View.PrimaryCommandLabel, Is.EqualTo("重新开始"));
             Assert.That(ReadSave(store).Phase, Is.EqualTo((int)BuqiRunPhase.RunTerminal));
 
-            BuqiUIDemoController restored = CreateController(store);
+            BuqiUIDemoController restored = CreateWinningController(store);
             Assert.That(restored.View.Phase, Is.EqualTo(BuqiUIDemoPhase.RunTerminal));
-            Assert.That(restored.View.Round, Is.EqualTo(BuqiRunRules.RunDayCount));
+            Assert.That(restored.View.Round, Is.EqualTo(BuqiRunRules.WinsToVictory));
         }
 
         [Test]
@@ -210,7 +224,7 @@ namespace Game.Hot.Buqi.Tests
             });
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("purchase write failed"));
+            Assert.That(result.Reason, Is.EqualTo("操作未完成，请重试。"));
             Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
             Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
         }
@@ -231,7 +245,7 @@ namespace Game.Hot.Buqi.Tests
             });
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("event write failed"));
+            Assert.That(result.Reason, Is.EqualTo("操作未完成，请重试。"));
             Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
             Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
         }
@@ -244,7 +258,7 @@ namespace Game.Hot.Buqi.Tests
             AdvanceUntilPhase(controller, BuqiUIDemoPhase.PveSelection);
             string[] choiceIds = controller.View.Choices.Select(choice => choice.Id).ToArray();
             string instanceId = controller.View.BoardSlots.First(slot => !slot.Empty).Id;
-            var board = Enumerable.Repeat(string.Empty, 8).ToList();
+            var board = Enumerable.Repeat(string.Empty, BuqiRunRules.BoardSlotCount).ToList();
             board[3] = instanceId;
 
             BuqiUIDemoCommandResult deployment = controller.Execute(new BuqiUIDemoCommand
@@ -252,7 +266,7 @@ namespace Game.Hot.Buqi.Tests
                 Type = BuqiUIDemoCommandType.ApplyDeployment,
                 Deployment = new BuqiDeploymentSnapshot(
                     board,
-                    Enumerable.Repeat(string.Empty, 8).ToList()),
+                    Enumerable.Repeat(string.Empty, BuqiRunRules.StorageSlotCount).ToList()),
             });
 
             Assert.That(deployment.Accepted, Is.True, deployment.Reason);
@@ -283,7 +297,7 @@ namespace Game.Hot.Buqi.Tests
             });
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("battle generation write failed"));
+            Assert.That(result.Reason, Is.EqualTo("操作未完成，请重试。"));
             Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
             Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
         }
@@ -304,7 +318,7 @@ namespace Game.Hot.Buqi.Tests
             });
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Is.EqualTo("day completion write failed"));
+            Assert.That(result.Reason, Is.EqualTo("操作未完成，请重试。"));
             Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
             Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
         }
@@ -331,7 +345,7 @@ namespace Game.Hot.Buqi.Tests
             BuqiUIDemoCommandResult failed = controller.Execute(command);
 
             Assert.That(failed.Accepted, Is.False);
-            Assert.That(failed.Reason, Is.EqualTo("simulated write failure"));
+            Assert.That(failed.Reason, Is.EqualTo("操作未完成，请重试。"));
             Assert.That(CaptureRuntime(controller), Is.EqualTo(before));
             Assert.That(store.CurrentJson, Is.EqualTo(jsonBefore));
 
@@ -443,14 +457,14 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void TryCreate_SupportedV3SaveMigratesAndKeepsRunIdentity()
+        public void TryCreate_UnsupportedV3SaveStartsFreshRun()
         {
             BuqiUIDemoCatalog catalog = CreateCatalog();
             var store = new MemoryRunStore();
             CreateController(store);
             BuqiRunSaveData save = ReadSave(store);
-            long runSeed = save.RunSeed;
-            string starterId = save.BoardInstanceIds.Single(id => !string.IsNullOrEmpty(id));
+            save.Day = 7;
+            save.Coins = 1;
             save.SaveVersion = BuqiRunSaveData.PreviousSaveVersion;
             save.RuleVersion = BuqiRunState.PreviousRuleVersion;
             store.SetJson(BuqiRunSaveCodec.ToJson(save));
@@ -464,11 +478,12 @@ namespace Game.Hot.Buqi.Tests
                 Is.True,
                 error);
 
-            BuqiRunSaveData migrated = ReadSave(store);
+            BuqiRunSaveData restarted = ReadSave(store);
             Assert.That(reloaded.View.Phase, Is.EqualTo(BuqiUIDemoPhase.PeriodTransition));
-            Assert.That(migrated.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
-            Assert.That(migrated.RunSeed, Is.EqualTo(runSeed));
-            Assert.That(migrated.BoardInstanceIds, Does.Contain(starterId));
+            Assert.That(restarted.SaveVersion, Is.EqualTo(BuqiRunSaveData.CurrentSaveVersion));
+            Assert.That(restarted.RuleVersion, Is.EqualTo(BuqiRunState.CurrentRuleVersion));
+            Assert.That(restarted.Day, Is.EqualTo(1));
+            Assert.That(restarted.Coins, Is.EqualTo(BuqiRunRules.StartingCoins));
         }
 
         [Test]
@@ -796,8 +811,8 @@ namespace Game.Hot.Buqi.Tests
                 error);
 
             string boardInstanceId = controller.View.BoardSlots.Single(slot => !slot.Empty).Id;
-            var board = Slots(8);
-            var storage = Slots(8);
+            var board = Slots(BuqiRunRules.BoardSlotCount);
+            var storage = Slots(BuqiRunRules.StorageSlotCount);
             board[0] = boardInstanceId;
             board[1] = boardInstanceId;
             BuqiUIDemoCommandResult result = controller.Execute(new BuqiUIDemoCommand
@@ -807,7 +822,7 @@ namespace Game.Hot.Buqi.Tests
             });
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Does.Contain("Deployment").IgnoreCase.Or.Contain("instance").IgnoreCase);
+            Assert.That(result.Reason, Is.EqualTo("操作未完成，请重试。"));
         }
 
         [Test]
@@ -847,7 +862,7 @@ namespace Game.Hot.Buqi.Tests
             });
 
             Assert.That(result.Accepted, Is.False);
-            Assert.That(result.Reason, Does.Contain("refinement").IgnoreCase);
+            Assert.That(result.Reason, Is.EqualTo("操作未完成，请重试。"));
         }
 
         private static BuqiUIDemoCommand SelectProgressCommand(BuqiUIDemoView view)
@@ -961,6 +976,38 @@ namespace Game.Hot.Buqi.Tests
             return controller;
         }
 
+        private static BuqiUIDemoController CreateWinningController(MemoryRunStore store)
+        {
+            BuqiConfigCatalog source = CreateSourceCatalog();
+            source.Items.Add(new BuqiItemConfigRow
+            {
+                DefinitionId = "item-00-guaranteed-win",
+                DisplayName = "Guaranteed Win",
+                Size = BattleSize.S,
+                BasePrice = 1,
+                BaseCooldownTicks = 1,
+                Effects =
+                {
+                    new BuqiEffectConfigRow
+                    {
+                        Trigger = Game.Hot.Buqi.Battle.BuqiTrigger.OnUse,
+                        Effect = Game.Hot.Buqi.Battle.BuqiEffect.Damage,
+                        Target = Game.Hot.Buqi.Battle.BuqiTarget.EnemyExecution,
+                        Amount = 200,
+                        ReasonCode = "test-guaranteed-win",
+                    },
+                },
+            });
+            Assert.That(BuqiUIDemoCatalog.TryCreate(
+                source, out BuqiUIDemoCatalog catalog, out string catalogError), Is.True, catalogError);
+            Assert.That(BuqiUIDemoController.TryCreate(
+                catalog,
+                CreateOptions(store),
+                out BuqiUIDemoController controller,
+                out string error), Is.True, error);
+            return controller;
+        }
+
         private static BuqiUIDemoController CreateControllerOnPhase(MemoryRunStore store, BuqiUIDemoPhase phase)
         {
             for (int seed = 1; seed <= 64; seed++)
@@ -1013,7 +1060,7 @@ namespace Game.Hot.Buqi.Tests
                 Global = new BuqiGlobalConfigRow
                 {
                     ContentVersion = "test-content-v1",
-                    BoardSlotCount = 8,
+                    BoardSlotCount = BuqiRunRules.BoardSlotCount,
                 },
             };
 

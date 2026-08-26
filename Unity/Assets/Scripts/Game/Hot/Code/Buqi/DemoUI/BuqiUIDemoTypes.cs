@@ -203,9 +203,13 @@ namespace Game.Hot.Buqi.DemoUI
         public int Wins;
         public int Lives;
         public int Round;
+        public int Cultivation;
+        public int Realm;
         public int DaoSeals;
         public int TribulationOmen;
         public int TribulationStage;
+        public bool InHeartTrial;
+        public bool HeartTrialUsed;
         public bool ShopLocked;
         public bool PredictionSubmitted;
         public string SelectedId = string.Empty;

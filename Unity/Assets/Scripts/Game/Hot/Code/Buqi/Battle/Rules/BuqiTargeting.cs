@@ -18,7 +18,7 @@ namespace Game.Hot.Buqi.Battle
     /// </summary>
     public static class BuqiTargeting
     {
-        /// <summary>将 8 个棋盘格映射为法门索引，空格使用 -1。</summary>
+        /// <summary>将固定棋盘格映射为法门索引，空格使用 -1。</summary>
         public static int[] BuildSlotOwner(SideState side)
         {
             var owner = new int[BuqiBoardValidator.BoardSlotCount];

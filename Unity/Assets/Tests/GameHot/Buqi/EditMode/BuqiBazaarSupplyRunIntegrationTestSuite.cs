@@ -14,14 +14,20 @@ namespace Game.Hot.Buqi.Tests
 
         public static int Main()
         {
-            var failures = new List<string>();
-            Run("run-refresh-purchase-contract", RunRefreshPurchaseContract, failures);
-            Run("restart-reset-contract", RestartResetContract, failures);
-            Run("persistence-rollback-contract", PersistenceRollbackContract, failures);
+            List<string> failures = RunAll();
             foreach (string failure in failures)
                 Console.Error.WriteLine(failure);
             Console.WriteLine($"bazaar-run-contracts={ContractCount - failures.Count}/{ContractCount}");
             return failures.Count == 0 ? 0 : 1;
+        }
+
+        public static List<string> RunAll()
+        {
+            var failures = new List<string>();
+            Run("run-refresh-purchase-contract", RunRefreshPurchaseContract, failures);
+            Run("restart-reset-contract", RestartResetContract, failures);
+            Run("persistence-rollback-contract", PersistenceRollbackContract, failures);
+            return failures;
         }
 
         private static void RunRefreshPurchaseContract()
@@ -33,6 +39,7 @@ namespace Game.Hot.Buqi.Tests
                 sourceCatalog, out BuqiBazaarSupplyViewSource supply, out error), error);
             var store = new MemoryRunStore();
             BuqiUIDemoController controller = CreateController(catalog, supply, store);
+            EnterOperationChoice(controller);
 
             Require(Execute(controller, BuqiUIDemoCommandType.SelectOperation, "bazaar").Accepted,
                 "The bazaar operation must open.");
@@ -87,6 +94,7 @@ namespace Game.Hot.Buqi.Tests
             Require(BuqiBazaarSupplyViewSource.TryCreate(
                 sourceCatalog, out BuqiBazaarSupplyViewSource supply, out error), error);
             BuqiUIDemoController controller = CreateController(catalog, supply, new MemoryRunStore());
+            EnterOperationChoice(controller);
 
             Require(Execute(controller, BuqiUIDemoCommandType.SelectOperation, "bazaar").Accepted,
                 "The first bazaar must open.");
@@ -94,6 +102,7 @@ namespace Game.Hot.Buqi.Tests
                 "The first bazaar must refresh.");
             Require(Execute(controller, BuqiUIDemoCommandType.Restart, string.Empty).Accepted,
                 "Restart must succeed.");
+            EnterOperationChoice(controller);
             Require(Execute(controller, BuqiUIDemoCommandType.SelectOperation, "bazaar").Accepted,
                 "The restarted bazaar must open.");
             Require(supply.TryGetCurrentSupply(out BuqiBazaarSupplyView restarted),
@@ -111,6 +120,7 @@ namespace Game.Hot.Buqi.Tests
                 sourceCatalog, out BuqiBazaarSupplyViewSource supply, out error), error);
             var store = new MemoryRunStore();
             BuqiUIDemoController controller = CreateController(catalog, supply, store);
+            EnterOperationChoice(controller);
             Require(Execute(controller, BuqiUIDemoCommandType.SelectOperation, "bazaar").Accepted,
                 "The rollback bazaar must open.");
             Require(supply.TryGetCurrentSupply(out BuqiBazaarSupplyView before),
@@ -164,6 +174,16 @@ namespace Game.Hot.Buqi.Tests
                 Type = type,
                 PrimaryId = primaryId,
             });
+        }
+
+        private static void EnterOperationChoice(BuqiUIDemoController controller)
+        {
+            if (controller.View.Phase == BuqiUIDemoPhase.OperationChoice)
+                return;
+            Require(Execute(controller, BuqiUIDemoCommandType.NextPhase, string.Empty).Accepted,
+                "The operation period must begin before choosing a destination.");
+            Require(controller.View.Phase == BuqiUIDemoPhase.OperationChoice,
+                "The operation period must expose operation choices.");
         }
 
         private static void Run(string name, Action contract, List<string> failures)

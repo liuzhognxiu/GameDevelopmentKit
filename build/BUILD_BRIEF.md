@@ -1,58 +1,81 @@
-# Buqi Demo Final Build Brief
+# Buqi Demo Infinite-Run Baseline Build Brief
 
 ## Product Goal
 
-Deliver a playable Unity Editor demo of Buqi for PC landscape input. The run lasts nine days. Every day advances through Morning Operation, Noon Operation, Dusk PVE, and Night local-preset asynchronous PVP. After Day 9 Night, the player chooses one of three Tribulation routes, completes three Tribulation stages, and reaches one run ending.
+Deliver a playable Unity Editor demo of Buqi for Windows PC landscape pointer input. The run has no fixed day limit. Each day advances through six periods: Hour 1 Operation, Hour 2 Operation, Hour 3 PVE, Hour 4 Operation, Hour 5 Operation, and Hour 6 local-snapshot asynchronous PVP. After nine PVP wins, the next Hour 6 becomes a three-route, three-stage Tribulation; clearing all stages grants the tenth win and victory.
 
 ## Approved Sources
 
-- `Design/GAME_DESIGN.md`
-- `docs/superpowers/specs/2026-08-07-buqi-day-run-demo-design.md`
-- Final 7/7 interaction approval delegated from task `019fd773-fa40-7332-af76-648a75e58381`
+- `docs/superpowers/specs/2026-08-24-buqi-new-gameplay-baseline-design.md`
+- `docs/game-concepts/buqi-run-loop-spec.md`
+- `docs/game-concepts/buqi-gameplay-spec.md`
+- `docs/superpowers/specs/2026-08-21-buqi-bazaar-reference-ui-interaction-flow-design.md`
+- `Design/GAME_DESIGN.md` for the currently implemented build-content fixtures only; its eight-slot and older run-loop statements are superseded.
 
-The final approval overrides earlier six-day or three-encounter loop descriptions.
+The August 24 baseline supersedes the fixed-nine-day, eight-slot Demo flow. The current implementation deliberately retains deterministic battle contract v0.6 and its existing six refinements until the separate battle-v0.7 migration is approved for implementation.
 
 ## Required Experience
 
-- Operation choice is a standalone three-choice screen with the current cycle board always visible.
-- Item details open only from pointer hover or mobile long press.
-- Bazaar products use hover/long-press details. There is no shelf lock or sell button. Dragging an owned board item over the upper stall previews its refund; dropping sells atomically.
-- PVE preparation hides the phase rail and storage, shows exactly Initial/Advanced/Dangerous choices with threat and reward, and starts battle immediately on selection. The board is read-only.
-- Replay has no center event report and no pause. It exposes only 1x, 2x, and Skip to Result. Attack, guard, heal, and damage feedback floats over the responsible board item. Builds cannot be edited during replay.
-- Day record is an optional prompt opened from a button, with a first-time automatic display allowed. It is not a required daily settlement page.
-- Tribulation route choice appears only after Day 9 Night: Embrace Thunder, Shatter Artifacts, or Borrow the Tribulation through Heart. The third route spends Dao seals to adjust the current omen. There is no three-day echo/history mechanic.
-- PVP uses randomized local preset players. Network matchmaking and upload are excluded.
+- The board is a ten-slot linear space and storage has ten slots. Small, medium, and large items occupy one, two, or three contiguous slots.
+- The run starts with 20 run-life. A normal PVP loss removes life equal to the current day. First depletion opens one heart trial; losing again ends the run.
+- Cultivation drives nine realms. Real run days continue without a cap; authored merchant/content schedules clamp only their lookup day.
+- Four operation periods offer the Bazaar-style merchant, event, training, upgrade, and refinement decisions already present in the Demo.
+- Item details use hover tips. A shop may sell multiple different offers in one visit, visibly shows the remaining balance, and supports direct drag-to-sell without a separate sell button.
+- The board and storage can be arranged outside battle. Dropping onto an occupied compatible target swaps the two items. Battle and preparation views remain read-only where specified.
+- PVE preparation shows three difficulty choices and starts battle immediately after selection.
+- Replay has no pause and no center event report. It exposes 1x, 2x, and Skip to Result; attack, shield, healing, and damage feedback appears at the responsible item.
+- Battle summary confirmation opens a four-candidate reward selection. Claimed rewards, settlement, save restore, and stale-controller replay are idempotent.
+- PVP opponents come from randomized local presets and player-saved local opponent data. Network matchmaking and upload are excluded.
+- At nine PVP wins, the following Hour 6 shows the three Tribulation routes. Three successful stages grant win ten and a terminal victory state.
+- Player-facing first-release UI is Chinese. Difficult proprietary terms use common game wording in functional UI; story packaging remains a later pass.
 
 ## Behavioral Invariants
 
-- Replay close/confirmation is the only event that advances battle settlement presentation.
-- Save restore is fail-closed and settlement is exactly once.
-- Reloading after a settled PVE battle returns to the PVE battle summary before PVP and does not resimulate or duplicate rewards.
-- Invalid commands do not advance phase, RNG, revision, currency, rewards, or settlement IDs.
-- Player-facing strings remain compatible with the existing localization pipeline; this build does not replace localization work owned by task `019fdfbe-80c3-7b43-942d-d35a381657bb`.
+- Replay close/confirmation is the only action that advances battle settlement presentation.
+- Save restore is fail-closed and settlement is exactly once. Save schema v5 is the only accepted run schema; incompatible older saves are explicitly discarded and replaced by a clean run.
+- Loading a settled battle returns to its blocking summary or reward screen without resimulation, duplicate rewards, or extra random consumption.
+- Invalid commands do not advance phase, RNG, revision, currency, rewards, settlement IDs, or merchant supply state.
+- The same rule version, content version, seed, snapshots, and commands produce the same battle result and log hash.
+- The ten-slot shape is preserved through purchase, deployment, swap, save/restore, battle request, echo, and local opponent snapshots.
 
 ## Scope Exclusions
 
-- Online PVP, matchmaking, uploads, shelf locking, click-open item details, replay pause, replay-time deployment, six-day flow, three-day echo/history, and mandatory daily settlement pages.
+- Online PVP, matchmaking, uploads, real-time combat input, replay pause, replay-time deployment, shelf locking, and mandatory daily settlement pages.
+- Keyboard shortcuts, controller input, and the former R-key save reset; these are deferred to the next input phase.
+- Hero-selection UI, hero-specific pool filtering and combat traits, battle-contract v0.7 migration, background story, hero-specific performance, and final ending presentation.
 
-## Toolchain
+## Toolchain and Authoritative Verification
 
-- Target platform/runtime: Unity Editor playable demo on Windows PC.
-- Tested runtime: Unity `6000.3.21f1` through Unity AgentBridge.
-- Runtime: .NET 8 and Unity Mono/HybridCLR project assemblies.
-- Install: existing repository and Unity package cache; no new package installation planned.
-- Build/compile: Unity AgentBridge `recompile` plus `get_compile_result`.
-- Tests: Unity EditMode `Game.Hot.Buqi.Tests`, focused feature tests, and headless simulation stress.
-- Evidence: `qa/evidence/verify.log`, `qa/verification.json`, and JPEG screenshots under `qa/evidence/`.
+toolchain:
 
-## Required Verification Suites
+- targetPlatform: Windows PC Unity project
+- targetRuntime: Unity Editor playable Demo
+- testedRuntime: Unity Editor 6000.3.21f1 on Windows through Unity AgentBridge
+- engine: Unity
+- engineVersion: 6000.3.21f1
+- runtime: .NET 8 build tooling plus Unity Mono/HybridCLR project assemblies
+- packageManager: Unity Package Manager / existing repository package cache
+- browser: N/A
 
-- `buqi-focused-editmode`: new nine-day, economy interaction, PVE difficulty, replay, builder, save/reload, and idempotency tests.
+commands:
+
+- install: NONE
+- buildOrExport: `dotnet build Unity/Game.Hot.Buqi.Tests.csproj --no-restore` and `dotnet build Unity/Game.Hot.Editor.csproj --no-restore`
+- start: Unity AgentBridge `play_scene`
+- verify: Unity AgentBridge full `Game.Hot.Buqi.Tests` EditMode run plus `dotnet run --project Share/Buqi.Simulation.Headless/Buqi.Simulation.Headless.csproj --no-restore -- verify`
+
+required suites:
+
+- `buqi-focused-editmode`: infinite run, ten-slot deployment, save v5, merchant supply, reward recovery, and Tribulation contracts.
 - `buqi-full-editmode`: all `Game.Hot.Buqi.Tests` EditMode tests.
-- `buqi-headless-stress`: 200 deterministic simulation runs.
-- `buqi-real-run`: main menu to one full day, Day 9 Night to route choice, three Tribulation stages to ending, restart/reload, and settled-PVE reload.
-- `buqi-localization-visual`: no `<NoKey>` in required screens and no new Unity Console errors.
+- `buqi-headless-stress`: deterministic simulation verification.
+- `buqi-real-run`: clean start through a visible operation/PVE/battle/reward cycle, state change, reload/restart evidence, and Console inspection.
+- `buqi-localization-visual`: required screens contain no `<NoKey>` and no new Unity Console errors.
 
 ## Completion Evidence
 
-The authoritative verification command/output and checkpoints will be recorded in `qa/verification.json` and `qa/evidence/verify.log`. Each real UI checkpoint will include both an observable state description and a JPEG path. Any target behavior not executed in Unity will be recorded as `NOT_RUN` rather than inferred from tests.
+The authoritative commands, source state, suite results, and complete-run checkpoints are recorded in `qa/verification.json` and `qa/evidence/verify.log`. Runtime screenshots are JPEG files under `qa/evidence/buqi-infinite-baseline/`. Automated state coverage may prove the full nine-win/Tribulation terminal path; real UI evidence must separately prove rendering, pointer interaction, visible state change, and restart. Any unexecuted target behavior is recorded as `NOT_RUN` rather than inferred.
+
+## Final Scope Comparison
+
+As of 2026-08-26, the implementation target is the approved unlimited-day, six-period, ten-slot, ten-win baseline. It keeps local PVP and the existing battle v0.6 engine, intentionally defers hero filtering and narrative packaging, and replaces all fixed-nine-day termination and eight-slot runtime assumptions in the active Demo path.

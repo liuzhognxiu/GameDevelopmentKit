@@ -78,7 +78,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Buqi.Item.SampleId
+  m_Text: W8-000
 --- !u!1 &2386682539652468479
 GameObject:
   m_ObjectHideFlags: 0
@@ -157,7 +157,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Buqi.Item.StorageTag
+  m_Text: "\u4ED3\u5E93 01"
 --- !u!1 &4767466902237265720
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,7 +236,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Buqi.Item.SpaceTag
+  m_Text: "\u5360\u7528 1 \u683C"
 --- !u!1 &6187839290008470125
 GameObject:
   m_ObjectHideFlags: 0

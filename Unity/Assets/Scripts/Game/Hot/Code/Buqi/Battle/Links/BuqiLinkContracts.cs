@@ -48,7 +48,7 @@ namespace Game.Hot.Buqi.Battle
 
     public sealed class BuqiLinkBoard
     {
-        public const int SlotCount = 8;
+        public const int SlotCount = BuqiBoardValidator.BoardSlotCount;
         private readonly List<BuqiLinkItem> m_Items;
 
         public BuqiLinkBoard(IEnumerable<BuqiLinkItem> items)
@@ -109,7 +109,7 @@ namespace Game.Hot.Buqi.Battle
                 if (item.AnchorSlot < 0 || item.AnchorSlot >= SlotCount)
                     throw new ArgumentOutOfRangeException(nameof(item.AnchorSlot));
                 if (item.Size < 1 || item.Size > 3 || item.AnchorSlot + item.Size > SlotCount)
-                    throw new ArgumentOutOfRangeException(nameof(item.Size), "Items cannot wrap across slot seven and zero.");
+                    throw new ArgumentOutOfRangeException(nameof(item.Size), "Items cannot wrap across the board boundary.");
                 for (int slot = item.AnchorSlot; slot < item.AnchorSlot + item.Size; slot++)
                 {
                     if (occupied[slot])

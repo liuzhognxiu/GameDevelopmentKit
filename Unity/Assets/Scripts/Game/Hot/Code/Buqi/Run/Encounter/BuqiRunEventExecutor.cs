@@ -399,7 +399,7 @@ namespace Game.Hot.Buqi.Run.Encounter
         private static bool TryRestoreLife(BuqiRunEventRuntimeState state, int amount, out string error)
         {
             long value = (long)state.Economy.Run.Lives + amount;
-            if (amount < 0 || value > BuqiRunRules.StartingLives)
+            if (amount < 0 || value > BuqiRunRules.StartingLifePool)
             {
                 error = "Life result is out of range.";
                 return false;

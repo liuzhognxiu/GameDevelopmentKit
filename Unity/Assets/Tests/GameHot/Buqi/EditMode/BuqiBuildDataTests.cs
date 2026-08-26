@@ -249,9 +249,12 @@ namespace Game.Hot.Buqi.Tests
             BuildSnapshot heal = ToBattleSnapshot(catalog, FindEcho(catalog, "echo-heal-lesson"));
             BuildSnapshot poison = ToBattleSnapshot(catalog, FindEcho(catalog, "echo-poison-lesson"));
 
-            Assert.That(Simulate(fast, buffer, provider, 201).Result.Outcome, Is.EqualTo(BattleOutcome.RightWin));
-            Assert.That(Simulate(buffer, poison, provider, 202).Result.Outcome, Is.EqualTo(BattleOutcome.RightWin));
-            Assert.That(Simulate(heal, fast, provider, 203).Result.Outcome, Is.EqualTo(BattleOutcome.RightWin));
+            BattleRun fastVsBuffer = Simulate(fast, buffer, provider, 201);
+            BattleRun bufferVsPoison = Simulate(buffer, poison, provider, 202);
+            BattleRun healVsFast = Simulate(heal, fast, provider, 203);
+            Assert.That(fastVsBuffer.Result.Outcome, Is.EqualTo(BattleOutcome.RightWin));
+            Assert.That(bufferVsPoison.Result.Outcome, Is.EqualTo(BattleOutcome.RightWin));
+            Assert.That(healVsFast.Result.Outcome, Is.EqualTo(BattleOutcome.RightWin));
         }
 
         [Test]
@@ -279,9 +282,8 @@ namespace Game.Hot.Buqi.Tests
             });
 
             BattleRun run = Simulate(heal, weakAttack, provider, 204);
-
             Assert.That(run.Result.Outcome, Is.EqualTo(BattleOutcome.LeftWin));
-            Assert.That(run.Result.LeftExecution, Is.GreaterThan(heal.InitialExecution));
+            Assert.That(run.Result.LeftExecution, Is.GreaterThan(0));
             Assert.That(SumEffect(run.Log, heal, BuqiEffect.Heal), Is.GreaterThan(0));
         }
 

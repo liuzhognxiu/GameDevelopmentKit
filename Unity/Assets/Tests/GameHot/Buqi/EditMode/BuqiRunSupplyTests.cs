@@ -19,7 +19,7 @@ namespace Game.Hot.Buqi.Tests
         [Test]
         public void ProductionBazaarRunContractsPass()
         {
-            Assert.That(BuqiBazaarSupplyRunIntegrationTestSuite.Main(), Is.Zero);
+            Assert.That(BuqiBazaarSupplyRunIntegrationTestSuite.RunAll(), Is.Empty);
         }
     }
 }

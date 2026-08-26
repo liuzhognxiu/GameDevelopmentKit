@@ -12,6 +12,7 @@ using Game.Hot.Buqi.Run.Economy;
 using Game.Hot.Buqi.Run.Encounter;
 using Game.Hot.Buqi.Run.Settlement;
 using Game.Hot.Buqi.Run.Supply;
+using Game.Hot.Buqi.Run.Training;
 using UnityEngine;
 
 namespace Game.Hot.Buqi.DemoUI
@@ -440,6 +441,11 @@ namespace Game.Hot.Buqi.Run.Integration
             return true;
         }
 
+        public BuqiRunSellQuote QuoteBoardSale(BuqiRunEconomySnapshot economy, string instanceId)
+        {
+            return m_EconomyService.QuoteBoardSale(economy, instanceId);
+        }
+
         public bool TryResolveEvent(string eventId, out string error)
         {
             return TryResolveEvent(eventId, string.Empty, out error);
@@ -530,7 +536,7 @@ namespace Game.Hot.Buqi.Run.Integration
             BuqiRunEconomySnapshot workingEconomy = m_State.Economy.Clone();
             workingEconomy.Run.Coins = Math.Max(0, workingEconomy.Run.Coins + delta.Coins);
             workingEconomy.Run.Lives = Math.Min(
-                BuqiRunRules.StartingLives,
+                BuqiRunRules.StartingLifePool,
                 Math.Max(0, workingEconomy.Run.Lives + delta.Lives));
 
             if (!string.IsNullOrEmpty(delta.GrantedItemDefinitionId))
@@ -1165,6 +1171,22 @@ namespace Game.Hot.Buqi.Run.Integration
             switch (runState.Phase)
             {
                 case BuqiRunPhase.Encounter:
+                    if (battle != null)
+                    {
+                        if (!BuqiRunDemoCodec.IsSettledBattle(runState, battle.BattleId))
+                        {
+                            presentation = default;
+                            error = "经营阶段只能保留已结算的战斗记录。";
+                            return false;
+                        }
+
+                        presentation = reward != null
+                            ? BuqiRunDemoPresentation.RewardSelection
+                            : BuqiRunDemoPresentation.BattleSummary;
+                        error = string.Empty;
+                        return true;
+                    }
+
                     presentation = periodTransitionVisible
                         ? BuqiRunDemoPresentation.PeriodTransition
                         : reward != null && !reward.Claimed
@@ -1264,8 +1286,17 @@ namespace Game.Hot.Buqi.Run.Integration
             switch (state.Economy.Run.Phase)
             {
                 case BuqiRunPhase.Encounter:
-                    state.Battle = null;
                     state.PveSelection = null;
+                    if (state.Battle != null &&
+                        BuqiRunDemoCodec.IsSettledBattle(state.Economy.Run, state.Battle.BattleId))
+                    {
+                        state.Presentation = state.Reward != null
+                            ? BuqiRunDemoPresentation.RewardSelection
+                            : BuqiRunDemoPresentation.BattleSummary;
+                        break;
+                    }
+
+                    state.Battle = null;
                     if (state.PeriodTransitionVisible)
                         state.Presentation = BuqiRunDemoPresentation.PeriodTransition;
                     else if (state.Reward != null && !state.Reward.Claimed)
@@ -2460,9 +2491,9 @@ namespace Game.Hot.Buqi.Run.Integration
                 error = "Battle payload kind does not match the active PVP phase.";
                 return false;
             }
-            if (run.Phase == BuqiRunPhase.Encounter)
+            if (run.Phase == BuqiRunPhase.Encounter && !settled)
             {
-                error = "Battle payload is not valid during the encounter phase.";
+                error = "Unsettled battle payload is not valid during the encounter phase.";
                 return false;
             }
             if (run.Phase == BuqiRunPhase.DaySettlement &&

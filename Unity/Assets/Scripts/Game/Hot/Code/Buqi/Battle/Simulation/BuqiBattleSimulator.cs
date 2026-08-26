@@ -603,7 +603,7 @@ namespace Game.Hot.Buqi.Battle
                 actor.AmmoReservationsThisTick++;
             }
 
-            foreach (ItemState adjacent in GetRingAdjacent(side, actor, provider))
+            foreach (ItemState adjacent in GetLinearAdjacent(side, actor, provider))
             {
                 provider.TryGet(adjacent.DefinitionId, out BuqiItemDefinition adjacentDefinition);
                 foreach (BuqiEffectSpec spec in adjacentDefinition.Effects)
@@ -1046,7 +1046,7 @@ namespace Game.Hot.Buqi.Battle
             }
 
             var result = new ResolvedTargets();
-            IReadOnlyList<ItemState> adjacent = GetRingAdjacent(own, source, provider);
+            IReadOnlyList<ItemState> adjacent = GetLinearAdjacent(own, source, provider);
             if (target == BuqiTarget.AllAdjacentItems)
             {
                 result.Items.AddRange(adjacent);
@@ -1069,7 +1069,7 @@ namespace Game.Hot.Buqi.Battle
             return result;
         }
 
-        private static IReadOnlyList<ItemState> GetRingAdjacent(
+        private static IReadOnlyList<ItemState> GetLinearAdjacent(
             SideState side,
             ItemState source,
             IItemDefinitionProvider provider)

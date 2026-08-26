@@ -1,0 +1,1290 @@
+[Licensing::Module] Trying to connect to existing licensing client channel...
+Built from '6000.3/staging' branch; Version is '6000.3.21f1 (c02631ffc030) revision 12592689'; Using compiler version '194234433'; Build Type 'Release'
+[Licensing::IpcConnector] Channel LicenseClient-123 doesn't exist
+OS: 'Windows 10  (10.0.19045) 64bit Core' Language: 'zh' Physical Memory: 32567 MB
+BatchMode: 0, IsHumanControllingUs: 1, StartBugReporterOnCrash: 1, Is64bit: 1
+System  architecture: x64
+Process architecture: x64
+Date: 2026-08-26T08:44:47Z
+[Licensing::Module] Successfully launched the LicensingClient (PId: 243112)
+
+COMMAND LINE ARGUMENTS:
+C:\Program Files\Unity\Hub\Editor\6000.3.21f1\Editor\Unity.exe
+-projectPath
+E:\Project\GameDevelopmentKit\Unity
+-logFile
+E:\Project\GameDevelopmentKit\qa\evidence\unity-editor-20260826-final.log
+Successfully changed project path to: E:\Project\GameDevelopmentKit\Unity
+E:/Project/GameDevelopmentKit/Unity
+[UnityMemory] Configuration Parameters - Can be set up in boot.config
+    "memorysetup-temp-allocator-size-nav-mesh-worker=65536"
+    "memorysetup-temp-allocator-size-audio-worker=65536"
+    "memorysetup-temp-allocator-size-gfx=262144"
+    "memorysetup-allocator-temp-initial-block-size-main=262144"
+    "memorysetup-allocator-temp-initial-block-size-worker=262144"
+    "memorysetup-temp-allocator-size-background-worker=32768"
+    "memorysetup-temp-allocator-size-job-worker=262144"
+    "memorysetup-temp-allocator-size-preload-manager=33554432"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-temp-allocator-size-gi-baking-worker=262144"
+    "memorysetup-bucket-allocator-granularity=16"
+    "memorysetup-bucket-allocator-bucket-count=8"
+    "memorysetup-bucket-allocator-block-size=33554432"
+    "memorysetup-bucket-allocator-block-count=8"
+    "memorysetup-main-allocator-block-size=16777216"
+    "memorysetup-thread-allocator-block-size=16777216"
+    "memorysetup-gfx-main-allocator-block-size=16777216"
+    "memorysetup-gfx-thread-allocator-block-size=16777216"
+    "memorysetup-cache-allocator-block-size=4194304"
+    "memorysetup-typetree-allocator-block-size=2097152"
+    "memorysetup-profiler-bucket-allocator-granularity=16"
+    "memorysetup-profiler-bucket-allocator-bucket-count=8"
+    "memorysetup-profiler-bucket-allocator-block-size=33554432"
+    "memorysetup-profiler-bucket-allocator-block-count=8"
+    "memorysetup-profiler-allocator-block-size=16777216"
+    "memorysetup-profiler-editor-allocator-block-size=1048576"
+    "memorysetup-temp-allocator-size-main=16777216"
+    "memorysetup-job-temp-allocator-block-size=2097152"
+    "memorysetup-job-temp-allocator-block-size-background=1048576"
+    "memorysetup-job-temp-allocator-reduction-small-platforms=262144"
+    "memorysetup-temp-allocator-size-cloud-worker=32768"
+Player connection [249440]  Target information:
+
+Player connection [249440]  * "[IP] 192.168.31.249 [Port] 55504 [Flags] 2 [Guid] 916007160 [EditorId] 916007160 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-FON1P8I) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [249440]  * "[IP] 100.64.60.25 [Port] 55504 [Flags] 2 [Guid] 916007160 [EditorId] 916007160 [Version] 1048832 [Id] WindowsEditor(7,DESKTOP-FON1P8I) [Debug] 1 [PackageName] WindowsEditor [ProjectName] Editor" 
+
+Player connection [249440] Host joined multi-casting on [225.0.0.222:54997]...
+Player connection [249440] Host joined alternative multi-casting on [225.0.0.222:34997]...
+Input System module state changed to: Initialized.
+[Physics::Module] Initialized fallback backend.
+[Physics::Module] Id: 0xdecafbad
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-123" at "2026-08-26T08:44:48.3582336Z"
+[Licensing::Client] Code 10 while verifying Licensing Client signature (process Id: 243112, path: "C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Resources/Licensing/Client/Unity.Licensing.Client.exe")
+[Licensing::Module] LicensingClient has failed validation; ignoring
+[Package Manager] Connected to IPC stream "Upm-248452" after 0.3 seconds.
+[Licensing::Module] Licensing is not yet initialized.
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.18.1+9fbee8e
+  Session Id:              7225909287cf4a1aaf116f93c26aa574
+  Correlation Id:          7c2a0a18e634313e14233277673b0be6
+  External correlation Id: 5476631057671320302
+  Machine Id:              ++3iACjRJ0bhHnDZyB/uR93imYQ=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-123" (connect: 0.38s, validation: 0.24s, handshake: 0.04s)
+[Licensing::IpcConnector] Successfully connected to: "LicenseClient-123-notifications" at "2026-08-26T08:44:48.6348223Z"
+[Licensing::Module] Connected to LicensingClient (PId: 243112, launch time: 0.01, total connection time: 0.65s)
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] License group:
+  Id: ewogICJzdWJzR3JvdXAiIDogInVuaXR5IGVkaXRvciIsCiAgIm5hbWVzcGFjZSIgOiAidW5pdHlfZWRpdG9yIiwKICAidHlwZSIgOiAiRURJVE9SIiwKICAidGFnIiA6ICJVbml0eVBlcnNvbmFsXXXX
+  Product: Unity Personal Version
+  Type: Assigned
+  Expiration: Unlimited
+[Licensing::Client] Successfully updated license, isAsync: True, time: 0.01
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Module] Licensing Background thread has ended after 0.70s
+[Licensing::Module] Licensing is initialized (took 0.18s).
+[Licensing::Client] Successfully resolved entitlement details
+Library Redirect Path: Library/
+[Physics::Module] Selected backend.
+[Physics::Module] Name: PhysX
+[Physics::Module] Id: 0xf2b8ea05
+[Physics::Module] SDK Version: 4.1.2
+[Physics::Module] Integration Version: 1.0.0
+[Physics::Module] Threading Mode: Multi-Threaded
+Artifact Garbage Collection - Removed 8 unused hashed content files
+Refreshing native plugins compatible for Editor in 1.83 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Initialize engine version: 6000.3.21f1 (c02631ffc030)
+[Subsystems] Discovering subsystems at path C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Resources/UnitySubsystems
+[Subsystems] Discovering subsystems at path E:/Project/GameDevelopmentKit/Unity/Assets
+GfxDevice: creating device client; kGfxThreadingModeThreaded
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce RTX 5060 Ti (ID=0x2d04)
+    Vendor:   NVIDIA
+    VRAM:     7891 MB
+    Driver:   32.0.16.1074
+Initialize mono
+Mono path[0] = 'C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/Managed'
+Mono path[1] = 'C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/MonoBleedingEdge/lib/mono/unityjit-win32'
+Mono config path = 'C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/MonoBleedingEdge/etc'
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,server=y,suspend=n,address=127.0.0.1:56452
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+Using cacheserver namespaces - metadata:defaultmetadata, artifacts:defaultartifacts
+ImportWorker Server TCP listen port: 0
+AcceleratorClientConnectionCallback - disconnected - :0
+Begin MonoManager ReloadAssembly
+Registering precompiled unity dll's ...
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll
+[Licensing::Client] Successfully resolved entitlement details
+Register platform support module: C:/Program Files/Unity/Hub/Editor/6000.3.21f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll
+Registered in 0.006766 seconds.
+- Loaded All Assemblies, in  0.450 seconds
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+Package Manager log level set to [2]
+ScheduleIndexationOnStartup MainProcess:False IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  0.423 seconds
+Domain Reload Profiling: 871ms
+	BeginReloadAssembly (151ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (0ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (19ms)
+	RebuildCommonClasses (37ms)
+	RebuildNativeTypeToScriptingClass (13ms)
+	initialDomainReloadingComplete (52ms)
+	LoadAllAssembliesAndSetupDomain (194ms)
+		LoadAssemblies (130ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (190ms)
+			TypeCache.Refresh (189ms)
+				TypeCache.ScanAssembly (176ms)
+			BuildScriptInfoCaches (0ms)
+			ResolveRequiredComponents (0ms)
+	FinalizeReload (424ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (385ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (124ms)
+			SetLoadedEditorAssemblies (3ms)
+			BeforeProcessingInitializeOnLoad (72ms)
+			ProcessInitializeOnLoadAttributes (121ms)
+			ProcessInitializeOnLoadMethodAttributes (64ms)
+			AfterProcessingInitializeOnLoad (0ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (0ms)
+[Licensing::Client] Successfully resolved entitlement details
+Application.AssetDatabase Initial Refresh Start
+[Package Manager] Restoring resolved packages state from cache
+[Licensing::Client] Successfully resolved entitlement details
+[Package Manager] Registered 72 packages:
+  Packages from [https://packages.unity.com]:
+    com.unity.ide.rider@3.0.40 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.ide.rider@e4950c6d131b)
+    com.unity.inputsystem@1.20.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.inputsystem@7a4e1a2a8194)
+    com.unity.memoryprofiler@1.1.12 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.memoryprofiler@485b5ba42ef5)
+    com.unity.nuget.newtonsoft-json@3.2.2 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.nuget.newtonsoft-json@4dfd81071c64)
+    com.unity.scriptablebuildpipeline@3.1.1 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.scriptablebuildpipeline@ea93f1084040)
+    com.unity.searcher@4.9.5 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.searcher@a463122f2c00)
+    com.unity.burst@1.8.30 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.burst@2f3d916873ea)
+    com.unity.collections@2.6.8 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.collections@84e8eb3fc12e)
+    com.unity.mathematics@1.3.3 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.mathematics@19a9377c4ffa)
+    com.unity.profiling.core@1.0.3 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.profiling.core@8a49f7027d06)
+    com.unity.editorcoroutines@1.1.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.editorcoroutines@87a15ed012c2)
+    com.unity.nuget.mono-cecil@1.11.6 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.nuget.mono-cecil@ecb9724e46ff)
+    com.unity.test-framework.performance@3.5.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.test-framework.performance@8b56083ec0f0)
+  Built-in packages:
+    com.unity.2d.sprite@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.2d.sprite@d8bb22511404)
+    com.unity.render-pipelines.universal@17.3.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.render-pipelines.universal@8aa8d736cba6)
+    com.unity.ugui@2.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.ugui@e20f1880fa04)
+    com.unity.modules.accessibility@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.accessibility)
+    com.unity.modules.ai@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.ai)
+    com.unity.modules.androidjni@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.androidjni)
+    com.unity.modules.animation@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.animation)
+    com.unity.modules.assetbundle@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.assetbundle)
+    com.unity.modules.audio@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.audio)
+    com.unity.modules.cloth@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.cloth)
+    com.unity.modules.director@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.director)
+    com.unity.modules.imageconversion@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.imageconversion)
+    com.unity.modules.imgui@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.imgui)
+    com.unity.modules.particlesystem@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.particlesystem)
+    com.unity.modules.physics@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.physics)
+    com.unity.modules.physics2d@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.physics2d)
+    com.unity.modules.screencapture@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.screencapture)
+    com.unity.modules.terrain@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.terrain)
+    com.unity.modules.terrainphysics@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.terrainphysics)
+    com.unity.modules.tilemap@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.tilemap)
+    com.unity.modules.ui@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.ui)
+    com.unity.modules.uielements@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.uielements)
+    com.unity.modules.umbra@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.umbra)
+    com.unity.modules.unityanalytics@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unityanalytics)
+    com.unity.modules.unitywebrequest@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequest)
+    com.unity.modules.unitywebrequestassetbundle@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequestassetbundle)
+    com.unity.modules.unitywebrequestaudio@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequestaudio)
+    com.unity.modules.unitywebrequesttexture@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequesttexture)
+    com.unity.modules.unitywebrequestwww@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.unitywebrequestwww)
+    com.unity.modules.vehicles@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.vehicles)
+    com.unity.modules.video@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.video)
+    com.unity.modules.wind@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.wind)
+    com.unity.modules.jsonserialize@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.jsonserialize)
+    com.unity.modules.hierarchycore@1.0.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.modules.hierarchycore)
+    com.unity.test-framework@1.6.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.test-framework@bd7f943e9647)
+    com.unity.render-pipelines.core@17.3.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.render-pipelines.core@c67c01575725)
+    com.unity.shadergraph@17.3.0 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.shadergraph@aa8306cf39d6)
+    com.unity.render-pipelines.universal-config@17.0.3 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.render-pipelines.universal-config@8dc1aab4af1d)
+    com.unity.ext.nunit@2.0.5 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.unity.ext.nunit@d8c07649098d)
+  Git packages:
+    com.annulusgames.lit-motion@https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.annulusgames.lit-motion@12af37b103ef)
+    com.annulusgames.lit-motion.animation@https://github.com/AnnulusGames/LitMotion.git?path=src/LitMotion/Assets/LitMotion.Animation (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.annulusgames.lit-motion.animation@10949b0322bb)
+    com.code-philosophy.hybridclr@https://github.com/focus-creative-games/hybridclr_unity.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.code-philosophy.hybridclr@e4def761d69b)
+    com.coffee.softmask-for-ugui@https://github.com/mob-sakai/SoftMaskForUGUI.git?path=Packages/src (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.coffee.softmask-for-ugui@4370a105814e)
+    com.coffee.ui-effect@https://github.com/mob-sakai/UIEffect.git?path=Packages/src (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.coffee.ui-effect@9383539477c9)
+    com.coffee.ui-particle@https://github.com/mob-sakai/ParticleEffectForUGUI.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.coffee.ui-particle@5a305705f845)
+    com.coffee.unmask@https://github.com/mob-sakai/UnmaskForUGUI.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.coffee.unmask@33356da2c43f)
+    com.cysharp.memorypack@https://github.com/XuToWei/MemoryPack-Extension.git?path=src/MemoryPack.Unity/Assets/Plugins/MemoryPack (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.cysharp.memorypack@50936a09b5f3)
+    com.cysharp.unitask@https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask#2.5.10 (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.cysharp.unitask@cda068700cce)
+    com.cysharp.zstring@https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.cysharp.zstring@644053436391)
+    com.psygames.unitywebsocket@https://github.com/psygames/UnityWebSocket.git#upm (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.psygames.unitywebsocket@369f2a56f68e)
+    com.yasirkula.inspectplus@https://github.com/yasirkula/UnityInspectPlus.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.yasirkula.inspectplus@04f6baf3f57a)
+    com.yasirkula.runtimeinspector@https://github.com/yasirkula/UnityRuntimeInspector.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\com.yasirkula.runtimeinspector@ec8421f71766)
+    me.qiankanglai.loopscrollrect@https://github.com/qiankanglai/LoopScrollRect.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.qiankanglai.loopscrollrect@cb18906158c4)
+    me.xw.codebind@https://github.com/XuToWei/CodeBind.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.codebind@de6877110432)
+    me.xw.protobufunity@https://github.com/XuToWei/Protobuf-Unity.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.protobufunity@37802570b75b)
+    me.xw.reactivebinding@https://github.com/XuToWei/ReactiveBinding.git?path=Unity (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.reactivebinding@8b17dab6eb55)
+    me.xw.statecontroller@https://github.com/XuToWei/StateController.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.statecontroller@87c612de2f08)
+    me.xw.toolbarextension@https://github.com/XuToWei/ToolbarExtension.git (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.toolbarextension@ecb4645d33e6)
+    me.xw.unityagentbridge@https://github.com/XuToWei/UnityAgentBridge.git?path=Unity (location: E:\Project\GameDevelopmentKit\Unity\Library\PackageCache\me.xw.unityagentbridge@70c8cd9d9e8d)
+[Subsystems] No new subsystems found in resolved package list.
+[Package Manager] Done registering packages in 0.02 seconds
+The GUID inside 'Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.BuqiConfig.cs.meta' cannot be extracted by the YAML Parser. Attempting to extract it via string matching instead. Please verify the file does not contain unexpected data.
+The .meta file Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.BuqiConfig.cs.meta does not have a valid GUID and its corresponding Asset file will be ignored. If this file is not malformed, please add a GUID, or delete the .meta file and it will be recreated correctly
+Starting: C:\Program Files\Unity\Hub\Editor\6000.3.21f1\Editor\Data\Tools\BuildPipeline\bee_backend.exe --ipc --defer-dag-verification --dagfile="Library/Bee/1900b0aE.dag" --continue-on-failure --profile="Library/Bee/backend1.traceevents" ScriptAssemblies
+WorkingDir: E:/Project/GameDevelopmentKit/Unity
+ExitCode: 0 Duration: 0s329ms
+[1030/1367  0s] ILPP-Configuration Library/ilpp-configuration.nevergeneratedoutput
+*** Tundra build success (0.29 seconds), 1 items updated, 1367 evaluated
+AssetDatabase: script compilation time: 0.930655s
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  1.182 seconds
+Refreshing native plugins compatible for Editor in 1.29 ms, found 4 plugins.
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+[AgentBridge] started. root=E:\Project\GameDevelopmentKit\Unity\.agentbridge poll=200ms
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AgentBridge.AgentBridgeHost:Activate (AgentBridge.FileChannel) (at ./Library/PackageCache/me.xw.unityagentbridge@70c8cd9d9e8d/Editor/Host/AgentBridgeHost.cs:128)
+AgentBridge.AgentBridgeHost:.cctor () (at ./Library/PackageCache/me.xw.unityagentbridge@70c8cd9d9e8d/Editor/Host/AgentBridgeHost.cs:35)
+System.Runtime.CompilerServices.RuntimeHelpers:RunClassConstructor (System.RuntimeTypeHandle)
+UnityEditor.EditorAssemblies:ProcessInitializeOnLoadAttributes (System.Type[])
+
+(Filename: ./Library/PackageCache/me.xw.unityagentbridge@70c8cd9d9e8d/Editor/Host/AgentBridgeHost.cs Line: 128)
+
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  3.994 seconds
+Domain Reload Profiling: 5172ms
+	BeginReloadAssembly (328ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (22ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (158ms)
+	RebuildCommonClasses (50ms)
+	RebuildNativeTypeToScriptingClass (17ms)
+	initialDomainReloadingComplete (79ms)
+	LoadAllAssembliesAndSetupDomain (704ms)
+		LoadAssemblies (406ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (415ms)
+			TypeCache.Refresh (313ms)
+				TypeCache.ScanAssembly (287ms)
+			BuildScriptInfoCaches (82ms)
+			ResolveRequiredComponents (16ms)
+	FinalizeReload (3995ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (3647ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (44ms)
+			SetLoadedEditorAssemblies (4ms)
+			BeforeProcessingInitializeOnLoad (179ms)
+			ProcessInitializeOnLoadAttributes (2962ms)
+			ProcessInitializeOnLoadMethodAttributes (450ms)
+			AfterProcessingInitializeOnLoad (8ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (18ms)
+Asset Pipeline Refresh (id=1f8d5471faf93ed41ba756a10f1077b7): Total: 6.895 seconds - Initiated by InitialRefreshV2(ForceSynchronousImport)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=4657 ms
+		Asset DB Callback time: managed=27 ms, native=26 ms
+		Scripting: domain reloads=1, domain reload time=1183 ms, compile time=932 ms, other=68 ms
+		Project Asset Count: scripts=2046, non-scripts=2795
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokeCustomDependenciesCallbacks: 0.001ms
+	InvokePackagesCallback: 27.421ms
+	ApplyChangesToAssetFolders: 0.868ms
+	Scan: 248.360ms
+	OnSourceAssetsModified: 0.003ms
+	CategorizeAssetsWithTransientArtifact: 55.737ms
+	ProcessAssetsWithTransientArtifactChanges: 104.649ms
+	CategorizeAssets: 69.679ms
+	ImportOutOfDateAssets: 4006.417ms (3071.516ms without children)
+		CompileScripts: 931.983ms
+		ReloadNativeAssets: 0.031ms
+		UnloadImportedAssets: 1.695ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.731ms
+		InitializingProgressBar: 0.000ms
+		OnDemandSchedulerStart: 0.460ms
+	PostProcessAllAssets: 27.995ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.002ms
+	UnloadStreamsBegin: 2.575ms
+	PersistCurrentRevisions: 0.176ms
+	UnloadStreamsEnd: 0.001ms
+	GenerateScriptTypeHashes: 5.373ms
+	Untracked: 2351.290ms
+
+Application.AssetDatabase Initial Refresh End
+Launched and connected shader compiler UnityShaderCompiler.exe after 0.01 seconds
+Scanning for USB devices : 2.940ms
+Initializing Unity extensions:
+Script 'Library/PackageCache/com.unity.mathematics@19a9377c4ffa/Tests/Unity.Mathematics.Tests.asmdef' will not be compiled because it exists outside the Assets folder and does not to belong to any assembly definition file.
+Script 'Library/PackageCache/com.unity.collections@84e8eb3fc12e/DocCodeSamples.Tests/DocCodeSamples.Tests.asmdef' will not be compiled because it exists outside the Assets folder and does not to belong to any assembly definition file.
+Script 'Library/PackageCache/com.unity.scriptablebuildpipeline@ea93f1084040/Tests/Runtime/TestAssets/Unity.ScriptableBuildPipelineTests.Runtime.Tests.asmdef' will not be compiled because it exists outside the Assets folder and does not to belong to any assembly definition file.
+Script 'Library/PackageCache/com.unity.collections@84e8eb3fc12e/Unity.Collections.PerformanceTests/Unity.Collections.PerformanceTests.asmdef' will not be compiled because it exists outside the Assets folder and does not to belong to any assembly definition file.
+Script 'Library/PackageCache/com.unity.collections@84e8eb3fc12e/Unity.Collections.Tests/NativeSortTests.tt' will not be compiled because it exists outside the Assets folder and does not to belong to any assembly definition file.
+Script 'Library/PackageCache/com.unity.inputsystem@7a4e1a2a8194/Tests/IntegrationTests/Unity.InputSystem.IntegrationTests.asmdef' will not be compiled because it exists outside the Assets folder and does not to belong to any assembly definition file.
+Script 'Library/PackageCache/com.unity.collections@84e8eb3fc12e/Unity.Collections.Tests.Playmode/FixedListPlayModeTests.tt' will not be compiled because it exists outside the Assets folder and does not to belong to any assembly definition file.
+Script 'Library/PackageCache/com.unity.scriptablebuildpipeline@ea93f1084040/Tests/Runtime/Unity.ScriptableBuildPipeline.Tests.asmdef' will not be compiled because it exists outside the Assets folder and does not to belong to any assembly definition file.
+Script 'Library/PackageCache/com.unity.collections@84e8eb3fc12e/Unity.Collections.BurstCompatibilityGen/Unity.Collections.BurstCompatibilityGen.asmdef' will not be compiled because it exists outside the Assets folder and does not to belong to any assembly definition file.
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[MODES] Loading mode Default (0) for mode-current-id-GameDevelopmentKit
+Unloading 33 Unused Serialized files (Serialized files now loaded: 0)
+Refreshing native plugins compatible for Editor in 1.16 ms, found 4 plugins.
+Preloading 0 native plugins for Editor in 0.00 ms.
+Loaded scene 'Assets/Launcher.unity'
+	Deserialize:            70.010 ms
+	Integration:            291.340 ms
+	Integration of assets:  8.063 ms
+	Thread Wait Time:       -0.004 ms
+	Total Operation Time:   369.409 ms
+Unloading 7800 unused Assets / (5.0 MB). Loaded Objects now: 8914.
+Memory consumption went from 236.7 MB to 231.7 MB.
+Total: 26.111400 ms (FindLiveObjects: 0.852100 ms CreateObjectMapping: 0.305300 ms MarkObjects: 22.847400 ms  DeleteObjects: 2.105300 ms)
+
+[LAYOUT] About to load UserSettings\Layouts\default-6000.dwlt, keepMainWindow=False
+[LAYOUT] About to save layout E:\Project\GameDevelopmentKit\Unity\UserSettings\Layouts\default-6000.dwlt
+[LAYOUT] About to save layout C:/Users/123/AppData/Roaming/Unity/Editor-5.x/Preferences\Layouts\current\default-6000.dwlt
+[MODES] ModeService[default].InitializeCurrentMode
+[MODES] ModeService[default].RaiseModeChanged(default, default)
+<RI> Initializing input.
+Using Windows.Gaming.Input
+[Project] Loading completed in 12.885 seconds
+	Project init time: 				9.694 seconds
+		Template init time: 		0.000 seconds
+		Package Manager init time: 		0.469 seconds
+		Asset Database init time: 		0.237 seconds
+		Global illumination init time: 	0.003 seconds
+		Assemblies load time: 			0.895 seconds
+		Unity extensions init time: 	0.011 seconds
+		Asset Database refresh time: 	6.895 seconds
+	Scene opening time: 			2.983 seconds
+##utp:{"type":"ProjectInfo","version":2,"phase":"Immediate","time":1787733900853,"processId":248452,"projectLoad":12.8853051,"projectInit":9.6941652,"templateInit":0.0,"packageManagerInit":0.4686131,"assetDatabaseInit":0.2368602,"globalIlluminationInit":0.0028863,"assembliesLoad":0.8950166,"unityExtensionsInit":0.0105527,"assetDatabaseRefresh":6.8953225,"sceneOpening":2.9829242}
+##utp:{"type":"EditorInfo","version":2,"phase":"Immediate","time":1787733900853,"processId":248452,"editorVersion":"6000.3.21f1 (c02631ffc030)","branch":"6000.3/staging","buildType":"Release","platform":"Windows"}
+Asset Pipeline Refresh (id=2e98e44e8fdb5484dbfdb515d8ada101): Total: 0.066 seconds - Initiated by RefreshV2(AllowForceSynchronousImport)
+Created GICache directory at C:/Users/123/AppData/LocalLow/Unity/Caches/GiCache. Took: 0.032s, timestamps: [14.997 - 15.029]
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+Android Extension - Scanning For ADB Devices 2260 ms
+Android Extension - Scanning For ADB Devices 253 ms
+Attempted to call .Dispose on an already disposed CancellationTokenSource
+Android Extension - Scanning For ADB Devices 184 ms
+Android Extension - Scanning For ADB Devices 499 ms
+TrimDiskCacheJob: Current cache size 0mb
+Reloading assemblies for play mode.
+Reloading assemblies after forced synchronous recompile.
+Attempted to call .Dispose on an already disposed CancellationTokenSource
+[Licensing::Client] Successfully resolved entitlement details
+Begin MonoManager ReloadAssembly
+- Loaded All Assemblies, in  1.505 seconds
+Refreshing native plugins compatible for Editor in 1.39 ms, found 4 plugins.
+Native extension for iOS target not found
+Native extension for Android target not found
+Native extension for WindowsStandalone target not found
+[AgentBridge] started. root=E:\Project\GameDevelopmentKit\Unity\.agentbridge poll=200ms
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+AgentBridge.AgentBridgeHost:Activate (AgentBridge.FileChannel) (at ./Library/PackageCache/me.xw.unityagentbridge@70c8cd9d9e8d/Editor/Host/AgentBridgeHost.cs:128)
+AgentBridge.AgentBridgeHost:.cctor () (at ./Library/PackageCache/me.xw.unityagentbridge@70c8cd9d9e8d/Editor/Host/AgentBridgeHost.cs:35)
+System.Runtime.CompilerServices.RuntimeHelpers:RunClassConstructor (System.RuntimeTypeHandle)
+UnityEditor.EditorAssemblies:ProcessInitializeOnLoadAttributes (System.Type[])
+
+(Filename: ./Library/PackageCache/me.xw.unityagentbridge@70c8cd9d9e8d/Editor/Host/AgentBridgeHost.cs Line: 128)
+
+ScheduleIndexationOnStartup MainProcess:True IndexOnStartup:True
+[MODES] ModeService[none].Initialize
+[MODES] ModeService[none].LoadModes
+[Licensing::Client] Successfully resolved entitlement details
+Mono: successfully reloaded assembly
+- Finished resetting the current domain, in  2.435 seconds
+Domain Reload Profiling: 3936ms
+	BeginReloadAssembly (861ms)
+		ExecutionOrderSort (0ms)
+		DisableScriptedObjects (92ms)
+		BackupInstance (0ms)
+		ReleaseScriptingObjects (0ms)
+		CreateAndSetChildDomain (542ms)
+	RebuildCommonClasses (42ms)
+	RebuildNativeTypeToScriptingClass (23ms)
+	initialDomainReloadingComplete (89ms)
+	LoadAllAssembliesAndSetupDomain (486ms)
+		LoadAssemblies (213ms)
+		RebuildTransferFunctionScriptingTraits (0ms)
+		AnalyzeDomain (380ms)
+			TypeCache.Refresh (12ms)
+				TypeCache.ScanAssembly (0ms)
+			BuildScriptInfoCaches (335ms)
+			ResolveRequiredComponents (26ms)
+	FinalizeReload (2435ms)
+		ReleaseScriptCaches (0ms)
+		RebuildScriptCaches (0ms)
+		SetupLoadedEditorAssemblies (1219ms)
+			LogAssemblyErrors (0ms)
+			InitializePlatformSupportModulesInManaged (40ms)
+			SetLoadedEditorAssemblies (8ms)
+			BeforeProcessingInitializeOnLoad (162ms)
+			ProcessInitializeOnLoadAttributes (818ms)
+			ProcessInitializeOnLoadMethodAttributes (185ms)
+			AfterProcessingInitializeOnLoad (5ms)
+			EditorAssembliesLoaded (0ms)
+		ExecutionOrderSort2 (0ms)
+		AwakeInstancesAfterBackupRestoration (597ms)
+Asset Pipeline Refresh (id=37ed62236e85b7c43ab34b4163f5a473): Total: 4.138 seconds - Initiated by StopAssetImportingV2(ForceSynchronousImport | ForceDomainReload)
+	Summary:
+		Imports: total=0 (actual=0, local cache=0, cache server=0)
+		Asset DB Process Time: managed=0 ms, native=2572 ms
+		Asset DB Callback time: managed=32 ms, native=0 ms
+		Scripting: domain reloads=1, domain reload time=1531 ms, compile time=1 ms, other=0 ms
+		Project Asset Count: scripts=2046, non-scripts=2795
+		Asset File Changes: new=0, changed=0, moved=0, deleted=0
+		Scan Filter Count: 0
+	InvokeCustomDependenciesCallbacks: 0.001ms
+	InvokePackagesCallback: 1.549ms
+	ApplyChangesToAssetFolders: 0.493ms
+	Scan: 0.001ms
+	OnSourceAssetsModified: 0.002ms
+	CategorizeAssetsWithTransientArtifact: 0.004ms
+	ProcessAssetsWithTransientArtifactChanges: 6.826ms
+	CategorizeAssets: 81.978ms
+	ImportOutOfDateAssets: 2447.795ms (2441.019ms without children)
+		CompileScripts: 1.252ms
+		CollectScriptTypesHashes: 1.651ms
+		ReloadNativeAssets: 1.024ms
+		UnloadImportedAssets: 1.598ms
+		EnsureUptoDateAssetsAreRegisteredWithGuidPM: 0.875ms
+		InitializingProgressBar: 0.001ms
+		PostProcessAllAssetNotificationsAddChangedAssets: 0.001ms
+		OnDemandSchedulerStart: 0.375ms
+	PostProcessAllAssets: 32.701ms
+	GatherAllCurrentPrimaryArtifactRevisions: 0.312ms
+	UnloadStreamsBegin: 1.329ms
+	PersistCurrentRevisions: 0.169ms
+	UnloadStreamsEnd: 0.001ms
+	GenerateScriptTypeHashes: 7.216ms
+	Untracked: 1564.884ms
+
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            0.446 ms
+	Integration:            336.273 ms
+	Integration of assets:  0.002 ms
+	Thread Wait Time:       0.017 ms
+	Total Operation Time:   336.738 ms
+Game Framework Version: 2021.05.31
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<string> (string,string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:591)
+UnityGameFramework.Runtime.Log:Info<string> (string,string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:565)
+UnityGameFramework.Runtime.BaseComponent:Awake () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:192)
+UnityEngine.Object:Internal_InstantiateSingle (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate<UnityEngine.GameObject> (UnityEngine.GameObject,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityGameFramework.Extension.GameEntryLoader/<Start>d__8:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Loader/GameEntryLoader.cs:31)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Game Version: 1.0 (0)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<string, int> (string,string,int) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:609)
+UnityGameFramework.Runtime.Log:Info<string, int> (string,string,int) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:583)
+UnityGameFramework.Runtime.BaseComponent:Awake () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:193)
+UnityEngine.Object:Internal_InstantiateSingle (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate<UnityEngine.GameObject> (UnityEngine.GameObject,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityGameFramework.Extension.GameEntryLoader/<Start>d__8:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Loader/GameEntryLoader.cs:31)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Unity Version: 6000.3.21f1
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<string> (string,string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:591)
+UnityGameFramework.Runtime.Log:Info<string> (string,string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:565)
+UnityGameFramework.Runtime.BaseComponent:Awake () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:194)
+UnityEngine.Object:Internal_InstantiateSingle (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate<UnityEngine.GameObject> (UnityEngine.GameObject,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityGameFramework.Extension.GameEntryLoader/<Start>d__8:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Loader/GameEntryLoader.cs:31)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+During this run, Game Framework will use editor resource files, which you should validate first.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+UnityGameFramework.Runtime.BaseComponent:Awake () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:209)
+UnityEngine.Object:Internal_InstantiateSingle (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate<UnityEngine.GameObject> (UnityEngine.GameObject,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityGameFramework.Extension.GameEntryLoader/<Start>d__8:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Loader/GameEntryLoader.cs:31)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+设置屏幕安全区域 x:0 ,y:0 ,width:1920 ,height:1080 .
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+UnityGameFramework.Extension.ScreenComponent:Set (int,int) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Screen/ScreenComponent.cs:88)
+UnityGameFramework.Extension.ScreenComponent:Awake () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Screen/ScreenComponent.cs:82)
+UnityEngine.Object:Internal_InstantiateSingle (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate<UnityEngine.GameObject> (UnityEngine.GameObject,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityGameFramework.Extension.GameEntryLoader/<Start>d__8:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Loader/GameEntryLoader.cs:31)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+设置屏幕标准宽高:1080 ,高:1920 .
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+UnityGameFramework.Extension.ScreenComponent:Set (int,int) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Screen/ScreenComponent.cs:91)
+UnityGameFramework.Extension.ScreenComponent:Awake () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Screen/ScreenComponent.cs:82)
+UnityEngine.Object:Internal_InstantiateSingle (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate<UnityEngine.GameObject> (UnityEngine.GameObject,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityGameFramework.Extension.GameEntryLoader/<Start>d__8:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Loader/GameEntryLoader.cs:31)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+屏幕宽高:1920 ,高:1080 .
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+UnityGameFramework.Extension.ScreenComponent:Set (int,int) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Screen/ScreenComponent.cs:97)
+UnityGameFramework.Extension.ScreenComponent:Awake () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Screen/ScreenComponent.cs:82)
+UnityEngine.Object:Internal_InstantiateSingle (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate (UnityEngine.Object,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityEngine.Object:Instantiate<UnityEngine.GameObject> (UnityEngine.GameObject,UnityEngine.Vector3,UnityEngine.Quaternion)
+UnityGameFramework.Extension.GameEntryLoader/<Start>d__8:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Loader/GameEntryLoader.cs:31)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Initialize Game Framework.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+UnityGameFramework.Runtime.GameEntry:Initialize () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/GameEntry.cs:104)
+Game.GameEntry:Start () (at Assets/Scripts/Game/Base/GameEntry.cs:23)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Strict checking is enabled for the Reference Pool. It will drastically affect the performance.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+UnityGameFramework.Runtime.ReferencePoolComponent:set_EnableStrictCheck (bool) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/ReferencePool/ReferencePoolComponent.cs:37)
+UnityGameFramework.Runtime.ReferencePoolComponent:Start () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/ReferencePool/ReferencePoolComponent.cs:63)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Init language settings complete, current language is 'ChineseSimplified'.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<string> (string,string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:591)
+UnityGameFramework.Runtime.Log:Info<string> (string,string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:565)
+Game.ProcedureLaunch:InitLanguageSettings () (at Assets/Scripts/Game/Procedure/ProcedureLaunch.cs:90)
+Game.ProcedureLaunch:OnEnter (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Game/Procedure/ProcedureLaunch.cs:30)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:Start (System.Type) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:303)
+GameFramework.Procedure.ProcedureManager:StartProcedure (System.Type) (at Assets/Scripts/Library/UGF/GameFramework/Procedure/ProcedureManager.cs:141)
+UnityGameFramework.Runtime.ProcedureComponent/<Start>d__9:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Procedure/ProcedureComponent.cs:105)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+UnityEditor.EditorGUIUtility:RenderPlayModeViewCamerasInternal (UnityEngine.RenderTexture,int,UnityEngine.Vector2,bool,bool)
+UnityEditor.PlayModeView:RenderView (UnityEngine.Vector2,bool)
+UnityEditor.GameView:OnGUI ()
+UnityEditor.HostView:InvokeOnGUI (UnityEngine.Rect)
+UnityEditor.DockArea:DrawView (UnityEngine.Rect)
+UnityEditor.DockArea:OldOnGUI ()
+UnityEngine.UIElements.IMGUIContainer:DoOnGUI (UnityEngine.Event,UnityEngine.Matrix4x4,UnityEngine.Rect,bool,UnityEngine.Rect,System.Action,bool)
+UnityEngine.UIElements.IMGUIContainer:HandleIMGUIEvent (UnityEngine.Event,UnityEngine.Matrix4x4,UnityEngine.Rect,System.Action,bool)
+UnityEngine.UIElements.IMGUIContainer:DoIMGUIRepaint ()
+UnityEngine.UIElements.UIR.RenderChainCommand:ExecuteNonDrawMesh (UnityEngine.UIElements.UIR.DrawParams,single,System.Exception&)
+UnityEngine.UIElements.UIR.UIRenderDevice:EvaluateChain (UnityEngine.UIElements.UIR.RenderChainCommand,UnityEngine.Material,UnityEngine.Texture,UnityEngine.Texture,System.Nullable`1<UnityEngine.Rect>,UnityEngine.Vector2,single,bool,UnityEngine.UIElements.TextureSlotCount,bool,System.Exception&)
+UnityEngine.UIElements.UIR.RenderTreeManager:RenderSingleTree (UnityEngine.UIElements.UIR.RenderTree,UnityEngine.RenderTexture,UnityEngine.RectInt,UnityEngine.Rect)
+UnityEngine.UIElements.UIR.RenderTreeManager:RenderRootTree ()
+UnityEngine.UIElements.UIRRepaintUpdater:Render ()
+UnityEngine.UIElements.BaseVisualElementPanel:Render ()
+UnityEngine.UIElements.Panel:Render ()
+UnityEngine.UIElements.UIElementsUtility:DoDispatch (UnityEngine.UIElements.BaseVisualElementPanel)
+UnityEngine.UIElements.UIElementsUtility:UnityEngine.UIElements.IUIElementsUtility.ProcessEvent (int,intptr,bool&)
+UnityEngine.UIElements.UIEventRegistration:ProcessEvent (int,intptr)
+UnityEngine.UIElements.UIEventRegistration/<>c:<.cctor>b__1_2 (int,intptr)
+UnityEngine.GUIUtility:ProcessEvent (int,intptr,bool&)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Init sound settings complete.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.ProcedureLaunch:InitSoundSettings () (at Assets/Scripts/Game/Procedure/ProcedureLaunch.cs:137)
+Game.ProcedureLaunch:OnEnter (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Game/Procedure/ProcedureLaunch.cs:36)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:Start (System.Type) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:303)
+GameFramework.Procedure.ProcedureManager:StartProcedure (System.Type) (at Assets/Scripts/Library/UGF/GameFramework/Procedure/ProcedureManager.cs:141)
+UnityGameFramework.Runtime.ProcedureComponent/<Start>d__9:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Procedure/ProcedureComponent.cs:105)
+UnityEngine.SetupCoroutine:InvokeMoveNext (System.Collections.IEnumerator,intptr)
+UnityEditor.EditorGUIUtility:RenderPlayModeViewCamerasInternal (UnityEngine.RenderTexture,int,UnityEngine.Vector2,bool,bool)
+UnityEditor.PlayModeView:RenderView (UnityEngine.Vector2,bool)
+UnityEditor.GameView:OnGUI ()
+UnityEditor.HostView:InvokeOnGUI (UnityEngine.Rect)
+UnityEditor.DockArea:DrawView (UnityEngine.Rect)
+UnityEditor.DockArea:OldOnGUI ()
+UnityEngine.UIElements.IMGUIContainer:DoOnGUI (UnityEngine.Event,UnityEngine.Matrix4x4,UnityEngine.Rect,bool,UnityEngine.Rect,System.Action,bool)
+UnityEngine.UIElements.IMGUIContainer:HandleIMGUIEvent (UnityEngine.Event,UnityEngine.Matrix4x4,UnityEngine.Rect,System.Action,bool)
+UnityEngine.UIElements.IMGUIContainer:DoIMGUIRepaint ()
+UnityEngine.UIElements.UIR.RenderChainCommand:ExecuteNonDrawMesh (UnityEngine.UIElements.UIR.DrawParams,single,System.Exception&)
+UnityEngine.UIElements.UIR.UIRenderDevice:EvaluateChain (UnityEngine.UIElements.UIR.RenderChainCommand,UnityEngine.Material,UnityEngine.Texture,UnityEngine.Texture,System.Nullable`1<UnityEngine.Rect>,UnityEngine.Vector2,single,bool,UnityEngine.UIElements.TextureSlotCount,bool,System.Exception&)
+UnityEngine.UIElements.UIR.RenderTreeManager:RenderSingleTree (UnityEngine.UIElements.UIR.RenderTree,UnityEngine.RenderTexture,UnityEngine.RectInt,UnityEngine.Rect)
+UnityEngine.UIElements.UIR.RenderTreeManager:RenderRootTree ()
+UnityEngine.UIElements.UIRRepaintUpdater:Render ()
+UnityEngine.UIElements.BaseVisualElementPanel:Render ()
+UnityEngine.UIElements.Panel:Render ()
+UnityEngine.UIElements.UIElementsUtility:DoDispatch (UnityEngine.UIElements.BaseVisualElementPanel)
+UnityEngine.UIElements.UIElementsUtility:UnityEngine.UIElements.IUIElementsUtility.ProcessEvent (int,intptr,bool&)
+UnityEngine.UIElements.UIEventRegistration:ProcessEvent (int,intptr)
+UnityEngine.UIElements.UIEventRegistration/<>c:<.cctor>b__1_2 (int,intptr)
+UnityEngine.GUIUtility:ProcessEvent (int,intptr,bool&)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+[Licensing::Client] Successfully resolved entitlement details
+Start Indexing on Editor startup
+[Indexing] Starting Initial Indexing for Assets
+Editor resource mode detected.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.ProcedureSplash:OnUpdate (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>,single,single) (at Assets/Scripts/Game/Procedure/ProcedureSplash.cs:26)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:545)
+GameFramework.Fsm.FsmManager:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/FsmManager.cs:78)
+GameFramework.GameFrameworkEntry:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/GameFrameworkEntry.cs:29)
+UnityGameFramework.Runtime.BaseComponent:Update () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:231)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Start load Game Tables!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.ProcedurePreload/<PreloadAsync>d__1:MoveNext () (at Assets/Scripts/Game/Procedure/ProcedurePreload.cs:18)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoidMethodBuilder:Start<Game.ProcedurePreload/<PreloadAsync>d__1> (Game.ProcedurePreload/<PreloadAsync>d__1&) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/AsyncUniTaskVoidMethodBuilder.cs:110)
+Game.ProcedurePreload:PreloadAsync (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>)
+Game.ProcedurePreload:OnEnter (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Game/Procedure/ProcedurePreload.cs:13)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:ChangeState (System.Type) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:585)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:ChangeState<Game.ProcedurePreload> () (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:562)
+GameFramework.Fsm.FsmState`1<GameFramework.Procedure.IProcedureManager>:ChangeState<Game.ProcedurePreload> (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/FsmState.cs:81)
+Game.ProcedureCompleteResources:OnEnter (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Game/Procedure/ProcedureCompleteResources.cs:17)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:ChangeState (System.Type) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:585)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:ChangeState<Game.ProcedureCompleteResources> () (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:562)
+GameFramework.Fsm.FsmState`1<GameFramework.Procedure.IProcedureManager>:ChangeState<Game.ProcedureCompleteResources> (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/FsmState.cs:81)
+Game.ProcedureSplash:OnUpdate (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>,single,single) (at Assets/Scripts/Game/Procedure/ProcedureSplash.cs:27)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:545)
+GameFramework.Fsm.FsmManager:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/FsmManager.cs:78)
+GameFramework.GameFrameworkEntry:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/GameFrameworkEntry.cs:29)
+UnityGameFramework.Runtime.BaseComponent:Update () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:231)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Asset Pipeline Refresh (id=bb43e561e4d6c58489eeaf3a011a052b): Total: 0.019 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Finish load Game Tables!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.ProcedurePreload/<PreloadAsync>d__1:MoveNext () (at Assets/Scripts/Game/Procedure/ProcedurePreload.cs:20)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid`1<Game.ProcedurePreload/<PreloadAsync>d__1>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:104)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.TablesComponent/<LoadAllAsync>d__43>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.TablesComponent/<LoadAllAsync>d__43:MoveNext () (at Assets/Scripts/Game/Tables/TablesComponent.Load.cs:77)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.TablesComponent/<LoadAllAsync>d__43>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.TablesComponent/<LoadAsync>d__32>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.TablesComponent/<LoadAsync>d__32:MoveNext () (at Assets/Scripts/Game/Generate/Luban/TablesComponent.cs:61)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.TablesComponent/<LoadAsync>d__32>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.UniTask/WhenAllPromise:TryInvokeContinuation (Cysharp.Threading.Tasks.UniTask/WhenAllPromise,Cysharp.Threading.Tasks.UniTask/Awaiter&) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.WhenAll.cs:210)
+Cysharp.Threading.Tasks.UniTask/WhenAllPromise/<>c:<.ctor>b__3_0 (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.WhenAll.cs:189)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.DTSound/<LoadAsync>d__4>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.DTSound/<LoadAsync>d__4:MoveNext () (at Assets/Scripts/Game/Generate/Luban/DTSound.cs:47)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.DTSound/<LoadAsync>d__4>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Luban.ByteBuf>:TrySetResult (Luban.ByteBuf) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`2<Game.TablesComponent/<<LoadAllAsync>g__LoadByteBuf|43_0>d, Luban.ByteBuf>:SetResult (Luban.ByteBuf) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:328)
+Game.TablesComponent/<<LoadAllAsync>g__LoadByteBuf|43_0>d:MoveNext () (at Assets/Scripts/Game/Tables/TablesComponent.Load.cs:62)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`2<Game.TablesComponent/<<LoadAllAsync>g__LoadByteBuf|43_0>d, Luban.ByteBuf>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:313)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityEngine.TextAsset>:TrySetResult (UnityEngine.TextAsset) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+UnityGameFramework.Extension.Awaitable/<>c__DisplayClass22_0`1<UnityEngine.TextAsset>:<LoadAssetAsync>g__MoveNext|0 (Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityEngine.TextAsset>&) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.ResourceComponent.cs:141)
+UnityGameFramework.Extension.Awaitable/UniTaskConfiguredSource`1<UnityEngine.TextAsset>:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.UniTask.cs:88)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:RunCore () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:175)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:LastUpdate () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:146)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:107)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Start load Localization!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.ProcedurePreload/<PreloadAsync>d__1:MoveNext () (at Assets/Scripts/Game/Procedure/ProcedurePreload.cs:22)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid`1<Game.ProcedurePreload/<PreloadAsync>d__1>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:104)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.TablesComponent/<LoadAllAsync>d__43>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.TablesComponent/<LoadAllAsync>d__43:MoveNext () (at Assets/Scripts/Game/Tables/TablesComponent.Load.cs:77)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.TablesComponent/<LoadAllAsync>d__43>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.TablesComponent/<LoadAsync>d__32>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.TablesComponent/<LoadAsync>d__32:MoveNext () (at Assets/Scripts/Game/Generate/Luban/TablesComponent.cs:61)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.TablesComponent/<LoadAsync>d__32>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.UniTask/WhenAllPromise:TryInvokeContinuation (Cysharp.Threading.Tasks.UniTask/WhenAllPromise,Cysharp.Threading.Tasks.UniTask/Awaiter&) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.WhenAll.cs:210)
+Cysharp.Threading.Tasks.UniTask/WhenAllPromise/<>c:<.ctor>b__3_0 (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.WhenAll.cs:189)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.DTSound/<LoadAsync>d__4>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.DTSound/<LoadAsync>d__4:MoveNext () (at Assets/Scripts/Game/Generate/Luban/DTSound.cs:47)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.DTSound/<LoadAsync>d__4>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Luban.ByteBuf>:TrySetResult (Luban.ByteBuf) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`2<Game.TablesComponent/<<LoadAllAsync>g__LoadByteBuf|43_0>d, Luban.ByteBuf>:SetResult (Luban.ByteBuf) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:328)
+Game.TablesComponent/<<LoadAllAsync>g__LoadByteBuf|43_0>d:MoveNext () (at Assets/Scripts/Game/Tables/TablesComponent.Load.cs:62)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`2<Game.TablesComponent/<<LoadAllAsync>g__LoadByteBuf|43_0>d, Luban.ByteBuf>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:313)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityEngine.TextAsset>:TrySetResult (UnityEngine.TextAsset) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+UnityGameFramework.Extension.Awaitable/<>c__DisplayClass22_0`1<UnityEngine.TextAsset>:<LoadAssetAsync>g__MoveNext|0 (Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityEngine.TextAsset>&) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.ResourceComponent.cs:141)
+UnityGameFramework.Extension.Awaitable/UniTaskConfiguredSource`1<UnityEngine.TextAsset>:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.UniTask.cs:88)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:RunCore () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:175)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:LastUpdate () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:146)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:107)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Unloading 8 Unused Serialized files (Serialized files now loaded: 0)
+Unloading 193 unused Assets / (17.0 MB). Loaded Objects now: 10180.
+Memory consumption went from 352.7 MB to 335.7 MB.
+Total: 48.648200 ms (FindLiveObjects: 0.477900 ms CreateObjectMapping: 0.194100 ms MarkObjects: 41.274900 ms  DeleteObjects: 6.699500 ms)
+
+Finish load Localization!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.ProcedurePreload/<PreloadAsync>d__1:MoveNext () (at Assets/Scripts/Game/Procedure/ProcedurePreload.cs:24)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid`1<Game.ProcedurePreload/<PreloadAsync>d__1>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:104)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<object>:TrySetResult (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+UnityGameFramework.Extension.Awaitable/<>c__DisplayClass11_0:<ReadDataAsync>g__MoveNext|0 (Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<object>&) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.LocalizationComponent.cs:43)
+UnityGameFramework.Extension.Awaitable/UniTaskConfiguredSource`1<object>:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.UniTask.cs:88)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:RunCore () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:175)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:LastUpdate () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:146)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:107)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Start init UXTool!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.ProcedurePreload/<PreloadAsync>d__1:MoveNext () (at Assets/Scripts/Game/Procedure/ProcedurePreload.cs:26)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid`1<Game.ProcedurePreload/<PreloadAsync>d__1>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:104)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<object>:TrySetResult (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+UnityGameFramework.Extension.Awaitable/<>c__DisplayClass11_0:<ReadDataAsync>g__MoveNext|0 (Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<object>&) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.LocalizationComponent.cs:43)
+UnityGameFramework.Extension.Awaitable/UniTaskConfiguredSource`1<object>:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.UniTask.cs:88)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:RunCore () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:175)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:LastUpdate () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:146)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:107)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Finish init UXTool!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.ProcedurePreload/<PreloadAsync>d__1:MoveNext () (at Assets/Scripts/Game/Procedure/ProcedurePreload.cs:28)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid`1<Game.ProcedurePreload/<PreloadAsync>d__1>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:104)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<UXTool/<InitAsync>d__0>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+UXTool/<InitAsync>d__0:MoveNext () (at Assets/Scripts/Library/UXTool/Runtime/Common/UXTool.cs:9)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<UXTool/<InitAsync>d__0>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<ResourceManager/<InitAsync>d__3>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+ResourceManager/<InitAsync>d__3:MoveNext () (at Assets/Scripts/Library/UXTool/Runtime/Common/UnityExtension/ResourceManager.cs:24)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<ResourceManager/<InitAsync>d__3>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityGameFramework.Extension.AssetCollection>:TrySetResult (UnityGameFramework.Extension.AssetCollection) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+UnityGameFramework.Extension.Awaitable/<>c__DisplayClass22_0`1<UnityGameFramework.Extension.AssetCollection>:<LoadAssetAsync>g__MoveNext|0 (Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityGameFramework.Extension.AssetCollection>&) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.ResourceComponent.cs:141)
+UnityGameFramework.Extension.Awaitable/UniTaskConfiguredSource`1<UnityGameFramework.Extension.AssetCollection>:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.UniTask.cs:88)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:RunCore () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:175)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:LastUpdate () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:146)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:107)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Start run Game.Hot!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.ProcedureGameHot:OnEnter (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Game/Procedure/ProcedureGameHot.cs:13)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:ChangeState (System.Type) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:585)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:ChangeState<Game.ProcedureGameHot> () (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:562)
+GameFramework.Fsm.FsmState`1<GameFramework.Procedure.IProcedureManager>:ChangeState<Game.ProcedureGameHot> (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/FsmState.cs:81)
+Game.ProcedurePreset:OnEnter (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Game/Procedure/ProcedurePreset.cs:22)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:ChangeState (System.Type) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:585)
+GameFramework.Fsm.Fsm`1<GameFramework.Procedure.IProcedureManager>:ChangeState<Game.ProcedurePreset> () (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:562)
+GameFramework.Fsm.FsmState`1<GameFramework.Procedure.IProcedureManager>:ChangeState<Game.ProcedurePreset> (GameFramework.Fsm.IFsm`1<GameFramework.Procedure.IProcedureManager>) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/FsmState.cs:81)
+Game.ProcedurePreload/<PreloadAsync>d__1:MoveNext () (at Assets/Scripts/Game/Procedure/ProcedurePreload.cs:35)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid`1<Game.ProcedurePreload/<PreloadAsync>d__1>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:104)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<UXTool/<InitAsync>d__0>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+UXTool/<InitAsync>d__0:MoveNext () (at Assets/Scripts/Library/UXTool/Runtime/Common/UXTool.cs:9)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<UXTool/<InitAsync>d__0>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<ResourceManager/<InitAsync>d__3>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+ResourceManager/<InitAsync>d__3:MoveNext () (at Assets/Scripts/Library/UXTool/Runtime/Common/UnityExtension/ResourceManager.cs:24)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<ResourceManager/<InitAsync>d__3>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityGameFramework.Extension.AssetCollection>:TrySetResult (UnityGameFramework.Extension.AssetCollection) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+UnityGameFramework.Extension.Awaitable/<>c__DisplayClass22_0`1<UnityGameFramework.Extension.AssetCollection>:<LoadAssetAsync>g__MoveNext|0 (Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityGameFramework.Extension.AssetCollection>&) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.ResourceComponent.cs:141)
+UnityGameFramework.Extension.Awaitable/UniTaskConfiguredSource`1<UnityGameFramework.Extension.AssetCollection>:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.UniTask.cs:88)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:RunCore () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:175)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:LastUpdate () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:146)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:107)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Game.Hot.Code Start!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.Hot.HotEntry:Start () (at Assets/Scripts/Game/Hot/Code/Base/HotEntry.cs:14)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Game.Hot.Code Load Config!
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:575)
+UnityGameFramework.Runtime.Log:Info (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:549)
+Game.Hot.ProcedurePreload/<PreloadAsync>d__1:MoveNext () (at Assets/Scripts/Game/Hot/Code/Procedure/ProcedurePreload.cs:20)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid`1<Game.Hot.ProcedurePreload/<PreloadAsync>d__1>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:104)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.Hot.TablesComponent/<LoadAllAsync>d__77>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.Hot.TablesComponent/<LoadAllAsync>d__77:MoveNext () (at Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.Load.cs:51)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.Hot.TablesComponent/<LoadAllAsync>d__77>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.Hot.TablesComponent/<LoadAsync>d__64>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.Hot.TablesComponent/<LoadAsync>d__64:MoveNext () (at Assets/Scripts/Game/Hot/Code/Generate/Luban/TablesComponent.cs:120)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.Hot.TablesComponent/<LoadAsync>d__64>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.UniTask/WhenAllPromise:TryInvokeContinuation (Cysharp.Threading.Tasks.UniTask/WhenAllPromise,Cysharp.Threading.Tasks.UniTask/Awaiter&) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.WhenAll.cs:210)
+Cysharp.Threading.Tasks.UniTask/WhenAllPromise/<>c:<.ctor>b__3_0 (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.WhenAll.cs:189)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.Hot.DTBuqiMerchant/<LoadAsync>d__4>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.Hot.DTBuqiMerchant/<LoadAsync>d__4:MoveNext () (at Assets/Scripts/Game/Hot/Code/Generate/Luban/DTBuqiMerchant.cs:50)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.Hot.DTBuqiMerchant/<LoadAsync>d__4>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Luban.ByteBuf>:TrySetResult (Luban.ByteBuf) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`2<Game.Hot.TablesComponent/<<LoadAllAsync>g__LoadByteBuf|77_0>d, Luban.ByteBuf>:SetResult (Luban.ByteBuf) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:328)
+Game.Hot.TablesComponent/<<LoadAllAsync>g__LoadByteBuf|77_0>d:MoveNext () (at Assets/Scripts/Game/Hot/Code/Tables/TablesComponent.Load.cs:32)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`2<Game.Hot.TablesComponent/<<LoadAllAsync>g__LoadByteBuf|77_0>d, Luban.ByteBuf>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:313)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityEngine.TextAsset>:TrySetResult (UnityEngine.TextAsset) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+UnityGameFramework.Extension.Awaitable/<>c__DisplayClass22_0`1<UnityEngine.TextAsset>:<LoadAssetAsync>g__MoveNext|0 (Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityEngine.TextAsset>&) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.ResourceComponent.cs:141)
+UnityGameFramework.Extension.Awaitable/UniTaskConfiguredSource`1<UnityEngine.TextAsset>:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.UniTask.cs:88)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:RunCore () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:203)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:LastUpdate () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:146)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:107)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+<color=#888888>开始 GameHot！</color>
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:28)
+GameFramework.GameFrameworkLog:Debug (string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:51)
+UnityGameFramework.Runtime.Log:Debug (string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:41)
+Game.Hot.ProcedureGame:OnEnter (GameFramework.Fsm.IFsm`1<Game.Hot.ProcedureComponent>) (at Assets/Scripts/Game/Hot/Code/Procedure/ProcedureGame.cs:14)
+GameFramework.Fsm.Fsm`1<Game.Hot.ProcedureComponent>:ChangeState (System.Type) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:585)
+GameFramework.Fsm.Fsm`1<Game.Hot.ProcedureComponent>:ChangeState<Game.Hot.ProcedureGame> () (at Assets/Scripts/Library/UGF/GameFramework/Fsm/Fsm.cs:562)
+GameFramework.Fsm.FsmState`1<Game.Hot.ProcedureComponent>:ChangeState<Game.Hot.ProcedureGame> (GameFramework.Fsm.IFsm`1<Game.Hot.ProcedureComponent>) (at Assets/Scripts/Library/UGF/GameFramework/Fsm/FsmState.cs:81)
+Game.Hot.ProcedurePreload/<PreloadAsync>d__1:MoveNext () (at Assets/Scripts/Game/Hot/Code/Procedure/ProcedurePreload.cs:25)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskVoid`1<Game.Hot.ProcedurePreload/<PreloadAsync>d__1>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:104)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<Cysharp.Threading.Tasks.AsyncUnit>:TrySetResult (Cysharp.Threading.Tasks.AsyncUnit) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.Hot.ProcedurePreload/<LoadFontAsync>d__2>:SetResult () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:204)
+Game.Hot.ProcedurePreload/<LoadFontAsync>d__2:MoveNext () (at Assets/Scripts/Game/Hot/Code/Procedure/ProcedurePreload.cs:36)
+Cysharp.Threading.Tasks.CompilerServices.AsyncUniTask`1<Game.Hot.ProcedurePreload/<LoadFontAsync>d__2>:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/CompilerServices/StateMachineRunner.cs:189)
+Cysharp.Threading.Tasks.AwaiterActions:Continuation (object) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTask.cs:25)
+Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityEngine.Font>:TrySetResult (UnityEngine.Font) (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/UniTaskCompletionSource.cs:139)
+UnityGameFramework.Extension.Awaitable/<>c__DisplayClass22_0`1<UnityEngine.Font>:<LoadAssetAsync>g__MoveNext|0 (Cysharp.Threading.Tasks.UniTaskCompletionSourceCore`1<UnityEngine.Font>&) (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.ResourceComponent.cs:141)
+UnityGameFramework.Extension.Awaitable/UniTaskConfiguredSource`1<UnityEngine.Font>:MoveNext () (at Assets/Scripts/Library/UGF/UnityGameFramework.Extension/Runtime/Awaitable/Awaitable.UniTask.cs:88)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:RunCore () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:175)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:LastUpdate () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:146)
+Cysharp.Threading.Tasks.Internal.PlayerLoopRunner:Run () (at ./Library/PackageCache/com.cysharp.unitask@cda068700cce/Runtime/Internal/PlayerLoopRunner.cs:107)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 28)
+
+LightingSettings: switching bake backend from 2 to 1.
+Load scene 'Assets/Res/Scene/Menu.unity' update, progress '0.00%'.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<string, string> (string,string,string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:609)
+UnityGameFramework.Runtime.Log:Info<string, string> (string,string,string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:583)
+Game.Hot.ProcedureChangeScene:OnLoadSceneUpdate (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Game/Hot/Code/Procedure/ProcedureChangeScene.cs:130)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:HandleEvent (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:262)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:74)
+GameFramework.Event.EventManager:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Event/EventManager.cs:68)
+GameFramework.GameFrameworkEntry:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/GameFrameworkEntry.cs:29)
+UnityGameFramework.Runtime.BaseComponent:Update () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:231)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Loaded scene 'Assets/Res/Scene/Menu.unity'
+	Deserialize:            5.323 ms
+	Integration:            2.393 ms
+	Integration of assets:  0.031 ms
+	Thread Wait Time:       24.334 ms
+	Total Operation Time:   32.081 ms
+Load scene 'Assets/Res/Scene/Menu.unity' update, progress '90.00%'.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<string, string> (string,string,string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:609)
+UnityGameFramework.Runtime.Log:Info<string, string> (string,string,string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:583)
+Game.Hot.ProcedureChangeScene:OnLoadSceneUpdate (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Game/Hot/Code/Procedure/ProcedureChangeScene.cs:130)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:HandleEvent (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:262)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:74)
+GameFramework.Event.EventManager:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Event/EventManager.cs:68)
+GameFramework.GameFrameworkEntry:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/GameFrameworkEntry.cs:29)
+UnityGameFramework.Runtime.BaseComponent:Update () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:231)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Load scene 'Assets/Res/Scene/Menu.unity' OK.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<string> (string,string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:591)
+UnityGameFramework.Runtime.Log:Info<string> (string,string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:565)
+Game.Hot.ProcedureChangeScene:OnLoadSceneSuccess (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Game/Hot/Code/Procedure/ProcedureChangeScene.cs:101)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:HandleEvent (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:262)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:74)
+GameFramework.Event.EventManager:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Event/EventManager.cs:68)
+GameFramework.GameFrameworkEntry:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/GameFrameworkEntry.cs:29)
+UnityGameFramework.Runtime.BaseComponent:Update () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:231)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Network channel 'WebSocket' error, error code is 'SocketError', error message is 'Unable to connect to the remote server'.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<string, GameFramework.Network.NetworkErrorCode, string> (string,string,GameFramework.Network.NetworkErrorCode,string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:629)
+UnityGameFramework.Runtime.Log:Info<string, GameFramework.Network.NetworkErrorCode, string> (string,string,GameFramework.Network.NetworkErrorCode,string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:603)
+Game.NetworkChannelHelper:OnNetworkError (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Game/Hot/Loader/Network/NetworkChannelHelper.cs:290)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:HandleEvent (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:262)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:74)
+GameFramework.Event.EventManager:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Event/EventManager.cs:68)
+GameFramework.GameFrameworkEntry:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/GameFrameworkEntry.cs:29)
+UnityGameFramework.Runtime.BaseComponent:Update () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:231)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Network channel 'WebSocket' closed.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<string> (string,string) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:591)
+UnityGameFramework.Runtime.Log:Info<string> (string,string) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:565)
+Game.NetworkChannelHelper:OnNetworkClosed (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Game/Hot/Loader/Network/NetworkChannelHelper.cs:255)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:HandleEvent (object,GameFramework.Event.GameEventArgs) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:262)
+GameFramework.EventPool`1<GameFramework.Event.GameEventArgs>:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/EventPool/EventPool.cs:74)
+GameFramework.Event.EventManager:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Event/EventManager.cs:68)
+GameFramework.GameFrameworkEntry:Update (single,single) (at Assets/Scripts/Library/UGF/GameFramework/Base/GameFrameworkEntry.cs:29)
+UnityGameFramework.Runtime.BaseComponent:Update () (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/BaseComponent.cs:231)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Asset Pipeline Refresh (id=b2edc8abc5d073542a7a4050e2d3bc5a): Total: 0.006 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Asset Pipeline Refresh (id=9ee442c12ddefed47a995598b83f7e67): Total: 0.003 seconds - Initiated by RefreshV2(NoUpdateAssetOptions)
+Shutdown Game Framework (Quit)...
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+UnityGameFramework.Runtime.DefaultLogHelper:Log (GameFramework.GameFrameworkLogLevel,object) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs:32)
+GameFramework.GameFrameworkLog:Info<UnityGameFramework.Runtime.ShutdownType> (string,UnityGameFramework.Runtime.ShutdownType) (at Assets/Scripts/Library/UGF/GameFramework/Base/Log/GameFrameworkLog.cs:591)
+UnityGameFramework.Runtime.Log:Info<UnityGameFramework.Runtime.ShutdownType> (string,UnityGameFramework.Runtime.ShutdownType) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/Log.cs:565)
+UnityGameFramework.Runtime.GameEntry:Shutdown (UnityGameFramework.Runtime.ShutdownType) (at Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Base/GameEntry.cs:119)
+Game.GameEntry:OnApplicationQuit () (at Assets/Scripts/Game/Base/GameEntry.cs:30)
+
+(Filename: Assets/Scripts/Library/UGF/UnityGameFramework/Runtime/Utility/DefaultLogHelper.cs Line: 32)
+
+Unloading 1 Unused Serialized files (Serialized files now loaded: 0)
+Loaded scene 'Temp/__Backupscenes/0.backup'
+	Deserialize:            2.371 ms
+	Integration:            293.020 ms
+	Integration of assets:  0.135 ms
+	Thread Wait Time:       0.009 ms
+	Total Operation Time:   295.535 ms
+Unloading 25 unused Assets / (0.6 MB). Loaded Objects now: 15961.
+Memory consumption went from 380.5 MB to 379.9 MB.
+Total: 62.643600 ms (FindLiveObjects: 0.668100 ms CreateObjectMapping: 0.328800 ms MarkObjects: 58.863200 ms  DeleteObjects: 2.757200 ms)
+
+[Licensing::Client] Successfully resolved entitlement details
+Starting new worker id: 0 with log in E:/Project/GameDevelopmentKit/Unity/Logs/AssetImportWorker0.log
+Starting new worker id: 1 with log in E:/Project/GameDevelopmentKit/Unity/Logs/AssetImportWorker1.log
+Starting new worker id: 2 with log in E:/Project/GameDevelopmentKit/Unity/Logs/AssetImportWorker2.log
+Worker ready: AssetImportWorker1 1
+Worker ready: AssetImportWorker0 0
+Worker ready: AssetImportWorker2 2
+[Worker1] Start importing Assets/Scripts/Game/ET/Code/Model/Generate/LocalizationKey.cs using Guid(137d074363b3f4af9a5d0137bbd3540c) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker1] (ScriptedImporter)
+[Worker0] Start importing Assets/Res/Localization/ChineseTraditional/Localization.bytes using Guid(25619d90ce6d6724db8154b48c144403) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker2] Start importing Assets/Res/Localization/Korean/Localization.bytes using Guid(667ce59325f540a43bace79736e2287e) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker2] (ScriptedImporter)
+[Worker0]  -> (artifact id: '9a833252555cc94cef08d951b8275fe8') in 0.0946658 seconds
+[Worker1]  -> (artifact id: '03bd30c862005499dde6f59d240876e0') in 0.1335046 seconds
+[Worker0] Start importing Assets/Res/Localization/English/Localization.bytes using Guid(d21cca8dd0073ab4584cd5ff462371ee) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker1] Start importing Assets/Scripts/Game/Hot/Code/Generate/LocalizationKey.cs using Guid(0ffbca79254ad466798744de6fa374cc) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0]  -> (artifact id: 'afc62e754aea80183f5ece3ac001d35e') in 0.0040999 seconds
+[Worker1] (ScriptedImporter)
+[Worker2]  -> (artifact id: 'a408244c025fb9c738797a4cb3f55b7c') in 0.097714 seconds
+[Worker1]  -> (artifact id: 'c247008323e3e40056c9acc46346c7f9') in 0.0054898 seconds
+[Worker0] Start importing Assets/Res/Localization/ChineseSimplified/Localization.bytes using Guid(7c257456f05a75841b93e90bdd63bbf9) Importer(2089858483,b0f066a214c2f5e87bad3c948f4d605d) 
+[Worker0] (ScriptedImporter)
+[Worker0]  -> (artifact id: 'a360f8c1c8dffbc5ecafdc4afddea341') in 0.0037566 seconds
+[LAYOUT] About to save layout E:\Project\GameDevelopmentKit\Unity\UserSettings\Layouts\default-6000.dwlt
+[LAYOUT] About to save layout C:/Users/123/AppData/Roaming/Unity/Editor-5.x/Preferences\Layouts\current\default-6000.dwlt
+Killing ADB server in 0.0852637 seconds.
+Input System module state changed to: ShutdownInProgress.
+Input System polling thread exited.
+Input System module state changed to: Shutdown.
+[Physics::Module] Cleanup current backend.
+[Physics::Module] Id: 0xf2b8ea05
+[Licensing::IpcConnector] LicenseClient-123-notifications channel disconnected successfully.
+[Licensing::IpcConnector] LicenseClient-123 channel disconnected successfully.
+AcceleratorClientConnectionCallback - disconnected - :0
+Cleanup mono
+An Odin ValidationSession instance is being garbage collected without first having been disposed. ValidationSession instances must be disposed once they are no longer needed. This instance was allocated at the following location: 
+
+  at Sirenix.OdinValidator.Editor.ValidationSession..ctor (System.String sessionName, Sirenix.OdinValidator.Editor.SessionConfig config) [0x0007b] in C:\Sirenix\Sirenix Solution\Sirenix.OdinValidator.Editor\Core\ValidationSession.cs:267 
+  at Sirenix.OdinValidator.Editor.ValidationSessionAssetHandle.AquireSession () [0x00054] in C:\Sirenix\Sirenix Solution\Sirenix.OdinValidator.Editor\Core\ValidationSessionAssetHandle.cs:42 
+  at Sirenix.OdinValidator.Editor.ValidationSessionAssetHandle.get_Session () [0x00000] in C:\Sirenix\Sirenix Solution\Sirenix.OdinValidator.Editor\Core\ValidationSessionAssetHandle.cs:26 
+  at Sirenix.OdinValidator.Editor.ValidationSession.MaintainActiveHandleToActiveValidationSession () [0x00063] in C:\Sirenix\Sirenix Solution\Sirenix.OdinValidator.Editor\Core\ValidationSession.cs:100 
+  at Sirenix.OdinValidator.Editor.ValidationSession+<>c.<Init>b__8_1 () [0x00000] in C:\Sirenix\Sirenix Solution\Sirenix.OdinValidator.Editor\Core\ValidationSession.cs:65 
+  at UnityEditor.EditorApplication.Internal_CallDelayFunctions () [0x00000] in <ebc962e8381145e6bdb44b1996e8e9b4>:0 
+An Odin ValidationRunner instance is being garbage collected without first having been disposed. ValidationRunner instances must be disposed once they are no longer needed. This instance was allocated at the following location: 
+
+  at Sirenix.OdinValidator.Editor.OdinValidationRunner..ctor (Sirenix.OdinValidator.Editor.OdinValidationPolicy policy, Sirenix.OdinValidator.Editor.ValidationRunnerConfig config) [0x00067] in <6b4b8be4ca8c4bebbb51f15298898461>:0 
+  at Sirenix.OdinValidator.Editor.ValidationSession..ctor (System.String sessionName, Sirenix.OdinValidator.Editor.SessionConfig config) [0x00043] in <6b4b8be4ca8c4bebbb51f15298898461>:0 
+  at Sirenix.OdinValidator.Editor.ValidationSessionAssetHandle.AquireSession () [0x00054] in <6b4b8be4ca8c4bebbb51f15298898461>:0 
+  at Sirenix.OdinValidator.Editor.ValidationSessionAssetHandle.get_Session () [0x00000] in <6b4b8be4ca8c4bebbb51f15298898461>:0 
+  at Sirenix.OdinValidator.Editor.ValidationSession.MaintainActiveHandleToActiveValidationSession () [0x00063] in <6b4b8be4ca8c4bebbb51f15298898461>:0 
+  at Sirenix.OdinValidator.Editor.ValidationSession+<>c.<Init>b__8_1 () [0x00000] in <6b4b8be4ca8c4bebbb51f15298898461>:0 
+  at UnityEditor.EditorApplication.Internal_CallDelayFunctions () [0x00000] in <ebc962e8381145e6bdb44b1996e8e9b4>:0 
+Checking for leaked weakptr:
+  Found no leaked weakptrs.
+[Package Manager] Server process was shutdown
+##utp:{"type":"MemoryLeaks","version":2,"phase":"Immediate","time":1787734329317,"processId":248452,"allocatedMemory":19759122,"memoryLabels":[{"Default":29317},{"Permanent":15236},{"NewDelete":66045},{"Thread":4230344},{"Manager":822943},{"VertexData":8},{"Geometry":816},{"Texture":296},{"Shader":80533},{"Material":24},{"GfxDevice":55872},{"GfxThread":24},{"Animation":392},{"Audio":2664},{"FreeType":8},{"FontEngine":736},{"Physics":2146},{"Physics2D":16},{"Serialization":126720},{"Input":14984},{"JobScheduler":33024},{"TextLib":20344},{"Mono":32},{"MonoCode":64},{"ScriptingNativeRuntime":155060},{"BaseObject":1620336},{"Resource":1336},{"Renderer":3000},{"Transform":4685},{"File":12692},{"WebCam":616},{"Culling":32},{"Terrain":11394},{"Wind":24},{"STL":40},{"String":10183},{"DynamicArray":134697},{"HashMap":3859833},{"Utility":2661530},{"Curl":48},{"PoolAlloc":2296},{"AI":80},{"TypeTree":5341},{"ScriptManager":512},{"RuntimeInitializeOnLoadManager":64},{"SpriteAtlas":112},{"GI":7792},{"Director":8240},{"CloudService":7024},{"WebRequest":15046},{"VR":47994},{"SceneManager":504},{"Video":208},{"LazyScriptCache":32},{"NativeArray":9768},{"Camera":17},{"Secure":265},{"SerializationCache":1576},{"APIUpdating":10320},{"Subsystems":336},{"VirtualTexturing":57888},{"StaticSafetyDebugInfo":278528},{"Analytics":464},{"Hierarchy":608},{"CoreStats":13112},{"Identifiers":6480},{"Gui":235},{"EditorUtility":236334},{"VersionControl":4},{"Undo":947},{"AssetDatabase":5022480},{"EditorGi":328},{"UnityConnect":29344},{"Upm":1972},{"AssetCompliance":64},{"DrivenProperties":72},{"LocalIPC":209},{"ProfilerEditor":9746},{"CoreBusinessMetrics":3494},{"Licensing":1232},{"AssetReference":32},{"IPCStream":32}]}

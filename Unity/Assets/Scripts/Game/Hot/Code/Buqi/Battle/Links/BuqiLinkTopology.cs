@@ -13,8 +13,10 @@ namespace Game.Hot.Buqi.Battle
                 return null;
 
             int targetSlot = direction == BuqiLinkDirection.Clockwise
-                ? (source.AnchorSlot + source.Size) % BuqiLinkBoard.SlotCount
-                : (source.AnchorSlot + BuqiLinkBoard.SlotCount - 1) % BuqiLinkBoard.SlotCount;
+                ? source.AnchorSlot + source.Size
+                : source.AnchorSlot - 1;
+            if (targetSlot < 0 || targetSlot >= BuqiLinkBoard.SlotCount)
+                return null;
             foreach (BuqiLinkItem item in board.Items)
             {
                 if (item == source)

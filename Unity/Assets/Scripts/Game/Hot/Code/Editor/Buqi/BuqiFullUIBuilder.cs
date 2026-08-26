@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using Game.Hot.Buqi.Battle;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.UI;
 using Game.Hot.Buqi.UI.Stages;
 using Game.Hot.Buqi.UI.Widgets;
@@ -38,14 +40,14 @@ namespace Game.Hot.Editor
             BuildStage<ShopWidget>("ShopWidget", "商店", "点击预览商品，拖到棋盘完成购买；可刷新或离开商店。", BuildShopContent);
             BuildStage<EventWidget>("EventWidget", "事件", "在收益与风险之间做出选择。");
             BuildStage<ModificationWidget>("ModificationWidget", "改造", "为装备添加收益与代价并存的改造。");
-            BuildStage<BoardEditorWidget>("BoardEditorWidget", "棋盘编辑", "点选装备，再选择 8 格棋盘中的目标位。");
+            BuildStage<BoardEditorWidget>("BoardEditorWidget", "棋盘编辑", "点选装备，再选择 10 格棋盘中的目标位。");
             BuildStage<PredictionWidget>("PredictionWidget", "胜负预测", "战斗前记录你对结果的判断。");
             BuildStage<BattleSummaryWidget>("BattleSummaryWidget", "战斗总结", "从真实战斗日志中提取可回溯事实。");
             BuildStage<RoundSettlementWidget>("RoundSettlementWidget", "回合结算", "结算胜场、单局生命与金币变化。");
             BuildStage<RunTerminalWidget>("RunTerminalWidget", "单局结束", "查看本局构筑摘要并重新开始。");
             BuildStage<OperationChoiceWidget>("OperationChoiceWidget", "经营选择", "选择坊市、机缘或静修；当前周天保持可见。");
             BuildStage<PveSelectionStageWidget>("PveSelectionStageWidget", "PVE 选关", "选择初阶、进阶或险阶后直接进入战斗。");
-            BuildStage<TribulationRouteWidget>("TribulationRouteWidget", "渡劫路线", "九日夜战后选择一条渡劫路线。");
+            BuildStage<TribulationRouteWidget>("TribulationRouteWidget", "最终挑战路线", "获得 9 场胜利后选择一条最终挑战路线。");
             BuildStage<TribulationStageWidget>("TribulationStageWidget", "三阶段天劫", "应劫并推进当前阶段。");
             BuildStage<TrainingWidget>("TrainingWidget", "训练", "选择配置驱动的训练项目并应用到当前构筑。");
             BuildStage<RewardSelectionWidget>("RewardSelectionWidget", "战斗奖励", "预览候选奖励，确认后领取一次。");
@@ -204,11 +206,11 @@ namespace Game.Hot.Editor
                 new Vector2(-340f, 58f),
                 new Vector2(330f, 30f));
 
-            var boardSlots = new List<BuqiDeploySlotWidget>(8);
-            var boardItems = new List<BuqiDraggableItemWidget>(8);
-            for (int index = 0; index < 8; index++)
+            var boardSlots = new List<BuqiDeploySlotWidget>(BuqiRunRules.BoardSlotCount);
+            var boardItems = new List<BuqiDraggableItemWidget>(BuqiRunRules.BoardSlotCount);
+            for (int index = 0; index < BuqiRunRules.BoardSlotCount; index++)
             {
-                float x = -434f + index * 124f;
+                float x = -450f + index * 100f;
                 GameObject slotObject = Instantiate(
                     slotPrefab,
                     boardPanel.transform,
@@ -218,7 +220,7 @@ namespace Game.Hot.Editor
                     new Vector2(0.5f, 0.5f),
                     new Vector2(0.5f, 0.5f),
                     new Vector2(x, -22f),
-                    new Vector2(118f, 92f));
+                    new Vector2(92f, 92f));
                 boardSlots.Add(slotObject.GetComponent<BuqiDeploySlotWidget>());
 
                 GameObject itemObject = Instantiate(
@@ -230,7 +232,7 @@ namespace Game.Hot.Editor
                     new Vector2(0.5f, 0.5f),
                     new Vector2(0.5f, 0.5f),
                     new Vector2(x, -22f),
-                    new Vector2(118f, 92f));
+                    new Vector2(92f, 92f));
                 itemObject.SetActive(false);
                 boardItems.Add(itemObject.GetComponent<BuqiDraggableItemWidget>());
             }
@@ -248,14 +250,14 @@ namespace Game.Hot.Editor
             SetRect(title.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(24f, -30f), new Vector2(-48f, 36f));
             title.fontStyle = FontStyle.Bold;
 
-            var labels = new List<Text>(8);
-            for (int index = 0; index < 8; index++)
+            var labels = new List<Text>(BuqiRunRules.BoardSlotCount);
+            for (int index = 0; index < BuqiRunRules.BoardSlotCount; index++)
             {
                 GameObject slot = CreatePanel(
                     board.transform,
                     "ReadOnlyBoardSlot" + (index + 1).ToString("00"),
-                    new Vector2(-420f + index * 120f, -38f),
-                    new Vector2(112f, 136f),
+                    new Vector2(-432f + index * 96f, -38f),
+                    new Vector2(88f, 136f),
                     raisedColor);
                 Text label = CreateText(slot.transform, "Label", string.Empty, 16, TextAnchor.MiddleCenter, inkColor);
                 Stretch(label.rectTransform, new Vector2(8f, 8f), new Vector2(-8f, -8f));
@@ -408,21 +410,23 @@ namespace Game.Hot.Editor
             GameObject root = CreateRoot("FinalFlowStructure", new Vector2(1920f, 1080f));
 
             GameObject dailyCycle = CreatePanel(root.transform, "DailyCycle", new Vector2(-700f, 300f), new Vector2(420f, 360f), surfaceColor);
-            for (int day = 1; day <= 9; day++)
+            for (int period = 1; period <= 6; period++)
             {
-                int column = (day - 1) % 3;
-                int row = (day - 1) / 3;
+                int column = (period - 1) % 2;
+                int row = (period - 1) / 2;
                 CreatePanel(
                     dailyCycle.transform,
-                    "DaySlot_" + day.ToString("00"),
-                    new Vector2(-120f + column * 120f, 120f - row * 90f),
-                    new Vector2(104f, 72f),
+                    "PeriodSlot_" + period.ToString("00"),
+                    new Vector2(-96f + column * 192f, 120f - row * 90f),
+                    new Vector2(176f, 72f),
                     raisedColor);
             }
-            CreateContractNode(dailyCycle.transform, "MorningOperation");
-            CreateContractNode(dailyCycle.transform, "NoonOperation");
-            CreateContractNode(dailyCycle.transform, "DuskPVE");
-            CreateContractNode(dailyCycle.transform, "NightPVP");
+            CreateContractNode(dailyCycle.transform, "Hour1Operation");
+            CreateContractNode(dailyCycle.transform, "Hour2Operation");
+            CreateContractNode(dailyCycle.transform, "Hour3PVE");
+            CreateContractNode(dailyCycle.transform, "Hour4Operation");
+            CreateContractNode(dailyCycle.transform, "Hour5Operation");
+            CreateContractNode(dailyCycle.transform, "Hour6PVP");
 
             GameObject operation = CreatePanel(root.transform, "OperationScreen", new Vector2(0f, 260f), new Vector2(1000f, 420f), surfaceColor);
             CreatePanel(operation.transform, "Board", new Vector2(0f, -70f), new Vector2(920f, 180f), raisedColor);
@@ -510,13 +514,13 @@ namespace Game.Hot.Editor
             for (int side = 0; side < 2; side++)
             {
                 string suffix = side == 0 ? "_Left" : "_Right";
-                for (int slot = 1; slot <= 8; slot++)
+                for (int slot = 1; slot <= BuqiBoardValidator.BoardSlotCount; slot++)
                 {
                     GameObject card = CreatePanel(
                         arena.transform,
                         "Slot" + slot.ToString("00") + suffix,
-                        new Vector2(-560f + (slot - 1) * 160f, side == 0 ? -170f : 170f),
-                        new Vector2(148f, 164f),
+                        new Vector2(-585f + (slot - 1) * 130f, side == 0 ? -170f : 170f),
+                        new Vector2(128f, 164f),
                         raisedColor);
                     CreateBattleFloatAnchor(card.transform, null);
                 }
@@ -552,8 +556,8 @@ namespace Game.Hot.Editor
 
                 List<Transform> leftCards = ReadComponentTransforms(form, "m_LeftCards");
                 List<Transform> rightCards = ReadComponentTransforms(form, "m_RightCards");
-                if (leftCards.Count != 8 || rightCards.Count != 8)
-                    throw new InvalidOperationException("BattleForm must expose eight serialized item cards per side.");
+                if (leftCards.Count != BuqiBoardValidator.BoardSlotCount || rightCards.Count != BuqiBoardValidator.BoardSlotCount)
+                    throw new InvalidOperationException($"BattleForm must expose {BuqiBoardValidator.BoardSlotCount} serialized item cards per side.");
 
                 var leftFloats = new List<MonoBehaviour>(leftCards.Count);
                 var rightFloats = new List<MonoBehaviour>(rightCards.Count);

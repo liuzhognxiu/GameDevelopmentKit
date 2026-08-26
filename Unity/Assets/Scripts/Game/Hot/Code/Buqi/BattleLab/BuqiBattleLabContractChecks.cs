@@ -17,10 +17,374 @@ namespace Game.Hot.Buqi.BattleLab
             RunCheck("目录投影", CheckCatalogProjection, failures);
             RunCheck("棋盘尺寸", CheckBoardSlotRange, failures);
             RunCheck("原子棋盘", CheckAtomicBoards, failures);
+            RunCheck("状态控制器", CheckStateController, failures);
             RunCheck("无效内容", CheckInvalidContentProjection, failures);
             RunCheck("畸形效果", CheckMalformedEffectProjection, failures);
             RunCheck("只读模型", CheckModelDefensiveCopies, failures);
             return failures;
+        }
+
+        private static void CheckStateController(List<string> failures)
+        {
+            Expect(
+                !BuqiBattleLabController.TryCreate(
+                    null, out BuqiBattleLabController missingController, out string createError) &&
+                missingController == null &&
+                createError == "不器战斗实验室目录不可用",
+                "状态控制器：空目录未被安全拒绝",
+                failures);
+
+            BuqiConfigCatalog source = CreateSource(8);
+            source.Items.Add(Item("small", "小型", BuqiSize.S, 30));
+            string controllerError = string.Empty;
+            if (!BuqiBattleLabCatalog.TryCreate(
+                    source, out BuqiBattleLabCatalog catalog, out string catalogError) ||
+                !BuqiBattleLabController.TryCreate(
+                    catalog, out BuqiBattleLabController controller, out controllerError))
+            {
+                failures.Add(BuqiText.Format(
+                    "状态控制器：创建失败：{0}{1}", catalogError, controllerError));
+                return;
+            }
+
+            Expect(
+                !typeof(BuqiBattleLabController).GetProperty(
+                    nameof(BuqiBattleLabController.View)).CanWrite,
+                "状态控制器：公开视图属性不应提供 setter",
+                failures);
+            Expect(
+                controller.View.Phase == BuqiBattleLabPhase.HeroSelection &&
+                controller.View.OpponentMode == BuqiBattleLabOpponentMode.Preset &&
+                controller.View.PlayerHero == null &&
+                controller.View.CustomEnemyHero == null &&
+                controller.View.SelectedPresetId == "echo-balanced",
+                "状态控制器：初始状态错误",
+                failures);
+
+            BuqiBattleLabView initialView = controller.View;
+            ExpectRejected(
+                controller,
+                controller.EnterWorkbench(),
+                "请先选择我方英雄",
+                "未选英雄进入工作台",
+                failures);
+            Expect(
+                ReferenceEquals(initialView, controller.View),
+                "状态控制器：拒绝进入工作台发布了新视图",
+                failures);
+            BuqiBattleLabView beforeHeroSelection = controller.View;
+            ExpectAccepted(
+                controller.SelectPlayerHero("balanced"),
+                "选择我方英雄",
+                failures);
+            BuqiBattleLabHeroDefinition balanced = controller.View.PlayerHero;
+            Expect(
+                balanced != null && balanced.HeroId == "balanced",
+                "状态控制器：我方英雄选择未发布",
+                failures);
+            Expect(
+                !ReferenceEquals(beforeHeroSelection, controller.View),
+                "状态控制器：成功选择英雄未重建视图",
+                failures);
+            ExpectAccepted(controller.EnterWorkbench(), "进入工作台", failures);
+            Expect(
+                controller.View.Phase == BuqiBattleLabPhase.Workbench &&
+                ReferenceEquals(controller.View.PlayerHero, balanced),
+                "状态控制器：进入工作台未保留我方英雄",
+                failures);
+            ExpectAccepted(
+                controller.ReturnToHeroSelection(),
+                "返回英雄选择",
+                failures);
+            Expect(
+                controller.View.Phase == BuqiBattleLabPhase.HeroSelection &&
+                ReferenceEquals(controller.View.PlayerHero, balanced),
+                "状态控制器：返回英雄选择未保留我方英雄",
+                failures);
+            ExpectAccepted(controller.EnterWorkbench(), "再次进入工作台", failures);
+
+            ExpectAccepted(
+                controller.AddFromLibrary(BuqiBattleLabSide.Player, "small", 0),
+                "添加我方第一件道具",
+                failures);
+            ExpectPlacement(
+                controller.View.PlayerBoard, "lab-player-0001", "small", 0,
+                "我方第一件道具", failures);
+            ExpectAccepted(
+                controller.AddFromLibrary(BuqiBattleLabSide.Player, "small", 1),
+                "添加我方第二件道具",
+                failures);
+            ExpectPlacement(
+                controller.View.PlayerBoard, "lab-player-0002", "small", 1,
+                "我方第二件道具", failures);
+
+            BuqiBattleLabView beforeIllegalAdd = controller.View;
+            ExpectRejected(
+                controller,
+                controller.AddFromLibrary(BuqiBattleLabSide.Player, "small", 1),
+                "与小型重叠",
+                "非法第三次添加",
+                failures);
+            Expect(
+                ReferenceEquals(beforeIllegalAdd, controller.View),
+                "状态控制器：非法添加发布了新视图",
+                failures);
+            ExpectAccepted(
+                controller.AddFromLibrary(BuqiBattleLabSide.Player, "small", 2),
+                "非法添加后的下一次合法添加",
+                failures);
+            ExpectPlacement(
+                controller.View.PlayerBoard, "lab-player-0003", "small", 2,
+                "我方第三件道具", failures);
+
+            BuqiBattleLabView beforePresetAdd = controller.View;
+            ExpectRejected(
+                controller,
+                controller.AddFromLibrary(BuqiBattleLabSide.Enemy, "small", 0),
+                "预设敌人不可编辑",
+                "预设敌方添加",
+                failures);
+            Expect(
+                ReferenceEquals(beforePresetAdd, controller.View),
+                "状态控制器：预设敌方添加发布了新视图",
+                failures);
+            ExpectPresetEnemyEditingRejected(controller, failures);
+            ExpectAccepted(
+                controller.SelectOpponentMode(BuqiBattleLabOpponentMode.Custom),
+                "切换自定义敌人",
+                failures);
+            BuqiBattleLabPlacementPreview enemyPreview = controller.PreviewLibrary(
+                BuqiBattleLabSide.Enemy, "small", 0);
+            Expect(
+                enemyPreview.Accepted && enemyPreview.Side == BuqiBattleLabSide.Enemy,
+                "状态控制器：敌方预览未重包为真实 side",
+                failures);
+            ExpectAccepted(
+                controller.AddFromLibrary(BuqiBattleLabSide.Enemy, "small", 0),
+                "添加敌方第一件道具",
+                failures);
+            ExpectPlacement(
+                controller.View.CustomEnemyBoard, "lab-enemy-0001", "small", 0,
+                "敌方第一件道具", failures);
+            BuqiBattleLabPlacementPreview enemyMovePreview = controller.PreviewMove(
+                BuqiBattleLabSide.Enemy, "lab-enemy-0001", 1);
+            Expect(
+                enemyMovePreview.Accepted &&
+                enemyMovePreview.Side == BuqiBattleLabSide.Enemy,
+                "状态控制器：敌方移动预览未重包为真实 side",
+                failures);
+            BuqiBattleLabView beforeCrossMove = controller.View;
+            ExpectRejected(
+                controller,
+                controller.Move(
+                    BuqiBattleLabSide.Player,
+                    "lab-player-0001",
+                    BuqiBattleLabSide.Enemy,
+                    2),
+                "不能转移双方已有实例",
+                "跨双方移动",
+                failures);
+            Expect(
+                ReferenceEquals(beforeCrossMove, controller.View),
+                "状态控制器：跨双方移动发布了新视图",
+                failures);
+
+            BuqiBattleLabView beforeUnknown = controller.View;
+            ExpectRejected(
+                controller,
+                controller.SelectPlayerHero("missing-hero"),
+                "英雄不存在",
+                "未知我方英雄",
+                failures);
+            ExpectRejected(
+                controller,
+                controller.SelectCustomEnemyHero("missing-hero"),
+                "英雄不存在",
+                "未知敌方英雄",
+                failures);
+            ExpectRejected(
+                controller,
+                controller.SelectPresetOpponent("missing-preset"),
+                "预设敌人不存在",
+                "未知预设",
+                failures);
+            ExpectRejected(
+                controller,
+                controller.AddFromLibrary(BuqiBattleLabSide.Player, "missing-item", 3),
+                "道具不存在",
+                "未知道具",
+                failures);
+            Expect(
+                ReferenceEquals(beforeUnknown, controller.View),
+                "状态控制器：未知内容改写了视图",
+                failures);
+
+            CheckControllerStatePreservation(catalog, failures);
+        }
+
+        private static void CheckControllerStatePreservation(
+            BuqiBattleLabCatalog catalog,
+            List<string> failures)
+        {
+            if (!BuqiBattleLabController.TryCreate(
+                    catalog, out BuqiBattleLabController controller, out string error))
+            {
+                failures.Add(BuqiText.Format("状态控制器：状态保留控制器创建失败：{0}", error));
+                return;
+            }
+
+            ExpectAccepted(
+                controller.SelectPresetOpponent("echo-balanced"),
+                "状态保留选择预设 A",
+                failures);
+            ExpectAccepted(
+                controller.SelectOpponentMode(BuqiBattleLabOpponentMode.Custom),
+                "状态保留切换自定义敌人",
+                failures);
+            ExpectAccepted(
+                controller.SelectCustomEnemyHero("guarded"),
+                "状态保留选择 guarded",
+                failures);
+            ExpectAccepted(
+                controller.AddFromLibrary(BuqiBattleLabSide.Enemy, "small", 0),
+                "状态保留添加敌方道具",
+                failures);
+
+            string savedPresetId = controller.View.SelectedPresetId;
+            BuqiBattleLabHeroDefinition savedEnemyHero = controller.View.CustomEnemyHero;
+            BuqiBattleLabBoardView savedEnemyBoard = controller.View.CustomEnemyBoard;
+            ExpectAccepted(
+                controller.SelectOpponentMode(BuqiBattleLabOpponentMode.Preset),
+                "状态保留切回预设敌人",
+                failures);
+            ExpectAccepted(
+                controller.SelectOpponentMode(BuqiBattleLabOpponentMode.Custom),
+                "状态保留再次切回自定义敌人",
+                failures);
+            Expect(
+                controller.View.SelectedPresetId == savedPresetId &&
+                ReferenceEquals(controller.View.CustomEnemyHero, savedEnemyHero) &&
+                ReferenceEquals(controller.View.CustomEnemyBoard, savedEnemyBoard),
+                "状态控制器：敌人模式切换未保留预设 ID、自定义英雄和棋盘",
+                failures);
+
+            ExpectAccepted(
+                controller.SelectPlayerHero("balanced"),
+                "状态保留选择我方英雄",
+                failures);
+            ExpectAccepted(
+                controller.AddFromLibrary(BuqiBattleLabSide.Player, "small", 0),
+                "状态保留添加我方道具",
+                failures);
+            BuqiBattleLabBoardView savedPlayerBoard = controller.View.PlayerBoard;
+            ExpectAccepted(
+                controller.SelectPlayerHero("survivor"),
+                "状态保留更换我方英雄",
+                failures);
+            Expect(
+                controller.View.PlayerHero.HeroId == "survivor" &&
+                ReferenceEquals(controller.View.PlayerBoard, savedPlayerBoard),
+                "状态控制器：更换我方英雄清空了我方棋盘",
+                failures);
+            ExpectAccepted(
+                controller.SelectCustomEnemyHero("balanced"),
+                "状态保留更换自定义敌方英雄",
+                failures);
+            Expect(
+                controller.View.CustomEnemyHero.HeroId == "balanced" &&
+                ReferenceEquals(controller.View.CustomEnemyBoard, savedEnemyBoard),
+                "状态控制器：更换敌方英雄清空了敌方棋盘",
+                failures);
+        }
+
+        private static void ExpectPresetEnemyEditingRejected(
+            BuqiBattleLabController controller,
+            List<string> failures)
+        {
+            BuqiBattleLabView expectedView = controller.View;
+            BuqiBattleLabPlacementPreview libraryPreview = controller.PreviewLibrary(
+                BuqiBattleLabSide.Enemy, "small", 0);
+            BuqiBattleLabPlacementPreview movePreview = controller.PreviewMove(
+                BuqiBattleLabSide.Enemy, "missing", 0);
+            Expect(
+                !libraryPreview.Accepted &&
+                libraryPreview.Side == BuqiBattleLabSide.Enemy &&
+                libraryPreview.Reason == "预设敌人不可编辑" &&
+                !movePreview.Accepted &&
+                movePreview.Side == BuqiBattleLabSide.Enemy &&
+                movePreview.Reason == "预设敌人不可编辑",
+                "状态控制器：预设敌方预览没有给出具体禁用原因",
+                failures);
+            ExpectRejected(
+                controller,
+                controller.Move(
+                    BuqiBattleLabSide.Enemy,
+                    "missing",
+                    BuqiBattleLabSide.Enemy,
+                    0),
+                "预设敌人不可编辑",
+                "预设敌方移动",
+                failures);
+            ExpectRejected(
+                controller,
+                controller.Remove(BuqiBattleLabSide.Enemy, "missing"),
+                "预设敌人不可编辑",
+                "预设敌方移除",
+                failures);
+            ExpectRejected(
+                controller,
+                controller.Clear(BuqiBattleLabSide.Enemy),
+                "预设敌人不可编辑",
+                "预设敌方清空",
+                failures);
+            Expect(
+                ReferenceEquals(expectedView, controller.View),
+                "状态控制器：预设敌方编辑拒绝改写了视图",
+                failures);
+        }
+
+        private static void ExpectAccepted(
+            BuqiBattleLabCommandResult result,
+            string label,
+            List<string> failures)
+        {
+            Expect(
+                result.Accepted && string.IsNullOrEmpty(result.Reason) &&
+                result.View != null,
+                BuqiText.Format("状态控制器：{0}失败：{1}", label, result.Reason),
+                failures);
+        }
+
+        private static void ExpectRejected(
+            BuqiBattleLabController controller,
+            BuqiBattleLabCommandResult result,
+            string reason,
+            string label,
+            List<string> failures)
+        {
+            Expect(
+                !result.Accepted && result.Reason == reason &&
+                ReferenceEquals(result.View, controller.View),
+                BuqiText.Format(
+                    "状态控制器：{0}拒绝错误：{1}", label, result.Reason),
+                failures);
+        }
+
+        private static void ExpectPlacement(
+            BuqiBattleLabBoardView board,
+            string instanceId,
+            string definitionId,
+            int anchorSlot,
+            string label,
+            List<string> failures)
+        {
+            Expect(
+                board.Placements.Any(placement =>
+                    placement.InstanceId == instanceId &&
+                    placement.DefinitionId == definitionId &&
+                    placement.AnchorSlot == anchorSlot),
+                BuqiText.Format("状态控制器：{0}实例错误", label),
+                failures);
         }
 
         private static void CheckCatalogProjection(List<string> failures)

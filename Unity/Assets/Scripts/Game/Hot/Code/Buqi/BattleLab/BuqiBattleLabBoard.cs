@@ -14,6 +14,9 @@ namespace Game.Hot.Buqi.BattleLab
 
         public BuqiBattleLabBoard(int slotCount)
         {
+            if (slotCount < 8 || slotCount > 10)
+                throw new ArgumentOutOfRangeException(nameof(slotCount));
+
             m_SlotCount = slotCount;
             m_Placements = new List<BuqiBattleLabPlacement>();
             m_View = CreateView(m_Placements);
@@ -52,6 +55,18 @@ namespace Game.Hot.Buqi.BattleLab
 
         public bool TryAdd(BuqiBattleLabPlacement placement, out string reason)
         {
+            if (placement != null && string.IsNullOrEmpty(placement.InstanceId))
+            {
+                reason = "实例标识不可用";
+                return false;
+            }
+
+            if (placement != null && string.IsNullOrEmpty(placement.DefinitionId))
+            {
+                reason = "道具定义不可用";
+                return false;
+            }
+
             var candidate = new List<BuqiBattleLabPlacement>(m_Placements);
             if (!TryValidatePlacement(candidate, placement, string.Empty, out reason))
                 return false;
@@ -106,6 +121,9 @@ namespace Game.Hot.Buqi.BattleLab
 
         public bool Clear()
         {
+            if (m_Placements.Count == 0)
+                return false;
+
             Commit(new List<BuqiBattleLabPlacement>());
             return true;
         }
@@ -121,7 +139,13 @@ namespace Game.Hot.Buqi.BattleLab
             string ignoredInstanceId,
             out string reason)
         {
-            if (placement == null || placement.Size < 1 || placement.Size > 3)
+            if (placement == null)
+            {
+                reason = "道具尺寸必须为 1 至 3 格";
+                return false;
+            }
+
+            if (placement.Size < 1 || placement.Size > 3)
             {
                 reason = "道具尺寸必须为 1 至 3 格";
                 return false;
@@ -144,9 +168,12 @@ namespace Game.Hot.Buqi.BattleLab
                 BuqiBattleLabPlacement existing = candidate[index];
                 if (IsIgnored(existing, ignoredInstanceId))
                     continue;
-                if (RangesOverlap(existing, placement))
+                if (string.Equals(
+                        existing.InstanceId,
+                        placement.InstanceId,
+                        StringComparison.Ordinal))
                 {
-                    reason = $"与{existing.DisplayName}重叠";
+                    reason = "同一实例不能重复放置";
                     return false;
                 }
             }
@@ -156,12 +183,9 @@ namespace Game.Hot.Buqi.BattleLab
                 BuqiBattleLabPlacement existing = candidate[index];
                 if (IsIgnored(existing, ignoredInstanceId))
                     continue;
-                if (string.Equals(
-                        existing.InstanceId,
-                        placement.InstanceId,
-                        StringComparison.Ordinal))
+                if (RangesOverlap(existing, placement))
                 {
-                    reason = "同一实例不能重复放置";
+                    reason = $"与{existing.DisplayName}重叠";
                     return false;
                 }
             }
@@ -208,15 +232,19 @@ namespace Game.Hot.Buqi.BattleLab
                 occupiedInstanceIds);
         }
 
-        private static IReadOnlyList<int> CreateCoveredSlots(int anchorSlot, int size)
+        private IReadOnlyList<int> CreateCoveredSlots(int anchorSlot, int size)
         {
             if (size < 1 || size > 3)
                 return Array.AsReadOnly(Array.Empty<int>());
 
-            var coveredSlots = new int[size];
+            var coveredSlots = new List<int>(size);
             for (int offset = 0; offset < size; offset++)
-                coveredSlots[offset] = anchorSlot + offset;
-            return Array.AsReadOnly(coveredSlots);
+            {
+                int slot = anchorSlot + offset;
+                if (slot >= 0 && slot < m_SlotCount)
+                    coveredSlots.Add(slot);
+            }
+            return Array.AsReadOnly(coveredSlots.ToArray());
         }
 
         private static bool IsIgnored(

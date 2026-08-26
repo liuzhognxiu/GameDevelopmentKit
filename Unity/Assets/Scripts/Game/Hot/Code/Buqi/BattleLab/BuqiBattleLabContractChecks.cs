@@ -89,6 +89,7 @@ namespace Game.Hot.Buqi.BattleLab
                     nameof(BuqiBattleLabBoard.View)).CanWrite,
                 "原子棋盘：公开视图属性不应提供 setter",
                 failures);
+            CheckBoardConstructorRange(failures);
 
             foreach (int slotCount in new[] { 8, 10 })
             {
@@ -98,10 +99,11 @@ namespace Game.Hot.Buqi.BattleLab
                     BuqiQuality.Normal, 0, string.Empty);
                 var medium = new BuqiBattleLabPlacement(
                     "p-2", "medium", "中型", 2,
-                    BuqiQuality.Normal, slotCount - 2, string.Empty);
+                    BuqiQuality.Normal, slotCount - 2, "medium-note");
 
                 Expect(
-                    board.View.SlotCount == slotCount,
+                    board.View.SlotCount == slotCount &&
+                    board.View.OccupiedInstanceIds.Count == slotCount,
                     BuqiText.Format("原子棋盘：{0} 格视图尺寸错误", slotCount),
                     failures);
                 Expect(
@@ -127,13 +129,29 @@ namespace Game.Hot.Buqi.BattleLab
                     failures);
                 Expect(
                     largePreview.CoveredSlots.SequenceEqual(
-                        new[] { slotCount - 2, slotCount - 1, slotCount }),
+                        new[] { slotCount - 2, slotCount - 1 }),
                     BuqiText.Format("原子棋盘：{0} 格大型道具预览范围错误", slotCount),
                     failures);
-                Expect(
-                    ReferenceEquals(beforeLargePreview, board.View) &&
-                    SamePlacementSequence(beforeLargeSequence, board.CopyPlacements()),
+                ExpectBoardUnchanged(
+                    board,
+                    beforeLargePreview,
+                    beforeLargeSequence,
                     BuqiText.Format("原子棋盘：{0} 格失败预览改写了棋盘", slotCount),
+                    failures);
+
+                BuqiBattleLabPlacementPreview negativePreview = board.Preview(
+                    "small", 2, -1, string.Empty);
+                Expect(
+                    !negativePreview.Accepted &&
+                    negativePreview.Reason == "目标位置无效" &&
+                    negativePreview.CoveredSlots.SequenceEqual(new[] { 0 }),
+                    BuqiText.Format("原子棋盘：{0} 格负锚点预览未正确裁剪", slotCount),
+                    failures);
+                ExpectBoardUnchanged(
+                    board,
+                    beforeLargePreview,
+                    beforeLargeSequence,
+                    BuqiText.Format("原子棋盘：{0} 格负锚点预览改写了棋盘", slotCount),
                     failures);
 
                 var overlap = new BuqiBattleLabPlacement(
@@ -146,9 +164,10 @@ namespace Game.Hot.Buqi.BattleLab
                     !board.TryAdd(overlap, out reason) && reason == "与小型重叠",
                     BuqiText.Format("原子棋盘：{0} 格重叠错误不精确：{1}", slotCount, reason),
                     failures);
-                Expect(
-                    ReferenceEquals(beforeOverlap, board.View) &&
-                    SamePlacementSequence(beforeOverlapSequence, board.CopyPlacements()),
+                ExpectBoardUnchanged(
+                    board,
+                    beforeOverlap,
+                    beforeOverlapSequence,
                     BuqiText.Format("原子棋盘：{0} 格失败重叠改写了棋盘", slotCount),
                     failures);
 
@@ -159,23 +178,268 @@ namespace Game.Hot.Buqi.BattleLab
                     !board.TryAdd(duplicate, out reason) && reason == "同一实例不能重复放置",
                     BuqiText.Format("原子棋盘：{0} 格重复实例错误不精确：{1}", slotCount, reason),
                     failures);
+                ExpectBoardUnchanged(
+                    board,
+                    beforeOverlap,
+                    beforeOverlapSequence,
+                    BuqiText.Format("原子棋盘：{0} 格重复实例改写了棋盘", slotCount),
+                    failures);
+
+                CheckRejectedIdentities(slotCount, failures);
+
+                Expect(
+                    !board.TryMove("p-2", 0, out reason) && reason == "与小型重叠",
+                    BuqiText.Format("原子棋盘：{0} 格重叠移动错误不精确：{1}", slotCount, reason),
+                    failures);
+                ExpectBoardUnchanged(
+                    board,
+                    beforeOverlap,
+                    beforeOverlapSequence,
+                    BuqiText.Format("原子棋盘：{0} 格重叠移动改写了棋盘", slotCount),
+                    failures);
+
+                Expect(
+                    !board.TryMove("p-2", slotCount - 1, out reason) &&
+                    reason == "需要连续 2 格",
+                    BuqiText.Format("原子棋盘：{0} 格越界移动错误不精确：{1}", slotCount, reason),
+                    failures);
+                ExpectBoardUnchanged(
+                    board,
+                    beforeOverlap,
+                    beforeOverlapSequence,
+                    BuqiText.Format("原子棋盘：{0} 格越界移动改写了棋盘", slotCount),
+                    failures);
+
                 Expect(
                     !board.TryMove("missing", 1, out reason) && reason == "来源位置没有道具",
                     BuqiText.Format("原子棋盘：{0} 格未知来源错误不精确：{1}", slotCount, reason),
                     failures);
+                ExpectBoardUnchanged(
+                    board,
+                    beforeOverlap,
+                    beforeOverlapSequence,
+                    BuqiText.Format("原子棋盘：{0} 格未知来源移动改写了棋盘", slotCount),
+                    failures);
+
+                Expect(
+                    !board.TryRemove("missing", out reason) && reason == "来源位置没有道具",
+                    BuqiText.Format("原子棋盘：{0} 格未知移除错误不精确：{1}", slotCount, reason),
+                    failures);
+                ExpectBoardUnchanged(
+                    board,
+                    beforeOverlap,
+                    beforeOverlapSequence,
+                    BuqiText.Format("原子棋盘：{0} 格未知移除改写了棋盘", slotCount),
+                    failures);
+
+                BuqiBattleLabBoardView beforeMove = board.View;
                 Expect(
                     board.TryMove("p-2", 1, out reason),
                     BuqiText.Format("原子棋盘：{0} 格移动中型道具失败：{1}", slotCount, reason),
                     failures);
+                BuqiBattleLabPlacement moved = board.View.Placements.Single(
+                    placement => placement.InstanceId == "p-2");
+                Expect(
+                    !ReferenceEquals(beforeMove, board.View) &&
+                    moved.DefinitionId == medium.DefinitionId &&
+                    moved.DisplayName == medium.DisplayName &&
+                    moved.Size == medium.Size &&
+                    moved.Quality == medium.Quality &&
+                    moved.AnchorSlot == 1 &&
+                    moved.AnnotationId == medium.AnnotationId &&
+                    HasOccupiedSlots(
+                        board.View,
+                        new[] { "p-1", "p-2", "p-2" }),
+                    BuqiText.Format("原子棋盘：{0} 格成功移动未正确发布视图", slotCount),
+                    failures);
+
+                BuqiBattleLabBoardView beforeRemove = board.View;
                 Expect(
                     board.TryRemove("p-1", out reason),
                     BuqiText.Format("原子棋盘：{0} 格移除小型道具失败：{1}", slotCount, reason),
                     failures);
                 Expect(
-                    board.Clear() && board.View.Placements.Count == 0,
+                    !ReferenceEquals(beforeRemove, board.View) &&
+                    board.View.Placements.Count == 1 &&
+                    board.View.Placements[0].InstanceId == "p-2" &&
+                    HasOccupiedSlots(
+                        board.View,
+                        new[] { null, "p-2", "p-2" }),
+                    BuqiText.Format("原子棋盘：{0} 格成功移除未正确发布视图", slotCount),
+                    failures);
+
+                BuqiBattleLabBoardView beforeClear = board.View;
+                Expect(
+                    board.Clear() &&
+                    !ReferenceEquals(beforeClear, board.View) &&
+                    board.View.Placements.Count == 0 &&
+                    board.View.OccupiedInstanceIds.All(instanceId => instanceId == null),
                     BuqiText.Format("原子棋盘：{0} 格清空失败", slotCount),
                     failures);
+
+                BuqiBattleLabBoardView emptyView = board.View;
+                IReadOnlyList<BuqiBattleLabPlacement> emptySequence =
+                    board.CopyPlacements();
+                Expect(
+                    !board.Clear(),
+                    BuqiText.Format("原子棋盘：{0} 格空棋盘被重复清空", slotCount),
+                    failures);
+                ExpectBoardUnchanged(
+                    board,
+                    emptyView,
+                    emptySequence,
+                    BuqiText.Format("原子棋盘：{0} 格空棋盘清空发布了新视图", slotCount),
+                    failures);
             }
+        }
+
+        private static void CheckBoardConstructorRange(List<string> failures)
+        {
+            foreach (int slotCount in new[] { -1, 7, 11 })
+            {
+                try
+                {
+                    _ = new BuqiBattleLabBoard(slotCount);
+                    failures.Add(BuqiText.Format(
+                        "原子棋盘：非法棋盘尺寸 {0} 未抛出 ArgumentOutOfRangeException",
+                        slotCount));
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                }
+                catch (Exception exception)
+                {
+                    failures.Add(BuqiText.Format(
+                        "原子棋盘：非法棋盘尺寸 {0} 抛出 {1}",
+                        slotCount,
+                        exception.GetType().Name));
+                }
+            }
+
+            var nineSlotBoard = new BuqiBattleLabBoard(9);
+            Expect(
+                nineSlotBoard.View.SlotCount == 9 &&
+                nineSlotBoard.View.OccupiedInstanceIds.Count == 9,
+                "原子棋盘：合法 9 格棋盘创建失败",
+                failures);
+        }
+
+        private static void CheckRejectedIdentities(
+            int slotCount,
+            List<string> failures)
+        {
+            var cases = new[]
+            {
+                new
+                {
+                    Placement = new BuqiBattleLabPlacement(
+                        null, "valid", "空实例", 1,
+                        BuqiQuality.Normal, 0, string.Empty),
+                    Reason = "实例标识不可用",
+                    Label = "null 实例标识",
+                },
+                new
+                {
+                    Placement = new BuqiBattleLabPlacement(
+                        string.Empty, "valid", "空实例", 1,
+                        BuqiQuality.Normal, 0, string.Empty),
+                    Reason = "实例标识不可用",
+                    Label = "empty 实例标识",
+                },
+                new
+                {
+                    Placement = new BuqiBattleLabPlacement(
+                        "valid", null, "空定义", 1,
+                        BuqiQuality.Normal, 0, string.Empty),
+                    Reason = "道具定义不可用",
+                    Label = "null 道具定义",
+                },
+                new
+                {
+                    Placement = new BuqiBattleLabPlacement(
+                        "valid", string.Empty, "空定义", 1,
+                        BuqiQuality.Normal, 0, string.Empty),
+                    Reason = "道具定义不可用",
+                    Label = "empty 道具定义",
+                },
+                new
+                {
+                    Placement = new BuqiBattleLabPlacement(
+                        null, string.Empty, "混合非法", 0,
+                        BuqiQuality.Normal, -1, string.Empty),
+                    Reason = "实例标识不可用",
+                    Label = "混合非法实例",
+                },
+                new
+                {
+                    Placement = new BuqiBattleLabPlacement(
+                        "valid", null, "混合非法", 0,
+                        BuqiQuality.Normal, -1, string.Empty),
+                    Reason = "道具定义不可用",
+                    Label = "混合非法定义",
+                },
+            };
+
+            foreach (var testCase in cases)
+            {
+                var board = new BuqiBattleLabBoard(slotCount);
+                BuqiBattleLabBoardView beforeView = board.View;
+                IReadOnlyList<BuqiBattleLabPlacement> beforeSequence =
+                    board.CopyPlacements();
+                bool accepted = board.TryAdd(testCase.Placement, out string reason);
+                Expect(
+                    !accepted && reason == testCase.Reason,
+                    BuqiText.Format(
+                        "原子棋盘：{0} 格{1}错误不精确：{2}",
+                        slotCount,
+                        testCase.Label,
+                        reason),
+                    failures);
+                ExpectBoardUnchanged(
+                    board,
+                    beforeView,
+                    beforeSequence,
+                    BuqiText.Format(
+                        "原子棋盘：{0} 格{1}改写了棋盘",
+                        slotCount,
+                        testCase.Label),
+                    failures);
+            }
+        }
+
+        private static bool HasOccupiedSlots(
+            BuqiBattleLabBoardView view,
+            IReadOnlyList<string> expectedPrefix)
+        {
+            if (view.OccupiedInstanceIds.Count != view.SlotCount)
+                return false;
+
+            for (int index = 0; index < view.SlotCount; index++)
+            {
+                string expected = index < expectedPrefix.Count
+                    ? expectedPrefix[index]
+                    : null;
+                if (!string.Equals(
+                        view.OccupiedInstanceIds[index],
+                        expected,
+                        StringComparison.Ordinal))
+                    return false;
+            }
+            return true;
+        }
+
+        private static void ExpectBoardUnchanged(
+            BuqiBattleLabBoard board,
+            BuqiBattleLabBoardView expectedView,
+            IReadOnlyList<BuqiBattleLabPlacement> expectedSequence,
+            string failure,
+            List<string> failures)
+        {
+            Expect(
+                ReferenceEquals(expectedView, board.View) &&
+                SamePlacementSequence(expectedSequence, board.CopyPlacements()),
+                failure,
+                failures);
         }
 
         private static bool SamePlacementSequence(

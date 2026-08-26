@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.Run.Core;
 
 namespace Game.Hot.Buqi.DemoUI.Deployment
 {
     public sealed class BuqiDragDeployController
     {
-        public const int BoardSlotCount = 8;
-        public const int StorageSlotCount = 8;
+        public const int BoardSlotCount = BuqiRunRules.BoardSlotCount;
+        public const int StorageSlotCount = BuqiRunRules.StorageSlotCount;
 
         private readonly BuqiUIDemoCatalog m_Catalog;
         private readonly BuqiDeploymentSnapshot m_OpeningView;

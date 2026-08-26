@@ -14,7 +14,7 @@ using Luban;
 namespace Game.Hot.Editor
 {
 
-public sealed class DRBuqiItem :  Luban.EditorBeanBase
+public sealed class DRBuqiItem :  Luban.EditorBeanBase 
 {
     public DRBuqiItem()
     {
@@ -37,182 +37,182 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
 
     public override void LoadJson(JSONObject _json)
     {
-        {
+        { 
             var _fieldJson = _json["DefinitionId"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  DefinitionId = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["DisplayName"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  DisplayName = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["DesignNote"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  DesignNote = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["EffectDescription"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  EffectDescription = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["LocalizationKey"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  LocalizationKey = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["Size"];
             if (_fieldJson != null)
             {
-                if(_fieldJson.IsString) { Size = (BuqiSize)System.Enum.Parse(typeof(BuqiSize), _fieldJson); } else if(_fieldJson.IsNumber) { Size = (BuqiSize)(int)_fieldJson; } else { throw new SerializationException(); }
+                if(_fieldJson.IsString) { Size = (BuqiSize)System.Enum.Parse(typeof(BuqiSize), _fieldJson); } else if(_fieldJson.IsNumber) { Size = (BuqiSize)(int)_fieldJson; } else { throw new SerializationException(); }  
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["BasePrice"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  BasePrice = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["ImprovedUpgradeCost"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  ImprovedUpgradeCost = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["FixedUpgradeCost"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  FixedUpgradeCost = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["RefinementCost"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  RefinementCost = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["BaseCooldownTicks"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  BaseCooldownTicks = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["AmmoCapacity"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  AmmoCapacity = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["ArchetypeId"];
             if (_fieldJson != null)
             {
-                if(_fieldJson.IsString) { ArchetypeId = (BuqiBuild)System.Enum.Parse(typeof(BuqiBuild), _fieldJson); } else if(_fieldJson.IsNumber) { ArchetypeId = (BuqiBuild)(int)_fieldJson; } else { throw new SerializationException(); }
+                if(_fieldJson.IsString) { ArchetypeId = (BuqiBuild)System.Enum.Parse(typeof(BuqiBuild), _fieldJson); } else if(_fieldJson.IsNumber) { ArchetypeId = (BuqiBuild)(int)_fieldJson; } else { throw new SerializationException(); }  
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["Role"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  Role = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["UnlockDay"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsNumber) { throw new SerializationException(); }  UnlockDay = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["PositionHint"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  PositionHint = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["Tags"];
             if (_fieldJson != null)
             {
-                if(!_fieldJson.IsArray) { throw new SerializationException(); } Tags = new System.Collections.Generic.List<string>(); foreach(JSONNode __e0 in _fieldJson.Children) { string __v0;  if(!__e0.IsString) { throw new SerializationException(); }  __v0 = __e0;  Tags.Add(__v0); }
+                if(!_fieldJson.IsArray) { throw new SerializationException(); } Tags = new System.Collections.Generic.List<string>(); foreach(JSONNode __e0 in _fieldJson.Children) { string __v0;  if(!__e0.IsString) { throw new SerializationException(); }  __v0 = __e0;  Tags.Add(__v0); }  
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["Effects"];
             if (_fieldJson != null)
             {
-                if(!_fieldJson.IsArray) { throw new SerializationException(); } Effects = new System.Collections.Generic.List<BuqiEffectConfig>(); foreach(JSONNode __e0 in _fieldJson.Children) { BuqiEffectConfig __v0;  if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = BuqiEffectConfig.LoadJsonBuqiEffectConfig(__e0);  Effects.Add(__v0); }
+                if(!_fieldJson.IsArray) { throw new SerializationException(); } Effects = new System.Collections.Generic.List<BuqiEffectConfig>(); foreach(JSONNode __e0 in _fieldJson.Children) { BuqiEffectConfig __v0;  if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = BuqiEffectConfig.LoadJsonBuqiEffectConfig(__e0);  Effects.Add(__v0); }  
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["RunEffects"];
             if (_fieldJson != null)
             {
-                if(!_fieldJson.IsArray) { throw new SerializationException(); } RunEffects = new System.Collections.Generic.List<BuqiRunEffectConfig>(); foreach(JSONNode __e0 in _fieldJson.Children) { BuqiRunEffectConfig __v0;  if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = BuqiRunEffectConfig.LoadJsonBuqiRunEffectConfig(__e0);  RunEffects.Add(__v0); }
+                if(!_fieldJson.IsArray) { throw new SerializationException(); } RunEffects = new System.Collections.Generic.List<BuqiRunEffectConfig>(); foreach(JSONNode __e0 in _fieldJson.Children) { BuqiRunEffectConfig __v0;  if(!__e0.IsObject) { throw new SerializationException(); }  __v0 = BuqiRunEffectConfig.LoadJsonBuqiRunEffectConfig(__e0);  RunEffects.Add(__v0); }  
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["UpgradeSummary"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  UpgradeSummary = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["UpgradeLocalizationKey"];
             if (_fieldJson != null)
             {
                 if(!_fieldJson.IsString) { throw new SerializationException(); }  UpgradeLocalizationKey = _fieldJson;
             }
         }
-
-        {
+        
+        { 
             var _fieldJson = _json["LinkIds"];
             if (_fieldJson != null)
             {
-                if(!_fieldJson.IsArray) { throw new SerializationException(); } LinkIds = new System.Collections.Generic.List<string>(); foreach(JSONNode __e0 in _fieldJson.Children) { string __v0;  if(!__e0.IsString) { throw new SerializationException(); }  __v0 = __e0;  LinkIds.Add(__v0); }
+                if(!_fieldJson.IsArray) { throw new SerializationException(); } LinkIds = new System.Collections.Generic.List<string>(); foreach(JSONNode __e0 in _fieldJson.Children) { string __v0;  if(!__e0.IsString) { throw new SerializationException(); }  __v0 = __e0;  LinkIds.Add(__v0); }  
             }
         }
-
+        
     }
 
     public override void SaveJson(JSONObject _json)
@@ -317,7 +317,7 @@ public sealed class DRBuqiItem :  Luban.EditorBeanBase
         obj.LoadJson((JSONObject)_json);
         return obj;
     }
-
+        
     public static void SaveJsonDRBuqiItem(DRBuqiItem _obj, JSONNode _json)
     {
         _obj.SaveJson((JSONObject)_json);

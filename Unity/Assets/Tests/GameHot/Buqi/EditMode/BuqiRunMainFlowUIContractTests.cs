@@ -3,9 +3,11 @@ using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Integration;
 using Game.Hot.Buqi.Run.Settlement;
 using NUnit.Framework;
+using BattleSize = Game.Hot.Buqi.Battle.BuqiSize;
 
 namespace Game.Hot.Buqi.Tests
 {
@@ -79,10 +81,13 @@ namespace Game.Hot.Buqi.Tests
             }).Accepted, Is.False);
 
             controller = CreateController(store);
+            TestContext.WriteLine($"reloaded={controller.View.Phase}, result={controller.View.BattleResultVisible}, paused={controller.View.IsPaused}");
             Assert.That(controller.View.IsPaused, Is.True);
             Assert.That(controller.View.BattleResultVisible, Is.True);
             Execute(controller, BuqiUIDemoCommandType.ResumeRun);
+            TestContext.WriteLine($"resumed={controller.View.Phase}, result={controller.View.BattleResultVisible}, paused={controller.View.IsPaused}");
             Execute(controller, BuqiUIDemoCommandType.ContinueBattleResult);
+            TestContext.WriteLine($"continued={controller.View.Phase}, result={controller.View.BattleResultVisible}, rewards={controller.View.Rewards.Count}");
             Assert.That(controller.View.Phase, Is.EqualTo(BuqiUIDemoPhase.RewardSelection));
             Assert.That(controller.View.Rewards, Has.Count.EqualTo(4));
             Assert.That(controller.View.PrimaryCommandLabel, Is.Empty);
@@ -205,7 +210,7 @@ namespace Game.Hot.Buqi.Tests
                 Global = new BuqiGlobalConfigRow
                 {
                     ContentVersion = "main-flow-ui-v1",
-                    BoardSlotCount = 8,
+                    BoardSlotCount = BuqiRunRules.BoardSlotCount,
                     InitialExecution = 100,
                 },
             };
@@ -215,10 +220,19 @@ namespace Game.Hot.Buqi.Tests
                 {
                     DefinitionId = $"item-{index:00}",
                     DisplayName = $"Item {index}",
-                    Size = BuqiSize.S,
+                    Size = BattleSize.S,
                     BasePrice = index + 1,
                     BaseCooldownTicks = 10 + index,
                     Tags = new List<string> { index == 1 ? "attack" : "support" },
+                });
+            }
+            for (int index = 1; index <= 3; index++)
+            {
+                source.Refinements.Add(new BuqiRefinementConfigRow
+                {
+                    RefinementId = $"refinement-{index}",
+                    DisplayName = $"改造 {index}",
+                    Summary = "测试用通用改造。",
                 });
             }
             source.TrainingProjects.Add(new BuqiTrainingProjectConfigRow

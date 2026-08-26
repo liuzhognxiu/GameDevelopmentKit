@@ -87,16 +87,16 @@ namespace Game.Hot.Buqi.Battle
             {
                 return legacyId;
             }
-            return BuqiText.Format(
-                "{0}:v3:{1}:{2}:{3}:{4}:{5}:{6}:{7}",
+            string extendedId = BuqiText.Format(
+                "{0}:v3:{1}:{2}:{3}:{4}:{5}:{6}",
                 legacyId,
                 CriticalChanceBps,
                 RepeatCount,
                 RageThreshold,
                 RageDurationTicks,
                 RageCooldownReductionBps,
-                FlightDamageBonusBps,
-                FlightEndDamage);
+                FlightDamageBonusBps);
+            return BuqiText.Format("{0}:{1}", extendedId, FlightEndDamage);
         }
     }
 

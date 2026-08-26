@@ -50,11 +50,16 @@ namespace Game.Hot.Buqi.Run.Settlement
                 Period = (int)state.Period,
                 Phase = (int)state.Phase,
                 Outcome = (int)state.Outcome,
+                HeroId = state.HeroId,
                 Coins = state.Coins,
                 Wins = state.Wins,
                 DaoSeals = state.DaoSeals,
                 CurrentOmen = state.CurrentOmen,
-                Lives = state.Lives,
+                Cultivation = state.Cultivation,
+                Realm = state.Realm,
+                LifePool = state.LifePool,
+                InTribulationTrial = state.InTribulationTrial,
+                HeartTrialUsed = state.HeartTrialUsed,
                 TribulationRoute = (int)state.TribulationRoute,
                 TribulationDaoSealsSpent = state.TribulationDaoSealsSpent,
                 TribulationStage = state.TribulationStage,
@@ -139,8 +144,6 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
-            bool isLegacyV2 = string.Equals(saveData.SaveVersion, BuqiRunSaveData.LegacySaveVersion, StringComparison.Ordinal);
-            bool isPreviousV3 = string.Equals(saveData.SaveVersion, BuqiRunSaveData.PreviousSaveVersion, StringComparison.Ordinal);
             bool isCurrent = string.Equals(saveData.SaveVersion, BuqiRunSaveData.CurrentSaveVersion, StringComparison.Ordinal);
             if (string.IsNullOrWhiteSpace(saveData.SaveVersion))
             {
@@ -149,31 +152,13 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
-            if (!isLegacyV2 && !isPreviousV3 && !isCurrent)
+            if (!isCurrent)
             {
                 error = "Save schema version is unsupported.";
                 failureKind = BuqiRunSaveFailureKind.UnsupportedVersion;
                 saveData = null!;
                 return false;
             }
-
-            if (isLegacyV2 &&
-                !TryMigrateLegacyV2(saveData, out error))
-            {
-                failureKind = BuqiRunSaveFailureKind.UnsupportedVersion;
-                saveData = null!;
-                return false;
-            }
-            wasMigrated |= isLegacyV2;
-
-            if (isPreviousV3 &&
-                !TryMigratePreviousV3(saveData, out error))
-            {
-                failureKind = BuqiRunSaveFailureKind.UnsupportedVersion;
-                saveData = null!;
-                return false;
-            }
-            wasMigrated |= isPreviousV3;
 
             if (!TryToState(saveData, out _, out error))
             {
@@ -222,7 +207,6 @@ namespace Game.Hot.Buqi.Run.Settlement
             if (saveData.RngCursor < 0 ||
                 saveData.Revision < 0 ||
                 saveData.Day < 1 ||
-                saveData.Day > BuqiRunRules.RunDayCount ||
                 saveData.EncounterIndex < 0 ||
                 saveData.EncounterIndex > BuqiRunRules.OperationsPerDay ||
                 saveData.Coins < 0 ||
@@ -233,8 +217,14 @@ namespace Game.Hot.Buqi.Run.Settlement
                 saveData.DaoSeals > saveData.Wins ||
                 saveData.CurrentOmen < 0 ||
                 saveData.CurrentOmen > BuqiRunRules.MaxOmen ||
-                saveData.Lives < 0 ||
-                saveData.Lives > BuqiRunRules.StartingLives ||
+                saveData.HeroId < 0 ||
+                saveData.HeroId > 4 ||
+                saveData.Cultivation < 0 ||
+                saveData.Realm < 0 ||
+                saveData.Realm >= BuqiRunRules.RealmCount ||
+                saveData.Realm != BuqiRunProgression.GetRealm(saveData.Cultivation) ||
+                saveData.LifePool < 0 ||
+                saveData.LifePool > BuqiRunRules.StartingLifePool ||
                 saveData.TribulationDaoSealsSpent < 0 ||
                 saveData.TribulationDaoSealsSpent > BuqiRunRules.MaxDaoSeals ||
                 saveData.DaoSeals + saveData.TribulationDaoSealsSpent > saveData.Wins ||
@@ -283,10 +273,9 @@ namespace Game.Hot.Buqi.Run.Settlement
             }
 
             int omenBeforeTribulationSpend = saveData.CurrentOmen + saveData.TribulationDaoSealsSpent;
-            if (omenBeforeTribulationSpend > BuqiRunRules.MaxOmen ||
-                omenBeforeTribulationSpend < BuqiRunRules.StartingLives - saveData.Lives)
+            if (omenBeforeTribulationSpend > BuqiRunRules.MaxOmen)
             {
-                error = "Omen totals do not match life loss and tribulation spending.";
+                error = "Omen totals do not match tribulation spending.";
                 return false;
             }
 
@@ -337,19 +326,15 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
-            if (phase == BuqiRunPhase.DaySettlement && saveData.Day >= BuqiRunRules.RunDayCount)
-            {
-                error = "Day nine cannot enter day settlement.";
-                return false;
-            }
-
             bool isTribulation = phase == BuqiRunPhase.TribulationRoute ||
                                  phase == BuqiRunPhase.TribulationStage ||
                                  (phase == BuqiRunPhase.RunTerminal &&
                                   tribulationRoute != BuqiTribulationRoute.None);
-            if (isTribulation && saveData.Day != BuqiRunRules.RunDayCount)
+            if (isTribulation && saveData.Wins != BuqiRunRules.WinsToVictory - 1 &&
+                !(phase == BuqiRunPhase.RunTerminal && outcome == BuqiRunOutcome.Victory &&
+                  saveData.Wins == BuqiRunRules.WinsToVictory))
             {
-                error = "Tribulation is only valid after day nine night.";
+                error = "Tribulation requires nine wins, or ten wins after victory.";
                 return false;
             }
 
@@ -392,7 +377,8 @@ namespace Game.Hot.Buqi.Run.Settlement
             {
                 bool earlyDefeat = tribulationRoute == BuqiTribulationRoute.None;
                 if (earlyDefeat &&
-                    (outcome != BuqiRunOutcome.Defeat || saveData.Lives != 0 ||
+                    (outcome != BuqiRunOutcome.Defeat || saveData.LifePool != 0 ||
+                     !saveData.HeartTrialUsed || saveData.InTribulationTrial ||
                      saveData.TribulationDaoSealsSpent != 0 || saveData.TribulationStage != 0 ||
                      saveData.TribulationSuccesses != 0))
                 {
@@ -420,9 +406,23 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
-            if (phase != BuqiRunPhase.RunTerminal && saveData.Lives <= 0)
+            if (saveData.InTribulationTrial &&
+                (saveData.LifePool != 0 || !saveData.HeartTrialUsed))
             {
-                error = "Life depletion requires an early terminal defeat.";
+                error = "Heart trial flags are inconsistent.";
+                return false;
+            }
+
+            if (phase != BuqiRunPhase.RunTerminal &&
+                saveData.LifePool == 0 && !saveData.InTribulationTrial)
+            {
+                error = "Life depletion requires a heart trial or terminal defeat.";
+                return false;
+            }
+
+            if (isTribulation && (saveData.LifePool == 0 || saveData.InTribulationTrial))
+            {
+                error = "Tribulation cannot overlap the heart trial.";
                 return false;
             }
 
@@ -514,11 +514,16 @@ namespace Game.Hot.Buqi.Run.Settlement
                 Period = period,
                 Phase = phase,
                 Outcome = outcome,
+                HeroId = saveData.HeroId,
                 Coins = saveData.Coins,
                 Wins = saveData.Wins,
                 DaoSeals = saveData.DaoSeals,
                 CurrentOmen = saveData.CurrentOmen,
-                Lives = saveData.Lives,
+                Cultivation = saveData.Cultivation,
+                Realm = saveData.Realm,
+                LifePool = saveData.LifePool,
+                InTribulationTrial = saveData.InTribulationTrial,
+                HeartTrialUsed = saveData.HeartTrialUsed,
                 TribulationRoute = tribulationRoute,
                 TribulationDaoSealsSpent = saveData.TribulationDaoSealsSpent,
                 TribulationStage = saveData.TribulationStage,
@@ -596,7 +601,7 @@ namespace Game.Hot.Buqi.Run.Settlement
             }
 
             saveData.DaoSeals = saveData.Wins;
-            saveData.CurrentOmen = Math.Max(0, BuqiRunRules.StartingLives - saveData.Lives);
+            saveData.CurrentOmen = Math.Max(0, BuqiRunRules.StartingLifePool - saveData.LifePool);
             saveData.TribulationRoute = (int)BuqiTribulationRoute.None;
             saveData.TribulationDaoSealsSpent = 0;
             saveData.TribulationStage = 0;

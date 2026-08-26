@@ -17,16 +17,20 @@ namespace Game.Hot.Buqi.Tests
 #if !BUQI_HEADLESS_TESTS
         [Test]
 #endif
-        public void RingTopology_ConnectsSevenAndZeroAtItemBoundaries()
+        public void LinearTopology_ConnectsOnlyContiguousItemsAndDoesNotWrap()
         {
-            BuqiLinkItem atZero = Item("attack", "W8-006", 0, 3, BattleQuality.Fixed, BattleEffect.Damage);
-            BuqiLinkItem atSeven = Item("tempo", "W8-003", 7, 1, BattleQuality.Improved, BattleEffect.Haste);
-            var board = new BuqiLinkBoard(new[] { atZero, atSeven });
+            BuqiLinkItem atZero = Item("first", "W8-006", 0, 1, BattleQuality.Fixed, BattleEffect.Damage);
+            BuqiLinkItem middle = Item("middle", "W8-005", 4, 2, BattleQuality.Fixed, BattleEffect.Buffer);
+            BuqiLinkItem afterMiddle = Item("after", "W8-003", 6, 1, BattleQuality.Improved, BattleEffect.Haste);
+            BuqiLinkItem atNine = Item("last", "W8-009", 9, 1, BattleQuality.Improved, BattleEffect.Heal);
+            var board = new BuqiLinkBoard(new[] { atZero, middle, afterMiddle, atNine });
 
-            CheckSame(atZero, BuqiLinkTopology.GetAdjacent(board, atSeven, BuqiLinkDirection.Clockwise));
-            CheckSame(atSeven, BuqiLinkTopology.GetAdjacent(board, atZero, BuqiLinkDirection.CounterClockwise));
-            Check(BuqiLinkTopology.GetAdjacent(board, atZero, BuqiLinkDirection.Clockwise) == null,
-                "An empty boundary must block adjacency.");
+            CheckSame(afterMiddle, BuqiLinkTopology.GetAdjacent(board, middle, BuqiLinkDirection.Clockwise));
+            CheckSame(middle, BuqiLinkTopology.GetAdjacent(board, afterMiddle, BuqiLinkDirection.CounterClockwise));
+            Check(BuqiLinkTopology.GetAdjacent(board, atNine, BuqiLinkDirection.Clockwise) == null,
+                "The final slot must not wrap to the first slot on a linear board.");
+            Check(BuqiLinkTopology.GetAdjacent(board, atZero, BuqiLinkDirection.CounterClockwise) == null,
+                "The first slot must not wrap to the final slot on a linear board.");
         }
 
 #if !BUQI_HEADLESS_TESTS
@@ -36,11 +40,11 @@ namespace Game.Hot.Buqi.Tests
         {
             BuqiLinkItem attack = Item("attack", "W8-006", 0, 3, BattleQuality.Fixed, BattleEffect.Damage);
             attack.Tags.Add("attack");
-            BuqiLinkItem tempo = Item("tempo", "W8-003", 7, 1, BattleQuality.Improved, BattleEffect.Haste);
+            BuqiLinkItem tempo = Item("tempo", "W8-003", 3, 1, BattleQuality.Improved, BattleEffect.Haste);
             tempo.Tags.Add("tempo");
             tempo.Triggers.Add(BattleTrigger.OnAdjacentUse);
             var board = new BuqiLinkBoard(new[] { attack, tempo });
-            BuqiLinkRule rule = LinkRule("tempo-to-attack", BuqiLinkDirection.Clockwise, 100, 2);
+            BuqiLinkRule rule = LinkRule("tempo-to-attack", BuqiLinkDirection.CounterClockwise, 100, 2);
             rule.TriggerSource = BuqiLinkTriggerSource.AdjacentUse;
             rule.SourceCondition = new BuqiLinkCondition
             {
@@ -64,7 +68,7 @@ namespace Game.Hot.Buqi.Tests
                 new[] { rule },
                 Array.Empty<BuqiFormationRule>(),
                 null);
-            Check(evaluation.Links.Single().IsConnected, "The clockwise boundary link should be connected.");
+            Check(evaluation.Links.Single().IsConnected, "Contiguous linear items should be connected.");
 
             var context = new BuqiLinkTriggerContext
             {
@@ -100,10 +104,10 @@ namespace Game.Hot.Buqi.Tests
         {
             BuqiLinkItem attack = Item("attack", "W8-006", 0, 3, BattleQuality.Fixed, BattleEffect.Damage);
             attack.Tags.Add("attack");
-            BuqiLinkItem tempo = Item("tempo", "W8-003", 7, 1, BattleQuality.Improved, BattleEffect.Haste);
+            BuqiLinkItem tempo = Item("tempo", "W8-003", 3, 1, BattleQuality.Improved, BattleEffect.Haste);
             tempo.Tags.Add("tempo");
             var board = new BuqiLinkBoard(new[] { attack, tempo });
-            BuqiLinkRule link = LinkRule("tempo-edge", BuqiLinkDirection.Clockwise, 100, 1);
+            BuqiLinkRule link = LinkRule("tempo-edge", BuqiLinkDirection.CounterClockwise, 100, 1);
             link.SourceCondition.RequiredEffect = BattleEffect.Haste;
             link.TargetCondition.RequiredEffect = BattleEffect.Damage;
 
@@ -125,7 +129,7 @@ namespace Game.Hot.Buqi.Tests
                 Items = new List<BuqiEchoSlot>
                 {
                     new BuqiEchoSlot { DefinitionId = "W8-006", AnchorSlot = 0, Quality = (int)BattleQuality.Fixed },
-                    new BuqiEchoSlot { DefinitionId = "W8-003", AnchorSlot = 7, Quality = (int)BattleQuality.Fixed },
+                    new BuqiEchoSlot { DefinitionId = "W8-003", AnchorSlot = 3, Quality = (int)BattleQuality.Fixed },
                 },
             };
 
@@ -159,24 +163,24 @@ namespace Game.Hot.Buqi.Tests
         public void TriggerResolution_IsDeterministicAndHonorsStackingAndExclusion()
         {
             BuqiLinkItem target = Item("target", "target", 0, 3, BattleQuality.Fixed, BattleEffect.Damage);
-            BuqiLinkItem source = Item("source", "source", 7, 1, BattleQuality.Fixed, BattleEffect.Haste);
+            BuqiLinkItem source = Item("source", "source", 3, 1, BattleQuality.Fixed, BattleEffect.Haste);
             var board = new BuqiLinkBoard(new[] { target, source });
-            BuqiLinkRule addLow = LinkRule("add-low", BuqiLinkDirection.Clockwise, 100, 2);
+            BuqiLinkRule addLow = LinkRule("add-low", BuqiLinkDirection.CounterClockwise, 100, 2);
             addLow.StackGroup = "add";
             addLow.StackMode = BuqiLinkStackMode.Add;
             addLow.StackLimit = 2;
-            BuqiLinkRule addHigh = LinkRule("add-high", BuqiLinkDirection.Clockwise, 200, 3);
+            BuqiLinkRule addHigh = LinkRule("add-high", BuqiLinkDirection.CounterClockwise, 200, 3);
             addHigh.StackGroup = "add";
             addHigh.StackMode = BuqiLinkStackMode.Add;
             addHigh.StackLimit = 2;
-            BuqiLinkRule exclusiveLow = LinkRule("exclusive-low", BuqiLinkDirection.Clockwise, 50, 4);
+            BuqiLinkRule exclusiveLow = LinkRule("exclusive-low", BuqiLinkDirection.CounterClockwise, 50, 4);
             exclusiveLow.ExclusiveGroup = "stance";
-            BuqiLinkRule exclusiveHigh = LinkRule("exclusive-high", BuqiLinkDirection.Clockwise, 300, 5);
+            BuqiLinkRule exclusiveHigh = LinkRule("exclusive-high", BuqiLinkDirection.CounterClockwise, 300, 5);
             exclusiveHigh.ExclusiveGroup = "stance";
-            BuqiLinkRule maxLow = LinkRule("max-low", BuqiLinkDirection.Clockwise, 100, 2);
+            BuqiLinkRule maxLow = LinkRule("max-low", BuqiLinkDirection.CounterClockwise, 100, 2);
             maxLow.StackGroup = "max";
             maxLow.StackMode = BuqiLinkStackMode.Max;
-            BuqiLinkRule maxHigh = LinkRule("max-high", BuqiLinkDirection.Clockwise, 90, 7);
+            BuqiLinkRule maxHigh = LinkRule("max-high", BuqiLinkDirection.CounterClockwise, 90, 7);
             maxHigh.StackGroup = "max";
             maxHigh.StackMode = BuqiLinkStackMode.Max;
             BuqiLinkRule[] ordered = { addLow, addHigh, exclusiveLow, exclusiveHigh, maxLow, maxHigh };
@@ -352,7 +356,7 @@ namespace Game.Hot.Buqi.Tests
 #if !BUQI_HEADLESS_TESTS
         [Test]
 #endif
-        public void BattleSimulation_UsesRingForAdjacentResponseAndAdjacentTarget()
+        public void BattleSimulation_UsesLinearAdjacencyForResponseAndTarget()
         {
             var definitions = new Dictionary<string, BuqiItemDefinition>(StringComparer.Ordinal)
             {
@@ -363,7 +367,7 @@ namespace Game.Hot.Buqi.Tests
                         Effect = BattleEffect.Charge,
                         Target = BattleTarget.LeftAdjacentItem,
                         Amount = 1,
-                        ReasonCode = "ring-charge",
+                        ReasonCode = "linear-charge",
                     }),
                 ["listener"] = Definition("listener", 1, 100,
                     new BuqiEffectSpec
@@ -372,7 +376,7 @@ namespace Game.Hot.Buqi.Tests
                         Effect = BattleEffect.Damage,
                         Target = BattleTarget.EnemyExecution,
                         Amount = 3,
-                        ReasonCode = "ring-listener",
+                        ReasonCode = "linear-listener",
                     }),
                 ["dummy"] = Definition("dummy", 1, 100),
             };
@@ -383,27 +387,27 @@ namespace Game.Hot.Buqi.Tests
                 BattleSeed = 9,
                 RoundIndex = 1,
                 Left = Snapshot("left", "link-test-v1",
-                    Instance("actor-i", "actor", 0),
-                    Instance("listener-i", "listener", 7)),
+                    Instance("actor-i", "actor", 1),
+                    Instance("listener-i", "listener", 0)),
                 Right = Snapshot("right", "link-test-v1", Instance("dummy-i", "dummy", 4)),
             };
 
             BuqiBattleSimulator.Simulate(request, provider, out List<BattleEvent> log, out _, out _);
 
             Check(log.Any(item => item.TargetInstanceId == "listener-i" && item.ReasonCode == "ChargeAdvanced"),
-                "Slot zero's counter-clockwise Charge target must resolve to slot seven.");
-            Check(log.Any(item => item.SourceInstanceId == "listener-i" && item.ReasonCode == "ring-listener"),
-                "Slot seven must receive slot zero's adjacent-use event across the ring boundary.");
+                "The linear left-adjacent Charge target must resolve to the preceding slot.");
+            Check(log.Any(item => item.SourceInstanceId == "listener-i" && item.ReasonCode == "linear-listener"),
+                "The preceding slot must receive the adjacent-use event.");
         }
 
 #if !BUQI_HEADLESS_TESTS
         [Test]
 #endif
-        public void BattleSimulation_DeclaresRingRuleVersion()
+        public void BattleSimulation_DeclaresLinearRuleVersion()
         {
-            Check(BuqiBattleSimulator.RuleVersion == "0.6.0", "Latest S01 rules require a new rule version.");
+            Check(BuqiBattleSimulator.RuleVersion == "0.6.0", "Linear topology requires the current rule version.");
             Check(BuqiBattleSimulator.SimulationVersion == "battle-core-0.6.0",
-                "Simulation version must move with the ring rules.");
+                "Simulation version must move with the linear rules.");
         }
 
         private static string TriggerDigest(

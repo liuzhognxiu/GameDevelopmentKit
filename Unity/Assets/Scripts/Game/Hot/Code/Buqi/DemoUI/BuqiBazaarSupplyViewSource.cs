@@ -96,7 +96,7 @@ namespace Game.Hot.Buqi.DemoUI
             {
                 if (row == null || string.IsNullOrWhiteSpace(row.DefinitionId) ||
                     string.IsNullOrWhiteSpace(row.ArchetypeId) ||
-                    row.UnlockDay < 1 || row.UnlockDay > BuqiRunRules.RunDayCount ||
+                    row.UnlockDay < 1 || row.UnlockDay > BuqiRunRules.ContentScheduleDayCount ||
                     !items.TryAdd(row.DefinitionId, new ItemProfile(row)))
                 {
                     error = "装备编号、流派和解锁日期必须有效且不能重复。";
@@ -172,7 +172,7 @@ namespace Game.Hot.Buqi.DemoUI
                         ArchetypeId = item.Row.ArchetypeId,
                         Role = MapRole(item.Row.Role),
                         MinimumDay = item.Row.UnlockDay,
-                        MaximumDay = BuqiRunRules.RunDayCount,
+                        MaximumDay = BuqiRunRules.ContentScheduleDayCount,
                         Size = (int)item.Row.Size,
                         Quality = quality,
                         Sources = BuqiSupplySource.Merchant,
@@ -450,8 +450,10 @@ namespace Game.Hot.Buqi.DemoUI
         {
             shelf = null;
             roles = new Dictionary<string, string>(StringComparer.Ordinal);
+            int contentDay = BuqiRunRules.GetContentScheduleDay(day);
             List<SlotProfile> activeSlots = merchant.Slots
-                .Where(slot => slot.Row.MinUnlockDay <= day && slot.Row.MaxUnlockDay >= day)
+                .Where(slot => slot.Row.MinUnlockDay <= contentDay &&
+                               slot.Row.MaxUnlockDay >= contentDay)
                 .OrderByDescending(slot => slot.Row.Weight)
                 .ThenBy(slot => slot.Row.SlotId, StringComparer.Ordinal)
                 .ToList();
@@ -481,19 +483,19 @@ namespace Game.Hot.Buqi.DemoUI
                     if (remainingCounts[selectedSlot] > 0)
                         remainingCounts[selectedSlot]--;
 
-                    candidates = FilterDefinitions(merchant, selectedSlot, day, selectedIds);
+                    candidates = FilterDefinitions(merchant, selectedSlot, contentDay, selectedIds);
                     if (candidates.Count == 0)
                     {
                         selectedSlot = activeSlots.FirstOrDefault(slot =>
-                            FilterDefinitions(merchant, slot, day, selectedIds).Count > 0);
+                            FilterDefinitions(merchant, slot, contentDay, selectedIds).Count > 0);
                         candidates = selectedSlot == null
-                            ? FilterFallbackDefinitions(merchant, day, selectedIds)
-                            : FilterDefinitions(merchant, selectedSlot, day, selectedIds);
+                            ? FilterFallbackDefinitions(merchant, contentDay, selectedIds)
+                            : FilterDefinitions(merchant, selectedSlot, contentDay, selectedIds);
                     }
                 }
                 else
                 {
-                    candidates = FilterFallbackDefinitions(merchant, day, selectedIds);
+                    candidates = FilterFallbackDefinitions(merchant, contentDay, selectedIds);
                 }
                 if (candidates.Count == 0)
                 {
@@ -582,11 +584,12 @@ namespace Game.Hot.Buqi.DemoUI
 
         private MerchantProfile SelectMerchant(BuqiBazaarSupplyContext context, string preferredArchetypeId)
         {
+            int contentDay = BuqiRunRules.GetContentScheduleDay(context.Day);
             List<MerchantProfile> eligible = m_Merchants
-                .Where(merchant => merchant.Row.MinDay <= context.Day &&
-                                   merchant.Row.MaxDay >= context.Day &&
+                .Where(merchant => merchant.Row.MinDay <= contentDay &&
+                                   merchant.Row.MaxDay >= contentDay &&
                                    merchant.PoolItemIds.Count(definitionId =>
-                                       m_Items[definitionId].Row.UnlockDay <= context.Day) >=
+                                       m_Items[definitionId].Row.UnlockDay <= contentDay) >=
                                    BuqiSupplyService.MerchantOfferCount)
                 .ToList();
             if (eligible.Count == 0)
@@ -669,7 +672,7 @@ namespace Game.Hot.Buqi.DemoUI
                 string.IsNullOrWhiteSpace(row.DisplayName) ||
                 !merchantIds.Add(row.MerchantId) ||
                 row.MinDay < 1 || row.MinDay > row.MaxDay ||
-                row.MaxDay > BuqiRunRules.RunDayCount || row.Weight <= 0 ||
+                row.MaxDay > BuqiRunRules.ContentScheduleDayCount || row.Weight <= 0 ||
                 row.PoolItemIds == null || row.PoolItemIds.Count < 4 ||
                 row.Slots == null || row.Slots.Count != BuqiSupplyService.MerchantSlotCount)
             {
@@ -715,7 +718,7 @@ namespace Game.Hot.Buqi.DemoUI
                 string.IsNullOrWhiteSpace(row.SlotKind) || string.IsNullOrWhiteSpace(row.RequiredTag) ||
                 builds.Count == 0 || sizes.Count == 0 || qualities.Count == 0 ||
                 row.MinUnlockDay < 1 || row.MinUnlockDay > row.MaxUnlockDay ||
-                row.MaxUnlockDay > BuqiRunRules.RunDayCount || row.Weight <= 0 || row.Count <= 0)
+                row.MaxUnlockDay > BuqiRunRules.ContentScheduleDayCount || row.Weight <= 0 || row.Count <= 0)
             {
                 error = $"商人“{merchantId}”包含无效货位。";
                 return false;
@@ -777,7 +780,7 @@ namespace Game.Hot.Buqi.DemoUI
 
         private static bool ValidateContext(BuqiBazaarSupplyContext context, out string error)
         {
-            if (context == null || context.Day < 1 || context.Day > BuqiRunRules.RunDayCount ||
+            if (context == null || context.Day < 1 ||
                 context.EncounterIndex < 0 || context.EncounterIndex >= BuqiRunRules.EncountersPerDay ||
                 context.Balance < 0)
             {

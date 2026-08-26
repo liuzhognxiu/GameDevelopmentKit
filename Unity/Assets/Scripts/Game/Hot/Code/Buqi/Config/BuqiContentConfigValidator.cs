@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Game.Hot.Buqi.Run.Core;
 
 namespace Game.Hot.Buqi.Config
 {
@@ -288,7 +289,6 @@ namespace Game.Hot.Buqi.Config
             var eventById = new Dictionary<string, BuqiEventConfigRow>(StringComparer.Ordinal);
             var optionsByEvent = new Dictionary<string, List<BuqiEventOptionConfigRow>>(StringComparer.Ordinal);
             var optionIds = new HashSet<string>(StringComparer.Ordinal);
-            int dayNineCount = 0;
             int revisitCount = 0;
             int earlyCount = 0;
             int middleCount = 0;
@@ -315,8 +315,6 @@ namespace Game.Hot.Buqi.Config
                     errors.Add(GameFramework.Utility.Text.Format(
                         "Event {0} must declare exactly 3 options",
                         row.EventId));
-                if (row.DayNineResolution)
-                    dayNineCount++;
                 if (!string.IsNullOrEmpty(row.RevisitEventId))
                     revisitCount++;
                 if (row.MinDay == 1)
@@ -421,13 +419,11 @@ namespace Game.Hot.Buqi.Config
                 errors.Add("Event stages must contain 8/8/8 events for days 1-3/4-6/7-9");
             if (revisitCount < 4)
                 errors.Add("Event pool must contain at least four cross-day revisit chains");
-            if (dayNineCount != 2)
-                errors.Add("Event pool must contain exactly two Day Nine resolution events");
         }
 
         private static void ValidateDayRange(int minDay, int maxDay, string where, List<string> errors)
         {
-            if (minDay < 1 || maxDay > 9 || minDay > maxDay)
+            if (minDay < 1 || maxDay > BuqiRunRules.ContentScheduleDayCount || minDay > maxDay)
                 errors.Add(GameFramework.Utility.Text.Format("{0} has an invalid day range", where));
         }
     }

@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Reflection;
 using Game.Hot;
+using Game.Hot.Buqi.Run.Core;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -45,16 +46,16 @@ namespace Game.Hot.Buqi.Tests
             AssertChild(form, "CommandBar");
             AssertChild(form, "DragLayer");
             AssertChild(form, "ItemTemplate");
-            Assert.That(Children(form, "BoardSlot_").Count(), Is.EqualTo(8));
-            Assert.That(Children(form, "StorageSlot_").Count(), Is.EqualTo(8));
+            Assert.That(Children(form, "BoardSlot_").Count(), Is.EqualTo(BuqiRunRules.BoardSlotCount));
+            Assert.That(Children(form, "StorageSlot_").Count(), Is.EqualTo(BuqiRunRules.StorageSlotCount));
 
             MonoBehaviour component = FindComponent(form, "BuqiDragDeployForm");
             AssertReferences(component,
                 "m_TitleText", "m_ContextText", "m_DetailText", "m_FeedbackText", "m_ItemTemplate",
                 "m_BoardItemLayer", "m_StorageItemLayer", "m_DragLayer",
                 "m_ResetButton", "m_CancelButton", "m_ConfirmButton");
-            AssertArray(component, "m_BoardSlots", 8);
-            AssertArray(component, "m_StorageSlots", 8);
+            AssertArray(component, "m_BoardSlots", BuqiRunRules.BoardSlotCount);
+            AssertArray(component, "m_StorageSlots", BuqiRunRules.StorageSlotCount);
         }
 
         [Test]

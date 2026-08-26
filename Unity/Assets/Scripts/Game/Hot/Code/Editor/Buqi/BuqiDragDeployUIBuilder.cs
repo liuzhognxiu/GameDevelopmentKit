@@ -201,8 +201,10 @@ namespace Game.Hot.Editor
             for (int index = 0; index < BuqiDragDeployController.StorageSlotCount; index++)
             {
                 GameObject slot = InstantiatePrefab(slotPrefab, storagePanel.transform, "StorageSlot_" + (index + 1).ToString("00"));
+                int row = index / 2;
+                int column = index % 2;
                 SetRect(slot.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                    new Vector2(0f, 190f - 104f * index), new Vector2(300f, 92f));
+                    new Vector2(-76f + 152f * column, 190f - 104f * row), new Vector2(144f, 92f));
                 storageSlots.Add(slot.GetComponent<BuqiDeploySlotWidget>());
             }
             storageItemLayer.SetAsLastSibling();
@@ -210,16 +212,16 @@ namespace Game.Hot.Editor
             GameObject boardPanel = CreatePanel(root.transform, "BoardPanel", new Vector2(-72f, 0f), new Vector2(1020f, 824f), new Color32(25, 31, 36, 255));
             Text boardTitle = CreateText(boardPanel.transform, "BoardTitle_Text", "不器阵列", 20, TextAnchor.MiddleLeft, inkColor);
             SetRect(boardTitle.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(24f, -32f), new Vector2(-48f, 40f));
-            Text boardHint = CreateText(boardPanel.transform, "BoardHint_Text", "01  02  03  04  05  06  07  08", 14, TextAnchor.MiddleCenter, mutedColor);
+            Text boardHint = CreateText(boardPanel.transform, "BoardHint_Text", "01  02  03  04  05  06  07  08  09  10", 14, TextAnchor.MiddleCenter, mutedColor);
             SetRect(boardHint.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -88f), new Vector2(920f, 28f));
             Transform boardItemLayer = CreateLayer(boardPanel.transform, "BoardItemLayer", new Vector2(0f, 80f), new Vector2(920f, 104f));
             var boardSlots = new List<BuqiDeploySlotWidget>();
-            for (int index = 0; index < 8; index++)
+            for (int index = 0; index < BuqiDragDeployController.BoardSlotCount; index++)
             {
                 GameObject slot = InstantiatePrefab(slotPrefab, boardPanel.transform, "BoardSlot_" + (index + 1).ToString("00"));
-                float x = -460f + 58f + 116f * index;
+                float x = -414f + 92f * index;
                 SetRect(slot.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                    new Vector2(x, 80f), new Vector2(108f, 104f));
+                    new Vector2(x, 80f), new Vector2(84f, 104f));
                 boardSlots.Add(slot.GetComponent<BuqiDeploySlotWidget>());
             }
             boardItemLayer.SetAsLastSibling();

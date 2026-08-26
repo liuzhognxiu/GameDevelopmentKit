@@ -140,9 +140,9 @@ namespace Game.Hot.Buqi.Tests
         {
             var formObject = new GameObject("DragDeployFormTest");
             FormHandle form = FormHandle.Create(formObject);
-            var states = new Text[8];
-            var backgrounds = new Image[8];
-            var slots = new BuqiDeploySlotWidget[8];
+            var states = new Text[BuqiDragDeployController.StorageSlotCount];
+            var backgrounds = new Image[BuqiDragDeployController.StorageSlotCount];
+            var slots = new BuqiDeploySlotWidget[BuqiDragDeployController.StorageSlotCount];
             try
             {
                 for (int index = 0; index < slots.Length; index++)
@@ -413,10 +413,10 @@ namespace Game.Hot.Buqi.Tests
             catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-s", Name = "Short", Size = 1 });
             catalog.Items.Add(new BuqiUIDemoItemDefinition { Id = "item-m", Name = "Middle", Size = 2 });
             var board = new List<BuqiDemoItemView>();
-            for (int index = 0; index < 8; index++)
+            for (int index = 0; index < BuqiDragDeployController.BoardSlotCount; index++)
                 board.Add(new BuqiDemoItemView { Empty = true, Slot = index });
             var storage = new List<BuqiDemoItemView>();
-            for (int index = 0; index < 8; index++)
+            for (int index = 0; index < BuqiDragDeployController.StorageSlotCount; index++)
                 storage.Add(new BuqiDemoItemView { Empty = true, Slot = index });
             storage[0] = new BuqiDemoItemView
             {

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Game.Hot.Buqi.Battle;
 using NUnit.Framework;
 using UnityEditor;
 using UnityEngine;
@@ -38,17 +39,18 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void DailyCycle_IsFixedAtNineDaysWithFourRequiredOperations()
+        public void DailyCycle_HasSixPeriodsWithFourOperationsAndTwoBattles()
         {
             Transform dailyCycle = Required("DailyCycle");
 
             Assert.That(dailyCycle.GetComponentsInChildren<Transform>(true)
-                .Count(child => child.name.StartsWith("DaySlot_", StringComparison.Ordinal)), Is.EqualTo(9));
+                .Count(child => child.name.StartsWith("PeriodSlot_", StringComparison.Ordinal)), Is.EqualTo(6));
             Assert.That(DirectChildNames(dailyCycle), Is.EquivalentTo(new[]
             {
-                "DaySlot_01", "DaySlot_02", "DaySlot_03", "DaySlot_04", "DaySlot_05",
-                "DaySlot_06", "DaySlot_07", "DaySlot_08", "DaySlot_09",
-                "MorningOperation", "NoonOperation", "DuskPVE", "NightPVP",
+                "PeriodSlot_01", "PeriodSlot_02", "PeriodSlot_03",
+                "PeriodSlot_04", "PeriodSlot_05", "PeriodSlot_06",
+                "Hour1Operation", "Hour2Operation", "Hour3PVE",
+                "Hour4Operation", "Hour5Operation", "Hour6PVP",
             }));
         }
 
@@ -115,7 +117,7 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void Tribulation_FollowsDayNineWithThreeRoutesAndThreeStagesWithoutEchoHistory()
+        public void Tribulation_HasThreeRoutesAndThreeStagesWithoutEchoHistory()
         {
             Transform routeScreen = Required("TribulationRouteScreen");
             Transform sequence = Required("TribulationSequence");
@@ -235,12 +237,12 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
-        public void BattleIntegration_HasEightFloatAnchorsPerSideAndOnlyApprovedToolbarControls()
+        public void BattleIntegration_HasTenFloatAnchorsPerSideAndOnlyApprovedToolbarControls()
         {
             Transform arena = m_Root.transform.Find("BattleArena");
             Assert.That(arena, Is.Not.Null);
-            Assert.That(arena.Cast<Transform>().Count(child => child.name.EndsWith("_Left", StringComparison.Ordinal)), Is.EqualTo(8));
-            Assert.That(arena.Cast<Transform>().Count(child => child.name.EndsWith("_Right", StringComparison.Ordinal)), Is.EqualTo(8));
+            Assert.That(arena.Cast<Transform>().Count(child => child.name.EndsWith("_Left", StringComparison.Ordinal)), Is.EqualTo(BuqiBoardValidator.BoardSlotCount));
+            Assert.That(arena.Cast<Transform>().Count(child => child.name.EndsWith("_Right", StringComparison.Ordinal)), Is.EqualTo(BuqiBoardValidator.BoardSlotCount));
 
             foreach (Transform card in arena)
             {

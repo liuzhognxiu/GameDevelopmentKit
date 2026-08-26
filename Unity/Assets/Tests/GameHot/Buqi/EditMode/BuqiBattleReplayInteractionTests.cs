@@ -186,7 +186,16 @@ namespace Game.Hot.Buqi.Tests
             BattleReplayData replay = CreateReplayData();
             left = replay.LeftBuild.Items[0];
             right = replay.RightBuild.Items[0];
-            replay.Result = new BattleResult { DurationTicks = 100 };
+            BattleResult baseline = replay.Result;
+            replay.Result = new BattleResult
+            {
+                RuleVersion = BuqiBattleSimulator.RuleVersion,
+                SimulationVersion = BuqiBattleSimulator.SimulationVersion,
+                ContentVersion = baseline.ContentVersion,
+                LeftSnapshotHash = baseline.LeftSnapshotHash,
+                RightSnapshotHash = baseline.RightSnapshotHash,
+                DurationTicks = 100,
+            };
             replay.Effects = new Dictionary<string, BattleReplayEffectInfo>(StringComparer.Ordinal)
             {
                 ["attack"] = new BattleReplayEffectInfo

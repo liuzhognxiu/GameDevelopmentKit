@@ -100,10 +100,21 @@ namespace Game.Hot.Buqi.UI
 #endif
         {
             base.OnOpen(userData);
+            RestoreStaticLabels();
             if (!TryInitialize(userData as BuqiDragDeployOpenData, out string error))
             {
                 Log.Warning(error);
                 Close();
+            }
+        }
+
+        private void RestoreStaticLabels()
+        {
+            const string MissingKeyPrefix = "<NoKey>";
+            foreach (Text label in GetComponentsInChildren<Text>(true))
+            {
+                if (label != null && label.text.StartsWith(MissingKeyPrefix, StringComparison.Ordinal))
+                    label.text = label.text.Substring(MissingKeyPrefix.Length);
             }
         }
 

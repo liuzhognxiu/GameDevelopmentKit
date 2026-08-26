@@ -47,7 +47,7 @@ namespace Game.Hot.Buqi.UI
 
             SetText(m_NameText, string.IsNullOrEmpty(view.Name) ? view.Id : view.Name);
             SetText(m_BuildText, GameFramework.Utility.Text.Format("方向  {0}", EmptyFallback(view.Build, "未公开")));
-            SetText(m_SlotsText, "连续 8 格构筑  ·  公开情报");
+            SetText(m_SlotsText, "连续 10 格构筑  ·  公开情报");
             SetText(m_ThreatText, "主要威胁：公开装备触发关系");
             SetText(m_RiskText, "已知风险：未公开改造");
             if (m_StatusMarker != null)

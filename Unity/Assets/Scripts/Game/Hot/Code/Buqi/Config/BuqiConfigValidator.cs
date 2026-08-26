@@ -77,7 +77,7 @@ namespace Game.Hot.Buqi.Config
             if (global.NoiseIncidentDamage != BuqiBattleSimulator.NoiseAccidentDamage)
                 errors.Add("全局失衡事故伤害必须与战斗模拟器一致");
             if (global.BoardSlotCount != BuqiBoardValidator.BoardSlotCount)
-                errors.Add("全局棋盘格数必须为 8");
+                errors.Add($"全局棋盘格数必须为 {BuqiBoardValidator.BoardSlotCount}");
             if (global.StormStartTicks < 0)
                 errors.Add("Global StormStartTicks must be non-negative");
             if (global.StormBaseDamage <= 0)

@@ -48,7 +48,7 @@ namespace Game.Hot.Editor
             Text build = CreateText(root.transform, "Build_Text", "方向  高速构筑", 15, TextAnchor.MiddleLeft, accentColor);
             SetRect(build.rectTransform, new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(38f, -53f), new Vector2(340f, 24f));
 
-            Text slots = CreateText(root.transform, "BoardSummary_Text", "连续 8 格构筑  ·  公开情报", 14, TextAnchor.MiddleLeft, mutedColor);
+            Text slots = CreateText(root.transform, "BoardSummary_Text", "连续 10 格构筑  ·  公开情报", 14, TextAnchor.MiddleLeft, mutedColor);
             SetRect(slots.rectTransform, new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(-100f, -40f), new Vector2(180f, 48f));
 
             Text[] itemLabels = new Text[3];

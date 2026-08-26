@@ -94,8 +94,9 @@ namespace Game.Hot.Buqi.UI.Stages
 
         protected override void ConfigureActions(BuqiUIDemoView view)
         {
+            int balance = view?.Coins ?? m_Supply?.Balance ?? 0;
             if (m_Supply != null && m_Supply.CanRefresh &&
-                m_Supply.Balance >= m_Supply.RefreshPrice)
+                balance >= m_Supply.RefreshPrice)
             {
                 string refreshLabel = string.IsNullOrEmpty(m_Supply.RefreshPriceLabel)
                     ? GameFramework.Utility.Text.Format("刷新 {0} 金币", m_Supply.RefreshPrice)
@@ -140,8 +141,9 @@ namespace Game.Hot.Buqi.UI.Stages
         {
             if (m_Supply == null)
                 return base.ResolveMeta(view);
+            int balance = view?.Coins ?? m_Supply.Balance;
             string refresh;
-            if (m_Supply.CanRefresh && m_Supply.Balance < m_Supply.RefreshPrice)
+            if (m_Supply.CanRefresh && balance < m_Supply.RefreshPrice)
             {
                 refresh = GameFramework.Utility.Text.Format(
                     "刷新不可用：金币不足（需 {0}）",
@@ -153,7 +155,7 @@ namespace Game.Hot.Buqi.UI.Stages
                     ? GameFramework.Utility.Text.Format("刷新 {0}", m_Supply.RefreshPrice)
                     : m_Supply.RefreshPriceLabel;
             }
-            return GameFramework.Utility.Text.Format("{0}   余额 {1}", refresh, m_Supply.Balance);
+            return GameFramework.Utility.Text.Format("{0}   余额 {1}", refresh, balance);
         }
 
         protected override void OnCleared()
@@ -616,7 +618,7 @@ namespace Game.Hot.Buqi.UI.Stages
             string tags = item.Tags == null || item.Tags.Count == 0
                 ? "无"
                 : string.Join(" / ", item.Tags);
-            m_DetailText.text = string.Format(
+            m_DetailText.text = GameFramework.Utility.Text.Format(
                 "{0}\n品质：{1}\n购买价：{2} 金币\n出售价：{3} 金币\n尺寸：{4} 格\n冷却：{5} 时间单位\n作用：{6}\n类型：{7}  ·  流派：{8}\n标签：{9}\n位置：{10}\n改造：{11}",
                 item.Name,
                 string.IsNullOrEmpty(item.Quality) ? "普通" : item.Quality,
@@ -705,7 +707,7 @@ namespace Game.Hot.Buqi.UI.Stages
             return null;
         }
 
-        private static void PositionBoardItem(BuqiDraggableItemWidget widget, int anchorSlot, int span)
+        private void PositionBoardItem(BuqiDraggableItemWidget widget, int anchorSlot, int span)
         {
             if (widget == null || !(widget.transform is RectTransform rect) || anchorSlot < 0)
                 return;

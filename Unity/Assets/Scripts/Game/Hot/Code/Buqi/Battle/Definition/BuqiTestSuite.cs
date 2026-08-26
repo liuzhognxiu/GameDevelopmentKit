@@ -234,7 +234,7 @@ namespace Game.Hot.Buqi.Battle
         }
 
         /// <summary>
-        /// 以固定种子生成指定数量的不同合法 8 格构筑，用于循环、异常和性能压力验证。
+        /// 以固定种子生成指定数量的不同合法构筑，用于循环、异常和性能压力验证。
         /// 该样本不代表平衡分布，也不得用于胜率结论；放置时按定义真实尺寸筛选可用候选。
         /// </summary>
         public static List<BuildSnapshot> GenerateStressBuilds(int count, int seed)

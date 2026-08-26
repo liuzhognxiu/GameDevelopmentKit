@@ -225,7 +225,7 @@ namespace Game.Hot.Buqi.Run.Integration
                 SourceKind = RewardSourceKind,
                 ContentId = reward.StageId,
                 ChoiceId = candidate.CandidateId,
-                RequestFingerprint = targetInstanceId ?? string.Empty,
+                RequestFingerprint = string.IsNullOrWhiteSpace(targetInstanceId) ? "none" : targetInstanceId,
             });
             working.Economy.Run.Revision = runtime.Economy.Run.Revision + 1;
             bool levelUp = ResolveLevel(working.Experience) > levelBefore;

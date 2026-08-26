@@ -749,8 +749,8 @@ namespace Game.Hot.Editor.Buqi
                 EditorGUILayout.HelpBox(message, type);
             }
 
-            EditorGUILayout.LabelField("左侧 8 格", m_RunResult.LeftBoardText, EditorStyles.wordWrappedLabel);
-            EditorGUILayout.LabelField("右侧 8 格", m_RunResult.RightBoardText, EditorStyles.wordWrappedLabel);
+            EditorGUILayout.LabelField("左侧 10 格", m_RunResult.LeftBoardText, EditorStyles.wordWrappedLabel);
+            EditorGUILayout.LabelField("右侧 10 格", m_RunResult.RightBoardText, EditorStyles.wordWrappedLabel);
             DrawLog();
         }
 

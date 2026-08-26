@@ -138,7 +138,7 @@ namespace Game.Hot.Buqi.BattleLab
             };
             foreach (BuqiItemConfigRow row in itemRows)
             {
-                if (row != null)
+                if (row != null && string.IsNullOrEmpty(GetItemError(row, (int)row.Size)))
                     providerSource.Items.Add(CopyProviderItem(row));
             }
             return new BuqiDefinitionProvider(providerSource);

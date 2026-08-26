@@ -196,6 +196,31 @@ namespace Game.Hot.Buqi.BattleLab
             nullEffectEntry.Effects.Add(null);
             source.Items.Add(nullEffectEntry);
 
+            source.Echoes[0].EchoId = "echo-effects-null";
+            source.Echoes[0].Snapshot.Items[0].DefinitionId = "effects-null";
+            source.Echoes.Add(new BuqiEchoConfigRow
+            {
+                EchoId = "echo-effect-entry-null",
+                DisplayName = "空效果项道影",
+                Build = "balanced",
+                Snapshot = new BuqiBuildSnapshotConfigRow
+                {
+                    SnapshotId = "echo-effect-entry-null-snapshot",
+                    ArchetypeId = "balanced",
+                    InitialExecution = 100,
+                    Items = new List<BuqiItemInstanceConfigRow>
+                    {
+                        new BuqiItemInstanceConfigRow
+                        {
+                            InstanceId = "echo-effect-entry-null-item",
+                            DefinitionId = "effect-entry-null",
+                            Quality = BuqiQuality.Normal,
+                            AnchorSlot = 0,
+                        },
+                    },
+                },
+            });
+
             if (!BuqiBattleLabCatalog.TryCreate(
                     source, out BuqiBattleLabCatalog catalog, out string error))
             {
@@ -223,6 +248,22 @@ namespace Game.Hot.Buqi.BattleLab
                 source.Items.Single(item => item.DefinitionId == "effects-null").Effects == null &&
                 source.Items.Single(item => item.DefinitionId == "effect-entry-null").Effects[0] == null,
                 "畸形效果：目录投影改写了源配置",
+                failures);
+
+            BuqiBattleLabPresetOpponent nullEffectsOpponent = catalog.PresetOpponents.Single(
+                opponent => opponent.EchoId == "echo-effects-null");
+            Expect(
+                nullEffectsOpponent.ValidationErrors.Any(
+                    validationError => validationError.Contains("effects-null")),
+                "畸形效果：空效果列表定义仍可用于预设模拟",
+                failures);
+
+            BuqiBattleLabPresetOpponent nullEffectEntryOpponent = catalog.PresetOpponents.Single(
+                opponent => opponent.EchoId == "echo-effect-entry-null");
+            Expect(
+                nullEffectEntryOpponent.ValidationErrors.Any(
+                    validationError => validationError.Contains("effect-entry-null")),
+                "畸形效果：含空效果项定义仍可用于预设模拟",
                 failures);
         }
 

@@ -176,7 +176,7 @@ namespace Game.Hot.Buqi.Battle
                     Snapshot("L", 100, 0, Item("small", "damage", 0), Item("large", "large", 0)),
                     Snapshot("R", 100, 0, Item("target", "damage", 0))),
                 Vector("illegal-out-of-bounds",
-                    Snapshot("L", 100, 0, Item("large", "large", 6)),
+                    Snapshot("L", 100, 0, Item("large", "large", 8)),
                     Snapshot("R", 100, 0, Item("target", "damage", 0))),
             };
         }

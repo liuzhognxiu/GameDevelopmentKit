@@ -5,7 +5,7 @@ namespace Game.Hot.Buqi.Run.Core
     public sealed class BuqiRunState
     {
         public const string PreviousRuleVersion = "buqi-nine-day-run-rule-v3";
-        public const string CurrentRuleVersion = "buqi-infinite-run-rule-v1";
+        public const string CurrentRuleVersion = "buqi-infinite-day-run-rule-v1";
 
         public string ContentVersion = string.Empty;
         public string RuleVersion = CurrentRuleVersion;

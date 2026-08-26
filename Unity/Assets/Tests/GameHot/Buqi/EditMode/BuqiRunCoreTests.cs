@@ -19,6 +19,7 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(BuqiRunRules.StartingLifePool, Is.EqualTo(20));
             Assert.That(BuqiRunRules.BoardSlotCount, Is.EqualTo(10));
             Assert.That(BuqiRunRules.StorageSlotCount, Is.EqualTo(10));
+            Assert.That(BuqiRunState.CurrentRuleVersion, Is.EqualTo("buqi-infinite-day-run-rule-v1"));
             Assert.That(BuqiBoardValidator.BoardSlotCount, Is.EqualTo(BuqiRunRules.BoardSlotCount));
             Assert.That(BuqiLinkBoard.SlotCount, Is.EqualTo(BuqiRunRules.BoardSlotCount));
             Assert.That(BuqiDragDeployController.BoardSlotCount, Is.EqualTo(BuqiRunRules.BoardSlotCount));

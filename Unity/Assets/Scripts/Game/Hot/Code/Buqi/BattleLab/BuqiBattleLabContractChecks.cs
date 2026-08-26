@@ -16,6 +16,7 @@ namespace Game.Hot.Buqi.BattleLab
             var failures = new List<string>();
             RunCheck("目录投影", CheckCatalogProjection, failures);
             RunCheck("棋盘尺寸", CheckBoardSlotRange, failures);
+            RunCheck("原子棋盘", CheckAtomicBoards, failures);
             RunCheck("无效内容", CheckInvalidContentProjection, failures);
             RunCheck("畸形效果", CheckMalformedEffectProjection, failures);
             RunCheck("只读模型", CheckModelDefensiveCopies, failures);
@@ -79,6 +80,111 @@ namespace Game.Hot.Buqi.BattleLab
                 sevenSlotError == "战斗实验室棋盘只支持 8 至 10 格",
                 BuqiText.Format("棋盘尺寸：7 格错误不精确：{0}", sevenSlotError),
                 failures);
+        }
+
+        private static void CheckAtomicBoards(List<string> failures)
+        {
+            foreach (int slotCount in new[] { 8, 10 })
+            {
+                var board = new BuqiBattleLabBoard(slotCount);
+                var small = new BuqiBattleLabPlacement(
+                    "p-1", "small", "小型", 1,
+                    BuqiQuality.Normal, 0, string.Empty);
+                var medium = new BuqiBattleLabPlacement(
+                    "p-2", "medium", "中型", 2,
+                    BuqiQuality.Normal, slotCount - 2, string.Empty);
+
+                Expect(
+                    board.View.SlotCount == slotCount,
+                    BuqiText.Format("原子棋盘：{0} 格视图尺寸错误", slotCount),
+                    failures);
+                Expect(
+                    board.TryAdd(small, out string reason),
+                    BuqiText.Format("原子棋盘：{0} 格添加小型道具失败：{1}", slotCount, reason),
+                    failures);
+                Expect(
+                    board.TryAdd(medium, out reason),
+                    BuqiText.Format("原子棋盘：{0} 格添加中型道具失败：{1}", slotCount, reason),
+                    failures);
+
+                BuqiBattleLabBoardView beforeLargePreview = board.View;
+                IReadOnlyList<BuqiBattleLabPlacement> beforeLargeSequence =
+                    board.CopyPlacements();
+                BuqiBattleLabPlacementPreview largePreview = board.Preview(
+                    "large", 3, slotCount - 2, string.Empty);
+                Expect(
+                    !largePreview.Accepted && largePreview.Reason == "需要连续 3 格",
+                    BuqiText.Format(
+                        "原子棋盘：{0} 格大型道具越界错误不精确：{1}",
+                        slotCount,
+                        largePreview.Reason),
+                    failures);
+                Expect(
+                    largePreview.CoveredSlots.SequenceEqual(
+                        new[] { slotCount - 2, slotCount - 1, slotCount }),
+                    BuqiText.Format("原子棋盘：{0} 格大型道具预览范围错误", slotCount),
+                    failures);
+                Expect(
+                    ReferenceEquals(beforeLargePreview, board.View) &&
+                    SamePlacementSequence(beforeLargeSequence, board.CopyPlacements()),
+                    BuqiText.Format("原子棋盘：{0} 格失败预览改写了棋盘", slotCount),
+                    failures);
+
+                var overlap = new BuqiBattleLabPlacement(
+                    "p-overlap", "overlap", "重叠", 1,
+                    BuqiQuality.Normal, 0, string.Empty);
+                BuqiBattleLabBoardView beforeOverlap = board.View;
+                IReadOnlyList<BuqiBattleLabPlacement> beforeOverlapSequence =
+                    board.CopyPlacements();
+                Expect(
+                    !board.TryAdd(overlap, out reason) && reason == "与小型重叠",
+                    BuqiText.Format("原子棋盘：{0} 格重叠错误不精确：{1}", slotCount, reason),
+                    failures);
+                Expect(
+                    ReferenceEquals(beforeOverlap, board.View) &&
+                    SamePlacementSequence(beforeOverlapSequence, board.CopyPlacements()),
+                    BuqiText.Format("原子棋盘：{0} 格失败重叠改写了棋盘", slotCount),
+                    failures);
+
+                var duplicate = new BuqiBattleLabPlacement(
+                    "p-1", "duplicate", "重复", 1,
+                    BuqiQuality.Normal, 3, string.Empty);
+                Expect(
+                    !board.TryAdd(duplicate, out reason) && reason == "同一实例不能重复放置",
+                    BuqiText.Format("原子棋盘：{0} 格重复实例错误不精确：{1}", slotCount, reason),
+                    failures);
+                Expect(
+                    !board.TryMove("missing", 1, out reason) && reason == "来源位置没有道具",
+                    BuqiText.Format("原子棋盘：{0} 格未知来源错误不精确：{1}", slotCount, reason),
+                    failures);
+                Expect(
+                    board.TryMove("p-2", 1, out reason),
+                    BuqiText.Format("原子棋盘：{0} 格移动中型道具失败：{1}", slotCount, reason),
+                    failures);
+                Expect(
+                    board.TryRemove("p-1", out reason),
+                    BuqiText.Format("原子棋盘：{0} 格移除小型道具失败：{1}", slotCount, reason),
+                    failures);
+                Expect(
+                    board.Clear() && board.View.Placements.Count == 0,
+                    BuqiText.Format("原子棋盘：{0} 格清空失败", slotCount),
+                    failures);
+            }
+        }
+
+        private static bool SamePlacementSequence(
+            IReadOnlyList<BuqiBattleLabPlacement> left,
+            IReadOnlyList<BuqiBattleLabPlacement> right)
+        {
+            if (left.Count != right.Count)
+                return false;
+
+            for (int index = 0; index < left.Count; index++)
+            {
+                if (!ReferenceEquals(left[index], right[index]))
+                    return false;
+            }
+            return true;
         }
 
         private static void CheckInvalidContentProjection(List<string> failures)

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Economy;
 using Game.Hot.Buqi.Run.Encounter;
+using Game.Hot.Buqi.Run.Settlement;
 using NUnit.Framework;
 
 namespace Game.Hot.Buqi.Tests
@@ -289,6 +290,46 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(result.TemporaryModifiers[0].RemainingBattles, Is.EqualTo(1));
             Assert.That(source.TemporaryModifiers, Has.Count.EqualTo(2));
             Assert.That(source.TemporaryModifiers[0].RemainingBattles, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Execute_RestoreLifeDuringHeartTrialRemainsSaveable()
+        {
+            BuqiRunEventOptionDefinition restore = CreateOption("restore");
+            restore.Actions.Add(new BuqiRunEventActionDefinition
+            {
+                ActionId = "restore.life",
+                Kind = BuqiRunEventActionKind.RestoreLife,
+                Amount = 3,
+            });
+            TestEventCatalog events = new TestEventCatalog(CreateEvent(
+                "event.heart-trial-restoration",
+                new BuqiRunEventEligibility(),
+                restore,
+                CreateOption("wait"),
+                CreateOption("leave")));
+            TestItemCatalog items = new TestItemCatalog(Item("ward.a", "shield"));
+            BuqiRunEventRuntimeState source = CreateState(day: 8, BuqiRunPeriod.MorningOperation);
+            source.Economy.Run.ContentVersion = "event-runtime-test-v1";
+            source.Economy.Run.LifePool = 0;
+            source.Economy.Run.InTribulationTrial = true;
+            source.Economy.Run.HeartTrialUsed = true;
+            BuqiRunEventRuntimeState frozen = new BuqiRunEventSelector(events, items).Select(source).State;
+
+            BuqiRunEventExecutionResult result = new BuqiRunEventExecutor(events, items).Execute(
+                frozen,
+                new BuqiRunEventChoiceRequest
+                {
+                    ResolutionId = "heart-trial-restoration-1",
+                    EventId = "event.heart-trial-restoration",
+                    OptionId = "restore",
+                });
+
+            Assert.That(result.Success, Is.True, result.FailureReason);
+            Assert.That(result.State.Economy.Run.LifePool, Is.EqualTo(3));
+            Assert.That(result.State.Economy.Run.InTribulationTrial, Is.True);
+            BuqiRunSaveData save = BuqiRunSaveCodec.FromState(result.State.Economy.Run);
+            Assert.That(BuqiRunSaveCodec.TryToState(save, out _, out string error), Is.True, error);
         }
 
         [Test]

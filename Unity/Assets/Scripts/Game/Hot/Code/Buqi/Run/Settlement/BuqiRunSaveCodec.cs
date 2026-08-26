@@ -386,12 +386,16 @@ namespace Game.Hot.Buqi.Run.Settlement
                     return false;
                 }
 
-                if (!earlyDefeat &&
-                    (saveData.TribulationStage != BuqiRunRules.TribulationStageCount ||
-                     (outcome == BuqiRunOutcome.Victory &&
-                      saveData.TribulationSuccesses != BuqiRunRules.TribulationStageCount) ||
-                     (outcome == BuqiRunOutcome.Defeat &&
-                      saveData.TribulationSuccesses >= BuqiRunRules.TribulationStageCount)))
+                bool validTribulationVictory =
+                    outcome == BuqiRunOutcome.Victory &&
+                    saveData.TribulationStage == BuqiRunRules.TribulationStageCount &&
+                    saveData.TribulationSuccesses == BuqiRunRules.TribulationStageCount;
+                bool validTribulationDefeat =
+                    outcome == BuqiRunOutcome.Defeat &&
+                    saveData.TribulationStage >= 1 &&
+                    saveData.TribulationStage <= BuqiRunRules.TribulationStageCount &&
+                    saveData.TribulationSuccesses == saveData.TribulationStage - 1;
+                if (!earlyDefeat && !validTribulationVictory && !validTribulationDefeat)
                 {
                     error = "Terminal tribulation fields do not match the outcome.";
                     return false;
@@ -406,8 +410,7 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
-            if (saveData.InTribulationTrial &&
-                (saveData.LifePool != 0 || !saveData.HeartTrialUsed))
+            if (saveData.InTribulationTrial && !saveData.HeartTrialUsed)
             {
                 error = "Heart trial flags are inconsistent.";
                 return false;

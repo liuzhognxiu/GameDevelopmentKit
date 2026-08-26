@@ -24,6 +24,7 @@ namespace Buqi.RunFlow.Headless
                 RewardPreviewAndClaimAreSeparateAndRecoverable();
                 RewardCandidatesRequireApplicableTargets();
                 SettlementWritesPreserveExtendedRunState();
+                HeartTrialDefeatPersistsAsTerminalState();
                 AuthoredCatalogMapsConfigToFormalRuntime();
                 Console.WriteLine("[run-flow] all checks passed");
                 return 0;
@@ -438,6 +439,40 @@ namespace Buqi.RunFlow.Headless
             True(store.TryRead(out string replayJson, out string replayReadError), replayReadError);
             True(BuqiRunSaveCodec.TryFromJson(replayJson, out BuqiRunSaveData replaySave, out string replayParseError), replayParseError);
             Equal(1, replaySave.OperationRuntime.TemporaryModifiers[0].RemainingBattles, "settlement replay must not consume the modifier twice");
+        }
+
+        private static void HeartTrialDefeatPersistsAsTerminalState()
+        {
+            BuqiRunState state = BuqiRunState.CreateInitial(63, "content-v1");
+            state.Day = 8;
+            state.Period = BuqiRunPeriod.NightPvp;
+            state.Phase = BuqiRunPhase.PvpBattle;
+            state.EncounterIndex = BuqiRunRules.OperationsPerDay;
+            state.LifePool = 0;
+            state.InTribulationTrial = true;
+            state.HeartTrialUsed = true;
+            var store = new MemoryRunStore();
+            True(
+                store.TryWrite(BuqiRunSaveCodec.ToJson(BuqiRunSaveCodec.FromState(state)), out string initialWriteError),
+                initialWriteError);
+            var coordinator = new BuqiRunSettlementCoordinator(store);
+
+            BuqiRunSettlementResult settled = coordinator.SettleBattle(
+                state,
+                "heart-trial-defeat",
+                new BattleResult { Outcome = BattleOutcome.RightWin, BattleLogHash = "heart-trial-defeat-hash" },
+                Array.Empty<BattleEvent>(),
+                "economy-heart-trial",
+                "encounter-heart-trial",
+                "battle-heart-trial");
+
+            True(settled.Success, "heart-trial defeat settlement: " + settled.FailureReason);
+            Equal(BuqiRunPhase.RunTerminal, settled.State.Phase, "heart-trial defeat phase");
+            Equal(BuqiRunOutcome.Defeat, settled.State.Outcome, "heart-trial defeat outcome");
+            True(!settled.State.InTribulationTrial, "terminal defeat must clear the heart-trial flag");
+            True(store.TryRead(out string json, out string readError), readError);
+            True(BuqiRunSaveCodec.TryFromJson(json, out BuqiRunSaveData saved, out string parseError), parseError);
+            True(saved.PendingSettlement == null, "heart-trial defeat must clear pending settlement");
         }
 
         private static BuqiRunEventActionDefinition Action(

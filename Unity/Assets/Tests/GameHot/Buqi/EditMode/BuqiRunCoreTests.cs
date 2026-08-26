@@ -3,6 +3,7 @@ using NUnit.Framework;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.DemoUI.Deployment;
 using Game.Hot.Buqi.Run.Core;
+using Game.Hot.Buqi.Run.Settlement;
 
 namespace Game.Hot.Buqi.Tests
 {
@@ -389,9 +390,48 @@ namespace Game.Hot.Buqi.Tests
             Assert.That(late.FailureReason, Is.EqualTo("Run has already ended."));
         }
 
+        [Test]
+        public void Tribulation_FirstFailedStageEndsTheRunImmediately()
+        {
+            var controller = new BuqiRunController(CreateTribulationRouteState(62));
+            Assert.That(controller.SelectTribulationRoute(
+                "face-thunder-failure", 0, BuqiTribulationRoute.FaceThunder, 0).Success, Is.True);
+
+            BuqiRunTransitionResult result = controller.ResolveTribulationStage(
+                "stage-1-failure", 1, false);
+
+            Assert.That(result.Success, Is.True, result.FailureReason);
+            Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.RunTerminal));
+            Assert.That(controller.State.Outcome, Is.EqualTo(BuqiRunOutcome.Defeat));
+            Assert.That(controller.State.TribulationStage, Is.EqualTo(1));
+            Assert.That(controller.State.TribulationSuccesses, Is.Zero);
+            BuqiRunSaveData save = BuqiRunSaveCodec.FromState(controller.State);
+            Assert.That(BuqiRunSaveCodec.TryToState(save, out _, out string error), Is.True, error);
+        }
+
+        [Test]
+        public void Tribulation_SecondFailedStageEndsTheRunAndRemainsSaveable()
+        {
+            var controller = new BuqiRunController(CreateTribulationRouteState(63));
+            Assert.That(controller.SelectTribulationRoute(
+                "face-thunder-stage-two-failure", 0, BuqiTribulationRoute.FaceThunder, 0).Success, Is.True);
+            Assert.That(controller.ResolveTribulationStage("stage-1-survived", 1, true).Success, Is.True);
+
+            BuqiRunTransitionResult result = controller.ResolveTribulationStage(
+                "stage-2-failure", 2, false);
+
+            Assert.That(result.Success, Is.True, result.FailureReason);
+            Assert.That(controller.State.Phase, Is.EqualTo(BuqiRunPhase.RunTerminal));
+            Assert.That(controller.State.Outcome, Is.EqualTo(BuqiRunOutcome.Defeat));
+            Assert.That(controller.State.TribulationStage, Is.EqualTo(2));
+            Assert.That(controller.State.TribulationSuccesses, Is.EqualTo(1));
+            BuqiRunSaveData save = BuqiRunSaveCodec.FromState(controller.State);
+            Assert.That(BuqiRunSaveCodec.TryToState(save, out _, out string error), Is.True, error);
+        }
+
         private static BuqiRunState CreateTribulationRouteState(long seed)
         {
-            BuqiRunState state = BuqiRunState.CreateInitial(seed);
+            BuqiRunState state = BuqiRunState.CreateInitial(seed, "core-test-v1");
             state.Day = BuqiRunRules.RunDayCount;
             state.EncounterIndex = BuqiRunRules.OperationsPerDay;
             state.Period = BuqiRunPeriod.NightPvp;

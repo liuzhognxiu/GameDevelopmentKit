@@ -97,6 +97,7 @@ namespace Game.Hot.Buqi.Run.Core
             else if (isPvpLoss && next.InTribulationTrial)
             {
                 next.LifePool = 0;
+                next.InTribulationTrial = false;
                 next.Outcome = BuqiRunOutcome.Defeat;
                 next.Phase = BuqiRunPhase.RunTerminal;
             }
@@ -177,22 +178,23 @@ namespace Game.Hot.Buqi.Run.Core
                 return Rejected(InvalidTribulationStage);
 
             BuqiRunState next = m_State.Clone();
-            if (survived)
-                next.TribulationSuccesses++;
-            if (next.TribulationStage >= BuqiRunRules.TribulationStageCount)
+            if (!survived)
             {
+                next.Outcome = BuqiRunOutcome.Defeat;
+                next.Phase = BuqiRunPhase.RunTerminal;
+            }
+            else if (next.TribulationStage >= BuqiRunRules.TribulationStageCount)
+            {
+                next.TribulationSuccesses++;
                 next.TribulationStage = BuqiRunRules.TribulationStageCount;
-                bool succeeded = next.TribulationSuccesses == BuqiRunRules.TribulationStageCount;
-                if (succeeded)
-                {
-                    next.Wins = Math.Min(BuqiRunRules.WinsToVictory, next.Wins + 1);
-                    next.DaoSeals = Math.Min(BuqiRunRules.MaxDaoSeals, next.DaoSeals + 1);
-                }
-                next.Outcome = succeeded ? BuqiRunOutcome.Victory : BuqiRunOutcome.Defeat;
+                next.Wins = Math.Min(BuqiRunRules.WinsToVictory, next.Wins + 1);
+                next.DaoSeals = Math.Min(BuqiRunRules.MaxDaoSeals, next.DaoSeals + 1);
+                next.Outcome = BuqiRunOutcome.Victory;
                 next.Phase = BuqiRunPhase.RunTerminal;
             }
             else
             {
+                next.TribulationSuccesses++;
                 next.TribulationStage++;
             }
 

@@ -450,6 +450,41 @@ namespace Game.Hot.Buqi.Tests
         }
 
         [Test]
+        public void Coordinator_PersistsHeartTrialDefeatAndClearsPendingSettlement()
+        {
+            var store = new SpyRunStore();
+            BuqiRunState state = CreateBattleState(
+                BuqiRunPhase.PvpBattle,
+                revision: 7,
+                wins: 3,
+                lives: 0);
+            state.Day = 8;
+            state.InTribulationTrial = true;
+            state.HeartTrialUsed = true;
+            var coordinator = new BuqiRunSettlementCoordinator(store);
+
+            BuqiRunSettlementResult result = coordinator.SettleBattle(
+                state,
+                "heart-trial-defeat",
+                CreateBattleResult(BattleOutcome.RightWin, "heart-trial-defeat-hash"),
+                CreateSummaryLog(),
+                "eco-heart-trial",
+                "enc-heart-trial",
+                "battle-heart-trial");
+
+            Assert.That(result.Success, Is.True, result.FailureReason);
+            Assert.That(result.State.Phase, Is.EqualTo(BuqiRunPhase.RunTerminal));
+            Assert.That(result.State.Outcome, Is.EqualTo(BuqiRunOutcome.Defeat));
+            Assert.That(result.State.InTribulationTrial, Is.False);
+            Assert.That(
+                BuqiRunSaveCodec.TryFromJson(store.CurrentJson, out BuqiRunSaveData save, out string error),
+                Is.True,
+                error);
+            Assert.That(save.PendingSettlement, Is.Null);
+            Assert.That(save.InTribulationTrial, Is.False);
+        }
+
+        [Test]
         public void Coordinator_PreservesDrawOutcomeInSummaryAndPayloadButAwardsPlayerWinInCore()
         {
             var store = new SpyRunStore();

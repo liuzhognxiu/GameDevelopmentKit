@@ -190,10 +190,14 @@ namespace Game.Hot.Buqi.BattleLab
                 ConditionKind = source.ConditionKind,
                 ConditionThreshold = source.ConditionThreshold,
                 UseCountThreshold = source.UseCountThreshold,
-                ChargeReadLimit = source.ChargeReadLimit,
-                AmountPerCharge = source.AmountPerCharge,
-                ChargeConsume = source.ChargeConsume,
                 ResetCountOnReached = source.ResetCountOnReached,
+                CriticalChanceBps = source.CriticalChanceBps,
+                RepeatCount = source.RepeatCount,
+                RageThreshold = source.RageThreshold,
+                RageDurationTicks = source.RageDurationTicks,
+                RageCooldownReductionBps = source.RageCooldownReductionBps,
+                FlightDamageBonusBps = source.FlightDamageBonusBps,
+                FlightEndDamage = source.FlightEndDamage,
             };
         }
 

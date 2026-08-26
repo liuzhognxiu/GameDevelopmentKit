@@ -78,7 +78,8 @@ namespace Game.Hot.Buqi.BattleLab
                     continue;
 
                 int size = (int)row.Size;
-                bool enabled = size >= 1 && size <= 3;
+                string itemError = GetItemError(row, size);
+                bool enabled = string.IsNullOrEmpty(itemError);
                 items.Add(new BuqiBattleLabItemDefinition(
                     row.DefinitionId,
                     row.DisplayName,
@@ -91,7 +92,7 @@ namespace Game.Hot.Buqi.BattleLab
                     row.PositionHint,
                     row.Tags,
                     enabled,
-                    enabled ? string.Empty : "道具尺寸必须为 1 至 3 格"));
+                    itemError));
             }
 
             BuqiDefinitionProvider definitionProvider = CreateDefinitionProvider(source, itemRows);
@@ -130,14 +131,70 @@ namespace Game.Hot.Buqi.BattleLab
         {
             var providerSource = new BuqiConfigCatalog
             {
-                Global = source.Global,
+                Global = new BuqiGlobalConfigRow
+                {
+                    ContentVersion = source.Global.ContentVersion,
+                },
             };
             foreach (BuqiItemConfigRow row in itemRows)
             {
                 if (row != null)
-                    providerSource.Items.Add(row);
+                    providerSource.Items.Add(CopyProviderItem(row));
             }
             return new BuqiDefinitionProvider(providerSource);
+        }
+
+        private static string GetItemError(BuqiItemConfigRow row, int size)
+        {
+            if (size < 1 || size > 3)
+                return "道具尺寸必须为 1 至 3 格";
+            if (row.Effects == null)
+                return "道具效果列表不可为空";
+            foreach (BuqiEffectConfigRow effect in row.Effects)
+            {
+                if (effect == null)
+                    return "道具效果列表不能包含空项";
+            }
+            return string.Empty;
+        }
+
+        private static BuqiItemConfigRow CopyProviderItem(BuqiItemConfigRow source)
+        {
+            var item = new BuqiItemConfigRow
+            {
+                DefinitionId = source.DefinitionId,
+                Size = source.Size,
+                BaseCooldownTicks = source.BaseCooldownTicks,
+            };
+            if (source.Effects == null)
+                return item;
+
+            foreach (BuqiEffectConfigRow effect in source.Effects)
+            {
+                if (effect != null)
+                    item.Effects.Add(CopyProviderEffect(effect));
+            }
+            return item;
+        }
+
+        private static BuqiEffectConfigRow CopyProviderEffect(BuqiEffectConfigRow source)
+        {
+            return new BuqiEffectConfigRow
+            {
+                Trigger = source.Trigger,
+                Effect = source.Effect,
+                Target = source.Target,
+                Amount = source.Amount,
+                DurationTicks = source.DurationTicks,
+                ReasonCode = source.ReasonCode,
+                ConditionKind = source.ConditionKind,
+                ConditionThreshold = source.ConditionThreshold,
+                UseCountThreshold = source.UseCountThreshold,
+                ChargeReadLimit = source.ChargeReadLimit,
+                AmountPerCharge = source.AmountPerCharge,
+                ChargeConsume = source.ChargeConsume,
+                ResetCountOnReached = source.ResetCountOnReached,
+            };
         }
 
         private static BuildSnapshot CopySnapshot(

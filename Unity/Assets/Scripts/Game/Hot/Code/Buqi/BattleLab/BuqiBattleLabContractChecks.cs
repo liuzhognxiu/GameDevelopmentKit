@@ -17,6 +17,7 @@ namespace Game.Hot.Buqi.BattleLab
             RunCheck("目录投影", CheckCatalogProjection, failures);
             RunCheck("棋盘尺寸", CheckBoardSlotRange, failures);
             RunCheck("无效内容", CheckInvalidContentProjection, failures);
+            RunCheck("畸形效果", CheckMalformedEffectProjection, failures);
             RunCheck("只读模型", CheckModelDefensiveCopies, failures);
             return failures;
         }
@@ -179,6 +180,49 @@ namespace Game.Hot.Buqi.BattleLab
             Expect(
                 preview.CoveredSlots[0] == 2,
                 "只读模型：落点预览仍引用构造参数",
+                failures);
+        }
+
+        private static void CheckMalformedEffectProjection(List<string> failures)
+        {
+            BuqiConfigCatalog source = CreateSource(8);
+            BuqiItemConfigRow nullEffects = Item(
+                "effects-null", "空效果列表", BuqiSize.S, 30);
+            nullEffects.Effects = null;
+            source.Items.Add(nullEffects);
+
+            BuqiItemConfigRow nullEffectEntry = Item(
+                "effect-entry-null", "空效果项", BuqiSize.S, 30);
+            nullEffectEntry.Effects.Add(null);
+            source.Items.Add(nullEffectEntry);
+
+            if (!BuqiBattleLabCatalog.TryCreate(
+                    source, out BuqiBattleLabCatalog catalog, out string error))
+            {
+                failures.Add(BuqiText.Format("畸形效果：目录不应丢弃畸形行：{0}", error));
+                return;
+            }
+
+            BuqiBattleLabItemDefinition nullEffectsItem = catalog.Items.Single(
+                item => item.DefinitionId == "effects-null");
+            Expect(!nullEffectsItem.Enabled, "畸形效果：空效果列表道具仍被启用", failures);
+            Expect(
+                nullEffectsItem.Error == "道具效果列表不可为空",
+                BuqiText.Format("畸形效果：空效果列表错误不精确：{0}", nullEffectsItem.Error),
+                failures);
+
+            BuqiBattleLabItemDefinition nullEffectEntryItem = catalog.Items.Single(
+                item => item.DefinitionId == "effect-entry-null");
+            Expect(!nullEffectEntryItem.Enabled, "畸形效果：含空效果项道具仍被启用", failures);
+            Expect(
+                nullEffectEntryItem.Error == "道具效果列表不能包含空项",
+                BuqiText.Format("畸形效果：空效果项错误不精确：{0}", nullEffectEntryItem.Error),
+                failures);
+
+            Expect(
+                source.Items.Single(item => item.DefinitionId == "effects-null").Effects == null &&
+                source.Items.Single(item => item.DefinitionId == "effect-entry-null").Effects[0] == null,
+                "畸形效果：目录投影改写了源配置",
                 failures);
         }
 

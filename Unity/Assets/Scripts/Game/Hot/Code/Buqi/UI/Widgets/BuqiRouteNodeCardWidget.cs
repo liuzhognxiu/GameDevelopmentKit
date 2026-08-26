@@ -20,7 +20,7 @@ namespace Game.Hot.Buqi.UI.Widgets
             {
                 m_DetailText.text = node == null
                     ? string.Empty
-                    : string.Format("{0}\n{1}\n{2}", node.Benefit, node.Cost, node.Condition);
+                    : GameFramework.Utility.Text.Format("{0}\n{1}\n{2}", node.Benefit, node.Cost, node.Condition);
             }
             m_HoverDetails?.SetActive(false);
             if (m_Button != null)

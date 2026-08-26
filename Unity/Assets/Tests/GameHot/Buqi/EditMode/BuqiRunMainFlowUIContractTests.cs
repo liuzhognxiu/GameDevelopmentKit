@@ -3,9 +3,11 @@ using System.Linq;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Config;
 using Game.Hot.Buqi.DemoUI;
+using Game.Hot.Buqi.Run.Core;
 using Game.Hot.Buqi.Run.Integration;
 using Game.Hot.Buqi.Run.Settlement;
 using NUnit.Framework;
+using BattleSize = Game.Hot.Buqi.Battle.BuqiSize;
 
 namespace Game.Hot.Buqi.Tests
 {
@@ -205,7 +207,7 @@ namespace Game.Hot.Buqi.Tests
                 Global = new BuqiGlobalConfigRow
                 {
                     ContentVersion = "main-flow-ui-v1",
-                    BoardSlotCount = 8,
+                    BoardSlotCount = BuqiRunRules.BoardSlotCount,
                     InitialExecution = 100,
                 },
             };
@@ -215,10 +217,19 @@ namespace Game.Hot.Buqi.Tests
                 {
                     DefinitionId = $"item-{index:00}",
                     DisplayName = $"Item {index}",
-                    Size = BuqiSize.S,
+                    Size = BattleSize.S,
                     BasePrice = index + 1,
                     BaseCooldownTicks = 10 + index,
                     Tags = new List<string> { index == 1 ? "attack" : "support" },
+                });
+            }
+            for (int index = 1; index <= 3; index++)
+            {
+                source.Refinements.Add(new BuqiRefinementConfigRow
+                {
+                    RefinementId = $"refinement-{index}",
+                    DisplayName = $"改造 {index}",
+                    Summary = "测试用通用改造。",
                 });
             }
             source.TrainingProjects.Add(new BuqiTrainingProjectConfigRow

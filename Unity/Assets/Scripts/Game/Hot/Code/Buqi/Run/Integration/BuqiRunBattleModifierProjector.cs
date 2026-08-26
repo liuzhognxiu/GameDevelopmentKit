@@ -2,6 +2,7 @@ using System;
 using Game.Hot.Buqi.Battle;
 using Game.Hot.Buqi.Run.Encounter;
 using Game.Hot.Buqi.Run.Training;
+using BattleEffect = Game.Hot.Buqi.Battle.BuqiEffect;
 
 namespace Game.Hot.Buqi.Run.Integration
 {
@@ -66,7 +67,7 @@ namespace Game.Hot.Buqi.Run.Integration
                     continue;
                 item.TemporaryModifiers.Add(new TemporaryModifier
                 {
-                    Effect = modifier.Value < 0 ? BuqiEffect.Delay : BuqiEffect.Haste,
+                    Effect = modifier.Value < 0 ? BattleEffect.Delay : BattleEffect.Haste,
                     SourceInstanceId = sourceId,
                     RemainingTicks = modifier.DurationTicks > 0
                         ? modifier.DurationTicks

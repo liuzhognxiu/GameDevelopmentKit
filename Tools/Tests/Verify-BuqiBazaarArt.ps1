@@ -80,8 +80,8 @@ $offerPrefab = Join-Path $repoRoot 'Unity/Assets/Res/UI/UIPrefab/Buqi/OfferCardW
 $detailPrefab = Join-Path $repoRoot 'Unity/Assets/Res/UI/UIForm/Hot/Buqi/BuqiItemDetailForm.prefab'
 
 Require-Text $shopPrefab 'm_Name:\s+ShopWidget(?s:.*?)guid:\s+d2f73143bb9147a99f741dc69188ac0e' 'Shop root does not reference the bazaar backdrop.'
-Require-Text $shopPrefab 'm_Name:\s+ShopShelfArt(?s:.*?)guid:\s+e3a5f05878d34f5290e40ca750d061df' 'Shop shelf art does not reference the shelf panel.'
-Require-Text $shopPrefab 'm_Name:\s+PlayerBoardArt(?s:.*?)guid:\s+49f61940f60d439fbe1e0b95cae76406' 'Player board art does not reference the player board panel.'
+Require-Text $shopPrefab 'm_Name:\s+SellDropZone(?s:.*?)guid:\s+e3a5f05878d34f5290e40ca750d061df' 'Shop sell zone does not reference the shelf panel.'
+Require-Text $shopPrefab 'm_Name:\s+PlayerBoard(?s:.*?)guid:\s+49f61940f60d439fbe1e0b95cae76406' 'Player board does not reference the player board panel.'
 Require-Text $offerPrefab 'm_Name:\s+OfferCardWidget(?s:.*?)guid:\s+92b102a191114c59b3c8b63d3d2330af' 'Offer card root does not reference the item frame.'
 Require-Text $detailPrefab 'm_Name:\s+ItemCard(?s:.*?)guid:\s+92b102a191114c59b3c8b63d3d2330af' 'Item detail card does not reference the item frame.'
 

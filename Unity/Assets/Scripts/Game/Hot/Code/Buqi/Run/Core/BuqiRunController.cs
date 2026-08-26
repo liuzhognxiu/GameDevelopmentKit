@@ -22,10 +22,7 @@ namespace Game.Hot.Buqi.Run.Core
         public BuqiRunController(BuqiRunState initialState)
         {
             if (initialState == null)
-            {
                 throw new ArgumentNullException(nameof(initialState));
-            }
-
             m_State = initialState.Clone();
         }
 
@@ -34,9 +31,7 @@ namespace Game.Hot.Buqi.Run.Core
         public BuqiRunTransitionResult ResolveEncounter(string commandId, int expectedRevision)
         {
             if (!TryValidateCommand(commandId, expectedRevision, BuqiRunPhase.Encounter, out BuqiRunTransitionResult failure))
-            {
                 return failure;
-            }
 
             BuqiRunState next = m_State.Clone();
             next.EncounterIndex++;
@@ -66,55 +61,30 @@ namespace Game.Hot.Buqi.Run.Core
             return Commit(next);
         }
 
-        public BuqiRunTransitionResult SettleBattle(
-            string settlementId,
-            int expectedRevision,
-            BuqiRunBattleKind battleKind,
-            BuqiRunRawBattleOutcome rawOutcome)
+        public BuqiRunTransitionResult SettleBattle(string settlementId, int expectedRevision, BuqiRunBattleKind battleKind, BuqiRunRawBattleOutcome rawOutcome)
         {
             if (string.IsNullOrEmpty(settlementId))
-            {
                 return Rejected(RequiredSettlementId);
-            }
-
             if (m_State.AppliedSettlementIds.Contains(settlementId))
-            {
                 return Accepted(true);
-            }
-
             if (m_State.Phase == BuqiRunPhase.RunTerminal)
-            {
                 return Rejected(RunEnded);
-            }
-
             if (m_State.Revision != expectedRevision)
-            {
                 return Rejected(RevisionMismatch);
-            }
-
             if (!Enum.IsDefined(typeof(BuqiRunBattleKind), battleKind))
-            {
                 return Rejected(InvalidBattleKindValue);
-            }
-
             if (!Enum.IsDefined(typeof(BuqiRunRawBattleOutcome), rawOutcome))
-            {
                 return Rejected(InvalidBattleOutcome);
-            }
 
             BuqiRunPhase expectedPhase = battleKind == BuqiRunBattleKind.Pve
                 ? BuqiRunPhase.PveBattle
                 : BuqiRunPhase.PvpBattle;
             if (m_State.Phase != expectedPhase)
-            {
                 return Rejected(InvalidBattleKind);
-            }
 
             BuqiRunState next = m_State.Clone();
-            bool isPvpLoss = battleKind == BuqiRunBattleKind.Pvp &&
-                             rawOutcome == BuqiRunRawBattleOutcome.OpponentWin;
-            bool isPvpWin = battleKind == BuqiRunBattleKind.Pvp &&
-                            rawOutcome == BuqiRunRawBattleOutcome.PlayerWin;
+            bool isPvpLoss = battleKind == BuqiRunBattleKind.Pvp && rawOutcome == BuqiRunRawBattleOutcome.OpponentWin;
+            bool isPvpWin = battleKind == BuqiRunBattleKind.Pvp && rawOutcome == BuqiRunRawBattleOutcome.PlayerWin;
             next.Cultivation += BuqiRunProgression.GetBattleReward(battleKind, rawOutcome);
             next.Realm = BuqiRunProgression.GetRealm(next.Cultivation);
             next.AppliedSettlementIds.Add(settlementId);
@@ -127,6 +97,7 @@ namespace Game.Hot.Buqi.Run.Core
             else if (isPvpLoss && next.InTribulationTrial)
             {
                 next.LifePool = 0;
+                next.InTribulationTrial = false;
                 next.Outcome = BuqiRunOutcome.Defeat;
                 next.Phase = BuqiRunPhase.RunTerminal;
             }
@@ -169,37 +140,23 @@ namespace Game.Hot.Buqi.Run.Core
         public BuqiRunTransitionResult CompleteDay(string commandId, int expectedRevision)
         {
             if (!TryValidateCommand(commandId, expectedRevision, BuqiRunPhase.DaySettlement, out BuqiRunTransitionResult failure))
-            {
                 return failure;
-            }
-
             BuqiRunState next = m_State.Clone();
-            next.Day++;
-            next.EncounterIndex = 0;
-            next.Period = BuqiRunPeriod.Hour1Operation;
-            next.Phase = BuqiRunPhase.Encounter;
+            StartNextDay(next);
             ApplyCommand(next, commandId);
             return Commit(next);
         }
 
-        public BuqiRunTransitionResult SelectTribulationRoute(
-            string commandId,
-            int expectedRevision,
-            BuqiTribulationRoute route,
-            int daoSealsToSpend)
+        public BuqiRunTransitionResult SelectTribulationRoute(string commandId, int expectedRevision, BuqiTribulationRoute route, int daoSealsToSpend)
         {
             if (!TryValidateCommand(commandId, expectedRevision, BuqiRunPhase.TribulationRoute, out BuqiRunTransitionResult failure))
                 return failure;
-
             if (!Enum.IsDefined(typeof(BuqiTribulationRoute), route) || route == BuqiTribulationRoute.None)
                 return Rejected(InvalidTribulationRoute);
-
             if (daoSealsToSpend < 0 || daoSealsToSpend > m_State.DaoSeals ||
                 (route != BuqiTribulationRoute.QuestionHeart && daoSealsToSpend != 0) ||
                 (route == BuqiTribulationRoute.QuestionHeart && daoSealsToSpend > m_State.CurrentOmen))
-            {
                 return Rejected(InvalidTribulationSpend);
-            }
 
             BuqiRunState next = m_State.Clone();
             next.TribulationRoute = route;
@@ -213,35 +170,31 @@ namespace Game.Hot.Buqi.Run.Core
             return Commit(next);
         }
 
-        public BuqiRunTransitionResult ResolveTribulationStage(
-            string commandId,
-            int expectedRevision,
-            bool survived)
+        public BuqiRunTransitionResult ResolveTribulationStage(string commandId, int expectedRevision, bool survived)
         {
             if (!TryValidateCommand(commandId, expectedRevision, BuqiRunPhase.TribulationStage, out BuqiRunTransitionResult failure))
                 return failure;
-
             if (m_State.TribulationStage < 1 || m_State.TribulationStage > BuqiRunRules.TribulationStageCount)
                 return Rejected(InvalidTribulationStage);
 
             BuqiRunState next = m_State.Clone();
-            if (survived)
-                next.TribulationSuccesses++;
-
-            if (next.TribulationStage >= BuqiRunRules.TribulationStageCount)
+            if (!survived)
             {
+                next.Outcome = BuqiRunOutcome.Defeat;
+                next.Phase = BuqiRunPhase.RunTerminal;
+            }
+            else if (next.TribulationStage >= BuqiRunRules.TribulationStageCount)
+            {
+                next.TribulationSuccesses++;
                 next.TribulationStage = BuqiRunRules.TribulationStageCount;
-                bool succeeded = next.TribulationSuccesses == BuqiRunRules.TribulationStageCount;
-                if (succeeded)
-                {
-                    next.Wins = Math.Min(BuqiRunRules.WinsToVictory, next.Wins + 1);
-                    next.DaoSeals = Math.Min(BuqiRunRules.MaxDaoSeals, next.DaoSeals + 1);
-                }
-                next.Outcome = succeeded ? BuqiRunOutcome.Victory : BuqiRunOutcome.Defeat;
+                next.Wins = Math.Min(BuqiRunRules.WinsToVictory, next.Wins + 1);
+                next.DaoSeals = Math.Min(BuqiRunRules.MaxDaoSeals, next.DaoSeals + 1);
+                next.Outcome = BuqiRunOutcome.Victory;
                 next.Phase = BuqiRunPhase.RunTerminal;
             }
             else
             {
+                next.TribulationSuccesses++;
                 next.TribulationStage++;
             }
 
@@ -249,34 +202,14 @@ namespace Game.Hot.Buqi.Run.Core
             return Commit(next);
         }
 
-        private bool TryValidateCommand(
-            string commandId,
-            int expectedRevision,
-            BuqiRunPhase requiredPhase,
-            out BuqiRunTransitionResult failure)
+        private bool TryValidateCommand(string commandId, int expectedRevision, BuqiRunPhase requiredPhase, out BuqiRunTransitionResult failure)
         {
             failure = null!;
-            if (string.IsNullOrEmpty(commandId))
-            {
-                failure = Rejected(RequiredCommandId);
-            }
-            else if (m_State.AppliedCommandIds.Contains(commandId))
-            {
-                failure = Accepted(true);
-            }
-            else if (m_State.Phase == BuqiRunPhase.RunTerminal)
-            {
-                failure = Rejected(RunEnded);
-            }
-            else if (m_State.Revision != expectedRevision)
-            {
-                failure = Rejected(RevisionMismatch);
-            }
-            else if (m_State.Phase != requiredPhase)
-            {
-                failure = Rejected(InvalidPhase);
-            }
-
+            if (string.IsNullOrEmpty(commandId)) failure = Rejected(RequiredCommandId);
+            else if (m_State.AppliedCommandIds.Contains(commandId)) failure = Accepted(true);
+            else if (m_State.Phase == BuqiRunPhase.RunTerminal) failure = Rejected(RunEnded);
+            else if (m_State.Revision != expectedRevision) failure = Rejected(RevisionMismatch);
+            else if (m_State.Phase != requiredPhase) failure = Rejected(InvalidPhase);
             return failure == null;
         }
 
@@ -302,22 +235,12 @@ namespace Game.Hot.Buqi.Run.Core
 
         private BuqiRunTransitionResult Accepted(bool replayed)
         {
-            return new BuqiRunTransitionResult
-            {
-                Success = true,
-                Replayed = replayed,
-                State = State,
-            };
+            return new BuqiRunTransitionResult { Success = true, Replayed = replayed, State = State };
         }
 
         private BuqiRunTransitionResult Rejected(string reason)
         {
-            return new BuqiRunTransitionResult
-            {
-                Success = false,
-                FailureReason = reason,
-                State = State,
-            };
+            return new BuqiRunTransitionResult { Success = false, FailureReason = reason, State = State };
         }
     }
 }

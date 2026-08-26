@@ -11,6 +11,12 @@ namespace Game.Hot.Buqi.Run.Settlement
 {
     public static class BuqiRunSaveCodec
     {
+        private const int LegacyV2OperationsBeforeBattle = 3;
+        private const int LegacyV2MigratableOpeningOperations = 2;
+        private const int PreviousV3OperationsPerDay = 2;
+        private const int PreviousV3PvePeriod = 2;
+        private const int PreviousV3PvpPeriod = 3;
+
 #if BUQI_HEADLESS
         private static readonly JsonSerializerOptions HeadlessJsonOptions = new JsonSerializerOptions
         {
@@ -203,8 +209,6 @@ namespace Game.Hot.Buqi.Run.Settlement
                 saveData.Day < 1 ||
                 saveData.EncounterIndex < 0 ||
                 saveData.EncounterIndex > BuqiRunRules.OperationsPerDay ||
-                saveData.HeroId < 0 ||
-                saveData.HeroId > 4 ||
                 saveData.Coins < 0 ||
                 saveData.Wins < 0 ||
                 saveData.Wins > BuqiRunRules.MaxBattleWins ||
@@ -213,9 +217,12 @@ namespace Game.Hot.Buqi.Run.Settlement
                 saveData.DaoSeals > saveData.Wins ||
                 saveData.CurrentOmen < 0 ||
                 saveData.CurrentOmen > BuqiRunRules.MaxOmen ||
+                saveData.HeroId < 0 ||
+                saveData.HeroId > 4 ||
                 saveData.Cultivation < 0 ||
                 saveData.Realm < 0 ||
                 saveData.Realm >= BuqiRunRules.RealmCount ||
+                saveData.Realm != BuqiRunProgression.GetRealm(saveData.Cultivation) ||
                 saveData.LifePool < 0 ||
                 saveData.LifePool > BuqiRunRules.StartingLifePool ||
                 saveData.TribulationDaoSealsSpent < 0 ||
@@ -227,12 +234,6 @@ namespace Game.Hot.Buqi.Run.Settlement
                 saveData.TribulationSuccesses > BuqiRunRules.TribulationStageCount)
             {
                 error = "Save counters are out of range.";
-                return false;
-            }
-
-            if (saveData.Realm != BuqiRunProgression.GetRealm(saveData.Cultivation))
-            {
-                error = "Realm does not match cultivation.";
                 return false;
             }
 
@@ -297,8 +298,11 @@ namespace Game.Hot.Buqi.Run.Settlement
             }
             else if (phase == BuqiRunPhase.RunTerminal)
             {
-                bool validTerminalIndex = period == BuqiRunPeriod.Hour6Pvp &&
-                                          saveData.EncounterIndex == BuqiRunRules.OperationsPerDay;
+                bool validTerminalIndex =
+                    (period == BuqiRunPeriod.Hour3Pve &&
+                     saveData.EncounterIndex == BuqiRunRules.OperationsBeforePve) ||
+                    (period == BuqiRunPeriod.Hour6Pvp &&
+                     saveData.EncounterIndex == BuqiRunRules.OperationsPerDay);
                 if (!validTerminalIndex)
                 {
                     error = "Operation index does not match the terminal phase.";
@@ -315,15 +319,10 @@ namespace Game.Hot.Buqi.Run.Settlement
                 ((phase == BuqiRunPhase.PvpBattle || phase == BuqiRunPhase.DaySettlement ||
                   phase == BuqiRunPhase.TribulationRoute || phase == BuqiRunPhase.TribulationStage) &&
                  period != BuqiRunPeriod.Hour6Pvp) ||
-                (phase == BuqiRunPhase.RunTerminal && period != BuqiRunPeriod.Hour6Pvp))
+                (phase == BuqiRunPhase.RunTerminal &&
+                 period != BuqiRunPeriod.Hour3Pve && period != BuqiRunPeriod.Hour6Pvp))
             {
                 error = "Run period does not match the current phase.";
-                return false;
-            }
-
-            if (phase == BuqiRunPhase.DaySettlement)
-            {
-                error = "Day settlement is not used by the six-period run.";
                 return false;
             }
 
@@ -331,22 +330,11 @@ namespace Game.Hot.Buqi.Run.Settlement
                                  phase == BuqiRunPhase.TribulationStage ||
                                  (phase == BuqiRunPhase.RunTerminal &&
                                   tribulationRoute != BuqiTribulationRoute.None);
-            if ((phase == BuqiRunPhase.TribulationRoute || phase == BuqiRunPhase.TribulationStage) &&
-                saveData.Wins != BuqiRunRules.WinsToVictory - 1)
+            if (isTribulation && saveData.Wins != BuqiRunRules.WinsToVictory - 1 &&
+                !(phase == BuqiRunPhase.RunTerminal && outcome == BuqiRunOutcome.Victory &&
+                  saveData.Wins == BuqiRunRules.WinsToVictory))
             {
-                error = "Active tribulation requires nine PVP wins.";
-                return false;
-            }
-
-            if (!isTribulation && saveData.Wins >= BuqiRunRules.WinsToVictory)
-            {
-                error = "Ordinary run state cannot contain the tribulation victory win.";
-                return false;
-            }
-
-            if (phase == BuqiRunPhase.PvpBattle && saveData.Wins >= BuqiRunRules.WinsToVictory - 1)
-            {
-                error = "Nine wins must enter tribulation instead of an ordinary PVP battle.";
+                error = "Tribulation requires nine wins, or ten wins after victory.";
                 return false;
             }
 
@@ -390,7 +378,7 @@ namespace Game.Hot.Buqi.Run.Settlement
                 bool earlyDefeat = tribulationRoute == BuqiTribulationRoute.None;
                 if (earlyDefeat &&
                     (outcome != BuqiRunOutcome.Defeat || saveData.LifePool != 0 ||
-                     !saveData.HeartTrialUsed ||
+                     !saveData.HeartTrialUsed || saveData.InTribulationTrial ||
                      saveData.TribulationDaoSealsSpent != 0 || saveData.TribulationStage != 0 ||
                      saveData.TribulationSuccesses != 0))
                 {
@@ -398,14 +386,16 @@ namespace Game.Hot.Buqi.Run.Settlement
                     return false;
                 }
 
-                if (!earlyDefeat &&
-                    (saveData.TribulationStage != BuqiRunRules.TribulationStageCount ||
-                     (outcome == BuqiRunOutcome.Victory &&
-                      (saveData.TribulationSuccesses != BuqiRunRules.TribulationStageCount ||
-                       saveData.Wins != BuqiRunRules.WinsToVictory)) ||
-                     (outcome == BuqiRunOutcome.Defeat &&
-                      (saveData.TribulationSuccesses >= BuqiRunRules.TribulationStageCount ||
-                       saveData.Wins != BuqiRunRules.WinsToVictory - 1))))
+                bool validTribulationVictory =
+                    outcome == BuqiRunOutcome.Victory &&
+                    saveData.TribulationStage == BuqiRunRules.TribulationStageCount &&
+                    saveData.TribulationSuccesses == BuqiRunRules.TribulationStageCount;
+                bool validTribulationDefeat =
+                    outcome == BuqiRunOutcome.Defeat &&
+                    saveData.TribulationStage >= 1 &&
+                    saveData.TribulationStage <= BuqiRunRules.TribulationStageCount &&
+                    saveData.TribulationSuccesses == saveData.TribulationStage - 1;
+                if (!earlyDefeat && !validTribulationVictory && !validTribulationDefeat)
                 {
                     error = "Terminal tribulation fields do not match the outcome.";
                     return false;
@@ -420,17 +410,16 @@ namespace Game.Hot.Buqi.Run.Settlement
                 return false;
             }
 
-            if (saveData.InTribulationTrial &&
-                (saveData.LifePool != 0 || !saveData.HeartTrialUsed))
+            if (saveData.InTribulationTrial && !saveData.HeartTrialUsed)
             {
-                error = "Active heart trial requires depleted life and a consumed trial chance.";
+                error = "Heart trial flags are inconsistent.";
                 return false;
             }
 
             if (phase != BuqiRunPhase.RunTerminal &&
                 saveData.LifePool == 0 && !saveData.InTribulationTrial)
             {
-                error = "Non-terminal life depletion requires an active heart trial.";
+                error = "Life depletion requires a heart trial or terminal defeat.";
                 return false;
             }
 
@@ -548,6 +537,173 @@ namespace Game.Hot.Buqi.Run.Settlement
                 AppliedSettlementIds = settlementIds,
             };
 
+            return true;
+        }
+
+        private static bool TryMigrateLegacyV2(BuqiRunSaveData saveData, out string error)
+        {
+            error = string.Empty;
+            if (!string.Equals(saveData.RuleVersion, "buqi-day-run-rule-v1", StringComparison.Ordinal))
+            {
+                error = "Legacy rule version is invalid.";
+                return false;
+            }
+
+            if (saveData.Day < 1 || saveData.Day > BuqiRunRules.RunDayCount ||
+                !Enum.IsDefined(typeof(BuqiRunPhase), saveData.Phase) ||
+                saveData.Wins >= 9)
+            {
+                error = "Legacy save cannot be migrated to the nine-day rules.";
+                return false;
+            }
+
+            BuqiRunPhase phase = (BuqiRunPhase)saveData.Phase;
+            switch (phase)
+            {
+                case BuqiRunPhase.Encounter:
+                    if (saveData.EncounterIndex < 0 ||
+                        saveData.EncounterIndex >= LegacyV2MigratableOpeningOperations)
+                    {
+                        error = "Legacy third operation cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.Period = saveData.EncounterIndex == 0
+                        ? (int)BuqiRunPeriod.Hour1Operation
+                        : (int)BuqiRunPeriod.Hour2Operation;
+                    break;
+
+                case BuqiRunPhase.PveBattle:
+                    if (saveData.EncounterIndex != LegacyV2OperationsBeforeBattle)
+                    {
+                        error = "Legacy PVE operation index is invalid.";
+                        return false;
+                    }
+
+                    saveData.EncounterIndex = BuqiRunRules.OperationsBeforePve;
+                    saveData.Period = (int)BuqiRunPeriod.Hour3Pve;
+                    break;
+
+                case BuqiRunPhase.PvpBattle:
+                case BuqiRunPhase.DaySettlement:
+                    if (saveData.EncounterIndex != LegacyV2OperationsBeforeBattle ||
+                        (phase == BuqiRunPhase.DaySettlement && saveData.Day == BuqiRunRules.RunDayCount))
+                    {
+                        error = "Legacy night state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.EncounterIndex = BuqiRunRules.OperationsPerDay;
+                    saveData.Period = (int)BuqiRunPeriod.Hour6Pvp;
+                    break;
+
+                case BuqiRunPhase.RunTerminal:
+                default:
+                    error = "Legacy early terminal state cannot be migrated to the fixed nine-day run.";
+                    return false;
+            }
+
+            saveData.DaoSeals = saveData.Wins;
+            saveData.CurrentOmen = Math.Max(0, BuqiRunRules.StartingLifePool - saveData.LifePool);
+            saveData.TribulationRoute = (int)BuqiTribulationRoute.None;
+            saveData.TribulationDaoSealsSpent = 0;
+            saveData.TribulationStage = 0;
+            saveData.TribulationSuccesses = 0;
+            bool hasPendingPayload = saveData.PendingSettlement != null &&
+                                     !IsEmptyPendingSettlementPlaceholder(saveData.PendingSettlement);
+            saveData.HasPendingSettlement = hasPendingPayload;
+            saveData.HasLastAppliedSettlement = false;
+            saveData.LastAppliedSettlement = null;
+            saveData.SaveVersion = BuqiRunSaveData.CurrentSaveVersion;
+            saveData.RuleVersion = BuqiRunState.CurrentRuleVersion;
+            return true;
+        }
+
+        private static bool TryMigratePreviousV3(BuqiRunSaveData saveData, out string error)
+        {
+            error = string.Empty;
+            if (!string.Equals(saveData.RuleVersion, BuqiRunState.PreviousRuleVersion, StringComparison.Ordinal))
+            {
+                error = "Previous rule version is invalid.";
+                return false;
+            }
+
+            if (saveData.Day < 1 || saveData.Day > BuqiRunRules.RunDayCount ||
+                !Enum.IsDefined(typeof(BuqiRunPhase), saveData.Phase))
+            {
+                error = "Previous save cannot be migrated to the six-hour rules.";
+                return false;
+            }
+
+            BuqiRunPhase phase = (BuqiRunPhase)saveData.Phase;
+            switch (phase)
+            {
+                case BuqiRunPhase.Encounter:
+                    if (saveData.EncounterIndex < 0 ||
+                        saveData.EncounterIndex >= PreviousV3OperationsPerDay ||
+                        saveData.Period != saveData.EncounterIndex)
+                    {
+                        error = "Previous operation state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.Period = saveData.EncounterIndex == 0
+                        ? (int)BuqiRunPeriod.Hour1Operation
+                        : (int)BuqiRunPeriod.Hour2Operation;
+                    break;
+
+                case BuqiRunPhase.PveBattle:
+                    if (saveData.EncounterIndex != PreviousV3OperationsPerDay ||
+                        saveData.Period != PreviousV3PvePeriod)
+                    {
+                        error = "Previous PVE state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.EncounterIndex = BuqiRunRules.OperationsBeforePve;
+                    saveData.Period = (int)BuqiRunPeriod.Hour3Pve;
+                    break;
+
+                case BuqiRunPhase.PvpBattle:
+                case BuqiRunPhase.DaySettlement:
+                case BuqiRunPhase.TribulationRoute:
+                case BuqiRunPhase.TribulationStage:
+                    if (saveData.EncounterIndex != PreviousV3OperationsPerDay ||
+                        saveData.Period != PreviousV3PvpPeriod)
+                    {
+                        error = "Previous night state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    saveData.EncounterIndex = BuqiRunRules.OperationsPerDay;
+                    saveData.Period = (int)BuqiRunPeriod.Hour6Pvp;
+                    break;
+
+                case BuqiRunPhase.RunTerminal:
+                    if (saveData.EncounterIndex != PreviousV3OperationsPerDay ||
+                        (saveData.Period != PreviousV3PvePeriod &&
+                         saveData.Period != PreviousV3PvpPeriod))
+                    {
+                        error = "Previous terminal state cannot be migrated safely.";
+                        return false;
+                    }
+
+                    bool endedDuringPve = saveData.Period == PreviousV3PvePeriod;
+                    saveData.EncounterIndex = endedDuringPve
+                        ? BuqiRunRules.OperationsBeforePve
+                        : BuqiRunRules.OperationsPerDay;
+                    saveData.Period = endedDuringPve
+                        ? (int)BuqiRunPeriod.Hour3Pve
+                        : (int)BuqiRunPeriod.Hour6Pvp;
+                    break;
+
+                default:
+                    error = "Previous phase cannot be migrated safely.";
+                    return false;
+            }
+
+            saveData.SaveVersion = BuqiRunSaveData.CurrentSaveVersion;
+            saveData.RuleVersion = BuqiRunState.CurrentRuleVersion;
             return true;
         }
 

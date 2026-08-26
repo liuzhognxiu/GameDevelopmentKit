@@ -10,15 +10,16 @@ namespace Game.Hot.Buqi.BattleLab
     {
         private readonly int m_SlotCount;
         private List<BuqiBattleLabPlacement> m_Placements;
+        private BuqiBattleLabBoardView m_View;
 
         public BuqiBattleLabBoard(int slotCount)
         {
             m_SlotCount = slotCount;
             m_Placements = new List<BuqiBattleLabPlacement>();
-            View = CreateView(m_Placements);
+            m_View = CreateView(m_Placements);
         }
 
-        public BuqiBattleLabBoardView View { get; private set; }
+        public BuqiBattleLabBoardView View => m_View;
 
         public BuqiBattleLabPlacementPreview Preview(
             string definitionId,
@@ -185,7 +186,7 @@ namespace Game.Hot.Buqi.BattleLab
         private void Commit(List<BuqiBattleLabPlacement> placements)
         {
             m_Placements = placements;
-            View = CreateView(m_Placements);
+            m_View = CreateView(m_Placements);
         }
 
         private BuqiBattleLabBoardView CreateView(

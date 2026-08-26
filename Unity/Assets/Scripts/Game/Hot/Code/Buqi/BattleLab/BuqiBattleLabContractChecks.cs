@@ -84,6 +84,12 @@ namespace Game.Hot.Buqi.BattleLab
 
         private static void CheckAtomicBoards(List<string> failures)
         {
+            Expect(
+                !typeof(BuqiBattleLabBoard).GetProperty(
+                    nameof(BuqiBattleLabBoard.View)).CanWrite,
+                "原子棋盘：公开视图属性不应提供 setter",
+                failures);
+
             foreach (int slotCount in new[] { 8, 10 })
             {
                 var board = new BuqiBattleLabBoard(slotCount);

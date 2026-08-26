@@ -20,6 +20,9 @@ namespace Game.Hot.Editor
         private const string FormFolder = "Assets/Res/UI/UIForm/Hot/Buqi";
         private const string ShellPath = FormFolder + "/BuqiRunShellForm.prefab";
         private const string BattleFormPath = FormFolder + "/BattleForm.prefab";
+        private const string BazaarBackdropPath = "Assets/Res/UI/UISprite/Buqi/Bazaar/bazaar-backdrop.png";
+        private const string BazaarShelfPanelPath = "Assets/Res/UI/UISprite/Buqi/Bazaar/shop-shelf-panel.png";
+        private const string BazaarBoardPanelPath = "Assets/Res/UI/UISprite/Buqi/Bazaar/player-board-panel.png";
 
         private static readonly Color canvasColor = new Color32(18, 23, 28, 255);
         private static readonly Color surfaceColor = new Color32(35, 43, 50, 255);
@@ -67,7 +70,13 @@ namespace Game.Hot.Editor
             where T : BuqiStageWidgetBase
         {
             GameObject root = CreateRoot(name, new Vector2(1112f, 824f));
-            AddImage(root, new Color32(25, 31, 36, 255));
+            Image stageBackground = AddImage(root, new Color32(25, 31, 36, 255));
+            if (typeof(T) == typeof(ShopWidget))
+            {
+                stageBackground.sprite = LoadSprite(BazaarBackdropPath);
+                stageBackground.type = Image.Type.Simple;
+                stageBackground.color = Color.white;
+            }
             T widget = root.AddComponent<T>();
 
             Text title = CreateText(root.transform, "Title_Text", titleValue, 32, TextAnchor.MiddleLeft, inkColor);
@@ -147,6 +156,10 @@ namespace Game.Hot.Editor
                 new Vector2(0f, 190f),
                 new Vector2(1024f, 56f),
                 new Color32(62, 67, 72, 255));
+            Image sellZoneImage = sellZoneObject.GetComponent<Image>();
+            sellZoneImage.sprite = LoadSprite(BazaarShelfPanelPath);
+            sellZoneImage.type = Image.Type.Sliced;
+            sellZoneImage.color = Color.white;
             BuqiSellZoneWidget sellZone = sellZoneObject.AddComponent<BuqiSellZoneWidget>();
             Text sellLabel = CreateText(
                 sellZoneObject.transform,
@@ -192,6 +205,10 @@ namespace Game.Hot.Editor
                 new Vector2(0f, -292f),
                 new Vector2(1024f, 158f),
                 new Color32(29, 36, 42, 255));
+            Image boardImage = boardPanel.GetComponent<Image>();
+            boardImage.sprite = LoadSprite(BazaarBoardPanelPath);
+            boardImage.type = Image.Type.Sliced;
+            boardImage.color = Color.white;
             Text boardTitle = CreateText(
                 boardPanel.transform,
                 "BoardTitle_Text",
@@ -714,6 +731,14 @@ namespace Game.Hot.Editor
             if (prefab == null)
                 throw new InvalidOperationException("缺少不器界面预制体：" + path);
             return prefab;
+        }
+
+        private static Sprite LoadSprite(string path)
+        {
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (sprite == null)
+                throw new InvalidOperationException("缺少不器界面图片：" + path);
+            return sprite;
         }
 
         private static GameObject Instantiate(GameObject prefab, Transform parent, string name)

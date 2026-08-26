@@ -12,6 +12,7 @@ namespace Game.Hot.Editor
         private const string ItemDetailPath = FormFolder + "/BuqiItemDetailForm.prefab";
         private const string ConfirmPath = FormFolder + "/BuqiConfirmForm.prefab";
         private const string MessagePath = FormFolder + "/BuqiMessageForm.prefab";
+        private const string ItemFramePath = "Assets/Res/UI/UISprite/Buqi/Bazaar/item-frame.png";
 
         private static readonly Color canvasColor = new Color32(19, 24, 29, 255);
         private static readonly Color surfaceColor = new Color32(35, 43, 50, 255);
@@ -41,6 +42,10 @@ namespace Game.Hot.Editor
 
             GameObject panel = CreatePanel(root.transform, "Panel", Vector2.zero, new Vector2(684f, 384f), surfaceColor);
             GameObject itemCard = CreatePanel(panel.transform, "ItemCard", new Vector2(-224f, -2f), new Vector2(194f, 246f), raisedColor);
+            Image itemFrame = itemCard.GetComponent<Image>();
+            itemFrame.sprite = LoadSprite(ItemFramePath);
+            itemFrame.type = Image.Type.Sliced;
+            itemFrame.color = Color.white;
             Text itemName = CreateText(itemCard.transform, "ItemName_Text", "W8-000", 22, TextAnchor.UpperCenter, inkColor);
             SetRect(itemName.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -38f), new Vector2(174f, 40f));
             itemName.fontStyle = FontStyle.Bold;
@@ -183,6 +188,14 @@ namespace Game.Hot.Editor
             image.type = image.sprite == null ? Image.Type.Simple : Image.Type.Sliced;
             image.color = color;
             return image;
+        }
+
+        private static Sprite LoadSprite(string path)
+        {
+            Sprite sprite = AssetDatabase.LoadAssetAtPath<Sprite>(path);
+            if (sprite == null)
+                throw new System.InvalidOperationException("缺少不器界面图片：" + path);
+            return sprite;
         }
 
         private static Image CreateImage(Transform parent, string name, Color color)

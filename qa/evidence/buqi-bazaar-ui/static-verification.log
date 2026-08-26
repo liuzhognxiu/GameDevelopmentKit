@@ -1,0 +1,50 @@
+Buqi Bazaar UI static verification
+Date: 2026-08-26 (Asia/Shanghai)
+Source commit: cfc387cb9626b0355403904ba3fb339bac51ce5b
+Workspace: C:\Users\123\.codex\worktrees\f12e\GameDevelopmentKit
+
+[Unity / AgentBridge readiness]
+- Read repository AGENTS.md and installed AgentBridge AGENT.md.
+- Running Unity/UnityEditor processes: none.
+- Shared bridge root: E:\Project\GameDevelopmentKit\Unity\.agentbridge
+- Fixed slots request.json / processing.json / response.json: all absent.
+- No request was published because the Bridge host was not running.
+- Shared main repository HEAD: aeaf0f8d5b0d5d34d21376c00e9261225be147a5.
+- Shared main repository has many uncommitted Buqi source/prefab/config changes.
+- All four Bazaar PNGs are missing from the shared main repository.
+- ShopWidget.prefab, OfferCardWidget.prefab, and BuqiItemDetailForm.prefab hashes differ between the shared main repository and this worktree.
+
+[Static art contract]
+Command: pwsh -NoProfile -File Tools/Tests/Verify-BuqiBazaarArt.ps1
+Result: PASS
+Duration: 555 ms
+Output: Buqi bazaar art contract passed: 4 sprites, 3 builders, and 3 prefabs verified.
+
+[Sprite sources]
+- bazaar-backdrop.png: 1360x1008, RGBA, sampled alpha 255..255, GUID d2f73143bb9147a99f741dc69188ac0e.
+- shop-shelf-panel.png: 1536x1024, RGBA, sampled alpha 0..255, 9-slice border 180/180/180/180, GUID e3a5f05878d34f5290e40ca750d061df.
+- player-board-panel.png: 1536x1024, RGBA, sampled alpha 0..254, 9-slice border 180/180/180/180, GUID 49f61940f60d439fbe1e0b95cae76406.
+- item-frame.png: 1024x1536, RGB without alpha, 9-slice border 160/160/160/160, GUID 92b102a191114c59b3c8b63d3d2330af.
+- Direct source-image inspection found nonblank images and no visible text, logo, or watermark.
+
+[Static interaction audit]
+PASS board-visible-path
+PASS drag-buy-target-slot
+PASS drag-sell-command
+PASS hover-preview
+FAIL click-does-not-buy
+FAIL max-ten-contiguous-shelf
+FAIL prefab-serializes-shop-bindings
+FAIL item-frame-used-in-runtime-fallback
+
+[Layout facts]
+- Shop stage design size: 1112x824 inside a 1920x1080 shell.
+- Current shop fallback: 8 offer cards, 4 columns x 2 rows, each 244x112.
+- Current player board: 8 slots inside a 1024x158 panel at y=-292.
+- Checked-in ShopWidget.prefab serializes only legacy action buttons and base fields; it does not serialize m_OfferCards, m_SellZone, m_BoardItems, or m_BoardDropSlots.
+- Therefore ShopWidget.EnsureRuntimeSurface creates opaque plain-color offer and board panels at runtime. The runtime fallback does not load item-frame.png.
+- 1280x720 and 1920x1080 clipping, overlap, font readability, raycast order, and effective 9-slice rendering remain NOT_RUN because no matching Unity runtime was available.
+
+[Git]
+- git diff --check: PASS.
+- No source, config, prefab, image, generated output, Git index, or existing untracked output directory was changed by the verification.

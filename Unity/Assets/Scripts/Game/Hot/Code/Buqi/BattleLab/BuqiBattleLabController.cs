@@ -87,6 +87,8 @@ namespace Game.Hot.Buqi.BattleLab
         public BuqiBattleLabCommandResult SelectOpponentMode(
             BuqiBattleLabOpponentMode mode)
         {
+            if (!IsWorkbench)
+                return Reject("请先进入工作台");
             if (mode != BuqiBattleLabOpponentMode.Preset &&
                 mode != BuqiBattleLabOpponentMode.Custom)
                 return Reject("敌人模式无效");
@@ -97,6 +99,8 @@ namespace Game.Hot.Buqi.BattleLab
 
         public BuqiBattleLabCommandResult SelectPresetOpponent(string echoId)
         {
+            if (!IsWorkbench)
+                return Reject("请先进入工作台");
             BuqiBattleLabPresetOpponent opponent = FindPresetOpponent(echoId);
             if (opponent == null)
                 return Reject("预设敌人不存在");
@@ -107,6 +111,8 @@ namespace Game.Hot.Buqi.BattleLab
 
         public BuqiBattleLabCommandResult SelectCustomEnemyHero(string heroId)
         {
+            if (!IsWorkbench)
+                return Reject("请先进入工作台");
             BuqiBattleLabHeroDefinition hero = FindHero(heroId);
             if (hero == null)
                 return Reject("英雄不存在");
@@ -120,6 +126,8 @@ namespace Game.Hot.Buqi.BattleLab
             string definitionId,
             int anchorSlot)
         {
+            if (!IsWorkbench)
+                return RejectedPreview(side, anchorSlot, 0, "请先进入工作台");
             if (!TryGetEditableBoard(side, out BuqiBattleLabBoard board, out string reason))
                 return RejectedPreview(side, anchorSlot, 0, reason);
 
@@ -139,6 +147,8 @@ namespace Game.Hot.Buqi.BattleLab
             string definitionId,
             int anchorSlot)
         {
+            if (!IsWorkbench)
+                return Reject("请先进入工作台");
             if (!TryGetEditableBoard(side, out BuqiBattleLabBoard board, out string reason))
                 return Reject(reason);
 
@@ -177,6 +187,8 @@ namespace Game.Hot.Buqi.BattleLab
             string instanceId,
             int anchorSlot)
         {
+            if (!IsWorkbench)
+                return RejectedPreview(side, anchorSlot, 0, "请先进入工作台");
             if (!TryGetEditableBoard(side, out BuqiBattleLabBoard board, out string reason))
                 return RejectedPreview(side, anchorSlot, 0, reason);
 
@@ -199,10 +211,12 @@ namespace Game.Hot.Buqi.BattleLab
             BuqiBattleLabSide targetSide,
             int anchorSlot)
         {
-            if (IsPresetEnemySide(sourceSide) || IsPresetEnemySide(targetSide))
-                return Reject("预设敌人不可编辑");
+            if (!IsWorkbench)
+                return Reject("请先进入工作台");
             if (!IsKnownSide(sourceSide) || !IsKnownSide(targetSide))
                 return Reject("棋盘阵营无效");
+            if (IsPresetEnemySide(sourceSide) || IsPresetEnemySide(targetSide))
+                return Reject("预设敌人不可编辑");
             if (sourceSide != targetSide)
                 return Reject("不能转移双方已有实例");
 
@@ -216,6 +230,8 @@ namespace Game.Hot.Buqi.BattleLab
             BuqiBattleLabSide side,
             string instanceId)
         {
+            if (!IsWorkbench)
+                return Reject("请先进入工作台");
             if (!TryGetEditableBoard(side, out BuqiBattleLabBoard board, out string reason))
                 return Reject(reason);
             if (!board.TryRemove(instanceId, out reason))
@@ -225,12 +241,16 @@ namespace Game.Hot.Buqi.BattleLab
 
         public BuqiBattleLabCommandResult Clear(BuqiBattleLabSide side)
         {
+            if (!IsWorkbench)
+                return Reject("请先进入工作台");
             if (!TryGetEditableBoard(side, out BuqiBattleLabBoard board, out string reason))
                 return Reject(reason);
             if (!board.Clear())
                 return Reject("棋盘已经为空");
             return Accept();
         }
+
+        private bool IsWorkbench => m_Phase == BuqiBattleLabPhase.Workbench;
 
         private BuqiBattleLabHeroDefinition FindHero(string heroId)
         {
